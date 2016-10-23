@@ -8,6 +8,24 @@
 
 import Foundation
 
+extension UInt8 {
+
+    subscript(index: Int) -> UInt8 {
+        precondition(index >= 0 && index < 8, "Index must be between 0 and 7 (included)")
+        let uindex = UInt8(truncatingBitPattern: index)
+        return (self & (0x1 << uindex)) >> uindex
+    }
+
+    subscript(range: CountableRange<Int>) -> [UInt8] {
+        return range.map {
+            let uindex = UInt8(truncatingBitPattern: $0)
+            return (self & (0x1 << uindex)) >> uindex
+        }
+    }
+}
+
+
+
 public enum DeflateError: Error {
     case WrongMagic
     case UnknownCompressionMethod
