@@ -19,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2016 tsolomko. All rights reserved.</string>
+	<string>Copyright © 2016 Timofey Solomko. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
