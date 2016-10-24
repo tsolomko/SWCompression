@@ -93,9 +93,7 @@ public class Deflate {
         var index = startPoint
         while true {
             let isLastBit = data.byte(at: index)[0]
-            let blockType = data.byte(at: index)[1..<3]
-
-            let align = 3
+            let blockType = [UInt8](data.byte(at: index)[1..<3].reversed())
 
             if blockType == [0, 0] { // Uncompressed
                 let lengthArray = data.bytes(from: index..<index + 2)
