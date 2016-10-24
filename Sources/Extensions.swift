@@ -59,3 +59,24 @@ extension Data {
     }
     
 }
+
+extension UInt8 {
+
+    func combine(withByte second: UInt8) -> UInt16 {
+        let result: UInt16 =  UInt16(self << 8) | UInt16(second)
+        return result
+    }
+
+    subscript(index: Int) -> UInt8 {
+        precondition(index >= 0 && index < 8, "Index must be between 0 and 7 (included).")
+        let uindex = UInt8(truncatingBitPattern: index)
+        return (self & (0x1 << uindex)) >> uindex
+    }
+
+    subscript(range: CountableRange<Int>) -> [UInt8] {
+        return range.map {
+            let uindex = UInt8(truncatingBitPattern: $0)
+            return (self & (0x1 << uindex)) >> uindex
+        }
+    }
+}
