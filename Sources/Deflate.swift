@@ -90,31 +90,39 @@ public class Deflate {
             print("\(crc)")
         }
 
+        // Current point of processing in data
         var index = startPoint
         while true {
+            // Is this a last block?
             let isLastBit = data.byte(at: index)[0]
+            // Type of the current block
             let blockType = [UInt8](data.byte(at: index)[1..<3].reversed())
 
-            if blockType == [0, 0] { // Uncompressed
-                let lengthArray = data.bytes(from: index..<index + 2)
-                let length = lengthArray[0].combine(withByte: lengthArray[1])
+            if blockType == [0, 0] { // Uncompressed block
+                // Get length of the uncompressed data
+
+                // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
+                let length = Int(bitPattern: UInt(data.subdata(in: index..<index + 2).to(type: UInt16.self)))
                 index += 2
-                let nlengthArray = data.bytes(from: index..<index + 2)
-                let nlength = nlengthArray[0].combine(withByte: nlengthArray[1])
+                // Get 1-complement of the length
+                let nlength = Int(bitPattern: UInt(data.subdata(in: index..<index + 2).to(type: UInt16.self)))
                 index += 2
+                // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
-                output.append(data.bytes(from: index..<(index + Int(length))), count: Int(length))
-            } else if blockType == [1, 0] || blockType == [0, 1] { // Huffman coding (either static or dynamic)
-                let mainLiterals: HuffmanTable
-                let mainDistances: HuffmanTable
+                // Process uncompressed data into the output
+                output.append(data.subdata(in: index..<index+length))
+            } else if blockType == [1, 0] || blockType == [0, 1] {
+                // Block with Huffman coding (either static or dynamic)
+
+                // Declaration of Huffman tables which will be populated and used later
+                var mainLiterals: HuffmanTable
+                var mainDistances: HuffmanTable
+
                 if blockType == [0, 1] { // Static Huffman
-                    let staticHuffmanBootstrap = [[0, 8],
-                                                  [144, 9],
-                                                  [256, 7],
-                                                  [280, 8],
-                                                  [288, -1]]
-                    let staticHuffmanLengthsBootstrap = [[0, 5],
-                                                         [32, -1]]
+                    // Bootstraps for tables
+                    let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
+                    let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
+                    // Initialize tables from these bootstraps
                     mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else if blockType == [1, 0] { // Dynamic Huffman
@@ -123,6 +131,7 @@ public class Deflate {
 
             }
 
+            // End the cycle if it was the last block
             if isLastBit == 1 { break }
         }
 

@@ -9,6 +9,7 @@
 import Foundation
 
 struct HuffmanTable: CustomStringConvertible {
+
     var lengths: [HuffmanLength]
 
     var description: String {
@@ -16,6 +17,9 @@ struct HuffmanTable: CustomStringConvertible {
     }
 
     init(bootstrap: [Array<Int>]) {
+        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
+        // However, it does not calculate symbols or reversedSymbols
+        // Also, the array is sorted at the end 
         var newLengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
@@ -29,12 +33,14 @@ struct HuffmanTable: CustomStringConvertible {
             }
             start = finish
             bits = endbits
-            if endbits == -1 { break } // Probably unnecessary line
+            if endbits == -1 { break } // PROBABLY UNNECESSARY LINE
         }
         self.lengths = newLengths.sorted()
     }
 
     mutating func populateHuffmanSymbols() {
+        // Calculates symbol and reversedSymbol properties for each length in 'lengths' array
+        // This is done with the help of some weird magic
         var bits = -1
         var symbol = -1
         for index in 0..<self.lengths.count {
@@ -50,6 +56,7 @@ struct HuffmanTable: CustomStringConvertible {
     }
 
     private func reverseBits(v: Int, n: Int) -> Int {
+        // This is some weird magic
         var a = 1 << 0
         var b = 1 << (n - 1)
         var z = 0
