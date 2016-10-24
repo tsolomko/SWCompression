@@ -25,10 +25,10 @@ extension UInt8 {
 }
 
 
-
 public enum DeflateError: Error {
     case WrongMagic
     case UnknownCompressionMethod
+    case WrongBlockLengths
 }
 
 public class Deflate {
@@ -107,12 +107,23 @@ public class Deflate {
             print("\(crc)")
         }
 
+        var index = startPoint
         while true {
-            let isLastBit = data.byte(at: startPoint)[0]
-            let blockType = data.byte(at: startPoint)[1..<3]
+            let isLastBit = data.byte(at: index)[0]
+            let blockType = data.byte(at: index)[1..<3]
+
+            let align = 3
 
             if blockType == [0, 0] { // Uncompressed
-
+                let lengthArray = data.bytes(from: index..<index + 2, withShift: align)
+                let length = lengthArray[0].combine(withByte: lengthArray[1])
+                index += 2
+                let nlengthArray = data.bytes(from: index..<index + 2, withShift: align)
+                let nlength = nlengthArray[0].combine(withByte: nlengthArray[1])
+                index += 2
+                guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
+                output.append(data.bytes(from: index..<(index + Int(length)),
+                                         withShift: align), count: Int(length))
             } else if blockType == [1, 0] || blockType == [0, 1] { // Huffman coding (either static or dynamic)
                 if blockType == [0, 1] { // Static Huffman
                     let staticHuffmanBootstrap = [[0, 8],
