@@ -98,15 +98,14 @@ public class Deflate {
             let align = 3
 
             if blockType == [0, 0] { // Uncompressed
-                let lengthArray = data.bytes(from: index..<index + 2, withShift: align)
+                let lengthArray = data.bytes(from: index..<index + 2)
                 let length = lengthArray[0].combine(withByte: lengthArray[1])
                 index += 2
-                let nlengthArray = data.bytes(from: index..<index + 2, withShift: align)
+                let nlengthArray = data.bytes(from: index..<index + 2)
                 let nlength = nlengthArray[0].combine(withByte: nlengthArray[1])
                 index += 2
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
-                output.append(data.bytes(from: index..<(index + Int(length)),
-                                         withShift: align), count: Int(length))
+                output.append(data.bytes(from: index..<(index + Int(length))), count: Int(length))
             } else if blockType == [1, 0] || blockType == [0, 1] { // Huffman coding (either static or dynamic)
                 if blockType == [0, 1] { // Static Huffman
                     let staticHuffmanBootstrap = [[0, 8],
