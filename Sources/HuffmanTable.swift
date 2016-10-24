@@ -9,7 +9,7 @@
 import Foundation
 
 struct HuffmanTable: CustomStringConvertible {
-    let lengths: [HuffmanLength]
+    var lengths: [HuffmanLength]
 
     var description: String {
         return lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
@@ -24,7 +24,8 @@ struct HuffmanTable: CustomStringConvertible {
             let endbits = pair[1]
             if bits > 0 {
                 newLengths.append(contentsOf:
-                    (start..<finish).map { HuffmanLength(code: $0, bits: bits, symbol: nil) })
+                    (start..<finish).map { HuffmanLength(code: $0, bits: bits,
+                                                         symbol: nil, reversedSymbol: nil) })
             }
             start = finish
             bits = endbits
@@ -32,18 +33,45 @@ struct HuffmanTable: CustomStringConvertible {
         }
         self.lengths = newLengths.sorted()
     }
-    
+
+    mutating func populateHuffmanSymbols() {
+        var bits = -1
+        var symbol = -1
+        for index in 0..<self.lengths.count {
+            symbol += 1
+            let length = self.lengths[index]
+            if length.bits != bits {
+                symbol <<= (length.bits - bits)
+                bits = length.bits
+            }
+            self.lengths[index].symbol = symbol
+            self.lengths[index].reversedSymbol = self.reverseBits(v: symbol, n: bits)
+        }
+    }
+
+    private func reverseBits(v: Int, n: Int) -> Int {
+        var a = 1 << 0
+        var b = 1 << (n - 1)
+        var z = 0
+        for i in stride(from: n - 1, to: -1, by: -2) {
+            z |= (v >> i) & a
+            z |= (v << i) & b
+            a <<= 1
+            b >>= 1
+        }
+        return z
+    }
 }
 
 struct HuffmanLength: Comparable, CustomStringConvertible {
     let code: Int
     let bits: Int
     var symbol: Int? = nil
+    var reversedSymbol: Int? = nil
 
     var description: String {
-        return "(code: \(code), bits: \(bits), symbol: \(symbol))"
+        return "(code: \(code), bits: \(bits), symbol: \(symbol), reversedSymbol: \(reversedSymbol))"
     }
-
 
     static func <(left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
