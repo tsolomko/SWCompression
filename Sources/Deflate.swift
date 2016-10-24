@@ -105,6 +105,8 @@ public class Deflate {
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 output.append(data.bytes(from: index..<(index + Int(length))), count: Int(length))
             } else if blockType == [1, 0] || blockType == [0, 1] { // Huffman coding (either static or dynamic)
+                let mainLiterals: HuffmanTable
+                let mainDistances: HuffmanTable
                 if blockType == [0, 1] { // Static Huffman
                     let staticHuffmanBootstrap = [[0, 8],
                                                   [144, 9],
@@ -113,6 +115,8 @@ public class Deflate {
                                                   [288, -1]]
                     let staticHuffmanLengthsBootstrap = [[0, 5],
                                                          [32, -1]]
+                    mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
+                    mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else if blockType == [1, 0] { // Dynamic Huffman
 
                 }
