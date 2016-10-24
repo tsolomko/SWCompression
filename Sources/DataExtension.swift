@@ -35,5 +35,27 @@ extension Data {
     func byte(at index: Data.Index) -> UInt8 {
         return Data(self[index]).to(type: UInt8.self)
     }
+
+    func byte(at index: Data.Index, withShift shift: Int) -> UInt8 {
+        precondition(shift >= 0 && shift < 8, "Shift must be between 0 and 7 (included).")
+        let firstPart = self.byte(at: index)
+        let secondPart = self.byte(at: index + 1)
+        let convShift = UInt8(truncatingBitPattern: shift)
+        let result: UInt8 = (firstPart << convShift) | (secondPart >> (8 - convShift))
+        return result
+    }
+
+    func bytes(from range: Range<Data.Index>, withShift shift: Int) -> [UInt8] {
+        precondition(shift >= 0 && shift < 8, "Shift must be between 0 and 7 (included).")
+        let bytesArray = self.bytes(from: range.lowerBound..<range.upperBound + 1)
+        var resultArray: [UInt8] = []
+        let convShift = UInt8(truncatingBitPattern: shift)
+        for i in range.lowerBound..<range.upperBound + 1 {
+            let firstPart = bytesArray[i]
+            let secondPart = bytesArray[i + 1]
+            resultArray.append((firstPart << convShift) | (secondPart >> (8 - convShift)))
+        }
+        return resultArray
+    }
     
 }
