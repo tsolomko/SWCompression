@@ -121,6 +121,8 @@ public class Deflate {
                 }
 
             }
+
+            if isLastBit == 1 { break }
         }
 
         return output
