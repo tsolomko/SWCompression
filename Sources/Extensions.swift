@@ -20,26 +20,14 @@ extension Data {
         }
     }
 
-    subscript(range: Range<Data.Index>) -> Data {
-        return self.subdata(in: range)
-    }
-
-    subscript(index: Data.Index) -> Data {
-        return self.subdata(in: index..<index+1)
-    }
-
     func bytes(from range: Range<Data.Index>) -> [UInt8] {
         return self.subdata(in: range).toArray(type: UInt8.self)
     }
 
-    func byte(at index: Data.Index) -> UInt8 {
-        return Data(self[index]).to(type: UInt8.self)
-    }
-
     func byte(at index: Data.Index, withShift shift: Int) -> UInt8 {
         precondition(shift >= 0 && shift < 8, "Shift must be between 0 and 7 (included).")
-        let firstPart = self.byte(at: index)
-        let secondPart = self.byte(at: index + 1)
+        let firstPart = self[index]
+        let secondPart = self[index + 1]
         let convShift = UInt8(truncatingBitPattern: shift)
         let result: UInt8 = (firstPart << convShift) | (secondPart >> (8 - convShift))
         return result

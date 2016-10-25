@@ -41,23 +41,23 @@ public class Deflate {
         guard magic == [31, 139] else { throw DeflateError.WrongMagic }
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
-        let method = data.byte(at: 2)
+        let method = data[2]
         guard method == 8 else { throw DeflateError.UnknownCompressionMethod }
 
         // Next bytes present some service information
         let serviceInfo = ServiceInfo(magic: magic,
                                       method: method,
-                                      flags: data.byte(at: 3),
+                                      flags: data[3],
                                       mtime: Data(data[4...7]).to(type: UInt64.self),
-                                      extraFlags: data.byte(at: 8),
-                                      osType: data.byte(at: 9))
+                                      extraFlags: data[8],
+                                      osType: data[9])
         print("\(serviceInfo)")
 
         var startPoint = 10 // Index in data of 'actual data'
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
-            let xlen = Data(data[10...11]).to(type: UInt16.self)
+            let xlen = Data(data[startPoint...startPoint + 1]).to(type: UInt16.self)
             startPoint += 2 + Int(bitPattern: UInt(xlen))
         }
 
@@ -65,22 +65,22 @@ public class Deflate {
         if serviceInfo.flags & Flags.fname != 0 {
             let fnameStart = startPoint
             while true {
-                let byte = data.byte(at: startPoint)
+                let byte = data[startPoint]
                 startPoint += 1
                 guard byte != 0 else { break }
             }
-            print(String(data: data.subdata(in: fnameStart..<startPoint - 1), encoding: .utf8))
+            print(String(data: Data(data[fnameStart..<startPoint - 1]), encoding: .utf8))
         }
 
         // Some archives may contain comment (this part also ends with zero)
         if serviceInfo.flags & Flags.fcomment != 0 {
             let fcommentStart = startPoint
             while true {
-                let byte = data.byte(at: startPoint)
+                let byte = data[startPoint]
                 startPoint += 1
                 guard byte != 0 else { break }
             }
-            print(String(data: data.subdata(in: fcommentStart..<startPoint - 1), encoding: .utf8))
+            print(String(data: Data(data[fcommentStart..<startPoint - 1]), encoding: .utf8))
         }
 
         // Some archives may contain 2-bytes checksum
@@ -94,25 +94,25 @@ public class Deflate {
         var index = startPoint
         while true {
             // Is this a last block?
-            let isLastBit = data.byte(at: index)[0]
+            let isLastBit = data[index][0]
             // Type of the current block
-            let blockType = [UInt8](data.byte(at: index)[1..<3].reversed())
+            let blockType = [UInt8](data[index][1..<3].reversed())
 
             if blockType == [0, 0] { // Uncompressed block
                 // Get length of the uncompressed data
 
                 // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
-                let length = Int(bitPattern: UInt(data.subdata(in: index..<index + 2)
+                let length = Int(bitPattern: UInt(Data(data[index...index + 1])
                     .to(type: UInt16.self)))
                 index += 2
                 // Get 1-complement of the length
-                let nlength = Int(bitPattern: UInt(data.subdata(in: index..<index + 2)
+                let nlength = Int(bitPattern: UInt(Data(data[index...index + 1])
                     .to(type: UInt16.self)))
                 index += 2
                 // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
-                output.append(data.subdata(in: index..<index+length))
+                output.append(Data(data[index..<index+length]))
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
