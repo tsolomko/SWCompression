@@ -57,7 +57,7 @@ extension Data {
         }
         return resultArray
     }
-    
+
 }
 
 extension UInt8 {
@@ -79,5 +79,5 @@ extension UInt8 {
             return (self & (0x1 << uindex)) >> uindex
         }
     }
-    
+
 }
