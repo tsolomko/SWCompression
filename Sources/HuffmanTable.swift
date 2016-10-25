@@ -12,6 +12,9 @@ struct HuffmanTable: CustomStringConvertible {
 
     var lengths: [HuffmanLength]
 
+    private var minBits: Int
+    private var maxBits: Int
+
     var description: String {
         return lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
     }
@@ -36,6 +39,8 @@ struct HuffmanTable: CustomStringConvertible {
             if endbits == -1 { break } // PROBABLY UNNECESSARY LINE
         }
         self.lengths = newLengths.sorted()
+        self.minBits = 16
+        self.maxBits = -1
     }
 
     mutating func populateHuffmanSymbols() {
@@ -52,6 +57,13 @@ struct HuffmanTable: CustomStringConvertible {
             }
             self.lengths[index].symbol = symbol
             self.lengths[index].reversedSymbol = self.reverse(bits: bits, in: symbol)
+        }
+    }
+
+    mutating func minMaxBits() {
+        (self.minBits, self.maxBits) = self.lengths.reduce((16, -1)) {
+            (tuple: (Int, Int), length: HuffmanLength) -> (Int, Int) in
+            return (min(tuple.0, length.bits), max(tuple.1, length.bits))
         }
     }
 
