@@ -39,11 +39,30 @@ struct HuffmanTable: CustomStringConvertible {
             if endbits == -1 { break } // PROBABLY UNNECESSARY LINE
         }
         self.lengths = newLengths.sorted()
+
         self.minBits = 16
         self.maxBits = -1
+
+        self.populateHuffmanSymbols()
+        self.minMaxBits()
     }
 
-    mutating func populateHuffmanSymbols() {
+    private mutating func populateHuffmanSymbols() {
+        // Auxiliarly subfunction, which computes reversed order of bits in a number
+        func reverse(bits: Int, in symbol: Int) -> Int {
+            // This is some weird magic
+            var a = 1 << 0
+            var b = 1 << (bits - 1)
+            var z = 0
+            for i in stride(from: bits - 1, to: -1, by: -2) {
+                z |= (symbol >> i) & a
+                z |= (symbol << i) & b
+                a <<= 1
+                b >>= 1
+            }
+            return z
+        }
+
         // Calculates symbol and reversedSymbol properties for each length in 'lengths' array
         // This is done with the help of some weird magic
         var bits = -1
@@ -56,30 +75,18 @@ struct HuffmanTable: CustomStringConvertible {
                 bits = length.bits
             }
             self.lengths[index].symbol = symbol
-            self.lengths[index].reversedSymbol = self.reverse(bits: bits, in: symbol)
+            self.lengths[index].reversedSymbol = reverse(bits: bits, in: symbol)
         }
     }
 
-    mutating func minMaxBits() {
+    private mutating func minMaxBits() {
+        // Finds minimum and maximum bits in the entire table of lengths
         (self.minBits, self.maxBits) = self.lengths.reduce((16, -1)) {
             (tuple: (Int, Int), length: HuffmanLength) -> (Int, Int) in
             return (min(tuple.0, length.bits), max(tuple.1, length.bits))
         }
     }
 
-    private func reverse(bits: Int, in symbol: Int) -> Int {
-        // This is some weird magic
-        var a = 1 << 0
-        var b = 1 << (bits - 1)
-        var z = 0
-        for i in stride(from: bits - 1, to: -1, by: -2) {
-            z |= (symbol >> i) & a
-            z |= (symbol << i) & b
-            a <<= 1
-            b >>= 1
-        }
-        return z
-    }
 }
 
 struct HuffmanLength: Comparable, CustomStringConvertible {
