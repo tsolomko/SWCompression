@@ -19,7 +19,7 @@ struct HuffmanTable: CustomStringConvertible {
     init(bootstrap: [Array<Int>]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
         // However, it does not calculate symbols or reversedSymbols
-        // Also, the array is sorted at the end 
+        // Also, the array is sorted at the end
         var newLengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
@@ -51,18 +51,18 @@ struct HuffmanTable: CustomStringConvertible {
                 bits = length.bits
             }
             self.lengths[index].symbol = symbol
-            self.lengths[index].reversedSymbol = self.reverseBits(v: symbol, n: bits)
+            self.lengths[index].reversedSymbol = self.reverse(bits: bits, in: symbol)
         }
     }
 
-    private func reverseBits(v: Int, n: Int) -> Int {
+    private func reverse(bits: Int, in symbol: Int) -> Int {
         // This is some weird magic
         var a = 1 << 0
-        var b = 1 << (n - 1)
+        var b = 1 << (bits - 1)
         var z = 0
-        for i in stride(from: n - 1, to: -1, by: -2) {
-            z |= (v >> i) & a
-            z |= (v << i) & b
+        for i in stride(from: bits - 1, to: -1, by: -2) {
+            z |= (symbol >> i) & a
+            z |= (symbol << i) & b
             a <<= 1
             b >>= 1
         }
@@ -77,10 +77,11 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
     var reversedSymbol: Int? = nil
 
     var description: String {
-        return "(code: \(code), bits: \(bits), symbol: \(symbol), reversedSymbol: \(reversedSymbol))"
+        return "(code: \(code), bits: \(bits), symbol: \(symbol), " +
+        "reversedSymbol: \(reversedSymbol))"
     }
 
-    static func <(left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func < (left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
             return left.code < right.code
         } else {
@@ -88,7 +89,7 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
         }
     }
 
-    static func <=(left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func <= (left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
             return left.code <= right.code
         } else {
@@ -96,7 +97,7 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
         }
     }
 
-    static func >(left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func > (left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
             return left.code > right.code
         } else {
@@ -104,7 +105,7 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
         }
     }
 
-    static func >=(left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func >= (left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
             return left.code >= right.code
         } else {
@@ -112,12 +113,12 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
         }
     }
 
-    static func ==(left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func == (left: HuffmanLength, right: HuffmanLength) -> Bool {
         if left.bits == right.bits {
             return left.code == right.code
         } else {
             return left.bits == right.bits
         }
     }
-    
+
 }

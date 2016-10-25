@@ -102,10 +102,12 @@ public class Deflate {
                 // Get length of the uncompressed data
 
                 // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
-                let length = Int(bitPattern: UInt(data.subdata(in: index..<index + 2).to(type: UInt16.self)))
+                let length = Int(bitPattern: UInt(data.subdata(in: index..<index + 2)
+                    .to(type: UInt16.self)))
                 index += 2
                 // Get 1-complement of the length
-                let nlength = Int(bitPattern: UInt(data.subdata(in: index..<index + 2).to(type: UInt16.self)))
+                let nlength = Int(bitPattern: UInt(data.subdata(in: index..<index + 2)
+                    .to(type: UInt16.self)))
                 index += 2
                 // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }

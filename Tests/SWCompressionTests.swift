@@ -16,5 +16,5 @@ class SWCompressionTests: XCTestCase {
         XCTAssertNotNil(testData, "Failed to load test archive")
         XCTAssertNotNil(try? Deflate.decompress(data: testData!), "Failed to decompress")
     }
-    
+
 }
