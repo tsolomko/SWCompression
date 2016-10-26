@@ -12,6 +12,7 @@ public enum DeflateError: Error {
     case WrongMagic
     case UnknownCompressionMethod
     case WrongBlockLengths
+    case HuffmanTableError
 }
 
 public class Deflate {
@@ -57,8 +58,8 @@ public class Deflate {
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
-            let xlen = Data(data[startPoint...startPoint + 1]).to(type: UInt16.self)
-            startPoint += 2 + Int(bitPattern: UInt(xlen))
+            let xlen = Data(data[startPoint...startPoint + 1]).to(type: UInt16.self).toInt()
+            startPoint += 2 + xlen
         }
 
         // Some archives may contain source file name (this part ends with zero byte)
@@ -97,17 +98,16 @@ public class Deflate {
             let isLastBit = data[index][0]
             // Type of the current block
             let blockType = [UInt8](data[index][1..<3].reversed())
+            let shift = 3
 
             if blockType == [0, 0] { // Uncompressed block
                 // Get length of the uncompressed data
 
                 // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
-                let length = Int(bitPattern: UInt(Data(data[index...index + 1])
-                    .to(type: UInt16.self)))
+                let length = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
                 index += 2
                 // Get 1-complement of the length
-                let nlength = Int(bitPattern: UInt(Data(data[index...index + 1])
-                    .to(type: UInt16.self)))
+                let nlength = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
                 index += 2
                 // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
@@ -117,7 +117,7 @@ public class Deflate {
                 // Block with Huffman coding (either static or dynamic)
 
                 // Declaration of Huffman tables which will be populated and used later
-                var mainLiterals: HuffmanTable
+                var mainLiterals: HuffmanTable?
                 var mainDistances: HuffmanTable
 
                 if blockType == [0, 1] { // Static Huffman
@@ -129,6 +129,14 @@ public class Deflate {
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else if blockType == [1, 0] { // Dynamic Huffman
 
+                }
+
+                while true {
+                    let nextSymbol = mainLiterals?.findNextSymbol(in: Data(data[index...index + 1]),
+                                                                  withShift: shift)
+                    let symbol = nextSymbol?.0
+                    guard symbol != -1 else { throw DeflateError.HuffmanTableError }
+                    index += nextSymbol!.1
                 }
 
             }
