@@ -77,68 +77,46 @@ class HuffmanTable: CustomStringConvertible {
         }
     }
 
-}
-
-class OrderedHuffmanTable: HuffmanTable {
-    init(arrayOfLenghts: [Int]) {
-        var addedLengths = arrayOfLenghts
+    convenience init(lengthsToOrder: [Int]) {
+        var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
         let bootstrap = (zip(range, addedLengths)).map { [$0, $1] }
-        super.init(bootstrap: bootstrap)
-    }
-}
-
-struct HuffmanLength: Comparable, CustomStringConvertible {
-    let code: Int
-    let bits: Int
-    var symbol: Int? = nil
-    var reversedSymbol: Int? = nil
-
-    var description: String {
-        return "(code: \(code), bits: \(bits), symbol: \(symbol), " +
-        "reversedSymbol: \(reversedSymbol))"
+        self.init(bootstrap: bootstrap)
     }
 
-    static func < (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        if left.bits == right.bits {
-            return left.code < right.code
-        } else {
-            return left.bits < right.bits
+    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) -> (Int, Int) {
+        func convertToInt(uint8Array array: [UInt8]) -> Int {
+            var result = 0
+            for i in 0..<array.count {
+                result += Int(pow(Double(2), Double(i))) * Int(bitPattern: UInt(array[array.count - i - 1]))
+            }
+            return result
         }
-    }
 
-    static func <= (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        if left.bits == right.bits {
-            return left.code <= right.code
-        } else {
-            return left.bits <= right.bits
+        var bitsFromData = Data(data[0...1]).toArray(type: UInt8.self).map { $0.reversedBitOrder() }
+        var bitsArray = bitsFromData[1].toUintArray()
+        bitsArray.append(contentsOf: bitsFromData[0].toUintArray())
+        let bitsCount = bitsArray.count
+
+        var cachedLength = -1
+        var cached: Int = -1
+
+        for length in self.lengths {
+            let lbits = length.bits
+            let bits = convertToInt(uint8Array:
+                Array(bitsArray[bitsCount - lbits - shift..<bitsCount - shift]))
+
+            if cachedLength != lbits {
+                cached = bits
+                cachedLength = lbits
+            }
+            if (reversed && length.reversedSymbol == cached) ||
+                (!reversed && length.symbol == cached) {
+                return (length.code, (lbits <= 8) ? 1 : 2)
+            }
         }
+        return (-1, -1)
     }
-
-    static func > (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        if left.bits == right.bits {
-            return left.code > right.code
-        } else {
-            return left.bits > right.bits
-        }
-    }
-
-    static func >= (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        if left.bits == right.bits {
-            return left.code >= right.code
-        } else {
-            return left.bits >= right.bits
-        }
-    }
-
-    static func == (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        if left.bits == right.bits {
-            return left.code == right.code
-        } else {
-            return left.bits == right.bits
-        }
-    }
-
 }

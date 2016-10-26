@@ -50,8 +50,8 @@ extension Data {
 
 extension UInt8 {
 
-    func combine(withByte second: UInt8) -> UInt16 {
-        let result: UInt16 =  UInt16(self << 8) | UInt16(second)
+    func combined(withByte second: UInt8) -> UInt16 {
+        let result: UInt16 =  UInt16(self) << 8 | UInt16(second)
         return result
     }
 
@@ -66,6 +66,36 @@ extension UInt8 {
             let uindex = UInt8(truncatingBitPattern: $0)
             return (self & (0x1 << uindex)) >> uindex
         }
+    }
+
+    func toInt() -> Int {
+        return Int(bitPattern: UInt(self))
+    }
+
+    func toUintArray() -> [UInt8] {
+        return self[0..<8]
+    }
+
+    func reversedBitOrder() -> UInt8 {
+        var c = (self & 0xF0) >> 4 | (self & 0x0F) << 4
+        c = (c & 0xCC) >> 2 | (c & 0x33) << 2
+        c = (c & 0xAA) >> 1 | (c & 0x55) << 1
+        return c
+    }
+
+}
+
+extension UInt16 {
+
+    subscript(range: CountableRange<Int>) -> [UInt8] {
+        return range.map {
+            let uindex = UInt16(truncatingBitPattern: $0)
+            return UInt8(truncatingBitPattern: (self & (0x1 << uindex)) >> uindex)
+        }
+    }
+
+    func toInt() -> Int {
+        return Int(bitPattern: UInt(self))
     }
 
 }
