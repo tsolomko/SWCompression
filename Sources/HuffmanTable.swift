@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct HuffmanTable: CustomStringConvertible {
+class HuffmanTable: CustomStringConvertible {
 
     var lengths: [HuffmanLength]
 
@@ -16,7 +16,7 @@ struct HuffmanTable: CustomStringConvertible {
     private var maxBits: Int
 
     var description: String {
-        return lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
+        return self.lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
     }
 
     init(bootstrap: [Array<Int>]) {
@@ -40,16 +40,9 @@ struct HuffmanTable: CustomStringConvertible {
         }
         self.lengths = newLengths.sorted()
 
-        self.minBits = 16
-        self.maxBits = -1
-
-        self.populateHuffmanSymbols()
-        self.minMaxBits()
-    }
-
-    private mutating func populateHuffmanSymbols() {
-        // Auxiliarly subfunction, which computes reversed order of bits in a number
+        // Calculates symbols for all lengths in the table
         func reverse(bits: Int, in symbol: Int) -> Int {
+            // Auxiliarly subfunction, which computes reversed order of bits in a number
             // This is some weird magic
             var a = 1 << 0
             var b = 1 << (bits - 1)
@@ -65,28 +58,36 @@ struct HuffmanTable: CustomStringConvertible {
 
         // Calculates symbol and reversedSymbol properties for each length in 'lengths' array
         // This is done with the help of some weird magic
-        var bits = -1
+        var loopBits = -1
         var symbol = -1
         for index in 0..<self.lengths.count {
             symbol += 1
             let length = self.lengths[index]
-            if length.bits != bits {
-                symbol <<= (length.bits - bits)
-                bits = length.bits
+            if length.bits != loopBits {
+                symbol <<= (length.bits - loopBits)
+                loopBits = length.bits
             }
             self.lengths[index].symbol = symbol
-            self.lengths[index].reversedSymbol = reverse(bits: bits, in: symbol)
+            self.lengths[index].reversedSymbol = reverse(bits: loopBits, in: symbol)
         }
-    }
 
-    private mutating func minMaxBits() {
         // Finds minimum and maximum bits in the entire table of lengths
         (self.minBits, self.maxBits) = self.lengths.reduce((16, -1)) {
-            (tuple: (Int, Int), length: HuffmanLength) -> (Int, Int) in
-            return (min(tuple.0, length.bits), max(tuple.1, length.bits))
+            return (min($0.0, $1.bits), max($0.1, $1.bits))
         }
     }
 
+}
+
+class OrderedHuffmanTable: HuffmanTable {
+    init(arrayOfLenghts: [Int]) {
+        var addedLengths = arrayOfLenghts
+        addedLengths.append(-1)
+        let lengthsCount = addedLengths.count
+        let range = Array(0...lengthsCount)
+        let bootstrap = (zip(range, addedLengths)).map { [$0, $1] }
+        super.init(bootstrap: bootstrap)
+    }
 }
 
 struct HuffmanLength: Comparable, CustomStringConvertible {
