@@ -82,22 +82,11 @@ class HuffmanTable: CustomStringConvertible {
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        let bootstrap = (zip(range, addedLengths)).map { [$0, $1] }
-        self.init(bootstrap: bootstrap)
+        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
     func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) -> (Int, Int) {
-        func convertToInt(uint8Array array: [UInt8]) -> Int {
-            var result = 0
-            for i in 0..<array.count {
-                result += Int(pow(Double(2), Double(i))) * Int(bitPattern: UInt(array[array.count - i - 1]))
-            }
-            return result
-        }
-
-        var bitsFromData = Data(data[0...1]).toArray(type: UInt8.self).map { $0.reversedBitOrder() }
-        var bitsArray = bitsFromData[1].toUintArray()
-        bitsArray.append(contentsOf: bitsFromData[0].toUintArray())
+        let bitsArray = data.bits(from: (0, shift), to: (1, 8))
         let bitsCount = bitsArray.count
 
         var cachedLength = -1
@@ -105,8 +94,7 @@ class HuffmanTable: CustomStringConvertible {
 
         for length in self.lengths {
             let lbits = length.bits
-            let bits = convertToInt(uint8Array:
-                Array(bitsArray[bitsCount - lbits - shift..<bitsCount - shift]))
+            let bits = convertToInt(uint8Array: Array(bitsArray[bitsCount - lbits..<bitsCount]))
 
             if cachedLength != lbits {
                 cached = bits
@@ -114,7 +102,7 @@ class HuffmanTable: CustomStringConvertible {
             }
             if (reversed && length.reversedSymbol == cached) ||
                 (!reversed && length.symbol == cached) {
-                return (length.code, (lbits <= 8) ? 1 : 2)
+                return (length.code, (lbits <= 8) ? 1 : 2) // RETURN SHIFT ?
             }
         }
         return (-1, -1)
