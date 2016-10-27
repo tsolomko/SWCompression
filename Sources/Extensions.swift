@@ -46,6 +46,16 @@ extension Data {
         return resultArray
     }
 
+    func bits(from start: (byte: Data.Index, bit: Data.Index),
+              to end: (byte: Data.Index, bit: Data.Index)) -> [UInt8] {
+        let bitsFromData: [UInt8] = Data(self[start.byte...end.byte])
+            .toArray(type: UInt8.self).map { $0.reversedBitOrder() }.reversed()
+        let bitsArray = bitsFromData.flatMap { $0.toUintArray() }
+        let startPoint = bitsArray.count - 8 * (end.byte - start.byte) - end.bit
+        let endPoint = bitsArray.count - start.bit
+        return Array(bitsArray[startPoint..<endPoint])
+    }
+
 }
 
 extension UInt8 {
@@ -99,3 +109,21 @@ extension UInt16 {
     }
 
 }
+
+func convertToInt(uint8Array array: [UInt8]) -> Int {
+    var result = 0
+    for i in 0..<array.count {
+        result += Int(pow(Double(2), Double(i))) * Int(bitPattern: UInt(array[array.count - i - 1]))
+    }
+    return result
+}
+
+func convertToUInt8(uint8Array array: [UInt8]) -> UInt8 {
+    precondition(array.count <= 8, "Array must contain no more than 8 bits.")
+    var result: UInt8 = 0
+    for i in 0..<array.count {
+        result += UInt8(pow(Double(2), Double(i))) * array[array.count - i - 1]
+    }
+    return result
+}
+
