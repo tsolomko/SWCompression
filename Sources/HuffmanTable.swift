@@ -10,6 +10,12 @@ import Foundation
 
 class HuffmanTable: CustomStringConvertible {
 
+    struct Constants {
+        static let codeLengthOrders: [Int] =
+            [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
+
+    }
+
     var lengths: [HuffmanLength]
 
     private var minBits: Int
@@ -85,7 +91,7 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) -> (Int, Int) {
+    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) -> (symbol: Int, addToIndex: Int) {
         let bitsArray = data.bits(from: (0, shift), to: (1, 8))
         let bitsCount = bitsArray.count
 
@@ -102,7 +108,7 @@ class HuffmanTable: CustomStringConvertible {
             }
             if (reversed && length.reversedSymbol == cached) ||
                 (!reversed && length.symbol == cached) {
-                return (length.code, (lbits <= 8) ? 1 : 2) // RETURN SHIFT ?
+                return (length.code, (lbits <= 8) ? 1 : 2)
             }
         }
         return (-1, -1)
