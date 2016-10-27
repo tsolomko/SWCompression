@@ -98,7 +98,7 @@ public class Deflate {
             let isLastBit = data[index][0]
             // Type of the current block
             let blockType = [UInt8](data[index][1..<3].reversed())
-            let shift = 3
+            var shift = 3
 
             if blockType == [0, 0] { // Uncompressed block
                 // Get length of the uncompressed data
@@ -117,7 +117,7 @@ public class Deflate {
                 // Block with Huffman coding (either static or dynamic)
 
                 // Declaration of Huffman tables which will be populated and used later
-                var mainLiterals: HuffmanTable?
+                var mainLiterals: HuffmanTable
                 var mainDistances: HuffmanTable
 
                 if blockType == [0, 1] { // Static Huffman
@@ -127,16 +127,87 @@ public class Deflate {
                     // Initialize tables from these bootstraps
                     mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
-                } else if blockType == [1, 0] { // Dynamic Huffman
+                } else { // Dynamic Huffman
+                    let literals = convertToInt(uint8Array:
+                        data.bits(from: (index, shift), to: (index, shift + 5))) + 257
+                    index += 1
+                    shift = 0
+                    let distances = convertToInt(uint8Array:
+                        data.bits(from: (index, shift), to: (index, shift + 5))) + 1
+                    shift = 5
+                    let codeLengthsLength = convertToInt(uint8Array: data.bits(from: (index, shift), to: (index + 1, 1))) + 4
+                    index += 1
+                    shift = 1
 
+                    var lengthsForOrder = Array(repeating: 0, count: 19)
+                    for i in 0..<codeLengthsLength {
+                        let start = (index, shift)
+                        index += shift + 3 >= 8 ? 1 : 0
+                        shift = shift + 3 >= 8 ? shift - 5 : shift + 3
+                        let end = (index, shift)
+                        lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] =
+                            convertToInt(uint8Array: data.bits(from: start, to: end))
+                    }
+                    let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
+
+                    var codeLengths: [Int] = []
+                    var n = 0
+                    while n < (literals + distances) {
+                        let tuple = dynamicCodes.findNextSymbol(in: Data(data[index...index + 1]),
+                                                                withShift: shift)
+                        let symbol = tuple.symbol
+                        guard symbol != -1 else { throw DeflateError.HuffmanTableError }
+                        index += tuple.addToIndex
+                        let count: Int
+                        let what: Int
+                        if symbol >= 0 && symbol <= 15 {
+                            count = 1
+                            what = symbol
+                        } else if symbol == 16 {
+                            let start = (index, shift)
+                            index += shift + 2 >= 8 ? 1 : 0
+                            shift = shift + 2 >= 8 ? shift - 6 : shift + 2
+                            let end = (index, shift)
+                            count = 3 + convertToInt(uint8Array:
+                                data.bits(from: start, to: end))
+                            what = codeLengths.last!
+                        } else if symbol == 17 {
+                            let start = (index, shift)
+                            index += shift + 3 >= 8 ? 1 : 0
+                            shift = shift + 3 >= 8 ? shift - 5 : shift + 3
+                            let end = (index, shift)
+                            count = 3 + convertToInt(uint8Array:
+                                data.bits(from: start, to: end))
+                            what = 0
+                        } else if symbol == 18 {
+                            let start = (index, shift)
+                            index += shift + 7 >= 8 ? 1 : 0
+                            shift = shift + 7 >= 8 ? shift - 1 : shift + 7
+                            let end = (index, shift)
+                            count = 11 + convertToInt(uint8Array:
+                                data.bits(from: start, to: end))
+                            what = codeLengths.last!
+                        } else {
+                            throw DeflateError.HuffmanTableError
+                        }
+                        codeLengths.append(contentsOf: Array(repeating: what, count: count))
+                        n += count
+                    }
+                    mainLiterals = HuffmanTable(lengthsToOrder:
+                        Array(codeLengths[0..<literals]))
+                    mainDistances = HuffmanTable(lengthsToOrder:
+                        Array(codeLengths[literals..<codeLengths.count]))
                 }
 
                 while true {
-                    let nextSymbol = mainLiterals?.findNextSymbol(in: Data(data[index...index + 1]),
+                    let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 1]),
                                                                   withShift: shift)
-                    let symbol = nextSymbol?.0
+                    let symbol = nextSymbol.symbol
                     guard symbol != -1 else { throw DeflateError.HuffmanTableError }
-                    index += nextSymbol!.1
+                    index += nextSymbol.addToIndex
+//                    if symbol >= 0 && symbol <= 255 {
+//                        output.append(UInt8(truncatingBitPattern: symbol), count: 1 )
+//                    }
                 }
 
             }
