@@ -8,14 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		061FCE261DBCC4BE0052F7BE /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
-		061FCE2A1DBCC6070052F7BE /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 061FCE281DBCC6070052F7BE /* test.txt */; };
-		061FCE2B1DBCC6070052F7BE /* test.txt.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FCE291DBCC6070052F7BE /* test.txt.gz */; };
+		061FCE2A1DBCC6070052F7BE /* helloworld.txt in Resources */ = {isa = PBXBuildFile; fileRef = 061FCE281DBCC6070052F7BE /* helloworld.txt */; };
+		061FCE2B1DBCC6070052F7BE /* helloworld.txt.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FCE291DBCC6070052F7BE /* helloworld.txt.gz */; };
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
 		061FCE311DBCC8BF0052F7BE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE301DBCC8BF0052F7BE /* Extensions.swift */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
 		06BE1AD91DB410F100EE0F59 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06E63DB41DC3B8BD00D3A7C8 /* secondtest.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */; };
+		06E63DB51DC3B8BD00D3A7C8 /* secondtest.txt.gz in Resources */ = {isa = PBXBuildFile; fileRef = 06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */; };
 		06E961CA1DBD5FA1008C47F2 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,8 +33,8 @@
 
 /* Begin PBXFileReference section */
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
-		061FCE281DBCC6070052F7BE /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
-		061FCE291DBCC6070052F7BE /* test.txt.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test.txt.gz; sourceTree = "<group>"; };
+		061FCE281DBCC6070052F7BE /* helloworld.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = helloworld.txt; sourceTree = "<group>"; };
+		061FCE291DBCC6070052F7BE /* helloworld.txt.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = helloworld.txt.gz; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		061FCE301DBCC8BF0052F7BE /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
@@ -42,6 +44,8 @@
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWCompressionTests.swift; sourceTree = "<group>"; };
 		06BE1AD81DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = secondtest.txt; sourceTree = "<group>"; };
+		06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = secondtest.txt.gz; sourceTree = "<group>"; };
 		06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanTable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,8 +71,10 @@
 		061FCE271DBCC6070052F7BE /* Test Files */ = {
 			isa = PBXGroup;
 			children = (
-				061FCE281DBCC6070052F7BE /* test.txt */,
-				061FCE291DBCC6070052F7BE /* test.txt.gz */,
+				061FCE281DBCC6070052F7BE /* helloworld.txt */,
+				061FCE291DBCC6070052F7BE /* helloworld.txt.gz */,
+				06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */,
+				06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */,
 			);
 			path = "Test Files";
 			sourceTree = "<group>";
@@ -218,8 +224,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				061FCE2B1DBCC6070052F7BE /* test.txt.gz in Resources */,
-				061FCE2A1DBCC6070052F7BE /* test.txt in Resources */,
+				061FCE2B1DBCC6070052F7BE /* helloworld.txt.gz in Resources */,
+				06E63DB41DC3B8BD00D3A7C8 /* secondtest.txt in Resources */,
+				06E63DB51DC3B8BD00D3A7C8 /* secondtest.txt.gz in Resources */,
+				061FCE2A1DBCC6070052F7BE /* helloworld.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

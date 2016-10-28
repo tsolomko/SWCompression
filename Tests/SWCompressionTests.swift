@@ -11,10 +11,25 @@ import XCTest
 
 class SWCompressionTests: XCTestCase {
 
-    func testDeflate() {
-        let testData = try? Data(contentsOf: Constants.testArchivePath)
+    func testHelloWorldFile() {
+        let testData = try? Data(contentsOf: Constants.helloWorldArchivePath)
         XCTAssertNotNil(testData, "Failed to load test archive")
-        XCTAssertNotNil(try? Deflate.decompress(data: testData!), "Failed to decompress")
+        let decompressedData = try? Deflate.decompress(data: testData!)
+        XCTAssertNotNil(decompressedData, "Failed to decompress")
+        let decompressedString = String(data: decompressedData!, encoding: .utf8)
+        XCTAssertNotNil(decompressedString, "Failed to convert decompressed data to string")
+        print("decompressed string: \(decompressedString!)")
+        XCTAssertEqual(decompressedString!, "Hello, World!\n", "Decompression was incorrect")
+    }
+
+    func testSecondTestFile() {
+        let testData = try? Data(contentsOf: Constants.secondTestArchivePath)
+        XCTAssertNotNil(testData, "Failed to load test archive")
+        let decompressedData = try? Deflate.decompress(data: testData!)
+        XCTAssertNotNil(decompressedData, "Failed to decompress")
+        let decompressedString = String(data: decompressedData!, encoding: .utf8)
+        XCTAssertNotNil(decompressedString, "Failed to convert decompressed data to string")
+        print("decompressed string: \(decompressedString!)")
     }
 
 }
