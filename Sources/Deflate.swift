@@ -13,6 +13,7 @@ public enum DeflateError: Error {
     case UnknownCompressionMethod
     case WrongBlockLengths
     case HuffmanTableError
+    case UnknownBlockType
 }
 
 public class Deflate {
@@ -35,8 +36,6 @@ public class Deflate {
     }
 
     public static func decompress(data: Data) throws -> Data {
-        var output = Data()
-
         // First two bytes should be correct 'magic' bytes
         let magic = data.bytes(from: 0..<2)
         guard magic == [31, 139] else { throw DeflateError.WrongMagic }
@@ -91,6 +90,8 @@ public class Deflate {
             print("\(crc)")
         }
 
+        var out: [String] = []
+
         // Current point of processing in data
         var index = startPoint
         while true {
@@ -99,9 +100,11 @@ public class Deflate {
             // Type of the current block
             let blockType = [UInt8](data[index][1..<3].reversed())
             var shift = 3
+            print("blockType: \(convertToInt(uint8Array: blockType))")
 
             if blockType == [0, 0] { // Uncompressed block
                 // Get length of the uncompressed data
+                index += 1
 
                 // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
                 let length = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
@@ -112,7 +115,10 @@ public class Deflate {
                 // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
-                output.append(Data(data[index..<index+length]))
+                for _ in 0..<length {
+                    out.append("".appending(String(UnicodeScalar(data[index]))))
+                    index += 1
+                }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
@@ -205,18 +211,61 @@ public class Deflate {
                     let symbol = nextSymbol.symbol
                     guard symbol != -1 else { throw DeflateError.HuffmanTableError }
                     index += nextSymbol.addToIndex
-//                    if symbol >= 0 && symbol <= 255 {
-//                        output.append(UInt8(truncatingBitPattern: symbol), count: 1 )
-//                    }
+                    if symbol >= 0 && symbol <= 255 {
+                        out.append("".appending(String(UnicodeScalar(UInt8(truncatingBitPattern:
+                            UInt(symbol))))))
+                    } else if symbol == 256 {
+                        break
+                    } else if symbol >= 257 && symbol <= 285 {
+                        let start = (index, shift)
+                        let addBits = HuffmanTable.Constants.extraLengthBits(n: symbol)
+                        guard addBits != -1 else { throw DeflateError.HuffmanTableError }
+                        index += shift + addBits >= 8 ? 1 : 0
+                        shift = shift + addBits >= 8 ? shift - (8 - addBits) : shift + addBits
+                        let end = (index, shift)
+                        let extraLength = convertToInt(uint8Array: data.bits(from: start, to: end))
+                        var length = HuffmanTable.Constants.lengthBase[symbol - 257] + extraLength
+
+                        let newSymbolTuple = mainDistances.findNextSymbol(in: Data(data[index...index + 1]),
+                                                                     withShift: shift)
+                        let newSymbol = newSymbolTuple.symbol
+                        index += newSymbolTuple.addToIndex
+
+                        if newSymbol >= 0 && newSymbol <= 29 {
+                            let start = (index, shift)
+                            index += shift + newSymbol >= 8 ? 1 : 0
+                            shift = shift + newSymbol >= 8 ? shift - (8 - newSymbol) : shift + newSymbol
+                            let end = (index, shift)
+                            let dstBase = HuffmanTable.Constants.distanceBase[newSymbol]
+                            let distance = dstBase +
+                                convertToInt(uint8Array: data.bits(from: start, to: end))
+                            print("distance: \(distance), dstBase: \(dstBase), newSymbol: \(newSymbol)")
+                            while length > distance {
+                                out.append(contentsOf: Array(out[out.count - distance..<out.count]))
+                                length -= distance
+                            }
+                            if length == distance {
+                                out.append(contentsOf: Array(out[out.count - distance..<out.count]))
+                            } else {
+                                out.append(contentsOf: Array(out[out.count - distance..<length - distance]))
+                            }
+                        } else {
+                            throw DeflateError.HuffmanTableError
+                        }
+                    } else {
+                        throw DeflateError.HuffmanTableError
+                    }
                 }
 
+            } else {
+                throw DeflateError.UnknownBlockType
             }
 
             // End the cycle if it was the last block
             if isLastBit == 1 { break }
         }
 
-        return output
+        return (String(out.reduce("") { $0 + $1 })?.data(using: .utf8))!
     }
 
 }
