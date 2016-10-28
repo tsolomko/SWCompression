@@ -14,6 +14,26 @@ class HuffmanTable: CustomStringConvertible {
         static let codeLengthOrders: [Int] =
             [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
 
+        // Substract 257 from index!
+        static let lengthBase: [Int] =
+            [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35,
+             43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
+
+        static let distanceBase: [Int] =
+            [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+             257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
+             8193, 12289, 16385, 24577]
+
+        static func extraLengthBits(n: Int) -> Int {
+            if (n >= 257 && n <= 256) || n == 285 {
+                return 0
+            } else if n >= 261 && n <= 284 {
+                return ((n - 257) >> 2) - 1
+            } else {
+                return -1
+            }
+        }
+
     }
 
     var lengths: [HuffmanLength]
