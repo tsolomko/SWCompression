@@ -164,6 +164,7 @@ public class Deflate {
                         let symbol = tuple.symbol
                         guard symbol != -1 else { throw DeflateError.HuffmanTableError }
                         index += tuple.addToIndex
+                        shift = tuple.newShift
                         let count: Int
                         let what: Int
                         if symbol >= 0 && symbol <= 15 {
@@ -204,13 +205,15 @@ public class Deflate {
                     mainDistances = HuffmanTable(lengthsToOrder:
                         Array(codeLengths[literals..<codeLengths.count]))
                 }
-
+                
                 while true {
                     let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 1]),
                                                                   withShift: shift)
                     let symbol = nextSymbol.symbol
                     guard symbol != -1 else { throw DeflateError.HuffmanTableError }
                     index += nextSymbol.addToIndex
+                    shift = nextSymbol.newShift
+
                     if symbol >= 0 && symbol <= 255 {
                         out.append("".appending(String(UnicodeScalar(UInt8(truncatingBitPattern:
                             UInt(symbol))))))
@@ -251,7 +254,7 @@ public class Deflate {
                             if length == distance {
                                 out.append(contentsOf: Array(out[out.count - distance..<out.count]))
                             } else {
-                                out.append(contentsOf: Array(out[out.count - distance..<length - distance]))
+                                out.append(contentsOf: Array(out[out.count - length - distance..<out.count - distance]))
                             }
                         } else {
                             throw DeflateError.HuffmanTableError
