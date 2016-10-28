@@ -223,23 +223,27 @@ public class Deflate {
                         index += shift + addBits >= 8 ? 1 : 0
                         shift = shift + addBits >= 8 ? shift - (8 - addBits) : shift + addBits
                         let end = (index, shift)
-                        let extraLength = convertToInt(uint8Array: data.bits(from: start, to: end))
-                        var length = HuffmanTable.Constants.lengthBase[symbol - 257] + extraLength
+                        var length = HuffmanTable.Constants.lengthBase[symbol - 257] +
+                            convertToInt(uint8Array: data.bits(from: start, to: end))
 
                         let newSymbolTuple = mainDistances.findNextSymbol(in: Data(data[index...index + 1]),
                                                                      withShift: shift)
                         let newSymbol = newSymbolTuple.symbol
+                        guard newSymbol != -1 else { throw DeflateError.HuffmanTableError }
                         index += newSymbolTuple.addToIndex
+                        shift = newSymbolTuple.newShift
 
                         if newSymbol >= 0 && newSymbol <= 29 {
                             let start = (index, shift)
-                            index += shift + newSymbol >= 8 ? 1 : 0
-                            shift = shift + newSymbol >= 8 ? shift - (8 - newSymbol) : shift + newSymbol
+                            let extraDistance = HuffmanTable.Constants.extraDistanceBits(n: newSymbol)
+                            guard extraDistance != -1 else { throw DeflateError.HuffmanTableError }
+                            index += shift + extraDistance >= 8 ? 1 : 0
+                            shift = shift + extraDistance >= 8 ?
+                                shift - (8 - extraDistance) : shift + extraDistance
                             let end = (index, shift)
-                            let dstBase = HuffmanTable.Constants.distanceBase[newSymbol]
-                            let distance = dstBase +
+                            let distance = HuffmanTable.Constants.distanceBase[newSymbol] +
                                 convertToInt(uint8Array: data.bits(from: start, to: end))
-                            print("distance: \(distance), dstBase: \(dstBase), newSymbol: \(newSymbol)")
+
                             while length > distance {
                                 out.append(contentsOf: Array(out[out.count - distance..<out.count]))
                                 length -= distance

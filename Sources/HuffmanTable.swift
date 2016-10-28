@@ -34,6 +34,16 @@ class HuffmanTable: CustomStringConvertible {
             }
         }
 
+        static func extraDistanceBits(n: Int) -> Int {
+            if n >= 0 && n <= 1 {
+                return 0
+            } else if n >= 2 && n <= 29 {
+                return (n >> 1) - 1
+            } else {
+                return -1
+            }
+        }
+
     }
 
     var lengths: [HuffmanLength]
