@@ -9,6 +9,7 @@
 import Foundation
 
 struct Constants {
-    fileprivate static let testBundle = Bundle(for: SWCompressionTests.self)
-    static let testArchivePath = testBundle.url(forResource: "test.txt", withExtension: "gz")!
+    static let testBundle = Bundle(for: SWCompressionTests.self)
+    static let helloWorldArchivePath = testBundle.url(forResource: "helloworld.txt", withExtension: "gz")!
+    static let secondTestArchivePath = testBundle.url(forResource: "secondtest.txt", withExtension: "gz")!
 }
