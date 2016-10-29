@@ -3,7 +3,7 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 29.10.16.
-//  Copyright © 2016 tsolomko. All rights reserved.
+//  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
@@ -30,8 +30,9 @@ public class GzipArchive: Archive {
         let mtime: UInt64
         let extraFlags: UInt8
         let osType: UInt8
-        // Optional fields
+        // Starting point of compressed data. Depends on presence of optional fields.
         var startPoint: Int
+        // Optional fields
         var fileName: String
         var comment: String
         var crc: UInt16
@@ -54,14 +55,13 @@ public class GzipArchive: Archive {
                                       extraFlags: data[8],
                                       osType: data[9],
                                       startPoint: 10,
-                                      fileName: "",
-                                      comment: "",
-                                      crc: 0)
+                                      fileName: "", comment: "", crc: 0)
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
             let xlen = Data(data[serviceInfo.startPoint...serviceInfo.startPoint + 1]).to(type: UInt16.self).toInt()
             serviceInfo.startPoint += 2 + xlen
+            // ADD EXTRA FIELDS' PROCESSING
         }
 
         // Some archives may contain source file name (this part ends with zero byte)

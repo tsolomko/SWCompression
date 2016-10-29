@@ -3,7 +3,7 @@
 //  SWCompressionTests
 //
 //  Created by Timofey Solomko on 16.10.16.
-//  Copyright © 2016 tsolomko. All rights reserved.
+//  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
 
 import XCTest
