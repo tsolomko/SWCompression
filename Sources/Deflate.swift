@@ -51,7 +51,6 @@ public class Deflate {
                                       mtime: Data(data[4...7]).to(type: UInt64.self),
                                       extraFlags: data[8],
                                       osType: data[9])
-        print("\(serviceInfo)")
 
         var startPoint = 10 // Index in data of 'actual data'
 
