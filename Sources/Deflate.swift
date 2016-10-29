@@ -68,7 +68,8 @@ public class Deflate {
                 startPoint += 1
                 guard byte != 0 else { break }
             }
-            print(String(data: Data(data[fnameStart..<startPoint - 1]), encoding: .utf8))
+            print(String(data: Data(data[fnameStart..<startPoint - 1]), encoding: .utf8) ??
+                "Unable to get file name")
         }
 
         // Some archives may contain comment (this part also ends with zero)
@@ -79,7 +80,8 @@ public class Deflate {
                 startPoint += 1
                 guard byte != 0 else { break }
             }
-            print(String(data: Data(data[fcommentStart..<startPoint - 1]), encoding: .utf8))
+            print(String(data: Data(data[fcommentStart..<startPoint - 1]), encoding: .utf8) ??
+                "Unable to get comment")
         }
 
         // Some archives may contain 2-bytes checksum
