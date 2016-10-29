@@ -48,6 +48,7 @@ extension Data {
 
     func bits(from start: (byte: Data.Index, bit: Data.Index),
               to end: (byte: Data.Index, bit: Data.Index)) -> [UInt8] {
+        guard start != end else { return [] }
         let bitsFromData: [UInt8] = Data(self[start.byte...end.byte])
             .toArray(type: UInt8.self).map { $0.reversedBitOrder() }.reversed()
         let bitsArray = bitsFromData.flatMap { $0.toUintArray() }
