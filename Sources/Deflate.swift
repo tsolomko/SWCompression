@@ -9,99 +9,24 @@
 import Foundation
 
 public enum DeflateError: Error {
-    case WrongMagic
-    case UnknownCompressionMethod
     case WrongBlockLengths
     case HuffmanTableError
     case UnknownBlockType
 }
 
-public class Deflate {
+public class Deflate: DecompressionAlgorithm {
 
-    struct Flags {
-        static let ftext: UInt8 = 0x01
-        static let fhcrc: UInt8 = 0x02
-        static let fextra: UInt8 = 0x04
-        static let fname: UInt8 = 0x08
-        static let fcomment: UInt8 = 0x10
-    }
-
-    struct ServiceInfo {
-        let magic: [UInt8]
-        let method: UInt8
-        let flags: UInt8
-        let mtime: UInt64
-        let extraFlags: UInt8
-        let osType: UInt8
-    }
-
-    public static func decompress(data: Data) throws -> Data {
-        // First two bytes should be correct 'magic' bytes
-        let magic = data.bytes(from: 0..<2)
-        guard magic == [31, 139] else { throw DeflateError.WrongMagic }
-
-        // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
-        let method = data[2]
-        guard method == 8 else { throw DeflateError.UnknownCompressionMethod }
-
-        // Next bytes present some service information
-        let serviceInfo = ServiceInfo(magic: magic,
-                                      method: method,
-                                      flags: data[3],
-                                      mtime: Data(data[4...7]).to(type: UInt64.self),
-                                      extraFlags: data[8],
-                                      osType: data[9])
-
-        var startPoint = 10 // Index in data of 'actual data'
-
-        // Some archives may contain extra fields
-        if serviceInfo.flags & Flags.fextra != 0 {
-            let xlen = Data(data[startPoint...startPoint + 1]).to(type: UInt16.self).toInt()
-            startPoint += 2 + xlen
-        }
-
-        // Some archives may contain source file name (this part ends with zero byte)
-        if serviceInfo.flags & Flags.fname != 0 {
-            let fnameStart = startPoint
-            while true {
-                let byte = data[startPoint]
-                startPoint += 1
-                guard byte != 0 else { break }
-            }
-            print(String(data: Data(data[fnameStart..<startPoint - 1]), encoding: .utf8) ??
-                "Unable to get file name")
-        }
-
-        // Some archives may contain comment (this part also ends with zero)
-        if serviceInfo.flags & Flags.fcomment != 0 {
-            let fcommentStart = startPoint
-            while true {
-                let byte = data[startPoint]
-                startPoint += 1
-                guard byte != 0 else { break }
-            }
-            print(String(data: Data(data[fcommentStart..<startPoint - 1]), encoding: .utf8) ??
-                "Unable to get comment")
-        }
-
-        // Some archives may contain 2-bytes checksum
-        if serviceInfo.flags & Flags.fhcrc != 0 {
-            let crc = Data(data[startPoint...startPoint + 1]).to(type: UInt16.self)
-            startPoint += 2
-            print("\(crc)")
-        }
-
+    public static func decompress(compressedData data: Data) throws -> Data {
         var out: [String] = []
 
         // Current point of processing in data
-        var index = startPoint
+        var index = 0
         while true {
             // Is this a last block?
             let isLastBit = data[index][0]
             // Type of the current block
             let blockType = [UInt8](data[index][1..<3].reversed())
             var shift = 3
-            print("blockType: \(convertToInt(uint8Array: blockType))")
 
             if blockType == [0, 0] { // Uncompressed block
                 // Get length of the uncompressed data
