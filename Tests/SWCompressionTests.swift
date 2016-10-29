@@ -14,7 +14,7 @@ class SWCompressionTests: XCTestCase {
     func testHelloWorldFile() {
         let testData = try? Data(contentsOf: Constants.helloWorldArchivePath)
         XCTAssertNotNil(testData, "Failed to load test archive")
-        let decompressedData = try? Deflate.decompress(data: testData!)
+        let decompressedData = try? GzipArchive.unarchive(archiveData: testData!)
         XCTAssertNotNil(decompressedData, "Failed to decompress")
         guard decompressedData != nil else { return }
         let decompressedString = String(data: decompressedData!, encoding: .utf8)
@@ -25,7 +25,7 @@ class SWCompressionTests: XCTestCase {
     func testSecondTestFile() {
         let testData = try? Data(contentsOf: Constants.secondTestArchivePath)
         XCTAssertNotNil(testData, "Failed to load test archive")
-        let decompressedData = try? Deflate.decompress(data: testData!)
+        let decompressedData = try? GzipArchive.unarchive(archiveData: testData!)
         XCTAssertNotNil(decompressedData, "Failed to decompress")
         guard decompressedData != nil else { return }
         let decompressedString = String(data: decompressedData!, encoding: .utf8)
@@ -39,7 +39,7 @@ class SWCompressionTests: XCTestCase {
     func testEmptyFile() {
         let testData = try? Data(contentsOf: Constants.emptyFileArchivePath)
         XCTAssertNotNil(testData, "Failed to load test archive")
-        let decompressedData = try? Deflate.decompress(data: testData!)
+        let decompressedData = try? GzipArchive.unarchive(archiveData: testData!)
         XCTAssertNotNil(decompressedData, "Failed to decompress")
         guard decompressedData != nil else { return }
         let decompressedString = String(data: decompressedData!, encoding: .utf8)
