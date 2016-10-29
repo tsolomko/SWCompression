@@ -142,7 +142,8 @@ public class Deflate {
                     let distances = convertToInt(uint8Array:
                         data.bits(from: (index, shift), to: (index, shift + 5))) + 1
                     shift = 5
-                    let codeLengthsLength = convertToInt(uint8Array: data.bits(from: (index, shift), to: (index + 1, 1))) + 4
+                    let codeLengthsLength = convertToInt(uint8Array:
+                        data.bits(from: (index, shift), to: (index + 1, 1))) + 4
                     index += 1
                     shift = 1
 
@@ -206,7 +207,7 @@ public class Deflate {
                     mainDistances = HuffmanTable(lengthsToOrder:
                         Array(codeLengths[literals..<codeLengths.count]))
                 }
-                
+
                 while true {
                     let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 1]),
                                                                   withShift: shift)
@@ -230,8 +231,8 @@ public class Deflate {
                         var length = HuffmanTable.Constants.lengthBase[symbol - 257] +
                             convertToInt(uint8Array: data.bits(from: start, to: end))
 
-                        let newSymbolTuple = mainDistances.findNextSymbol(in: Data(data[index...index + 1]),
-                                                                     withShift: shift)
+                        let newSymbolTuple = mainDistances.findNextSymbol(in:
+                            Data(data[index...index + 1]), withShift: shift)
                         let newSymbol = newSymbolTuple.symbol
                         guard newSymbol != -1 else { throw DeflateError.HuffmanTableError }
                         index += newSymbolTuple.addToIndex

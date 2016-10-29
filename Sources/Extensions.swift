@@ -127,4 +127,3 @@ func convertToUInt8(uint8Array array: [UInt8]) -> UInt8 {
     }
     return result
 }
-

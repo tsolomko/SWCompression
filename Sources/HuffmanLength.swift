@@ -58,5 +58,5 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
             return left.bits == right.bits
         }
     }
-    
+
 }
