@@ -19,7 +19,7 @@ class SWCompressionTests: XCTestCase {
         guard decompressedData != nil else { return }
         let decompressedString = String(data: decompressedData!, encoding: .utf8)
         XCTAssertNotNil(decompressedString, "Failed to convert decompressed data to string")
-        print("decompressed string: \(decompressedString!)")
+//        print("decompressed string: \(decompressedString!)")
         XCTAssertEqual(decompressedString!, "Hello, World!\n", "Decompression was incorrect")
     }
 
@@ -31,6 +31,7 @@ class SWCompressionTests: XCTestCase {
         guard decompressedData != nil else { return }
         let decompressedString = String(data: decompressedData!, encoding: .utf8)
         XCTAssertNotNil(decompressedString, "Failed to convert decompressed data to string")
+//        print("decompressed string: \(decompressedString!)")
         XCTAssertEqual(decompressedString!, try! String(contentsOf: Constants.secondTestAnswerPath, encoding: .utf8), "Decompression was incorrect")
     }
 

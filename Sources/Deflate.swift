@@ -254,7 +254,7 @@ public class Deflate {
                             if length == distance {
                                 out.append(contentsOf: Array(out[out.count - distance..<out.count]))
                             } else {
-                                out.append(contentsOf: Array(out[out.count - length - distance..<out.count - distance]))
+                                out.append(contentsOf: Array(out[out.count - distance..<out.count + length - distance]))
                             }
                         } else {
                             throw DeflateError.HuffmanTableError
