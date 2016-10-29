@@ -121,7 +121,8 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) -> (symbol: Int, addToIndex: Int, newShift: Int) {
+    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) ->
+        (symbol: Int, addToIndex: Int, newShift: Int) {
         let bitsArray = data.bits(from: (0, shift), to: (1, 8))
         let bitsCount = bitsArray.count
 
