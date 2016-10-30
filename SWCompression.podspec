@@ -17,6 +17,11 @@ Pod::Spec.new do |s|
 
   s.author       = { "Timofey Solomko" => "tsolomko@gmail.com" }
 
+  s.ios.deployment_target = "10.1"
+  s.osx.deployment_target = "10.12"
+  s.tvos.deployment_target = "10.0"
+  s.watchos.deployment_target = "3.1"
+
   s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "v#{s.version}" }
 
   s.source_files  = "Sources"
