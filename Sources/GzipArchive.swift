@@ -11,6 +11,7 @@ import Foundation
 public enum GzipError: Error {
     case WrongMagic
     case UnknownCompressionMethod
+    case NonZeroReservedFlags
 }
 
 public class GzipArchive: Archive {
@@ -56,6 +57,10 @@ public class GzipArchive: Archive {
                                       osType: data[9],
                                       startPoint: 10,
                                       fileName: "", comment: "", crc: 0)
+
+        guard (serviceInfo.flags & 0x20 == 0) &&
+            (serviceInfo.flags & 0x40 == 0) &&
+            (serviceInfo.flags & 0x80 == 0) else { throw GzipError.NonZeroReservedFlags }
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
