@@ -72,7 +72,7 @@ class HuffmanTable: CustomStringConvertible {
             }
             start = finish
             bits = endbits
-            if endbits == -1 { break } // PROBABLY UNNECESSARY LINE
+            if endbits == -1 { break } // TODO: Check if this line is unnecessary
         }
         self.lengths = newLengths.sorted()
 
