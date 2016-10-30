@@ -42,6 +42,10 @@
 		065569791DC65C2B00A47E66 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
 		0655697A1DC65C2B00A47E66 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		0655697B1DC65C2B00A47E66 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE301DBCC8BF0052F7BE /* Extensions.swift */; };
+		0655697D1DC6963F00A47E66 /* secondtest.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0655697C1DC6963F00A47E66 /* secondtest.zlib */; };
+		0655697F1DC6966300A47E66 /* secondtest.zlib.answer in Resources */ = {isa = PBXBuildFile; fileRef = 0655697E1DC6966300A47E66 /* secondtest.zlib.answer */; };
+		065569811DC69DD500A47E66 /* thirdtest.zlib.answer in Resources */ = {isa = PBXBuildFile; fileRef = 065569801DC69DD500A47E66 /* thirdtest.zlib.answer */; };
+		065569831DC69DDE00A47E66 /* thirdtest.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 065569821DC69DDE00A47E66 /* thirdtest.zlib */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
@@ -79,6 +83,10 @@
 		065569611DC65B1B00A47E66 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		065569621DC65B1B00A47E66 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		065569631DC65B1B00A47E66 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
+		0655697C1DC6963F00A47E66 /* secondtest.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = secondtest.zlib; sourceTree = "<group>"; };
+		0655697E1DC6966300A47E66 /* secondtest.zlib.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = secondtest.zlib.answer; sourceTree = "<group>"; };
+		065569801DC69DD500A47E66 /* thirdtest.zlib.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thirdtest.zlib.answer; sourceTree = "<group>"; };
+		065569821DC69DDE00A47E66 /* thirdtest.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = thirdtest.zlib; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -141,6 +149,10 @@
 				0644925B1DC6121800F10981 /* helloworld.txt.zlib */,
 				06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */,
 				06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */,
+				0655697C1DC6963F00A47E66 /* secondtest.zlib */,
+				0655697E1DC6966300A47E66 /* secondtest.zlib.answer */,
+				065569821DC69DDE00A47E66 /* thirdtest.zlib */,
+				065569801DC69DD500A47E66 /* thirdtest.zlib.answer */,
 			);
 			path = "Test Files";
 			sourceTree = "<group>";
@@ -418,10 +430,14 @@
 			files = (
 				063364DF1DC51D33007E313F /* empty.txt.gz in Resources */,
 				061FCE2B1DBCC6070052F7BE /* helloworld.txt.gz in Resources */,
+				0655697D1DC6963F00A47E66 /* secondtest.zlib in Resources */,
 				06E63DB41DC3B8BD00D3A7C8 /* secondtest.txt in Resources */,
+				0655697F1DC6966300A47E66 /* secondtest.zlib.answer in Resources */,
 				0644925D1DC6121800F10981 /* helloworld.txt.zlib in Resources */,
 				06E63DB51DC3B8BD00D3A7C8 /* secondtest.txt.gz in Resources */,
+				065569811DC69DD500A47E66 /* thirdtest.zlib.answer in Resources */,
 				061FCE2A1DBCC6070052F7BE /* helloworld.txt in Resources */,
+				065569831DC69DDE00A47E66 /* thirdtest.zlib in Resources */,
 				063364DE1DC51D33007E313F /* empty.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -831,6 +847,7 @@
 				065569451DC659FF00A47E66 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		065569511DC65A8000A47E66 /* Build configuration list for PBXNativeTarget "SWCompression watchOS" */ = {
 			isa = XCConfigurationList;
@@ -839,6 +856,7 @@
 				065569531DC65A8000A47E66 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0655695E1DC65A9500A47E66 /* Build configuration list for PBXNativeTarget "SWCompression tvOS" */ = {
 			isa = XCConfigurationList;
@@ -847,6 +865,7 @@
 				065569601DC65A9500A47E66 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */ = {
 			isa = XCConfigurationList;

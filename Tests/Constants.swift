@@ -26,4 +26,14 @@ struct Constants {
     static let helloWorldZlibPath = testBundle.url(forResource: "helloworld.txt",
                                                       withExtension: "zlib")!
 
+    static let secondZlibTestPath = testBundle.url(forResource: "secondtest",
+                                                   withExtension: "zlib")!
+    static let secondZlibTestAnswerPath = testBundle.url(forResource: "secondtest.zlib",
+                                                         withExtension: "answer")!
+
+    static let thirdZlibTestPath = testBundle.url(forResource: "thirdtest",
+                                                   withExtension: "zlib")!
+    static let thirdZlibTestAnswerPath = testBundle.url(forResource: "thirdtest.zlib",
+                                                         withExtension: "answer")!
+
 }

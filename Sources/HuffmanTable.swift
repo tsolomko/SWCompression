@@ -25,7 +25,7 @@ class HuffmanTable: CustomStringConvertible {
              8193, 12289, 16385, 24577]
 
         static func extraLengthBits(n: Int) -> Int {
-            if (n >= 257 && n <= 256) || n == 285 {
+            if (n >= 257 && n <= 260) || n == 285 {
                 return 0
             } else if n >= 261 && n <= 284 {
                 return ((n - 257) >> 2) - 1
@@ -123,7 +123,7 @@ class HuffmanTable: CustomStringConvertible {
 
     func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) ->
         (symbol: Int, addToIndex: Int, newShift: Int) {
-        let bitsArray = data.bits(from: (0, shift), to: (1, 8))
+        let bitsArray = data.bits(from: (0, shift), to: (2, 8))
         let bitsCount = bitsArray.count
 
         var cachedLength = -1
@@ -139,9 +139,19 @@ class HuffmanTable: CustomStringConvertible {
             }
             if (reversed && length.reversedSymbol == cached) ||
                 (!reversed && length.symbol == cached) {
-                return (length.code,
-                        shift + cachedLength < 8 ? 0 : 1,
-                        shift + cachedLength < 8 ? shift + cachedLength : shift + cachedLength - 8)
+                let addToIndex: Int
+                let newShift: Int
+                if shift + cachedLength >= 16 {
+                    addToIndex = 2
+                    newShift = shift - (16 - cachedLength)
+                } else if shift + cachedLength >= 8 {
+                    addToIndex = 1
+                    newShift = shift - (8 - cachedLength)
+                } else {
+                    addToIndex = 0
+                    newShift = shift + cachedLength
+                }
+                return (length.code, addToIndex, newShift)
             }
         }
         return (-1, -1, -1)
