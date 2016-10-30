@@ -47,4 +47,15 @@ class SWCompressionTests: XCTestCase {
         XCTAssertEqual(decompressedString!, "")
     }
 
+    func testHelloWorldZlibFile() {
+        let testData = try? Data(contentsOf: Constants.helloWorldZlibPath)
+        XCTAssertNotNil(testData, "Failed to load test archive")
+        let decompressedData = try? ZlibArchive.unarchive(archiveData: testData!)
+        XCTAssertNotNil(decompressedData, "Failed to decompress")
+        guard decompressedData != nil else { return }
+        let decompressedString = String(data: decompressedData!, encoding: .utf8)
+        XCTAssertNotNil(decompressedString, "Failed to convert decompressed data to string")
+        XCTAssertEqual(decompressedString!, "Hello, World!\n", "Decompression was incorrect")
+    }
+
 }

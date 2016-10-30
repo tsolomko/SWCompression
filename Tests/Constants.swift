@@ -23,4 +23,7 @@ struct Constants {
     static let emptyFileArchivePath = testBundle.url(forResource: "empty.txt",
                                                      withExtension: "gz")!
 
+    static let helloWorldZlibPath = testBundle.url(forResource: "helloworld.txt",
+                                                      withExtension: "zlib")!
+
 }
