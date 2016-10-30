@@ -139,9 +139,19 @@ class HuffmanTable: CustomStringConvertible {
             }
             if (reversed && length.reversedSymbol == cached) ||
                 (!reversed && length.symbol == cached) {
-                return (length.code,
-                        shift + cachedLength < 8 ? 0 : 1,
-                        shift + cachedLength < 8 ? shift + cachedLength : shift + cachedLength - 8)
+                let addToIndex: Int
+                let newShift: Int
+                if shift + cachedLength >= 16 {
+                    addToIndex = 2
+                    newShift = shift - (16 - cachedLength)
+                } else if shift + cachedLength >= 8 {
+                    addToIndex = 1
+                    newShift = shift - (8 - cachedLength)
+                } else {
+                    addToIndex = 0
+                    newShift = shift + cachedLength
+                }
+                return (length.code, addToIndex, newShift)
             }
         }
         return (-1, -1, -1)
