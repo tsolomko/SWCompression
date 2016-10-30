@@ -17,6 +17,7 @@
 		063364E11DC52970007E313F /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E01DC52970007E313F /* Protocols.swift */; };
 		063364E31DC52979007E313F /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		064492591DC606D400F10981 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
+		0644925D1DC6121800F10981 /* helloworld.txt.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0644925B1DC6121800F10981 /* helloworld.txt.zlib */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
@@ -47,6 +48,7 @@
 		063364E01DC52970007E313F /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
+		0644925B1DC6121800F10981 /* helloworld.txt.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = helloworld.txt.zlib; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 		061FCE271DBCC6070052F7BE /* Test Files */ = {
 			isa = PBXGroup;
 			children = (
+				0644925B1DC6121800F10981 /* helloworld.txt.zlib */,
 				063364DC1DC51D33007E313F /* empty.txt */,
 				063364DD1DC51D33007E313F /* empty.txt.gz */,
 				061FCE281DBCC6070052F7BE /* helloworld.txt */,
@@ -242,6 +245,7 @@
 				063364DF1DC51D33007E313F /* empty.txt.gz in Resources */,
 				061FCE2B1DBCC6070052F7BE /* helloworld.txt.gz in Resources */,
 				06E63DB41DC3B8BD00D3A7C8 /* secondtest.txt in Resources */,
+				0644925D1DC6121800F10981 /* helloworld.txt.zlib in Resources */,
 				06E63DB51DC3B8BD00D3A7C8 /* secondtest.txt.gz in Resources */,
 				061FCE2A1DBCC6070052F7BE /* helloworld.txt in Resources */,
 				063364DE1DC51D33007E313F /* empty.txt in Resources */,
