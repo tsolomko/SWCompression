@@ -111,7 +111,7 @@ public class Deflate: DecompressionAlgorithm {
                     var codeLengths: [Int] = []
                     var n = 0
                     while n < (literals + distances) {
-                        let tuple = dynamicCodes.findNextSymbol(in: Data(data[index...index + 1]),
+                        let tuple = dynamicCodes.findNextSymbol(in: Data(data[index...index + 2]),
                                                                 withShift: shift)
                         let symbol = tuple.symbol
                         guard symbol != -1 else { throw DeflateError.HuffmanTableError }
@@ -159,7 +159,7 @@ public class Deflate: DecompressionAlgorithm {
                 }
 
                 while true {
-                    let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 1]),
+                    let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 2]),
                                                                   withShift: shift)
                     let symbol = nextSymbol.symbol
                     guard symbol != -1 else { throw DeflateError.HuffmanTableError }
@@ -182,7 +182,7 @@ public class Deflate: DecompressionAlgorithm {
                             convertToInt(reversedUint8Array: data.bits(from: start, to: end))
 
                         let newSymbolTuple = mainDistances.findNextSymbol(in:
-                            Data(data[index...index + 1]), withShift: shift)
+                            Data(data[index...index + 2]), withShift: shift)
                         let newSymbol = newSymbolTuple.symbol
                         guard newSymbol != -1 else { throw DeflateError.HuffmanTableError }
                         index += newSymbolTuple.addToIndex
