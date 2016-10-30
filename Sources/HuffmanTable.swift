@@ -123,7 +123,7 @@ class HuffmanTable: CustomStringConvertible {
 
     func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) ->
         (symbol: Int, addToIndex: Int, newShift: Int) {
-        let bitsArray = data.bits(from: (0, shift), to: (1, 8))
+        let bitsArray = data.bits(from: (0, shift), to: (2, 8))
         let bitsCount = bitsArray.count
 
         var cachedLength = -1
