@@ -192,9 +192,15 @@ public class Deflate: DecompressionAlgorithm {
                             let start = (index, shift)
                             let extraDistance = HuffmanTable.Constants.extraDistanceBits(n: newSymbol)
                             guard extraDistance != -1 else { throw DeflateError.HuffmanTableError }
-                            index += shift + extraDistance >= 8 ? 1 : 0
-                            shift = shift + extraDistance >= 8 ?
-                                shift - (8 - extraDistance) : shift + extraDistance
+                            if shift + extraDistance >= 16 {
+                                index += 2
+                                shift = shift - (16 - extraDistance)
+                            } else if shift + extraDistance >= 8 {
+                                index += 1
+                                shift = shift - (8 - extraDistance)
+                            } else {
+                                shift += extraDistance
+                            }
                             let end = (index, shift)
                             let distance = HuffmanTable.Constants.distanceBase[newSymbol] +
                                 convertToInt(reversedUint8Array: data.bits(from: start, to: end))
