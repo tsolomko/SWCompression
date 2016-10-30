@@ -8,12 +8,24 @@
 
 import Foundation
 
+/**
+ Error happened during unarchiving gzip archive.
+ It may indicate that either the data is damaged or it might not be gzip archive at all.
+
+ - `WrongMagic`: first two bytes of archive were not 31 and 139.
+ - `WrongCompressionMethod`: compression method was other than 8 which is the only supported one.
+ - `NonZeroReservedFlags`: reserved flags bits were not equal to 0, which is bad.
+ */
 public enum GzipError: Error {
+    /// First two bytes of archive were not 31 and 139.
     case WrongMagic
-    case UnknownCompressionMethod
+    /// Compression method was other than 8 which is the only supported one.
+    case WrongCompressionMethod
+    /// Reserved flags bits were not equal to 0, which is bad.
     case NonZeroReservedFlags
 }
 
+/// A class with unarchive function for gzip archives.
 public class GzipArchive: Archive {
 
     struct Flags {
@@ -46,7 +58,7 @@ public class GzipArchive: Archive {
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
         let method = data[2]
-        guard method == 8 else { throw GzipError.UnknownCompressionMethod }
+        guard method == 8 else { throw GzipError.WrongCompressionMethod }
 
         // Next bytes present some service information
         var serviceInfo = ServiceInfo(magic: magic,
@@ -66,7 +78,7 @@ public class GzipArchive: Archive {
         if serviceInfo.flags & Flags.fextra != 0 {
             let xlen = Data(data[serviceInfo.startPoint...serviceInfo.startPoint + 1]).to(type: UInt16.self).toInt()
             serviceInfo.startPoint += 2 + xlen
-            // ADD EXTRA FIELDS' PROCESSING
+            // TODO: Add extra fields' processing
         }
 
         // Some archives may contain source file name (this part ends with zero byte)
@@ -102,9 +114,26 @@ public class GzipArchive: Archive {
         return serviceInfo
     }
 
+    /**
+     Unarchives gzip archive stored in `archiveData`.
+
+     If data passed is not actually a gzip archive, `GzipError` will be thrown.
+
+     If data inside the archive is not actually compressed with DEFLATE algorithm, `DeflateError` will be thrown.
+
+     - Note: This function is specification compliant.
+
+     - Parameter archiveData: Data compressed with gzip.
+
+     - Throws: `DeflateError` or `GzipError` depending on the type of inconsistency in data.
+     It may indicate that either the data is damaged or it might not be compressed with gzip or DEFLATE at all.
+
+     - Returns: Unarchived data.
+     */
     public static func unarchive(archiveData data: Data) throws -> Data {
         let info = try serviceInfo(archiveData: data)
         return try Deflate.decompress(compressedData: Data(data[info.startPoint..<data.count]))
+        // TODO: Add crc check
     }
 
 }

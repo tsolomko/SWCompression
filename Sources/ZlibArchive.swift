@@ -3,18 +3,32 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 30.10.16.
-//  Copyright © 2016 tsolomko. All rights reserved.
+//  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
 
+/**
+ Error happened during unarchiving Zlib archive.
+ It may indicate that either the data is damaged or it might not be Zlib archive at all.
+
+ - `WrongCompressionMethod`: compression method was other than 8 which is the only supported one.
+ - `WrongCompressionInfo`: compression info was greater than 7 which is uncompatible number 8 compression method.
+ - `WrongFcheck`: first two bytes were inconsistent with each other.
+ - `WrongCompressionLevel`: compression level was other than 0, 1, 2, 3.
+ */
 public enum ZlibError: Error {
+    /// Compression method was other than 8 which is the only supported one.
     case WrongCompressionMethod
+    /// Compression info was greater than 7 which is uncompatible number 8 compression method.
     case WrongCompressionInfo
+    /// First two bytes were inconsistent with each other.
     case WrongFcheck
+    /// Compression level was other than 0, 1, 2, 3.
     case WrongCompressionLevel
 }
 
+/// A class with unarchive function for Zlib archives.
 public class ZlibArchive: Archive {
 
     enum CompressionLevel: Int {
@@ -68,14 +82,31 @@ public class ZlibArchive: Archive {
         if fdict == 1 {
             info.startPoint += 4
         }
+        // TODO: Add parsing of preset dictionary
 
         return info
     }
 
-    // Not specification compliant because it does not checks ADLER-32 checksum and preset dicitionaries
+    /**
+     Unarchives Zlib archive stored in `archiveData`.
+
+        If data passed is not actually a zlib archive, `ZlibError` will be thrown.
+
+        If data inside the archive is not actually compressed with DEFLATE algorithm, `DeflateError` will be thrown.
+     
+     - Note: This function is NOT specification compliant because it does not checks ADLER-32 checksum and preset dicitionaries.
+
+     - Parameter archiveData: Data compressed with zlib.
+
+     - Throws: `DeflateError` or `ZlibError` depending on the type of inconsistency in data.
+        It may indicate that either the data is damaged or it might not be compressed with zlib or DEFLATE at all.
+
+     - Returns: Unarchived data.
+     */
     public static func unarchive(archiveData data: Data) throws -> Data {
         let info = try serviceInfo(archiveData: data)
         return try Deflate.decompress(compressedData: Data(data[info.startPoint..<data.count]))
+        // TODO: Add Adler-32 check
     }
 
 }

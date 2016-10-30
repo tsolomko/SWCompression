@@ -8,14 +8,39 @@
 
 import Foundation
 
+/**
+ Error happened during deflate decompression. 
+ It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
+ 
+ - `WrongBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
+ - `HuffmanTableError`: either error occured while parsing bytes related to Huffman coding or
+    problem is happened during various calculations of Huffman coding.
+ - `UnknownBlockType`: block type was 3, which is unknown block type.
+ */
 public enum DeflateError: Error {
+    /// Uncompressed block' `length` and `nlength` bytes were not compatible.
     case WrongBlockLengths
+    /// Either error occured while parsing bytes related to Huffman coding or problem is happened during various calculations of Huffman coding.
     case HuffmanTableError
+    /// Block type was 3, which is unknown block type.
     case UnknownBlockType
 }
 
+/// A class with decompression function of DEFLATE algorithm.
 public class Deflate: DecompressionAlgorithm {
 
+    /**
+        Decompresses `compressedData` with DEFLATE algortihm.
+
+        If data passed is not actually compressed with DEFLATE, `DeflateError` will be thrown.
+
+     - Parameter compressedData: Data compressed with DEFLATE.
+     
+     - Throws: `DeflateError` if unexpected byte (bit) sequence was encountered in `compressedData`. 
+        It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
+
+     - Returns: Decompressed data.
+     */
     public static func decompress(compressedData data: Data) throws -> Data {
         var out: [String] = []
 
@@ -32,7 +57,7 @@ public class Deflate: DecompressionAlgorithm {
                 // Get length of the uncompressed data
                 index += 1
 
-                // CHECK IF STRAIGHT CONVERSION TO INT WITH 'TO' METHOD WORKS
+                // TODO: Check if straight to `int` conversion works
                 let length = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
                 index += 2
                 // Get 1-complement of the length
