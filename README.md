@@ -1,10 +1,11 @@
 # SWCompression
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 A framework which contains native (*written in Swift*)
 implementations of some compression algorithms.
 
-### Why have you made compression framework?
+Why have you made compression framework?
+----------------------------------------
 There are a couple of reasons for this.
 
 The main reason is that it is very educational and somewhat fun.
@@ -17,7 +18,8 @@ that framework has a bit complicated API and somewhat questionable choice of sup
 
 And here comes SWCompression: no Objective-C, pure Swift.
 
-### Features
+Features
+----------------
 - Decompress data which were compressed with DEFLATE algorithm.
 - Extract data from GZip archives.
 - Unarchive zlib compressed data.
@@ -26,7 +28,8 @@ And here comes SWCompression: no Objective-C, pure Swift.
 
 By the way, it seems like GZip and Deflate decompressor implementations are **specification compliant**.
 
-### Installation
+Installation
+----------------
 
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
@@ -57,7 +60,8 @@ let package = Package(
 
 More info you may find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
-### Usage
+Usage
+-------
 If you'd like to decompress "deflated" data just use:
 ```swift
 let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"))
@@ -80,13 +84,15 @@ let decompressedData = try? ZlibArchive.unarchive(archiveData: data)
 One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.
 
-### Future plans
+Future plans
+-------------
 - BZip2 decompression support.
 - Deflate compression.
 - BZip2 compression.
 - Something else...
 
-### References
+References
+-----------
 The main source of information was [pyflate](http://www.paul.sladen.org/projects/pyflate/) —
 python implementation of GZip and BZip2.
 
