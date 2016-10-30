@@ -1,0 +1,4 @@
+osx_image: xcode8
+language: objective-c
+xcode_project: SWCompression.xcodeproj
+xcode_scheme: SWCompression
