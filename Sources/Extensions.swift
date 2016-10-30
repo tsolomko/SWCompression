@@ -127,3 +127,20 @@ func convertToUInt8(reversedUint8Array array: [UInt8]) -> UInt8 {
     }
     return result
 }
+
+func convertToInt(uint8Array array: [UInt8]) -> Int {
+    var result = 0
+    for i in 0..<array.count {
+        result += Int(pow(Double(2), Double(i))) * Int(bitPattern: UInt(array[i]))
+    }
+    return result
+}
+
+func convertToUInt8(uint8Array array: [UInt8]) -> UInt8 {
+    precondition(array.count <= 8, "Array must contain no more than 8 bits.")
+    var result: UInt8 = 0
+    for i in 0..<array.count {
+        result += UInt8(pow(Double(2), Double(i))) * array[i]
+    }
+    return result
+}
