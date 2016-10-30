@@ -1,4 +1,10 @@
+branches:
+  - develop
+  - master
+
 osx_image: xcode8
 language: objective-c
 xcode_project: SWCompression.xcodeproj
-xcode_scheme: SWCompression
+xcode_scheme: SWCompressionTests
+script:
+- xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompressionTests
