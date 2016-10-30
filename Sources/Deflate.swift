@@ -60,14 +60,14 @@ public class Deflate: DecompressionAlgorithm {
                     mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else { // Dynamic Huffman
-                    let literals = convertToInt(uint8Array:
+                    let literals = convertToInt(reversedUint8Array:
                         data.bits(from: (index, shift), to: (index, shift + 5))) + 257
                     index += 1
                     shift = 0
-                    let distances = convertToInt(uint8Array:
+                    let distances = convertToInt(reversedUint8Array:
                         data.bits(from: (index, shift), to: (index, shift + 5))) + 1
                     shift = 5
-                    let codeLengthsLength = convertToInt(uint8Array:
+                    let codeLengthsLength = convertToInt(reversedUint8Array:
                         data.bits(from: (index, shift), to: (index + 1, 1))) + 4
                     index += 1
                     shift = 1
@@ -79,7 +79,7 @@ public class Deflate: DecompressionAlgorithm {
                         shift = shift + 3 >= 8 ? shift - 5 : shift + 3
                         let end = (index, shift)
                         lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] =
-                            convertToInt(uint8Array: data.bits(from: start, to: end))
+                            convertToInt(reversedUint8Array: data.bits(from: start, to: end))
                     }
                     let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
 
@@ -102,7 +102,7 @@ public class Deflate: DecompressionAlgorithm {
                             index += shift + 2 >= 8 ? 1 : 0
                             shift = shift + 2 >= 8 ? shift - 6 : shift + 2
                             let end = (index, shift)
-                            count = 3 + convertToInt(uint8Array:
+                            count = 3 + convertToInt(reversedUint8Array:
                                 data.bits(from: start, to: end))
                             what = codeLengths.last!
                         } else if symbol == 17 {
@@ -110,7 +110,7 @@ public class Deflate: DecompressionAlgorithm {
                             index += shift + 3 >= 8 ? 1 : 0
                             shift = shift + 3 >= 8 ? shift - 5 : shift + 3
                             let end = (index, shift)
-                            count = 3 + convertToInt(uint8Array:
+                            count = 3 + convertToInt(reversedUint8Array:
                                 data.bits(from: start, to: end))
                             what = 0
                         } else if symbol == 18 {
@@ -118,7 +118,7 @@ public class Deflate: DecompressionAlgorithm {
                             index += shift + 7 >= 8 ? 1 : 0
                             shift = shift + 7 >= 8 ? shift - 1 : shift + 7
                             let end = (index, shift)
-                            count = 11 + convertToInt(uint8Array:
+                            count = 11 + convertToInt(reversedUint8Array:
                                 data.bits(from: start, to: end))
                             what = codeLengths.last!
                         } else {
@@ -154,7 +154,7 @@ public class Deflate: DecompressionAlgorithm {
                         shift = shift + addBits >= 8 ? shift - (8 - addBits) : shift + addBits
                         let end = (index, shift)
                         var length = HuffmanTable.Constants.lengthBase[symbol - 257] +
-                            convertToInt(uint8Array: data.bits(from: start, to: end))
+                            convertToInt(reversedUint8Array: data.bits(from: start, to: end))
 
                         let newSymbolTuple = mainDistances.findNextSymbol(in:
                             Data(data[index...index + 1]), withShift: shift)
@@ -172,7 +172,7 @@ public class Deflate: DecompressionAlgorithm {
                                 shift - (8 - extraDistance) : shift + extraDistance
                             let end = (index, shift)
                             let distance = HuffmanTable.Constants.distanceBase[newSymbol] +
-                                convertToInt(uint8Array: data.bits(from: start, to: end))
+                                convertToInt(reversedUint8Array: data.bits(from: start, to: end))
 
                             while length > distance {
                                 out.append(contentsOf: Array(out[out.count - distance..<out.count]))
