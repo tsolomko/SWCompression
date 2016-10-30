@@ -1,4 +1,6 @@
 # SWCompression
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 A framework which contains native (*written in Swift*)
 implementations of some compression algorithms.
 
