@@ -18,6 +18,30 @@
 		063364E31DC52979007E313F /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		064492591DC606D400F10981 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
 		0644925D1DC6121800F10981 /* helloworld.txt.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0644925B1DC6121800F10981 /* helloworld.txt.zlib */; };
+		065569641DC65BE700A47E66 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		065569651DC65BE800A47E66 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		065569661DC65BE800A47E66 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		065569671DC65C2A00A47E66 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E01DC52970007E313F /* Protocols.swift */; };
+		065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
+		065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
+		0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
+		0655696B1DC65C2A00A47E66 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
+		0655696C1DC65C2A00A47E66 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
+		0655696D1DC65C2A00A47E66 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE301DBCC8BF0052F7BE /* Extensions.swift */; };
+		0655696E1DC65C2B00A47E66 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E01DC52970007E313F /* Protocols.swift */; };
+		0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
+		065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
+		065569711DC65C2B00A47E66 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
+		065569721DC65C2B00A47E66 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
+		065569731DC65C2B00A47E66 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
+		065569741DC65C2B00A47E66 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE301DBCC8BF0052F7BE /* Extensions.swift */; };
+		065569751DC65C2B00A47E66 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E01DC52970007E313F /* Protocols.swift */; };
+		065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
+		065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
+		065569781DC65C2B00A47E66 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
+		065569791DC65C2B00A47E66 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
+		0655697A1DC65C2B00A47E66 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
+		0655697B1DC65C2B00A47E66 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE301DBCC8BF0052F7BE /* Extensions.swift */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
@@ -49,6 +73,12 @@
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		0644925B1DC6121800F10981 /* helloworld.txt.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = helloworld.txt.zlib; sourceTree = "<group>"; };
+		0655693F1DC659FF00A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0655694C1DC65A8000A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		065569591DC65A9400A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		065569611DC65B1B00A47E66 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		065569621DC65B1B00A47E66 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
+		065569631DC65B1B00A47E66 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -62,6 +92,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0655693B1DC659FF00A47E66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569481DC65A8000A47E66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569551DC65A9400A47E66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06BE1AC41DB410F100EE0F59 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -108,6 +159,9 @@
 			children = (
 				06BE1AC81DB410F100EE0F59 /* SWCompression.framework */,
 				06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */,
+				0655693F1DC659FF00A47E66 /* SWCompression.framework */,
+				0655694C1DC65A8000A47E66 /* SWCompression.framework */,
+				065569591DC65A9400A47E66 /* SWCompression.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,6 +177,9 @@
 				06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */,
 				061FCE301DBCC8BF0052F7BE /* Extensions.swift */,
 				06BE1ACC1DB410F100EE0F59 /* Info.plist */,
+				065569611DC65B1B00A47E66 /* Info-iOS.plist */,
+				065569621DC65B1B00A47E66 /* Info-tvOS.plist */,
+				065569631DC65B1B00A47E66 /* Info-watchOS.plist */,
 				06BE1ACB1DB410F100EE0F59 /* SWCompression.h */,
 			);
 			path = Sources;
@@ -142,6 +199,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		0655693C1DC659FF00A47E66 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569641DC65BE700A47E66 /* SWCompression.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569491DC65A8000A47E66 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569651DC65BE800A47E66 /* SWCompression.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569561DC65A9400A47E66 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569661DC65BE800A47E66 /* SWCompression.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06BE1AC51DB410F100EE0F59 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,6 +234,60 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		0655693E1DC659FF00A47E66 /* SWCompression iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 065569461DC659FF00A47E66 /* Build configuration list for PBXNativeTarget "SWCompression iOS" */;
+			buildPhases = (
+				0655693A1DC659FF00A47E66 /* Sources */,
+				0655693B1DC659FF00A47E66 /* Frameworks */,
+				0655693C1DC659FF00A47E66 /* Headers */,
+				0655693D1DC659FF00A47E66 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SWCompression iOS";
+			productName = "SWCompression iOS";
+			productReference = 0655693F1DC659FF00A47E66 /* SWCompression.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		0655694B1DC65A8000A47E66 /* SWCompression watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 065569511DC65A8000A47E66 /* Build configuration list for PBXNativeTarget "SWCompression watchOS" */;
+			buildPhases = (
+				065569471DC65A8000A47E66 /* Sources */,
+				065569481DC65A8000A47E66 /* Frameworks */,
+				065569491DC65A8000A47E66 /* Headers */,
+				0655694A1DC65A8000A47E66 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SWCompression watchOS";
+			productName = "SWCompression watchOS";
+			productReference = 0655694C1DC65A8000A47E66 /* SWCompression.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		065569581DC65A9400A47E66 /* SWCompression tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0655695E1DC65A9500A47E66 /* Build configuration list for PBXNativeTarget "SWCompression tvOS" */;
+			buildPhases = (
+				065569541DC65A9400A47E66 /* Sources */,
+				065569551DC65A9400A47E66 /* Frameworks */,
+				065569561DC65A9400A47E66 /* Headers */,
+				065569571DC65A9400A47E66 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SWCompression tvOS";
+			productName = "SWCompression tvOS";
+			productReference = 065569591DC65A9400A47E66 /* SWCompression.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		06BE1AC71DB410F100EE0F59 /* SWCompression */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 06BE1ADC1DB410F100EE0F59 /* Build configuration list for PBXNativeTarget "SWCompression" */;
@@ -199,6 +334,21 @@
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = tsolomko;
 				TargetAttributes = {
+					0655693E1DC659FF00A47E66 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 9KL2W72SQF;
+						ProvisioningStyle = Automatic;
+					};
+					0655694B1DC65A8000A47E66 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 9KL2W72SQF;
+						ProvisioningStyle = Automatic;
+					};
+					065569581DC65A9400A47E66 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 9KL2W72SQF;
+						ProvisioningStyle = Automatic;
+					};
 					06BE1AC71DB410F100EE0F59 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 9KL2W72SQF;
@@ -226,11 +376,35 @@
 			targets = (
 				06BE1AC71DB410F100EE0F59 /* SWCompression */,
 				06BE1AD01DB410F100EE0F59 /* SWCompressionTests */,
+				0655693E1DC659FF00A47E66 /* SWCompression iOS */,
+				0655694B1DC65A8000A47E66 /* SWCompression watchOS */,
+				065569581DC65A9400A47E66 /* SWCompression tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0655693D1DC659FF00A47E66 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0655694A1DC65A8000A47E66 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569571DC65A9400A47E66 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06BE1AC61DB410F100EE0F59 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,6 +429,48 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0655693A1DC659FF00A47E66 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
+				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
+				0655696B1DC65C2A00A47E66 /* HuffmanTable.swift in Sources */,
+				0655696C1DC65C2A00A47E66 /* HuffmanLength.swift in Sources */,
+				065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */,
+				065569671DC65C2A00A47E66 /* Protocols.swift in Sources */,
+				0655696D1DC65C2A00A47E66 /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569471DC65A8000A47E66 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
+				065569711DC65C2B00A47E66 /* Deflate.swift in Sources */,
+				065569721DC65C2B00A47E66 /* HuffmanTable.swift in Sources */,
+				065569731DC65C2B00A47E66 /* HuffmanLength.swift in Sources */,
+				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
+				0655696E1DC65C2B00A47E66 /* Protocols.swift in Sources */,
+				065569741DC65C2B00A47E66 /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		065569541DC65A9400A47E66 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
+				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
+				065569791DC65C2B00A47E66 /* HuffmanTable.swift in Sources */,
+				0655697A1DC65C2B00A47E66 /* HuffmanLength.swift in Sources */,
+				065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
+				065569751DC65C2B00A47E66 /* Protocols.swift in Sources */,
+				0655697B1DC65C2B00A47E66 /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06BE1AC31DB410F100EE0F59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -289,6 +505,149 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		065569441DC659FF00A47E66 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-iOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		065569451DC659FF00A47E66 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-iOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		065569521DC65A8000A47E66 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.1;
+			};
+			name = Debug;
+		};
+		065569531DC65A8000A47E66 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 3.1;
+			};
+			name = Release;
+		};
+		0655695F1DC65A9500A47E66 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		065569601DC65A9500A47E66 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
+				PRODUCT_NAME = SWCompression;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		06BE1ADA1DB410F100EE0F59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -390,6 +749,7 @@
 		06BE1ADD1DB410F100EE0F59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -413,6 +773,7 @@
 		06BE1ADE1DB410F100EE0F59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -463,6 +824,30 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		065569461DC659FF00A47E66 /* Build configuration list for PBXNativeTarget "SWCompression iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				065569441DC659FF00A47E66 /* Debug */,
+				065569451DC659FF00A47E66 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		065569511DC65A8000A47E66 /* Build configuration list for PBXNativeTarget "SWCompression watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				065569521DC65A8000A47E66 /* Debug */,
+				065569531DC65A8000A47E66 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		0655695E1DC65A9500A47E66 /* Build configuration list for PBXNativeTarget "SWCompression tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0655695F1DC65A9500A47E66 /* Debug */,
+				065569601DC65A9500A47E66 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
