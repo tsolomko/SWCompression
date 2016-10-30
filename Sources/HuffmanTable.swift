@@ -25,7 +25,7 @@ class HuffmanTable: CustomStringConvertible {
              8193, 12289, 16385, 24577]
 
         static func extraLengthBits(n: Int) -> Int {
-            if (n >= 257 && n <= 256) || n == 285 {
+            if (n >= 257 && n <= 260) || n == 285 {
                 return 0
             } else if n >= 261 && n <= 284 {
                 return ((n - 257) >> 2) - 1
