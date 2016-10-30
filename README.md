@@ -19,9 +19,10 @@ And here comes SWCompression: no Objective-C, pure Swift.
 - Decompress data which were compressed with DEFLATE algorithm.
 - Extract data from GZip archives.
 - Unarchive zlib compressed data.
+- Platform independent.
 - _Swift only_
 
-By the way, it seems like GZip and Deflate decompressor implementations are specification compliant.
+By the way, it seems like GZip and Deflate decompressor implementations are **specification compliant**.
 
 ### Installation
 
@@ -46,7 +47,7 @@ let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"))
 let decompressedData = try? Deflate.decompress(compressedData: data)
 ```
 **Note:** you should properly handle possible errors in loading data from file
-and define yourself if you need any `Data.ReadingOptions`.
+and decide yourself if you need any `Data.ReadingOptions`.
 
 However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:
