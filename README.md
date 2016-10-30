@@ -40,6 +40,21 @@ Then run `carthage update`.
 
 Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder into the "Embedded Binaries" section on your targets' "General" tab.
 
+##### Swift Package Manager
+Add to you package specification's dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`, for example like this:
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "PackageName",
+    dependencies: [
+        .Package(url: "https://github.com/tsolomko/SWCompression.git")
+    ]
+)
+```
+
+More info you may find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+
 ### Usage
 If you'd like to decompress "deflated" data just use:
 ```swift
