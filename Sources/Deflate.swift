@@ -145,7 +145,7 @@ public class Deflate: DecompressionAlgorithm {
                             let end = (index, shift)
                             count = 11 + convertToInt(reversedUint8Array:
                                 data.bits(from: start, to: end))
-                            what = codeLengths.last!
+                            what = 0
                         } else {
                             throw DeflateError.HuffmanTableError
                         }
