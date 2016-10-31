@@ -14,7 +14,8 @@ Secondly, if you are a Swift developer and you want to compress/decompress somet
 you have to use either wrapper around system libraries (which is probably written in Objective-C)
 or you have to use built-in Compression framework.
 You might think that last option is what you need, but, frankly
-that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms. And yes, it is also in Objective-C.
+that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms. 
+And yes, it is also in Objective-C.
 
 And here comes SWCompression: no Objective-C, pure Swift.
 
@@ -86,6 +87,7 @@ you are responsible for handling them.
 
 Future plans
 -------------
+- Performance improvement.
 - BZip2 decompression support.
 - Deflate compression.
 - BZip2 compression.
