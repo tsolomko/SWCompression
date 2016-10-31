@@ -42,7 +42,7 @@ public class Deflate: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
-        var out: [String] = []
+        var out = Data()
 
         // Current point of processing in data
         var index = 0
@@ -66,10 +66,7 @@ public class Deflate: DecompressionAlgorithm {
                 // Check if lengths are OK
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
-                for _ in 0..<length {
-                    out.append("".appending(String(UnicodeScalar(data[index]))))
-                    index += 1
-                }
+                out.append(Data(data[index..<index+length]))
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
@@ -167,8 +164,7 @@ public class Deflate: DecompressionAlgorithm {
                     shift = nextSymbol.newShift
 
                     if symbol >= 0 && symbol <= 255 {
-                        out.append("".appending(String(UnicodeScalar(UInt8(truncatingBitPattern:
-                            UInt(symbol))))))
+                        out.append(Data(bytes: [UInt8(truncatingBitPattern: UInt(symbol))]))
                     } else if symbol == 256 {
                         break
                     } else if symbol >= 257 && symbol <= 285 {
@@ -206,13 +202,13 @@ public class Deflate: DecompressionAlgorithm {
                                 convertToInt(reversedUint8Array: data.bits(from: start, to: end))
 
                             while length > distance {
-                                out.append(contentsOf: Array(out[out.count - distance..<out.count]))
+                                out.append(Data(out[out.count - distance..<out.count]))
                                 length -= distance
                             }
                             if length == distance {
-                                out.append(contentsOf: Array(out[out.count - distance..<out.count]))
+                                out.append(Data(out[out.count - distance..<out.count]))
                             } else {
-                                out.append(contentsOf: Array(out[out.count - distance..<out.count + length - distance]))
+                                out.append(Data(out[out.count - distance..<out.count + length - distance]))
                             }
                         } else {
                             throw DeflateError.HuffmanTableError
@@ -230,7 +226,7 @@ public class Deflate: DecompressionAlgorithm {
             if isLastBit == 1 { break }
         }
 
-        return (String(out.reduce("") { $0 + $1 })?.data(using: .utf8))!
+        return out
     }
 
 }
