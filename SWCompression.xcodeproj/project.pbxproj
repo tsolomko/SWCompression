@@ -46,6 +46,12 @@
 		0655697F1DC6966300A47E66 /* secondtest.zlib.answer in Resources */ = {isa = PBXBuildFile; fileRef = 0655697E1DC6966300A47E66 /* secondtest.zlib.answer */; };
 		065569811DC69DD500A47E66 /* thirdtest.zlib.answer in Resources */ = {isa = PBXBuildFile; fileRef = 065569801DC69DD500A47E66 /* thirdtest.zlib.answer */; };
 		065569831DC69DDE00A47E66 /* thirdtest.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 065569821DC69DDE00A47E66 /* thirdtest.zlib */; };
+		0661F06F1DC92391006C3D35 /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0661F06E1DC92391006C3D35 /* PerformanceTests.swift */; };
+		0661F0711DC92590006C3D35 /* relatively_big_file.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0661F0701DC92590006C3D35 /* relatively_big_file.gz */; };
+		0661F0731DC92F98006C3D35 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0661F0721DC92F98006C3D35 /* DataWithPointer.swift */; };
+		0661F0741DC92F98006C3D35 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0661F0721DC92F98006C3D35 /* DataWithPointer.swift */; };
+		0661F0751DC92F98006C3D35 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0661F0721DC92F98006C3D35 /* DataWithPointer.swift */; };
+		0661F0761DC92F98006C3D35 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0661F0721DC92F98006C3D35 /* DataWithPointer.swift */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
@@ -87,6 +93,9 @@
 		0655697E1DC6966300A47E66 /* secondtest.zlib.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = secondtest.zlib.answer; sourceTree = "<group>"; };
 		065569801DC69DD500A47E66 /* thirdtest.zlib.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thirdtest.zlib.answer; sourceTree = "<group>"; };
 		065569821DC69DDE00A47E66 /* thirdtest.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = thirdtest.zlib; sourceTree = "<group>"; };
+		0661F06E1DC92391006C3D35 /* PerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
+		0661F0701DC92590006C3D35 /* relatively_big_file.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = relatively_big_file.gz; sourceTree = "<group>"; };
+		0661F0721DC92F98006C3D35 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataWithPointer.swift; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -142,6 +151,7 @@
 		061FCE271DBCC6070052F7BE /* Test Files */ = {
 			isa = PBXGroup;
 			children = (
+				0661F0701DC92590006C3D35 /* relatively_big_file.gz */,
 				063364DC1DC51D33007E313F /* empty.txt */,
 				063364DD1DC51D33007E313F /* empty.txt.gz */,
 				061FCE281DBCC6070052F7BE /* helloworld.txt */,
@@ -185,6 +195,7 @@
 				063364E21DC52979007E313F /* GzipArchive.swift */,
 				064492581DC606D400F10981 /* ZlibArchive.swift */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
+				0661F0721DC92F98006C3D35 /* DataWithPointer.swift */,
 				06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */,
 				06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */,
 				061FCE301DBCC8BF0052F7BE /* Extensions.swift */,
@@ -200,6 +211,7 @@
 		06BE1AD51DB410F100EE0F59 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
 				061FCE271DBCC6070052F7BE /* Test Files */,
 				06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */,
 				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
@@ -438,6 +450,7 @@
 				065569811DC69DD500A47E66 /* thirdtest.zlib.answer in Resources */,
 				061FCE2A1DBCC6070052F7BE /* helloworld.txt in Resources */,
 				065569831DC69DDE00A47E66 /* thirdtest.zlib in Resources */,
+				0661F0711DC92590006C3D35 /* relatively_big_file.gz in Resources */,
 				063364DE1DC51D33007E313F /* empty.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -456,6 +469,7 @@
 				065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */,
 				065569671DC65C2A00A47E66 /* Protocols.swift in Sources */,
 				0655696D1DC65C2A00A47E66 /* Extensions.swift in Sources */,
+				0661F0741DC92F98006C3D35 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +484,7 @@
 				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
 				0655696E1DC65C2B00A47E66 /* Protocols.swift in Sources */,
 				065569741DC65C2B00A47E66 /* Extensions.swift in Sources */,
+				0661F0751DC92F98006C3D35 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +499,7 @@
 				065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
 				065569751DC65C2B00A47E66 /* Protocols.swift in Sources */,
 				0655697B1DC65C2B00A47E66 /* Extensions.swift in Sources */,
+				0661F0761DC92F98006C3D35 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,6 +514,7 @@
 				061FCE261DBCC4BE0052F7BE /* Deflate.swift in Sources */,
 				063364E31DC52979007E313F /* GzipArchive.swift in Sources */,
 				061FCE311DBCC8BF0052F7BE /* Extensions.swift in Sources */,
+				0661F0731DC92F98006C3D35 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +524,7 @@
 			files = (
 				06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */,
 				061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */,
+				0661F06F1DC92391006C3D35 /* PerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
