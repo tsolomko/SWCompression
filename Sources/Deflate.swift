@@ -169,10 +169,10 @@ public class Deflate: DecompressionAlgorithm {
                         break
                     } else if symbol >= 257 && symbol <= 285 {
                         let start = (index, shift)
-                        let addBits = HuffmanTable.Constants.extraLengthBits(n: symbol)
-                        guard addBits != -1 else { throw DeflateError.HuffmanTableError }
-                        index += shift + addBits >= 8 ? 1 : 0
-                        shift = shift + addBits >= 8 ? shift - (8 - addBits) : shift + addBits
+                        let extraLength = (257 <= symbol && symbol <= 260) || symbol == 285 ?
+                            0 : ((symbol - 257) >> 2) - 1
+                        index += shift + extraLength >= 8 ? 1 : 0
+                        shift = shift + extraLength >= 8 ? shift - (8 - extraLength) : shift + extraLength
                         let end = (index, shift)
                         var length = HuffmanTable.Constants.lengthBase[symbol - 257] +
                             convertToInt(reversedUint8Array: data.bits(from: start, to: end))
@@ -186,8 +186,7 @@ public class Deflate: DecompressionAlgorithm {
 
                         if newSymbol >= 0 && newSymbol <= 29 {
                             let start = (index, shift)
-                            let extraDistance = HuffmanTable.Constants.extraDistanceBits(n: newSymbol)
-                            guard extraDistance != -1 else { throw DeflateError.HuffmanTableError }
+                            let extraDistance = newSymbol == 0 || newSymbol == 1 ? 0 : (newSymbol >> 1) - 1
                             if shift + extraDistance >= 16 {
                                 index += 2
                                 shift = shift - (16 - extraDistance)
