@@ -36,4 +36,8 @@ struct Constants {
     static let thirdZlibTestAnswerPath = testBundle.url(forResource: "thirdtest.zlib",
                                                          withExtension: "answer")!
 
+
+    static let relativelyBigFilePath = testBundle.url(forResource: "relatively_big_file",
+                                                        withExtension: "gz")!
+
 }
