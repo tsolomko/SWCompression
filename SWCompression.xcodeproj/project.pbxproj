@@ -211,9 +211,9 @@
 		06BE1AD51DB410F100EE0F59 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
 				061FCE271DBCC6070052F7BE /* Test Files */,
 				06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */,
+				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
 				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
 				06BE1AD81DB410F100EE0F59 /* Info.plist */,
 			);
