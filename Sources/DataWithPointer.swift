@@ -46,10 +46,35 @@ class DataWithPointer {
         // Update index and bitShift
         let amountOfBytes = (count - self.bitShift) / 8
         self.index += amountOfBytes
-        self.bitShift += count - 8 * amountOfBytes
-
+        self.bitShift = count - 8 * amountOfBytes
 
         return array
     }
+
+    func bit() -> UInt8 {
+        return self.bits(count: 1).first!
+    }
+
+    /// Use with caution: not effective.
+    func data(ofBytes count: Data.Index) -> Data {
+        precondition(self.bitShift == 0, "Misaligned byte.")
+        let returnData = Data(data[index..<index+count])
+        index += count
+        return returnData
+    }
+
+    // MARK: Manipulation with index and bitShift
+
+    func skipUntilNextByte() {
+        self.index += 1
+        self.bitShift = 0
+    }
+
+    func rewind(bitsCount: Int) {
+        let amountOfBytes = (bitsCount - self.bitShift) / 8
+        self.index -= amountOfBytes
+        self.bitShift = bitsCount - 8 * amountOfBytes
+    }
+
 
 }
