@@ -42,31 +42,30 @@ public class Deflate: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
+        /// Object for storing output data
         var out = Data()
 
-        // Current point of processing in data
-        var index = 0
+        /// Object with input data which supports convenient work with bit shifts
+        let pointerData = DataWithPointer(data: data)
+
         while true {
-            // Is this a last block?
-            let isLastBit = data[index][0]
-            // Type of the current block
-            let blockType = [UInt8](data[index][1..<3].reversed())
-            var shift = 3
+            /// Is this a last block?
+            let isLastBit = pointerData.bit()
+            /// Type of the current block
+            let blockType = [UInt8](pointerData.bits(count: 2).reversed())
 
             if blockType == [0, 0] { // Uncompressed block
-                // Get length of the uncompressed data
-                index += 1
+                pointerData.skipUntilNextByte()
 
-                // TODO: Check if straight to `int` conversion works
-                let length = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
-                index += 2
-                // Get 1-complement of the length
-                let nlength = Data(data[index...index + 1]).to(type: UInt16.self).toInt()
-                index += 2
+                /// Length of the uncompressed data
+                let length = convertToInt(uint8Array: pointerData.bits(count: 16))
+                /// 1-complement of the length
+                let nlength = convertToInt(uint8Array: pointerData.bits(count: 16))
                 // Check if lengths are OK
+                // TODO: Rename WrongBlockLengths to WrongUncompressedBlockLengths (or something else)
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
-                out.append(Data(data[index..<index+length]))
+                out.append(pointerData.data(ofBytes: length))
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
@@ -82,66 +81,38 @@ public class Deflate: DecompressionAlgorithm {
                     mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else { // Dynamic Huffman
-                    let literals = convertToInt(reversedUint8Array:
-                        data.bits(from: (index, shift), to: (index, shift + 5))) + 257
-                    index += 1
-                    shift = 0
-                    let distances = convertToInt(reversedUint8Array:
-                        data.bits(from: (index, shift), to: (index, shift + 5))) + 1
-                    shift = 5
-                    let codeLengthsLength = convertToInt(reversedUint8Array:
-                        data.bits(from: (index, shift), to: (index + 1, 1))) + 4
-                    index += 1
-                    shift = 1
+                    let literals = convertToInt(reversedUint8Array: pointerData.bits(count: 5)) + 257
+                    let distances = convertToInt(reversedUint8Array: pointerData.bits(count: 5)) + 1
+                    let codeLengthsLength = convertToInt(reversedUint8Array: pointerData.bits(count: 4)) + 4
 
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        let start = (index, shift)
-                        index += shift + 3 >= 8 ? 1 : 0
-                        shift = shift + 3 >= 8 ? shift - 5 : shift + 3
-                        let end = (index, shift)
                         lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] =
-                            convertToInt(reversedUint8Array: data.bits(from: start, to: end))
+                            convertToInt(reversedUint8Array: pointerData.bits(count: 3))
                     }
                     let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
 
                     var codeLengths: [Int] = []
                     var n = 0
                     while n < (literals + distances) {
-                        let tuple = dynamicCodes.findNextSymbol(in: Data(data[index...index + 2]),
-                                                                withShift: shift)
-                        let symbol = tuple.symbol
-                        guard symbol != -1 else { throw DeflateError.HuffmanTableError }
-                        index += tuple.addToIndex
-                        shift = tuple.newShift
+                        guard let dynamicCodeHuffmanLength = dynamicCodes.findNextSymbol(in: pointerData.bits(count: 24)) else {
+                            throw DeflateError.HuffmanTableError
+                        }
+                        pointerData.rewind(bitsCount: 24 - dynamicCodeHuffmanLength.bits)
+                        let symbol = dynamicCodeHuffmanLength.code
                         let count: Int
                         let what: Int
                         if symbol >= 0 && symbol <= 15 {
                             count = 1
                             what = symbol
                         } else if symbol == 16 {
-                            let start = (index, shift)
-                            index += shift + 2 >= 8 ? 1 : 0
-                            shift = shift + 2 >= 8 ? shift - 6 : shift + 2
-                            let end = (index, shift)
-                            count = 3 + convertToInt(reversedUint8Array:
-                                data.bits(from: start, to: end))
+                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 2)) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
-                            let start = (index, shift)
-                            index += shift + 3 >= 8 ? 1 : 0
-                            shift = shift + 3 >= 8 ? shift - 5 : shift + 3
-                            let end = (index, shift)
-                            count = 3 + convertToInt(reversedUint8Array:
-                                data.bits(from: start, to: end))
+                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 3)) + 3
                             what = 0
                         } else if symbol == 18 {
-                            let start = (index, shift)
-                            index += shift + 7 >= 8 ? 1 : 0
-                            shift = shift + 7 >= 8 ? shift - 1 : shift + 7
-                            let end = (index, shift)
-                            count = 11 + convertToInt(reversedUint8Array:
-                                data.bits(from: start, to: end))
+                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 7)) + 11
                             what = 0
                         } else {
                             throw DeflateError.HuffmanTableError
@@ -149,56 +120,37 @@ public class Deflate: DecompressionAlgorithm {
                         codeLengths.append(contentsOf: Array(repeating: what, count: count))
                         n += count
                     }
-                    mainLiterals = HuffmanTable(lengthsToOrder:
-                        Array(codeLengths[0..<literals]))
-                    mainDistances = HuffmanTable(lengthsToOrder:
-                        Array(codeLengths[literals..<codeLengths.count]))
+                    mainLiterals = HuffmanTable(lengthsToOrder: Array(codeLengths[0..<literals]))
+                    mainDistances = HuffmanTable(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]))
                 }
 
                 while true {
-                    let nextSymbol = mainLiterals.findNextSymbol(in: Data(data[index...index + 2]),
-                                                                  withShift: shift)
-                    let symbol = nextSymbol.symbol
-                    guard symbol != -1 else { throw DeflateError.HuffmanTableError }
-                    index += nextSymbol.addToIndex
-                    shift = nextSymbol.newShift
+                    guard let nextSymbolLength = mainLiterals.findNextSymbol(in: pointerData.bits(count: 24)) else {
+                        throw DeflateError.HuffmanTableError
+                    }
+                    pointerData.rewind(bitsCount: 24 - nextSymbolLength.bits)
+                    let nextSymbol = nextSymbolLength.code
 
-                    if symbol >= 0 && symbol <= 255 {
-                        out.append(Data(bytes: [UInt8(truncatingBitPattern: UInt(symbol))]))
-                    } else if symbol == 256 {
+                    if nextSymbol >= 0 && nextSymbol <= 255 {
+                        out.append(Data(bytes: [UInt8(truncatingBitPattern: UInt(nextSymbol))]))
+                    } else if nextSymbol == 256 {
                         break
-                    } else if symbol >= 257 && symbol <= 285 {
-                        let start = (index, shift)
-                        let extraLength = (257 <= symbol && symbol <= 260) || symbol == 285 ?
-                            0 : ((symbol - 257) >> 2) - 1
-                        index += shift + extraLength >= 8 ? 1 : 0
-                        shift = shift + extraLength >= 8 ? shift - (8 - extraLength) : shift + extraLength
-                        let end = (index, shift)
-                        var length = HuffmanTable.Constants.lengthBase[symbol - 257] +
-                            convertToInt(reversedUint8Array: data.bits(from: start, to: end))
+                    } else if nextSymbol >= 257 && nextSymbol <= 285 {
+                        let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
+                            0 : ((nextSymbol - 257) >> 2) - 1
+                        var length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
+                            convertToInt(reversedUint8Array: pointerData.bits(count: extraLength))
 
-                        let newSymbolTuple = mainDistances.findNextSymbol(in:
-                            Data(data[index...index + 2]), withShift: shift)
-                        let newSymbol = newSymbolTuple.symbol
-                        guard newSymbol != -1 else { throw DeflateError.HuffmanTableError }
-                        index += newSymbolTuple.addToIndex
-                        shift = newSymbolTuple.newShift
+                        guard let distanceLength = mainDistances.findNextSymbol(in: pointerData.bits(count: 24)) else {
+                            throw DeflateError.HuffmanTableError
+                        }
+                        pointerData.rewind(bitsCount: 24 - distanceLength.bits)
+                        let distanceCode = distanceLength.code
 
-                        if newSymbol >= 0 && newSymbol <= 29 {
-                            let start = (index, shift)
-                            let extraDistance = newSymbol == 0 || newSymbol == 1 ? 0 : (newSymbol >> 1) - 1
-                            if shift + extraDistance >= 16 {
-                                index += 2
-                                shift = shift - (16 - extraDistance)
-                            } else if shift + extraDistance >= 8 {
-                                index += 1
-                                shift = shift - (8 - extraDistance)
-                            } else {
-                                shift += extraDistance
-                            }
-                            let end = (index, shift)
-                            let distance = HuffmanTable.Constants.distanceBase[newSymbol] +
-                                convertToInt(reversedUint8Array: data.bits(from: start, to: end))
+                        if distanceCode >= 0 && distanceCode <= 29 {
+                            let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : (distanceCode >> 1) - 1
+                            let distance = HuffmanTable.Constants.distanceBase[distanceCode] +
+                                convertToInt(reversedUint8Array: pointerData.bits(count: extraDistance))
 
                             while length > distance {
                                 out.append(Data(out[out.count - distance..<out.count]))
