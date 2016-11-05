@@ -146,7 +146,7 @@ class HuffmanTable: CustomStringConvertible {
             let lbits = length.bits
 
             if cachedLength != lbits {
-                cached = convertToInt(reversedUint8Array: Array(bitArray[bitsCount - lbits..<bitsCount]))
+                cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]))
                 cachedLength = lbits
             }
             if length.reversedSymbol == cached {
