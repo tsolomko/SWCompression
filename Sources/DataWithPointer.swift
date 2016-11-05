@@ -35,18 +35,16 @@ class DataWithPointer {
     func bits(count: Int) -> [UInt8] {
         guard count > 0 else { return [] }
 
-        /// Start point of bits to return
-        let startIndex = self.index * 8 + self.bitShift
-        /// Range of bits to return in bitVector
-        let range = CFRangeMake(startIndex, count)
-
-        var array: [UInt8] = Array(repeating: 0, count: count)
-        CFBitVectorGetBits(self.bitVector!, range, &array)
-
-        // Update index and bitShift
-        let amountOfBytes = (count - self.bitShift) / 8
-        self.index += amountOfBytes
-        self.bitShift = count - 8 * amountOfBytes
+        var array: [UInt8] = []
+        for _ in 0..<count {
+            let currentIndex = 8 * (index + 1) - bitShift - 1
+            array.append(UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+            self.bitShift += 1
+            if self.bitShift >= 8 {
+                self.bitShift = 0
+                self.index += 1
+            }
+        }
 
         return array
     }
