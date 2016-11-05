@@ -23,10 +23,6 @@ class DataWithPointer {
         self.index = 0
         self.bitShift = 0
         self.bitVector = nil
-        initData()
-    }
-
-    private func initData() {
         data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) in
             self.bitVector = CFBitVectorCreate(kCFAllocatorDefault, bytes, data.count * 8)
         }
