@@ -81,14 +81,14 @@ public class Deflate: DecompressionAlgorithm {
                     mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
                     mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
                 } else { // Dynamic Huffman
-                    let literals = convertToInt(reversedUint8Array: pointerData.bits(count: 5)) + 257
-                    let distances = convertToInt(reversedUint8Array: pointerData.bits(count: 5)) + 1
-                    let codeLengthsLength = convertToInt(reversedUint8Array: pointerData.bits(count: 4)) + 4
+                    let literals = convertToInt(uint8Array: pointerData.bits(count: 5)) + 257
+                    let distances = convertToInt(uint8Array: pointerData.bits(count: 5)) + 1
+                    let codeLengthsLength = convertToInt(uint8Array: pointerData.bits(count: 4)) + 4
 
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
                         lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] =
-                            convertToInt(reversedUint8Array: pointerData.bits(count: 3))
+                            convertToInt(uint8Array: pointerData.bits(count: 3))
                     }
                     let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
 
@@ -106,13 +106,13 @@ public class Deflate: DecompressionAlgorithm {
                             count = 1
                             what = symbol
                         } else if symbol == 16 {
-                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 2)) + 3
+                            count = convertToInt(uint8Array: pointerData.bits(count: 2)) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
-                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 3)) + 3
+                            count = convertToInt(uint8Array: pointerData.bits(count: 3)) + 3
                             what = 0
                         } else if symbol == 18 {
-                            count = convertToInt(reversedUint8Array: pointerData.bits(count: 7)) + 11
+                            count = convertToInt(uint8Array: pointerData.bits(count: 7)) + 11
                             what = 0
                         } else {
                             throw DeflateError.HuffmanTableError
@@ -137,9 +137,9 @@ public class Deflate: DecompressionAlgorithm {
                         break
                     } else if nextSymbol >= 257 && nextSymbol <= 285 {
                         let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
-                            0 : ((nextSymbol - 257) >> 2) - 1
+                            0 : (((nextSymbol - 257) >> 2) - 1)
                         var length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
-                            convertToInt(reversedUint8Array: pointerData.bits(count: extraLength))
+                            convertToInt(uint8Array: pointerData.bits(count: extraLength))
 
                         guard let distanceLength = mainDistances.findNextSymbol(in: pointerData.bits(count: 24)) else {
                             throw DeflateError.HuffmanTableError
@@ -148,9 +148,9 @@ public class Deflate: DecompressionAlgorithm {
                         let distanceCode = distanceLength.code
 
                         if distanceCode >= 0 && distanceCode <= 29 {
-                            let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : (distanceCode >> 1) - 1
+                            let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                             let distance = HuffmanTable.Constants.distanceBase[distanceCode] +
-                                convertToInt(reversedUint8Array: pointerData.bits(count: extraDistance))
+                                convertToInt(uint8Array: pointerData.bits(count: extraDistance))
 
                             while length > distance {
                                 out.append(Data(out[out.count - distance..<out.count]))
