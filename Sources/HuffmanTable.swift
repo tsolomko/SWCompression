@@ -101,44 +101,7 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in data: Data, withShift shift: Int, reversed: Bool = true) ->
-        (symbol: Int, addToIndex: Int, newShift: Int) {
-        let bitsArray = data.bits(from: (0, shift), to: (2, 8))
-        let bitsCount = bitsArray.count
-
-        var cachedLength = -1
-        var cached: Int = -1
-
-        for length in self.lengths {
-            let lbits = length.bits
-
-            if cachedLength != lbits {
-                cached = convertToInt(reversedUint8Array: Array(bitsArray[bitsCount - lbits..<bitsCount]))
-                cachedLength = lbits
-            }
-            if (reversed && length.reversedSymbol == cached) ||
-                (!reversed && length.symbol == cached) {
-                let addToIndex: Int
-                let newShift: Int
-                if shift + cachedLength >= 16 {
-                    addToIndex = 2
-                    newShift = shift - (16 - cachedLength)
-                } else if shift + cachedLength >= 8 {
-                    addToIndex = 1
-                    newShift = shift - (8 - cachedLength)
-                } else {
-                    addToIndex = 0
-                    newShift = shift + cachedLength
-                }
-                return (length.code, addToIndex, newShift)
-            }
-        }
-        return (-1, -1, -1)
-    }
-
     func findNextSymbol(in bitArray: [UInt8]) -> HuffmanLength? {
-        let bitsCount = bitArray.count
-
         var cachedLength = -1
         var cached: Int = -1
 
