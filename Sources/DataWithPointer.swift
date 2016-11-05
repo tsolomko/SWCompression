@@ -69,9 +69,14 @@ class DataWithPointer {
     }
 
     func rewind(bitsCount: Int) {
-        let amountOfBytes = (bitsCount - self.bitShift) / 8
+        let amountOfBytes = (bitsCount - self.bitShift) / 8 + 1
         self.index -= amountOfBytes
-        self.bitShift = bitsCount - 8 * amountOfBytes
+        self.bitShift = 8 - (bitsCount - self.bitShift) % 8
+
+        if self.bitShift == 8 {
+            self.index += 1
+            self.bitShift = 0
+        }
     }
 
 
