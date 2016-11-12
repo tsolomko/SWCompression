@@ -26,7 +26,7 @@ public enum DeflateError: Error {
     case UnknownBlockType
 }
 
-/// A class with decompression function of DEFLATE algorithm.
+/// Provides function to decompress data, which were compressed with DEFLATE
 public class Deflate: DecompressionAlgorithm {
 
     /**
