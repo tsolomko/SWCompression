@@ -37,8 +37,6 @@ class HuffmanTable: CustomStringConvertible {
 
     init(bootstrap: [Array<Int>]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
-        // However, it does not calculate symbols or reversedSymbols
-        // Also, the array is sorted at the end
         var newLengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
@@ -54,9 +52,9 @@ class HuffmanTable: CustomStringConvertible {
             bits = endbits
             if endbits == -1 { break } // TODO: Check if this line is unnecessary
         }
+        // Sort the lengths' array so finding of symbols will be more efficient
         self.lengths = newLengths.sorted()
 
-        // Calculates symbols for all lengths in the table
         func reverse(bits: Int, in symbol: Int) -> Int {
             // Auxiliarly subfunction, which computes reversed order of bits in a number
             // This is some weird magic
@@ -88,6 +86,7 @@ class HuffmanTable: CustomStringConvertible {
         }
 
         // Finds minimum and maximum bits in the entire table of lengths
+        // TODO: Do we actually need this?
         (self.minBits, self.maxBits) = self.lengths.reduce((16, -1)) {
             return (min($0.0, $1.bits), max($0.1, $1.bits))
         }
