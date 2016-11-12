@@ -59,6 +59,10 @@
 		06E63DB41DC3B8BD00D3A7C8 /* secondtest.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */; };
 		06E63DB51DC3B8BD00D3A7C8 /* secondtest.txt.gz in Resources */ = {isa = PBXBuildFile; fileRef = 06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */; };
 		06E961CA1DBD5FA1008C47F2 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
+		06FED40C1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
+		06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
+		06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
+		06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +110,7 @@
 		06E63DB21DC3B8BD00D3A7C8 /* secondtest.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = secondtest.txt; sourceTree = "<group>"; };
 		06E63DB31DC3B8BD00D3A7C8 /* secondtest.txt.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = secondtest.txt.gz; sourceTree = "<group>"; };
 		06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanTable.swift; sourceTree = "<group>"; };
+		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +200,7 @@
 				063364E21DC52979007E313F /* GzipArchive.swift */,
 				064492581DC606D400F10981 /* ZlibArchive.swift */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
+				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
 				0661F0721DC92F98006C3D35 /* DataWithPointer.swift */,
 				061FCE301DBCC8BF0052F7BE /* Extensions.swift */,
 				06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */,
@@ -465,6 +471,7 @@
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
 				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
 				0655696B1DC65C2A00A47E66 /* HuffmanTable.swift in Sources */,
+				06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				0655696C1DC65C2A00A47E66 /* HuffmanLength.swift in Sources */,
 				065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */,
 				065569671DC65C2A00A47E66 /* Protocols.swift in Sources */,
@@ -480,6 +487,7 @@
 				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				065569711DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				065569721DC65C2B00A47E66 /* HuffmanTable.swift in Sources */,
+				06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				065569731DC65C2B00A47E66 /* HuffmanLength.swift in Sources */,
 				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
 				0655696E1DC65C2B00A47E66 /* Protocols.swift in Sources */,
@@ -495,6 +503,7 @@
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				065569791DC65C2B00A47E66 /* HuffmanTable.swift in Sources */,
+				06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				0655697A1DC65C2B00A47E66 /* HuffmanLength.swift in Sources */,
 				065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
 				065569751DC65C2B00A47E66 /* Protocols.swift in Sources */,
@@ -510,6 +519,7 @@
 				063364E11DC52970007E313F /* Protocols.swift in Sources */,
 				064492591DC606D400F10981 /* ZlibArchive.swift in Sources */,
 				06E961CA1DBD5FA1008C47F2 /* HuffmanTable.swift in Sources */,
+				06FED40C1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */,
 				061FCE261DBCC4BE0052F7BE /* Deflate.swift in Sources */,
 				063364E31DC52979007E313F /* GzipArchive.swift in Sources */,
