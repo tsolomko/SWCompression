@@ -90,7 +90,7 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in bitArray: [UInt8]) -> HuffmanLength? {
+    func findNextSymbol(in bitArray: [UInt8], reversed: Bool = true) -> HuffmanLength? {
         var cachedLength = -1
         var cached: Int = -1
 
@@ -101,7 +101,8 @@ class HuffmanTable: CustomStringConvertible {
                 cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]))
                 cachedLength = lbits
             }
-            if length.reversedSymbol == cached {
+            if (reversed && length.reversedSymbol == cached) ||
+                (!reversed && length.symbol == cached){
                 return length
             }
         }
