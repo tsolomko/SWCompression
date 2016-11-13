@@ -23,6 +23,9 @@ public enum BZip2Error: Error {
     case WrongBlockSize
     /// Unknown block type (was neither 'pi' nor 'sqrt(pi)').
     case WrongBlockType
+    case RandomizedBlock
+    case WrongHuffmanGroups
+    case WrongSelector
 }
 
 /// Provides function to decompress data, which were compressed using BZip2
@@ -59,12 +62,15 @@ public class BZip2: DecompressionAlgorithm {
 
         while true {
             let blockType = convertToInt(uint8Array: pointerData.bits(count: 48))
-            let crc = convertToInt(uint8Array: pointerData.bits(count: 32))
+            // Next 32 bits are crc (which currently is not checked).
+            let _ = convertToInt(uint8Array: pointerData.bits(count: 32))
 
             if blockType == 0x314159265359 {
                 try out.append(decodeHuffmanBlock(data: pointerData))
             } else if blockType == 0x177245385090 {
+                // TODO: Decide, if skipping is necessary
                 pointerData.skipUntilNextByte()
+                break
             } else {
                 throw BZip2Error.WrongBlockType
             }
@@ -73,7 +79,57 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private func decodeHuffmanBlock(data: DataWithPointer) throws -> Data {
+    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> Data {
+        let isRandomized = data.bit()
+        guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
+
+        let pointer = convertToInt(uint8Array: data.bits(count: 24))
+
+        func computeUsed() -> [Bool] {
+            let huffmanUsedMap = convertToInt(uint8Array: data.bits(count: 16))
+            var mapMask = 1 << 15
+            var used: [Bool] = []
+            while mapMask > 0 {
+                if huffmanUsedMap & mapMask > 0 {
+                    let huffmanUsedBitmap = convertToInt(uint8Array: data.bits(count: 16))
+                    var bitMask = 1 << 15
+                    while bitMask > 0 {
+                        used.append(huffmanUsedBitmap & bitMask > 0)
+                        bitMask >>= 1
+                    }
+                } else {
+                    used.append(contentsOf: Array(repeating: false, count: 16))
+                }
+                mapMask >>= 1
+            }
+            return used
+        }
+
+        let used = computeUsed()
+
+        let huffmanGroups = convertToInt(uint8Array: data.bits(count: 3))
+        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.WrongHuffmanGroups }
+
+        func computeSelectorsList() throws -> [Int] {
+            let selectorsUsed = convertToInt(uint8Array: data.bits(count: 15))
+
+            let mtf = 0..<huffmanGroups
+            var selectorsList: [Int] = []
+
+            for _ in 0..<selectorsUsed {
+                var c = 0
+                while data.bit() > 0 {
+                    c += 1
+                    guard c < huffmanGroups else { throw BZip2Error.WrongSelector }
+                }
+                if c >= 0 {
+
+                }
+            }
+
+            return selectorsList
+        }
+
         return Data()
     }
 
