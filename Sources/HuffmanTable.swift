@@ -28,9 +28,6 @@ class HuffmanTable: CustomStringConvertible {
 
     var lengths: [HuffmanLength]
 
-    let minBits: Int
-    let maxBits: Int
-
     var description: String {
         return self.lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
     }
@@ -50,7 +47,6 @@ class HuffmanTable: CustomStringConvertible {
             }
             start = finish
             bits = endbits
-            if endbits == -1 { break } // TODO: Check if this line is unnecessary
         }
         // Sort the lengths' array so finding of symbols will be more efficient
         self.lengths = newLengths.sorted()
@@ -83,12 +79,6 @@ class HuffmanTable: CustomStringConvertible {
             }
             self.lengths[index].symbol = symbol
             self.lengths[index].reversedSymbol = reverse(bits: loopBits, in: symbol)
-        }
-
-        // Finds minimum and maximum bits in the entire table of lengths
-        // TODO: Do we actually need this?
-        (self.minBits, self.maxBits) = self.lengths.reduce((16, -1)) {
-            return (min($0.0, $1.bits), max($0.1, $1.bits))
         }
     }
 
