@@ -14,7 +14,7 @@ Secondly, if you are a Swift developer and you want to compress/decompress somet
 you have to use either wrapper around system libraries (which is probably written in Objective-C)
 or you have to use built-in Compression framework.
 You might think that last option is what you need, but, frankly
-that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms. 
+that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms.
 And yes, it is also in Objective-C.
 
 And here comes SWCompression: no Objective-C, pure Swift.
@@ -31,6 +31,8 @@ By the way, it seems like GZip and Deflate decompressor implementations are **sp
 
 Installation
 ----------------
+
+SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.
 
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
@@ -89,6 +91,9 @@ Future plans
 -------------
 - Performance improvement.
 - BZip2 decompression support.
+- LZMA decompression.
+- XZ decompression.
+- Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
 - Something else...
