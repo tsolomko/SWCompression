@@ -26,6 +26,8 @@ public enum BZip2Error: Error {
     case RandomizedBlock
     case WrongHuffmanGroups
     case WrongSelector
+    case WrongHuffmanLengthCode
+    case SymbolNotFound
 }
 
 /// Provides function to decompress data, which were compressed using BZip2
@@ -113,7 +115,7 @@ public class BZip2: DecompressionAlgorithm {
         func computeSelectorsList() throws -> [Int] {
             let selectorsUsed = data.intFromBits(count: 15)
 
-            let mtf = 0..<huffmanGroups
+            var mtf: [Int] = Array(0..<huffmanGroups)
             var selectorsList: [Int] = []
 
             for _ in 0..<selectorsUsed {
@@ -123,11 +125,90 @@ public class BZip2: DecompressionAlgorithm {
                     guard c < huffmanGroups else { throw BZip2Error.WrongSelector }
                 }
                 if c >= 0 {
-
+                    let el = mtf.remove(at: c)
+                    mtf.insert(el, at: 0)
                 }
+                selectorsList.append(mtf[0])
             }
 
             return selectorsList
+        }
+
+        let selectorsList = try computeSelectorsList()
+        let symbolsInUse = used.reduce(0) { $0 + ($1 ? 1 : 0) }
+
+        func computeTables() throws -> [HuffmanTable] {
+            var tables: [HuffmanTable] = []
+            for _ in 0..<huffmanGroups {
+                var length = data.intFromBits(count: 5)
+                var lengths: [Int] = []
+                for _ in 0..<symbolsInUse {
+                    guard length >= 0 && length <= 20 else { throw BZip2Error.WrongHuffmanLengthCode }
+                    while data.bit() > 0 {
+                        length -= (Int(data.bit() * 2) - 1)
+                    }
+                    lengths.append(length)
+                }
+                let codes = HuffmanTable(lengthsToOrder: lengths)
+                tables.append(codes)
+            }
+
+            return tables
+        }
+
+        let tables = try computeTables()
+        var favourites = try used.enumerated().reduce([]) { (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
+            if next.element {
+                var newResult = partialResult
+                newResult.append(UInt8(truncatingBitPattern: UInt(next.offset)))
+                return newResult
+            } else {
+                return partialResult
+            }
+        }
+
+        var selectorPointer = 0
+        var decoded = 0
+        var repeat_ = 0
+        var repeatPower = 0
+        var buffer = Data()
+        var t: HuffmanTable?
+
+        while true {
+            decoded -= 1
+            if decoded <= 0 {
+                decoded = 50
+                if selectorPointer <= selectorsList.count {
+                    t = tables[selectorsList[selectorPointer]]
+                    selectorPointer += 1
+                }
+            }
+
+            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false) else {
+                throw BZip2Error.SymbolNotFound
+            }
+            data.rewind(bitsCount: 24 - symbolLength.bits)
+            let symbol = symbolLength.code
+            if symbol == 1 && symbol == 0 {
+                if repeat_ == 0 {
+                    repeatPower = 1
+                }
+                repeat_ += repeatPower << symbol
+                repeatPower <<= 1
+                continue
+            } else if repeat_ > 0 {
+                buffer.append(Array(repeating: favourites[0], count: repeat_), count: repeat_)
+                repeat_ = 0
+            }
+            if symbol == symbolsInUse - 1 {
+                break
+            } else {
+                let o = favourites[symbol - 1]
+                let el = favourites.remove(at: symbol - 1)
+                favourites.insert(el, at: 0)
+                buffer.append(o)
+            }
+
         }
 
         return Data()
