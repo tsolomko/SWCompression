@@ -50,10 +50,10 @@ public class BZip2: DecompressionAlgorithm {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
 
-        let method = convertToInt(uint8Array: pointerData.bits(count: 8))
+        let method = pointerData.intFromBits(count: 8)
         guard method == 104 else { throw BZip2Error.WrongCompressionMethod }
 
-        var blockSize = convertToInt(uint8Array: pointerData.bits(count: 8))
+        var blockSize = pointerData.intFromBits(count: 8)
         if blockSize >= 49 && blockSize <= 57 {
             blockSize -= 48
         } else {
@@ -61,9 +61,9 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         while true {
-            let blockType = convertToInt(uint8Array: pointerData.bits(count: 48))
+            let blockType = pointerData.intFromBits(count: 48)
             // Next 32 bits are crc (which currently is not checked).
-            let _ = convertToInt(uint8Array: pointerData.bits(count: 32))
+            let _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
                 try out.append(decodeHuffmanBlock(data: pointerData))
@@ -83,15 +83,15 @@ public class BZip2: DecompressionAlgorithm {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
-        let pointer = convertToInt(uint8Array: data.bits(count: 24))
+        let pointer = data.intFromBits(count: 24)
 
         func computeUsed() -> [Bool] {
-            let huffmanUsedMap = convertToInt(uint8Array: data.bits(count: 16))
+            let huffmanUsedMap = data.intFromBits(count: 16)
             var mapMask = 1 << 15
             var used: [Bool] = []
             while mapMask > 0 {
                 if huffmanUsedMap & mapMask > 0 {
-                    let huffmanUsedBitmap = convertToInt(uint8Array: data.bits(count: 16))
+                    let huffmanUsedBitmap = data.intFromBits(count: 16)
                     var bitMask = 1 << 15
                     while bitMask > 0 {
                         used.append(huffmanUsedBitmap & bitMask > 0)
@@ -107,11 +107,11 @@ public class BZip2: DecompressionAlgorithm {
 
         let used = computeUsed()
 
-        let huffmanGroups = convertToInt(uint8Array: data.bits(count: 3))
+        let huffmanGroups = data.intFromBits(count: 3)
         guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.WrongHuffmanGroups }
 
         func computeSelectorsList() throws -> [Int] {
-            let selectorsUsed = convertToInt(uint8Array: data.bits(count: 15))
+            let selectorsUsed = data.intFromBits(count: 15)
 
             let mtf = 0..<huffmanGroups
             var selectorsList: [Int] = []

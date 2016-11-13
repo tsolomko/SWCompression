@@ -58,9 +58,9 @@ public class Deflate: DecompressionAlgorithm {
                 pointerData.skipUntilNextByte()
 
                 /// Length of the uncompressed data.
-                let length = convertToInt(uint8Array: pointerData.bits(count: 16))
+                let length = pointerData.intFromBits(count: 16)
                 /// 1-complement of the length.
-                let nlength = convertToInt(uint8Array: pointerData.bits(count: 16))
+                let nlength = pointerData.intFromBits(count: 16)
                 // Check if lengths are OK (nlength should be a 1-complement of length).
                 // TODO: Rename WrongBlockLengths to WrongUncompressedBlockLengths (or something else)
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
@@ -90,18 +90,17 @@ public class Deflate: DecompressionAlgorithm {
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
 
                     /// Number of literals codes.
-                    let literals = convertToInt(uint8Array: pointerData.bits(count: 5)) + 257
+                    let literals = pointerData.intFromBits(count: 5) + 257
                     /// Number of distances codes.
-                    let distances = convertToInt(uint8Array: pointerData.bits(count: 5)) + 1
+                    let distances = pointerData.intFromBits(count: 5) + 1
                     /// Number of code lengths codes.
-                    let codeLengthsLength = convertToInt(uint8Array: pointerData.bits(count: 4)) + 4
+                    let codeLengthsLength = pointerData.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
                     // Moreover, they are stored in a very specific order (defined by HuffmanTable.Constants.codeLengthOrders).
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] =
-                            convertToInt(uint8Array: pointerData.bits(count: 3))
+                        lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
                     }
                     /// Huffman table for code lengths. Each code in the main alphabets is coded with this table.
                     let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
@@ -126,17 +125,17 @@ public class Deflate: DecompressionAlgorithm {
                         } else if symbol == 16 {
                             // Copy previous code length 3 to 6 times.
                             // Next two bits show how many times we need to copy.
-                            count = convertToInt(uint8Array: pointerData.bits(count: 2)) + 3
+                            count = pointerData.intFromBits(count: 2) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
                             // Repeat code length 0 for 3 to 10 times.
                             // Next three bits show how many times we need to copy.
-                            count = convertToInt(uint8Array: pointerData.bits(count: 3)) + 3
+                            count = pointerData.intFromBits(count: 3) + 3
                             what = 0
                         } else if symbol == 18 {
                             // Put code length 0 in table 11 to 138 times.
                             // Next seven bits show how many times we need to do this.
-                            count = convertToInt(uint8Array: pointerData.bits(count: 7)) + 11
+                            count = pointerData.intFromBits(count: 7) + 11
                             what = 0
                         } else {
                             throw DeflateError.HuffmanTableError
@@ -175,7 +174,7 @@ public class Deflate: DecompressionAlgorithm {
                             0 : (((nextSymbol - 257) >> 2) - 1)
                         // Actually, nextSymbol is not a starting value of length but an index for special array of starting values.
                         var length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
-                            convertToInt(uint8Array: pointerData.bits(count: extraLength))
+                            pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
                         guard let distanceLength = mainDistances.findNextSymbol(in: pointerData.bits(count: 24)) else {
@@ -191,7 +190,7 @@ public class Deflate: DecompressionAlgorithm {
                             let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                             // And yes, distanceCode is not a first part of distance but rather an index for special array.
                             let distance = HuffmanTable.Constants.distanceBase[distanceCode] +
-                                convertToInt(uint8Array: pointerData.bits(count: extraDistance))
+                                pointerData.intFromBits(count: extraDistance)
 
                             // We should repeat last 'distance' amount of data.
                             // The amount of times we do this is length // distance.

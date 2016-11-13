@@ -45,6 +45,22 @@ class DataWithPointer {
         return array
     }
 
+    func intFromBits(count: Int) -> Int {
+        guard count > 0 else { return 0 }
+        var result = 0
+        for i in 0..<count {
+            let currentIndex = 8 * (index + 1) - bitShift - 1
+            result += Int(pow(Double(2), Double(i))) *
+                Int(bitPattern: UInt(CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+            self.bitShift += 1
+            if self.bitShift >= 8 {
+                self.bitShift = 0
+                self.index += 1
+            }
+        }
+        return result
+    }
+
     func bit() -> UInt8 {
         return self.bits(count: 1).first!
     }
