@@ -85,7 +85,7 @@ public class BZip2: DecompressionAlgorithm {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
-        let pointer = data.intFromBits(count: 24)
+        var pointer = data.intFromBits(count: 24)
 
         func computeUsed() -> [Bool] {
             let huffmanUsedMap = data.intFromBits(count: 16)
@@ -208,10 +208,51 @@ public class BZip2: DecompressionAlgorithm {
                 favourites.insert(el, at: 0)
                 buffer.append(o)
             }
-
         }
 
-        return Data()
+        func bwt(transform data: Data) -> [Int] {
+            let bytes = data.toArray(type: UInt8.self).sorted()
+            var base: [Int] = Array(repeating: -1, count: data.count)
+            for i in 0..<256 {
+                base[i] = bytes.index(of: UInt8(truncatingBitPattern: UInt(i))) ?? -1
+            }
+
+            var pointers: [Int] = Array(repeating: -1, count: data.count)
+            for (i, char) in bytes.enumerated() {
+                pointers[base[char.toInt()]] = i
+                base[char.toInt()] += 1
+            }
+
+            return pointers
+        }
+
+        func bwt(reverse data: Data, end: inout Int) -> Data {
+            var reversed = Data()
+            if data.count > 0 {
+                let T = bwt(transform: data)
+                for _ in 0..<data.count {
+                    end = T[end]
+                    reversed.append(data[end])
+                }
+            }
+            return reversed
+        }
+
+        let nt = bwt(reverse: buffer, end: &pointer)
+        var i = 0
+        var out = Data()
+        while i < nt.count {
+            if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
+                let sCount = nt[i + 4].toInt() + 4
+                out.append(Array(repeating: nt[i], count: sCount), count: sCount)
+                i += 5
+            } else {
+                out.append(nt[i])
+                i += 1
+            }
+        }
+
+        return out
     }
 
 }
