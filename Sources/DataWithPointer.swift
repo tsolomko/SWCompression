@@ -14,9 +14,9 @@ class DataWithPointer {
     /// Only needed for creation of bitVector in initData()
     let data: Data
     
-    private(set) var bitVector: CFBitVector?
-    private(set) var index: Int
-    private(set) var bitShift: Int
+    fileprivate(set) var bitVector: CFBitVector?
+    fileprivate(set) var index: Int
+    fileprivate(set) var bitShift: Int
 
     init(data: Data) {
         self.data = data
@@ -58,6 +58,7 @@ class DataWithPointer {
                 self.index += 1
             }
         }
+
         return result
     }
 
@@ -91,5 +92,42 @@ class DataWithPointer {
         }
     }
 
+}
+
+class DataWithStraightPointer: DataWithPointer {
+
+    override func bits(count: Int) -> [UInt8] {
+        guard count > 0 else { return [] }
+
+        var array: [UInt8] = []
+        for _ in 0..<count {
+            let currentIndex = 8 * index + bitShift
+            array.append(UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+            self.bitShift += 1
+            if self.bitShift >= 8 {
+                self.bitShift = 0
+                self.index += 1
+            }
+        }
+
+        return array
+    }
+
+    override func intFromBits(count: Int) -> Int {
+        guard count > 0 else { return 0 }
+        var result = 0
+        for i in 0..<count {
+            let currentIndex = 8 * index + bitShift
+            result += Int(pow(Double(2), Double(count - i - 1))) *
+                Int(bitPattern: UInt(CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+            self.bitShift += 1
+            if self.bitShift >= 8 {
+                self.bitShift = 0
+                self.index += 1
+            }
+        }
+        
+        return result
+    }
 
 }
