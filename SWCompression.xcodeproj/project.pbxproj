@@ -54,9 +54,14 @@
 		066204851DD9840000353639 /* test1.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 066204791DD9840000353639 /* test1.zlib */; };
 		066204861DD9840000353639 /* test2.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0662047A1DD9840000353639 /* test2.zlib */; };
 		066204871DD9840000353639 /* test3.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0662047B1DD9840000353639 /* test3.zlib */; };
+		0680E1A01DDA2C3F005C05EB /* test3.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0680E19E1DDA2C3F005C05EB /* test3.gz */; };
+		0680E1A11DDA2C3F005C05EB /* test2.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0680E19F1DDA2C3F005C05EB /* test2.gz */; };
+		0680E1A41DDA2C5B005C05EB /* test4.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A21DDA2C5B005C05EB /* test4.zlib */; };
+		0680E1A51DDA2C5B005C05EB /* test5.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A31DDA2C5B005C05EB /* test5.zlib */; };
+		0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */; };
+		0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B21DDA3D0A005C05EB /* GzipTests.swift */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
-		06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */; };
 		06BE1AD91DB410F100EE0F59 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06E961CA1DBD5FA1008C47F2 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */; };
 		06FED40C1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
@@ -102,12 +107,17 @@
 		066204791DD9840000353639 /* test1.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.zlib; sourceTree = "<group>"; };
 		0662047A1DD9840000353639 /* test2.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.zlib; sourceTree = "<group>"; };
 		0662047B1DD9840000353639 /* test3.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.zlib; sourceTree = "<group>"; };
+		0680E19E1DDA2C3F005C05EB /* test3.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test3.gz; sourceTree = "<group>"; };
+		0680E19F1DDA2C3F005C05EB /* test2.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test2.gz; sourceTree = "<group>"; };
+		0680E1A21DDA2C5B005C05EB /* test4.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.zlib; sourceTree = "<group>"; };
+		0680E1A31DDA2C5B005C05EB /* test5.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.zlib; sourceTree = "<group>"; };
+		0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
+		0680E1B21DDA3D0A005C05EB /* GzipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipTests.swift; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
 		06BE1ACC1DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWCompressionTests.swift; sourceTree = "<group>"; };
 		06BE1AD81DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06E961C91DBD5FA1008C47F2 /* HuffmanTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanTable.swift; sourceTree = "<group>"; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
@@ -156,10 +166,10 @@
 		0662046B1DD983FF00353639 /* Test Files */ = {
 			isa = PBXGroup;
 			children = (
+				066204771DD9840000353639 /* performance_test1.gz */,
 				0662046C1DD983FF00353639 /* Answers */,
 				066204721DD9840000353639 /* BZip2 */,
 				066204731DD9840000353639 /* GZip */,
-				066204771DD9840000353639 /* performance_test1.gz */,
 				066204781DD9840000353639 /* Zlib */,
 			);
 			path = "Test Files";
@@ -188,6 +198,8 @@
 			isa = PBXGroup;
 			children = (
 				066204741DD9840000353639 /* test1.gz */,
+				0680E19F1DDA2C3F005C05EB /* test2.gz */,
+				0680E19E1DDA2C3F005C05EB /* test3.gz */,
 				066204751DD9840000353639 /* test4.gz */,
 				066204761DD9840000353639 /* test5.gz */,
 			);
@@ -200,6 +212,8 @@
 				066204791DD9840000353639 /* test1.zlib */,
 				0662047A1DD9840000353639 /* test2.zlib */,
 				0662047B1DD9840000353639 /* test3.zlib */,
+				0680E1A21DDA2C5B005C05EB /* test4.zlib */,
+				0680E1A31DDA2C5B005C05EB /* test5.zlib */,
 			);
 			path = Zlib;
 			sourceTree = "<group>";
@@ -250,9 +264,10 @@
 			isa = PBXGroup;
 			children = (
 				0662046B1DD983FF00353639 /* Test Files */,
-				06BE1AD61DB410F100EE0F59 /* SWCompressionTests.swift */,
-				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
+				0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */,
+				0680E1B21DDA3D0A005C05EB /* GzipTests.swift */,
 				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
+				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
 				06BE1AD81DB410F100EE0F59 /* Info.plist */,
 			);
 			path = Tests;
@@ -481,14 +496,18 @@
 				066204871DD9840000353639 /* test3.zlib in Resources */,
 				066204821DD9840000353639 /* test4.gz in Resources */,
 				066204811DD9840000353639 /* test1.gz in Resources */,
+				0680E1A11DDA2C3F005C05EB /* test2.gz in Resources */,
 				066204841DD9840000353639 /* performance_test1.gz in Resources */,
 				0662047E1DD9840000353639 /* test3.answer in Resources */,
+				0680E1A01DDA2C3F005C05EB /* test3.gz in Resources */,
 				0662047D1DD9840000353639 /* test2.answer in Resources */,
 				066204831DD9840000353639 /* test5.gz in Resources */,
 				066204861DD9840000353639 /* test2.zlib in Resources */,
 				0662047F1DD9840000353639 /* test4.answer in Resources */,
 				0662047C1DD9840000353639 /* test1.answer in Resources */,
 				066204851DD9840000353639 /* test1.zlib in Resources */,
+				0680E1A41DDA2C5B005C05EB /* test4.zlib in Resources */,
+				0680E1A51DDA2C5B005C05EB /* test5.zlib in Resources */,
 				066204801DD9840000353639 /* test5.answer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -564,8 +583,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06BE1AD71DB410F100EE0F59 /* SWCompressionTests.swift in Sources */,
 				061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */,
+				0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */,
+				0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */,
 				0661F06F1DC92391006C3D35 /* PerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
