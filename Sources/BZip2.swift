@@ -17,6 +17,7 @@ import Foundation
  - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
  */
 public enum BZip2Error: Error {
+    case WrongMagic
     /// Compression method was not type 'h' (not Huffman).
     case WrongCompressionMethod
     /// Unknown block size (not from '0' to '9').
@@ -51,6 +52,8 @@ public class BZip2: DecompressionAlgorithm {
 
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
+        let magic = pointerData.intFromBits(count: 16)
+        guard magic == 0x425a else { throw BZip2Error.WrongMagic }
 
         let method = pointerData.intFromBits(count: 8)
         guard method == 104 else { throw BZip2Error.WrongCompressionMethod }
