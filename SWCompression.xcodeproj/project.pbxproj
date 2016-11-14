@@ -58,8 +58,14 @@
 		0680E1A11DDA2C3F005C05EB /* test2.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0680E19F1DDA2C3F005C05EB /* test2.gz */; };
 		0680E1A41DDA2C5B005C05EB /* test4.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A21DDA2C5B005C05EB /* test4.zlib */; };
 		0680E1A51DDA2C5B005C05EB /* test5.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A31DDA2C5B005C05EB /* test5.zlib */; };
+		0680E1AB1DDA2C90005C05EB /* test1.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A61DDA2C90005C05EB /* test1.bz2 */; };
+		0680E1AC1DDA2C90005C05EB /* test2.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A71DDA2C90005C05EB /* test2.bz2 */; };
+		0680E1AD1DDA2C90005C05EB /* test3.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A81DDA2C90005C05EB /* test3.bz2 */; };
+		0680E1AE1DDA2C90005C05EB /* test4.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1A91DDA2C90005C05EB /* test4.bz2 */; };
+		0680E1AF1DDA2C90005C05EB /* test5.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 0680E1AA1DDA2C90005C05EB /* test5.bz2 */; };
 		0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */; };
 		0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B21DDA3D0A005C05EB /* GzipTests.swift */; };
+		0680E1B51DDA4076005C05EB /* Bzip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */; };
 		06AC9B0D1DC1027900A5066B /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06BE1AD91DB410F100EE0F59 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06BE1ACB1DB410F100EE0F59 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -111,8 +117,14 @@
 		0680E19F1DDA2C3F005C05EB /* test2.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test2.gz; sourceTree = "<group>"; };
 		0680E1A21DDA2C5B005C05EB /* test4.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.zlib; sourceTree = "<group>"; };
 		0680E1A31DDA2C5B005C05EB /* test5.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.zlib; sourceTree = "<group>"; };
+		0680E1A61DDA2C90005C05EB /* test1.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.bz2; sourceTree = "<group>"; };
+		0680E1A71DDA2C90005C05EB /* test2.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.bz2; sourceTree = "<group>"; };
+		0680E1A81DDA2C90005C05EB /* test3.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.bz2; sourceTree = "<group>"; };
+		0680E1A91DDA2C90005C05EB /* test4.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.bz2; sourceTree = "<group>"; };
+		0680E1AA1DDA2C90005C05EB /* test5.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.bz2; sourceTree = "<group>"; };
 		0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
 		0680E1B21DDA3D0A005C05EB /* GzipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipTests.swift; sourceTree = "<group>"; };
+		0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bzip2Tests.swift; sourceTree = "<group>"; };
 		06AC9B0C1DC1027900A5066B /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1ACB1DB410F100EE0F59 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -190,6 +202,11 @@
 		066204721DD9840000353639 /* BZip2 */ = {
 			isa = PBXGroup;
 			children = (
+				0680E1A61DDA2C90005C05EB /* test1.bz2 */,
+				0680E1A71DDA2C90005C05EB /* test2.bz2 */,
+				0680E1A81DDA2C90005C05EB /* test3.bz2 */,
+				0680E1A91DDA2C90005C05EB /* test4.bz2 */,
+				0680E1AA1DDA2C90005C05EB /* test5.bz2 */,
 			);
 			path = BZip2;
 			sourceTree = "<group>";
@@ -266,6 +283,7 @@
 				0662046B1DD983FF00353639 /* Test Files */,
 				0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */,
 				0680E1B21DDA3D0A005C05EB /* GzipTests.swift */,
+				0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */,
 				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
 				0661F06E1DC92391006C3D35 /* PerformanceTests.swift */,
 				06BE1AD81DB410F100EE0F59 /* Info.plist */,
@@ -496,8 +514,10 @@
 				066204871DD9840000353639 /* test3.zlib in Resources */,
 				066204821DD9840000353639 /* test4.gz in Resources */,
 				066204811DD9840000353639 /* test1.gz in Resources */,
+				0680E1AD1DDA2C90005C05EB /* test3.bz2 in Resources */,
 				0680E1A11DDA2C3F005C05EB /* test2.gz in Resources */,
 				066204841DD9840000353639 /* performance_test1.gz in Resources */,
+				0680E1AB1DDA2C90005C05EB /* test1.bz2 in Resources */,
 				0662047E1DD9840000353639 /* test3.answer in Resources */,
 				0680E1A01DDA2C3F005C05EB /* test3.gz in Resources */,
 				0662047D1DD9840000353639 /* test2.answer in Resources */,
@@ -505,10 +525,13 @@
 				066204861DD9840000353639 /* test2.zlib in Resources */,
 				0662047F1DD9840000353639 /* test4.answer in Resources */,
 				0662047C1DD9840000353639 /* test1.answer in Resources */,
+				0680E1AF1DDA2C90005C05EB /* test5.bz2 in Resources */,
 				066204851DD9840000353639 /* test1.zlib in Resources */,
 				0680E1A41DDA2C5B005C05EB /* test4.zlib in Resources */,
 				0680E1A51DDA2C5B005C05EB /* test5.zlib in Resources */,
+				0680E1AE1DDA2C90005C05EB /* test4.bz2 in Resources */,
 				066204801DD9840000353639 /* test5.answer in Resources */,
+				0680E1AC1DDA2C90005C05EB /* test2.bz2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,6 +606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0680E1B51DDA4076005C05EB /* Bzip2Tests.swift in Sources */,
 				061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */,
 				0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */,
 				0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */,

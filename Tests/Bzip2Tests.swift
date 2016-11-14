@@ -3,33 +3,140 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 14.11.16.
-//  Copyright © 2016 tsolomko. All rights reserved.
+//  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
 
 import XCTest
+@testable import SWCompression
 
 class Bzip2Tests: XCTestCase {
-
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
+    static let testType: String = "bz2"
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testBzip2_1() {
+        let testName = "test1"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
         }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
+            XCTFail("Failed to convert decompressed data to string")
+            return
+        }
+
+        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+    }
+
+    func testBzip2_2() {
+        let testName = "test1"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
+            XCTFail("Failed to convert decompressed data to string")
+            return
+        }
+
+        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+    }
+
+    func testBzip2_3() {
+        let testName = "test3"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
+            XCTFail("Failed to convert decompressed data to string")
+            return
+        }
+
+        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+    }
+
+    func testBzip2_4() {
+        let testName = "test4"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
+            XCTFail("Failed to convert decompressed data to string")
+            return
+        }
+
+        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+    }
+
+    func testBzip2_5() {
+        let testName = "test5"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
+            XCTFail("Failed to convert decompressed data to string")
+            return
+        }
+
+        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
     }
 
 }
