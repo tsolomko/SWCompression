@@ -139,7 +139,7 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         let selectorsList = try computeSelectorsList()
-        let symbolsInUse = used.reduce(0) { $0 + ($1 ? 1 : 0) }
+        let symbolsInUse = used.filter { $0 }.count + 2
 
         func computeTables() throws -> [HuffmanTable] {
             var tables: [HuffmanTable] = []
@@ -179,6 +179,7 @@ public class BZip2: DecompressionAlgorithm {
         var t: HuffmanTable?
 
         while true {
+            // TODO: WTF is going on with `decoded`?
             decoded -= 1
             if decoded <= 0 {
                 decoded = 50
@@ -188,12 +189,12 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false) else {
+            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false, straightBitOrder: true) else {
                 throw BZip2Error.SymbolNotFound
             }
             data.rewind(bitsCount: 24 - symbolLength.bits)
             let symbol = symbolLength.code
-            if symbol == 1 && symbol == 0 {
+            if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1
                 }
@@ -215,10 +216,12 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         func bwt(transform data: Data) -> [Int] {
-            let bytes = data.toArray(type: UInt8.self).sorted()
-            var base: [Int] = Array(repeating: -1, count: data.count)
+            // TODO: Check performance with and without sorting.
+            let bytes = data.toArray(type: UInt8.self)
+            let sortedBytes = bytes.sorted()
+            var base: [Int] = Array(repeating: -1, count: 256)
             for i in 0..<256 {
-                base[i] = bytes.index(of: UInt8(truncatingBitPattern: UInt(i))) ?? -1
+                base[i] = sortedBytes.index(of: UInt8(truncatingBitPattern: UInt(i))) ?? -1
             }
 
             var pointers: [Int] = Array(repeating: -1, count: data.count)
