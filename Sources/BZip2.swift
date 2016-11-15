@@ -175,11 +175,10 @@ public class BZip2: DecompressionAlgorithm {
         var decoded = 0
         var repeat_ = 0
         var repeatPower = 0
-        var buffer = Data()
+        var buffer: [UInt8] = []
         var t: HuffmanTable?
 
         while true {
-            // TODO: WTF is going on with `decoded`?
             decoded -= 1
             if decoded <= 0 {
                 decoded = 50
@@ -202,7 +201,7 @@ public class BZip2: DecompressionAlgorithm {
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
-                buffer.append(Array(repeating: favourites[0], count: repeat_), count: repeat_)
+                buffer.append(contentsOf: Array(repeating: favourites[0], count: repeat_))
                 repeat_ = 0
             }
             if symbol == symbolsInUse - 1 {
@@ -215,16 +214,14 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
 
-        func bwt(transform data: Data) -> [Int] {
-            // TODO: Check performance with and without sorting.
-            let bytes = data.toArray(type: UInt8.self)
+        func bwt(transform bytes: [UInt8]) -> [Int] {
             let sortedBytes = bytes.sorted()
             var base: [Int] = Array(repeating: -1, count: 256)
             for i in 0..<256 {
                 base[i] = sortedBytes.index(of: UInt8(truncatingBitPattern: UInt(i))) ?? -1
             }
 
-            var pointers: [Int] = Array(repeating: -1, count: data.count)
+            var pointers: [Int] = Array(repeating: -1, count: bytes.count)
             for (i, char) in bytes.enumerated() {
                 pointers[base[char.toInt()]] = i
                 base[char.toInt()] += 1
@@ -233,16 +230,16 @@ public class BZip2: DecompressionAlgorithm {
             return pointers
         }
 
-        func bwt(reverse data: Data, end: inout Int) -> Data {
-            var reversed = Data()
-            if data.count > 0 {
-                let T = bwt(transform: data)
-                for _ in 0..<data.count {
+        func bwt(reverse bytes: [UInt8], end: inout Int) -> [UInt8] {
+            var resultBytes: [UInt8] = []
+            if bytes.count > 0 {
+                let T = bwt(transform: bytes)
+                for _ in 0..<bytes.count {
                     end = T[end]
-                    reversed.append(data[end])
+                    resultBytes.append(bytes[end])
                 }
             }
-            return reversed
+            return resultBytes
         }
 
         let nt = bwt(reverse: buffer, end: &pointer)
