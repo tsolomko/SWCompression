@@ -51,7 +51,7 @@ public class BZip2: DecompressionAlgorithm {
         var out = Data()
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithStraightPointer(data: data)
+        let pointerData = DataWithPointer(data: data, bitOrder: .straight)
 
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.WrongMagic }
@@ -85,7 +85,7 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decodeHuffmanBlock(data: DataWithStraightPointer) throws -> Data {
+    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> Data {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
@@ -189,7 +189,7 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false, straightBitOrder: true) else {
+            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false, bitOrder: .straight) else {
                 throw BZip2Error.SymbolNotFound
             }
             data.rewind(bitsCount: 24 - symbolLength.bits)

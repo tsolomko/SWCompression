@@ -73,10 +73,16 @@ extension UInt16 {
 
 }
 
-func convertToInt(uint8Array array: [UInt8], straightBitOrder: Bool = false) -> Int {
+func convertToInt(uint8Array array: [UInt8], bitOrder: BitOrder = .reversed) -> Int {
     var result = 0
     for i in 0..<array.count {
-        let power = straightBitOrder ? array.count - i - 1 : i
+        let power: Int
+        switch bitOrder {
+        case .straight:
+            power = array.count - i - 1
+        case .reversed:
+            power = i
+        }
         result += Int(pow(Double(2), Double(power))) * Int(bitPattern: UInt(array[i]))
     }
     return result

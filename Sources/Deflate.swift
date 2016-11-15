@@ -46,7 +46,7 @@ public class Deflate: DecompressionAlgorithm {
         var out = Data()
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
         while true {
             /// Is this a last block?
