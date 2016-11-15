@@ -16,24 +16,16 @@ enum BitOrder {
 
 class DataWithPointer {
 
-    /// Only needed for creation of bitVector
-    let data: Data
-
     let bitOrder: BitOrder
-    
-    fileprivate(set) var bitVector: CFBitVector?
-    fileprivate(set) var index: Int
-    fileprivate(set) var bitShift: Int
+    let bitVector: CFBitVector
+    var index: Int
+    var bitShift: Int
 
     init(data: Data, bitOrder: BitOrder) {
-        self.data = data
         self.index = 0
         self.bitShift = 0
-        self.bitVector = nil
         self.bitOrder = bitOrder
-        data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) in
-            self.bitVector = CFBitVectorCreate(kCFAllocatorDefault, bytes, data.count * 8)
-        }
+        self.bitVector = CFBitVectorCreate(kCFAllocatorDefault, data.toArray(type: UInt8.self), data.count * 8)
     }
 
     func bits(count: Int) -> [UInt8] {
@@ -49,7 +41,7 @@ class DataWithPointer {
                 currentIndex = 8 * (index + 1) - bitShift - 1
             }
 
-            array.append(UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+            array.append(UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector, currentIndex)))
 
             self.bitShift += 1
             if self.bitShift >= 8 {
@@ -77,7 +69,7 @@ class DataWithPointer {
             }
 
             result += Int(pow(Double(2), Double(power))) *
-                Int(bitPattern: UInt(CFBitVectorGetBitAtIndex(self.bitVector!, currentIndex)))
+                Int(bitPattern: UInt(CFBitVectorGetBitAtIndex(self.bitVector, currentIndex)))
 
             self.bitShift += 1
             if self.bitShift >= 8 {
@@ -91,14 +83,6 @@ class DataWithPointer {
 
     func bit() -> UInt8 {
         return self.bits(count: 1).first!
-    }
-
-    /// Use with caution: not effective.
-    func data(ofBytes count: Data.Index) -> Data {
-        precondition(self.bitShift == 0, "Misaligned byte.")
-        let returnData = Data(data[index..<index+count])
-        index += count
-        return returnData
     }
 
     // MARK: Manipulations with index and bitShift
