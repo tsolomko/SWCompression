@@ -43,7 +43,7 @@ public class Deflate: DecompressionAlgorithm {
      */
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object for storing output data
-        var out = Data()
+        var out: [UInt8] = []
 
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
@@ -65,7 +65,9 @@ public class Deflate: DecompressionAlgorithm {
                 // TODO: Rename WrongBlockLengths to WrongUncompressedBlockLengths (or something else)
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
-                out.append(pointerData.data(ofBytes: length))
+                precondition(pointerData.bitShift == 0, "Misaligned byte.")
+                out.append(contentsOf: data.bytes(from: pointerData.index..<pointerData.index + length))
+                pointerData.index += length
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
@@ -162,7 +164,7 @@ public class Deflate: DecompressionAlgorithm {
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
-                        out.append(Data(bytes: [UInt8(truncatingBitPattern: UInt(nextSymbol))]))
+                        out.append(UInt8(truncatingBitPattern: UInt(nextSymbol)))
                     } else if nextSymbol == 256 {
                         // It is a symbol indicating the end of data.
                         break
@@ -196,14 +198,14 @@ public class Deflate: DecompressionAlgorithm {
                             // The amount of times we do this is length // distance.
                             // length actually indicates the amount of data we get from this nextSymbol.
                             while length > distance {
-                                out.append(Data(out[out.count - distance..<out.count]))
+                                out.append(contentsOf: out[out.count - distance..<out.count])
                                 length -= distance
                             }
                             // Now we deal with the remainings.
                             if length == distance {
-                                out.append(Data(out[out.count - distance..<out.count]))
+                                out.append(contentsOf: out[out.count - distance..<out.count])
                             } else {
-                                out.append(Data(out[out.count - distance..<out.count + length - distance]))
+                                out.append(contentsOf: out[out.count - distance..<out.count + length - distance])
                             }
                         } else {
                             throw DeflateError.HuffmanTableError
@@ -221,7 +223,7 @@ public class Deflate: DecompressionAlgorithm {
             if isLastBit == 1 { break }
         }
 
-        return out
+        return Data(bytes: out)
     }
 
 }
