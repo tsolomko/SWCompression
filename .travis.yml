@@ -1,6 +1,3 @@
-branches:
-- develop
-- master
 language: objective-c
 osx_image: xcode8
 xcode_project: SWCompression.xcodeproj
