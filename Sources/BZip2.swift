@@ -48,7 +48,7 @@ public class BZip2: DecompressionAlgorithm {
      */
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object for storing output data
-        var out = Data()
+        var out: [UInt8] = []
 
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data, bitOrder: .straight)
@@ -72,7 +72,7 @@ public class BZip2: DecompressionAlgorithm {
             let _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
-                try out.append(decodeHuffmanBlock(data: pointerData))
+                try out.append(contentsOf: decodeHuffmanBlock(data: pointerData))
             } else if blockType == 0x177245385090 {
                 // TODO: Decide, if skipping is necessary
                 pointerData.skipUntilNextByte()
@@ -82,10 +82,10 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
         
-        return out
+        return Data(bytes: out)
     }
 
-    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> Data {
+    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
@@ -244,11 +244,11 @@ public class BZip2: DecompressionAlgorithm {
 
         let nt = bwt(reverse: buffer, end: &pointer)
         var i = 0
-        var out = Data()
+        var out: [UInt8] = []
         while i < nt.count {
             if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
                 let sCount = nt[i + 4].toInt() + 4
-                out.append(Array(repeating: nt[i], count: sCount), count: sCount)
+                out.append(contentsOf: Array(repeating: nt[i], count: sCount))
                 i += 5
             } else {
                 out.append(nt[i])
