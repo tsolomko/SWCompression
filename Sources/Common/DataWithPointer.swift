@@ -31,8 +31,8 @@ class DataWithPointer {
     func bits(count: Int) -> [UInt8] {
         guard count > 0 else { return [] }
 
-        var array: [UInt8] = []
-        for _ in 0..<count {
+        var array: [UInt8] = Array(repeating: 0, count: count)
+        for i in 0..<count {
             let currentIndex: Int
             switch self.bitOrder {
             case .straight:
@@ -41,7 +41,7 @@ class DataWithPointer {
                 currentIndex = 8 * (index + 1) - bitShift - 1
             }
 
-            array.append(UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector, currentIndex)))
+            array[i] = UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector, currentIndex))
 
             self.bitShift += 1
             if self.bitShift >= 8 {
