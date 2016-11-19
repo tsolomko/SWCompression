@@ -21,9 +21,12 @@ And here comes SWCompression: no Objective-C, pure Swift.
 
 Features
 ----------------
-- Decompress data which were compressed with DEFLATE algorithm.
-- Extract data from GZip archives.
-- Unarchive zlib compressed data.
+- (De)compression algorithms:
+  - Deflate
+  - BZip2
+- Archives:
+  - GZip
+  - Zlib
 - Platform independent.
 - _Swift only_
 
@@ -37,9 +40,15 @@ SWCompression can be integrated into your project either using CocoaPods, Cartha
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
 
+Since 1.1.0 version of SWCompression there are several sub-podspecs
+if you need only parts of functionality of SWCompression.
+There are `pod 'SWCompression/GZip'`, `pod 'SWCompression/Zlib'`, `pod 'SWCompression/Deflate'` and `pod 'SWCompression/BZip2'` subspecs. You can add some or all of them instead of `pod 'SWCompression'`
+
 Also, do not forget to have `use_frameworks!` line in the Podfile.
 
 To complete installation, run `pod install`.
+
+_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. This subspec is included in other subspecs such as SWCompression/GZip and should not be specified directly in Podfile.
 
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
@@ -90,7 +99,6 @@ you are responsible for handling them.
 Future plans
 -------------
 - Performance improvement.
-- BZip2 decompression support.
 - LZMA decompression.
 - XZ decompression.
 - Tar unarchiving.
