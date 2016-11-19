@@ -113,24 +113,44 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
-//    func testGzip6() {
-//        let testName = "test6"
-//        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
-//            XCTFail("Failed to load test archive")
-//            return
-//        }
-//
-//        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-//            XCTFail("Failed to decompress")
-//            return
-//        }
-//
-//        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-//            XCTFail("Failed to get the answer")
-//            return
-//        }
-//
-//        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
-//    }
+    func testGzip6() {
+        let testName = "test6"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+    }
+
+    func testGzip7() {
+        let testName = "test7"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+    }
 
 }

@@ -133,4 +133,24 @@ class Bzip2Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
+    func testBzip2_7() {
+        let testName = "test7"
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+    }
+
 }
