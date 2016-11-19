@@ -175,7 +175,7 @@ public class Deflate: DecompressionAlgorithm {
                         let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
                             0 : (((nextSymbol - 257) >> 2) - 1)
                         // Actually, nextSymbol is not a starting value of length but an index for special array of starting values.
-                        var length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
+                        let length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
@@ -195,17 +195,17 @@ public class Deflate: DecompressionAlgorithm {
                                 pointerData.intFromBits(count: extraDistance)
 
                             // We should repeat last 'distance' amount of data.
-                            // The amount of times we do this is length // distance.
+                            // The amount of times we do this is round(length / distance).
                             // length actually indicates the amount of data we get from this nextSymbol.
-                            while length > distance {
-                                out.append(contentsOf: out[out.count - distance..<out.count])
-                                length -= distance
-                            }
+                            let repeatCount: Int = length / distance
+                            let arrayToRepeat = Array(repeating: out[out.count - distance..<out.count],
+                                                        count: repeatCount).flatMap { $0 }
+                            out.append(contentsOf: arrayToRepeat)
                             // Now we deal with the remainings.
-                            if length == distance {
+                            if length - distance * repeatCount == distance {
                                 out.append(contentsOf: out[out.count - distance..<out.count])
                             } else {
-                                out.append(contentsOf: out[out.count - distance..<out.count + length - distance])
+                                out.append(contentsOf: out[out.count - distance..<out.count + length - distance * (repeatCount + 1)])
                             }
                         } else {
                             throw DeflateError.HuffmanTableError
