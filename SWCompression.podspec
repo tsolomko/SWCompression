@@ -24,6 +24,31 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "v#{s.version}" }
 
-  s.source_files  = "Sources"
+  s.subspec 'Common' do |sp|
+    sp.public_header_files = 'Sources/Service/SWCompression.h'
+    sp.source_files  = "Sources/{Common,Service}/*.{swift,h}"
+  end
+
+  s.subspec 'Deflate' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.source_files = 'Sources/Deflate.swift'
+  end
+
+  s.subspec 'GZip' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.dependency 'SWCompression/Deflate'
+    sp.source_files = 'Sources/GZipArchive.swift'
+  end
+
+  s.subspec 'Zlib' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.dependency 'SWCompression/Deflate'
+    sp.source_files = 'Sources/ZlibArchive.swift'
+  end
+
+  s.subspec 'BZip2' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.source_files = 'Sources/BZip2.swift'
+  end
 
 end
