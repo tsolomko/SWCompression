@@ -75,6 +75,10 @@
 		06ACA6F01DDB975600451A5C /* test6.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06ACA6EF1DDB975600451A5C /* test6.answer */; };
 		06ACA6F21DDB976C00451A5C /* test6.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 06ACA6F11DDB976C00451A5C /* test6.zlib */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
+		06F463581DE082E70072CC2B /* test7.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06F463571DE082E70072CC2B /* test7.answer */; };
+		06F4635A1DE082F40072CC2B /* test7.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06F463591DE082F40072CC2B /* test7.bz2 */; };
+		06F4635C1DE082FE0072CC2B /* test7.gz in Resources */ = {isa = PBXBuildFile; fileRef = 06F4635B1DE082FE0072CC2B /* test7.gz */; };
+		06F4635E1DE083170072CC2B /* test7.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 06F4635D1DE083170072CC2B /* test7.zlib */; };
 		06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
 		06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
 		06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
@@ -140,6 +144,10 @@
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD81DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		06F463571DE082E70072CC2B /* test7.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.answer; sourceTree = "<group>"; };
+		06F463591DE082F40072CC2B /* test7.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.bz2; sourceTree = "<group>"; };
+		06F4635B1DE082FE0072CC2B /* test7.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test7.gz; sourceTree = "<group>"; };
+		06F4635D1DE083170072CC2B /* test7.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.zlib; sourceTree = "<group>"; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,6 +212,7 @@
 				066204701DD9840000353639 /* test4.answer */,
 				066204711DD9840000353639 /* test5.answer */,
 				06ACA6EF1DDB975600451A5C /* test6.answer */,
+				06F463571DE082E70072CC2B /* test7.answer */,
 			);
 			path = Answers;
 			sourceTree = "<group>";
@@ -217,6 +226,7 @@
 				0680E1A91DDA2C90005C05EB /* test4.bz2 */,
 				0680E1AA1DDA2C90005C05EB /* test5.bz2 */,
 				06ACA6EB1DDB974100451A5C /* test6.bz2 */,
+				06F463591DE082F40072CC2B /* test7.bz2 */,
 			);
 			path = BZip2;
 			sourceTree = "<group>";
@@ -230,6 +240,7 @@
 				066204751DD9840000353639 /* test4.gz */,
 				066204761DD9840000353639 /* test5.gz */,
 				06ACA6ED1DDB974D00451A5C /* test6.gz */,
+				06F4635B1DE082FE0072CC2B /* test7.gz */,
 			);
 			path = GZip;
 			sourceTree = "<group>";
@@ -243,6 +254,7 @@
 				0680E1A21DDA2C5B005C05EB /* test4.zlib */,
 				0680E1A31DDA2C5B005C05EB /* test5.zlib */,
 				06ACA6F11DDB976C00451A5C /* test6.zlib */,
+				06F4635D1DE083170072CC2B /* test7.zlib */,
 			);
 			path = Zlib;
 			sourceTree = "<group>";
@@ -545,9 +557,12 @@
 				06ACA6E91DDB966900451A5C /* test2.zlib in Resources */,
 				06ACA6E21DDB95D500451A5C /* test3.gz in Resources */,
 				0680E1AB1DDA2C90005C05EB /* test1.bz2 in Resources */,
+				06F4635C1DE082FE0072CC2B /* test7.gz in Resources */,
 				0662047E1DD9840000353639 /* test3.answer in Resources */,
 				0662047D1DD9840000353639 /* test2.answer in Resources */,
+				06F4635A1DE082F40072CC2B /* test7.bz2 in Resources */,
 				06ACA6F01DDB975600451A5C /* test6.answer in Resources */,
+				06F4635E1DE083170072CC2B /* test7.zlib in Resources */,
 				066204831DD9840000353639 /* test5.gz in Resources */,
 				0662047F1DD9840000353639 /* test4.answer in Resources */,
 				06ACA6E51DDB960200451A5C /* test2.bz2 in Resources */,
@@ -556,6 +571,7 @@
 				06ACA6EC1DDB974100451A5C /* test6.bz2 in Resources */,
 				0680E1AF1DDA2C90005C05EB /* test5.bz2 in Resources */,
 				066204851DD9840000353639 /* test1.zlib in Resources */,
+				06F463581DE082E70072CC2B /* test7.answer in Resources */,
 				0680E1A41DDA2C5B005C05EB /* test4.zlib in Resources */,
 				06ACA6F21DDB976C00451A5C /* test6.zlib in Resources */,
 				0680E1A51DDA2C5B005C05EB /* test5.zlib in Resources */,
