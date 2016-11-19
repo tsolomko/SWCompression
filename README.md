@@ -1,5 +1,5 @@
 # SWCompression
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression) [![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
 
 A framework which contains native (*written in Swift*)
 implementations of some compression algorithms.
@@ -14,16 +14,19 @@ Secondly, if you are a Swift developer and you want to compress/decompress somet
 you have to use either wrapper around system libraries (which is probably written in Objective-C)
 or you have to use built-in Compression framework.
 You might think that last option is what you need, but, frankly
-that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms. 
+that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms.
 And yes, it is also in Objective-C.
 
 And here comes SWCompression: no Objective-C, pure Swift.
 
 Features
 ----------------
-- Decompress data which were compressed with DEFLATE algorithm.
-- Extract data from GZip archives.
-- Unarchive zlib compressed data.
+- (De)compression algorithms:
+  - Deflate
+  - BZip2
+- Archives:
+  - GZip
+  - Zlib
 - Platform independent.
 - _Swift only_
 
@@ -32,12 +35,20 @@ By the way, it seems like GZip and Deflate decompressor implementations are **sp
 Installation
 ----------------
 
+SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.
+
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
+
+Since 1.1.0 version of SWCompression there are several sub-podspecs
+if you need only parts of functionality of SWCompression.
+There are `pod 'SWCompression/GZip'`, `pod 'SWCompression/Zlib'`, `pod 'SWCompression/Deflate'` and `pod 'SWCompression/BZip2'` subspecs. You can add some or all of them instead of `pod 'SWCompression'`
 
 Also, do not forget to have `use_frameworks!` line in the Podfile.
 
 To complete installation, run `pod install`.
+
+_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. This subspec is included in other subspecs such as SWCompression/GZip and should not be specified directly in Podfile.
 
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
@@ -88,7 +99,9 @@ you are responsible for handling them.
 Future plans
 -------------
 - Performance improvement.
-- BZip2 decompression support.
+- LZMA decompression.
+- XZ decompression.
+- Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
 - Something else...

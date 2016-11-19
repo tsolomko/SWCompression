@@ -10,34 +10,17 @@ import Foundation
 
 struct Constants {
 
-    static let testBundle = Bundle(for: SWCompressionTests.self)
+    static func url(forTest name: String, withType ext: String) -> URL {
+        return testBundle.url(forResource: name, withExtension: ext)!
+    }
 
-    static let helloWorldArchivePath = testBundle.url(forResource: "helloworld.txt",
-                                                      withExtension: "gz")!
+    static func url(forAnswer name: String) -> URL {
+        return testBundle.url(forResource: name, withExtension: "answer")!
+    }
 
-    static let secondTestArchivePath = testBundle.url(forResource: "secondtest.txt",
-                                                      withExtension: "gz")!
-    static let secondTestAnswerPath = testBundle.url(forResource: "secondtest",
-                                                     withExtension: "txt")!
+    static let testBundle = Bundle(for: ZlibTests.self)
 
-    static let emptyFileArchivePath = testBundle.url(forResource: "empty.txt",
-                                                     withExtension: "gz")!
-
-    static let helloWorldZlibPath = testBundle.url(forResource: "helloworld.txt",
-                                                      withExtension: "zlib")!
-
-    static let secondZlibTestPath = testBundle.url(forResource: "secondtest",
-                                                   withExtension: "zlib")!
-    static let secondZlibTestAnswerPath = testBundle.url(forResource: "secondtest.zlib",
-                                                         withExtension: "answer")!
-
-    static let thirdZlibTestPath = testBundle.url(forResource: "thirdtest",
-                                                   withExtension: "zlib")!
-    static let thirdZlibTestAnswerPath = testBundle.url(forResource: "thirdtest.zlib",
-                                                         withExtension: "answer")!
-
-
-    static let relativelyBigFilePath = testBundle.url(forResource: "relatively_big_file",
+    static let relativelyBigFilePath = testBundle.url(forResource: "performance_test1",
                                                         withExtension: "gz")!
 
 }

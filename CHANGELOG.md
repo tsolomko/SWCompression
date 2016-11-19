@@ -1,4 +1,11 @@
 # Changelog
+v1.1.0
+----------------
+- Added BZip2 decompression.
+- Introduced subspecs with parts of functionality.
+- Additional performance improvements.
+- Fixed potential memory problems.
+- Added a lot of (educational) comments for Deflate
 
 v1.0.3
 ----------------
