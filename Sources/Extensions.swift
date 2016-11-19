@@ -30,13 +30,13 @@ extension UInt8 {
 
     subscript(index: Int) -> UInt8 {
         precondition(index >= 0 && index < 8, "Index must be between 0 and 7 (included).")
-        let uindex = UInt8(truncatingBitPattern: index)
+        let uindex = index.toUInt8()
         return (self & (0x1 << uindex)) >> uindex
     }
 
     subscript(range: CountableRange<Int>) -> [UInt8] {
         return range.map {
-            let uindex = UInt8(truncatingBitPattern: $0)
+            let uindex = $0.toUInt8()
             return (self & (0x1 << uindex)) >> uindex
         }
     }
@@ -62,13 +62,29 @@ extension UInt16 {
 
     subscript(range: CountableRange<Int>) -> [UInt8] {
         return range.map {
-            let uindex = UInt16(truncatingBitPattern: $0)
-            return UInt8(truncatingBitPattern: (self & (0x1 << uindex)) >> uindex)
+            let uindex = UInt16(truncatingBitPattern: UInt($0))
+            return ((self & (0x1 << uindex)) >> uindex).toUInt8()
         }
     }
 
     func toInt() -> Int {
         return Int(bitPattern: UInt(self))
+    }
+
+    func toUInt8() -> UInt8 {
+        return UInt8(truncatingBitPattern: self)
+    }
+
+}
+
+extension Int {
+
+    func toUInt16() -> UInt16 {
+        return UInt16(truncatingBitPattern: UInt(self))
+    }
+
+    func toUInt8() -> UInt8 {
+        return UInt8(truncatingBitPattern: UInt(self))
     }
 
 }
