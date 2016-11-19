@@ -13,7 +13,6 @@ class Bzip2Tests: XCTestCase {
     
     static let testType: String = "bz2"
 
-
     func testBzip2_1() {
         let testName = "test1"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
@@ -26,21 +25,16 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
     func testBzip2_2() {
-        let testName = "test1"
+        let testName = "test2"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: Bzip2Tests.testType)) else {
             XCTFail("Failed to load test archive")
             return
@@ -51,17 +45,12 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
     func testBzip2_3() {
@@ -76,17 +65,12 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
     func testBzip2_4() {
@@ -101,17 +85,12 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
     func testBzip2_5() {
@@ -126,17 +105,12 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
     func testBzip2_6() {
@@ -151,17 +125,12 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedString = String(data: decompressedData, encoding: .utf8) else {
-            XCTFail("Failed to convert decompressed data to string")
-            return
-        }
-
-        guard let answerString = try? String(contentsOf: Constants.url(forAnswer: testName), encoding: .utf8) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-        XCTAssertEqual(decompressedString, answerString, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
 }
