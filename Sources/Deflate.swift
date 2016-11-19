@@ -164,7 +164,7 @@ public class Deflate: DecompressionAlgorithm {
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
-                        out.append(UInt8(truncatingBitPattern: UInt(nextSymbol)))
+                        out.append(nextSymbol.toUInt8())
                     } else if nextSymbol == 256 {
                         // It is a symbol indicating the end of data.
                         break

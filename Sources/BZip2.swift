@@ -164,7 +164,7 @@ public class BZip2: DecompressionAlgorithm {
         var favourites = try used.enumerated().reduce([]) { (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
             if next.element {
                 var newResult = partialResult
-                newResult.append(UInt8(truncatingBitPattern: UInt(next.offset)))
+                newResult.append(next.offset.toUInt8())
                 return newResult
             } else {
                 return partialResult
@@ -218,7 +218,7 @@ public class BZip2: DecompressionAlgorithm {
             let sortedBytes = bytes.sorted()
             var base: [Int] = Array(repeating: -1, count: 256)
             for i in 0..<256 {
-                base[i] = sortedBytes.index(of: UInt8(truncatingBitPattern: UInt(i))) ?? -1
+                base[i] = sortedBytes.index(of: i.toUInt8()) ?? -1
             }
 
             var pointers: [Int] = Array(repeating: -1, count: bytes.count)
