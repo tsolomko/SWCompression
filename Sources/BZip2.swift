@@ -15,6 +15,11 @@ import Foundation
  - `WrongCompressionMethod`: unsupported compression method (not type 'h').
  - `WrongBlockSize`: unsupported block size (not '0' — '9').
  - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
+ - `RandomizedBlock`: block is randomized; this is not supported.
+ - `WrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
+ - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
+ - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
+ - `SymbolNotFound`: symbol from input data was not found in Huffman table.
  */
 public enum BZip2Error: Error {
     case WrongMagic
@@ -24,10 +29,15 @@ public enum BZip2Error: Error {
     case WrongBlockSize
     /// Unknown block type (was neither 'pi' nor 'sqrt(pi)').
     case WrongBlockType
+    /// Block is randomized.
     case RandomizedBlock
+    /// Wrong number of Huffman tables/groups (should be between 2 and 6).
     case WrongHuffmanGroups
+    /// Selector was greater than total number of Huffman tables/groups.
     case WrongSelector
+    /// Wrong code of Huffman length (should be between 0 and 20).
     case WrongHuffmanLengthCode
+    /// Symbol was not found in Huffman table.
     case SymbolNotFound
 }
 
