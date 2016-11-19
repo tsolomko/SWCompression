@@ -74,8 +74,6 @@ public class BZip2: DecompressionAlgorithm {
             if blockType == 0x314159265359 {
                 try out.append(contentsOf: decodeHuffmanBlock(data: pointerData))
             } else if blockType == 0x177245385090 {
-                // TODO: Decide, if skipping is necessary
-                pointerData.skipUntilNextByte()
                 break
             } else {
                 throw BZip2Error.WrongBlockType
