@@ -32,7 +32,7 @@ class ZlibTests: XCTestCase {
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
-    
+
     func testZlib2() {
         let testName = "test2"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: ZlibTests.testType)) else {

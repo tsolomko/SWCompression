@@ -102,7 +102,7 @@ class HuffmanTable: CustomStringConvertible {
                 cachedLength = lbits
             }
             if (reversed && length.reversedSymbol == cached) ||
-                (!reversed && length.symbol == cached){
+                (!reversed && length.symbol == cached) {
                 return length
             }
         }

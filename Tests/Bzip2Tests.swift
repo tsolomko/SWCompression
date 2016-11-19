@@ -10,7 +10,7 @@ import XCTest
 @testable import SWCompression
 
 class Bzip2Tests: XCTestCase {
-    
+
     static let testType: String = "bz2"
 
     func testBzip2_1() {

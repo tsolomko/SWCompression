@@ -81,7 +81,7 @@ public class BZip2: DecompressionAlgorithm {
                 throw BZip2Error.WrongBlockType
             }
         }
-        
+
         return Data(bytes: out)
     }
 

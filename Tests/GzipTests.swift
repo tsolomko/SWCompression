@@ -32,7 +32,7 @@ class GzipTests: XCTestCase {
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
-    
+
     func testGzip2() {
         let testName = "test2"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
