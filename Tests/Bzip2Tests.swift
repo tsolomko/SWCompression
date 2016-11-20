@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import SWCompression
+import SWCompression
 
 class Bzip2Tests: XCTestCase {
 
