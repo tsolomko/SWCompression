@@ -1,4 +1,11 @@
 # Changelog
+v1.1.1
+----------------
+- Fixed problems when building with Swift Package Manager.
+- Added missing files to watchOS scheme.
+- Every release on github now will have an archive with pre-built framework.
+- Added info about performance to README.
+
 v1.1.0
 ----------------
 - Added BZip2 decompression.
