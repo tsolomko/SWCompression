@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import SWCompression
+import SWCompression
 
 class PerformanceTests: XCTestCase {
 

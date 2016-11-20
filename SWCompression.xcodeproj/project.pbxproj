@@ -8,6 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
+		063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
+		063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
+		063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
+		063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
+		063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
+		063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
+		063DF1101DE1F07800F38082 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1071DE1F07800F38082 /* HuffmanLength.swift */; };
+		063DF1111DE1F07800F38082 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1071DE1F07800F38082 /* HuffmanLength.swift */; };
+		063DF1121DE1F07800F38082 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1071DE1F07800F38082 /* HuffmanLength.swift */; };
+		063DF1131DE1F07800F38082 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* HuffmanTable.swift */; };
+		063DF1141DE1F07800F38082 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* HuffmanTable.swift */; };
+		063DF1151DE1F07800F38082 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* HuffmanTable.swift */; };
+		063DF1161DE1F07800F38082 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1091DE1F07800F38082 /* Protocols.swift */; };
+		063DF1171DE1F07800F38082 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1091DE1F07800F38082 /* Protocols.swift */; };
+		063DF1181DE1F07800F38082 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1091DE1F07800F38082 /* Protocols.swift */; };
+		063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
+		063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
+		063DF11B1DE1F2E200F38082 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1071DE1F07800F38082 /* HuffmanLength.swift */; };
+		063DF11C1DE1F2E200F38082 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* HuffmanTable.swift */; };
+		063DF11D1DE1F2E200F38082 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1091DE1F07800F38082 /* Protocols.swift */; };
 		065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
 		0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
@@ -36,26 +56,6 @@
 		0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */; };
 		0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B21DDA3D0A005C05EB /* GzipTests.swift */; };
 		0680E1B51DDA4076005C05EB /* Bzip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */; };
-		06A393251DE06FFE00182E12 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393201DE06FFE00182E12 /* DataWithPointer.swift */; };
-		06A393261DE06FFE00182E12 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393201DE06FFE00182E12 /* DataWithPointer.swift */; };
-		06A393271DE06FFE00182E12 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393201DE06FFE00182E12 /* DataWithPointer.swift */; };
-		06A393281DE06FFE00182E12 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393201DE06FFE00182E12 /* DataWithPointer.swift */; };
-		06A393291DE06FFE00182E12 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393211DE06FFE00182E12 /* Extensions.swift */; };
-		06A3932A1DE06FFE00182E12 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393211DE06FFE00182E12 /* Extensions.swift */; };
-		06A3932B1DE06FFE00182E12 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393211DE06FFE00182E12 /* Extensions.swift */; };
-		06A3932C1DE06FFE00182E12 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393211DE06FFE00182E12 /* Extensions.swift */; };
-		06A3932D1DE06FFE00182E12 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393221DE06FFE00182E12 /* HuffmanLength.swift */; };
-		06A3932E1DE06FFE00182E12 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393221DE06FFE00182E12 /* HuffmanLength.swift */; };
-		06A3932F1DE06FFE00182E12 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393221DE06FFE00182E12 /* HuffmanLength.swift */; };
-		06A393301DE06FFE00182E12 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393221DE06FFE00182E12 /* HuffmanLength.swift */; };
-		06A393311DE06FFE00182E12 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393231DE06FFE00182E12 /* HuffmanTable.swift */; };
-		06A393321DE06FFE00182E12 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393231DE06FFE00182E12 /* HuffmanTable.swift */; };
-		06A393331DE06FFE00182E12 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393231DE06FFE00182E12 /* HuffmanTable.swift */; };
-		06A393341DE06FFE00182E12 /* HuffmanTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393231DE06FFE00182E12 /* HuffmanTable.swift */; };
-		06A393351DE06FFE00182E12 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393241DE06FFE00182E12 /* Protocols.swift */; };
-		06A393361DE06FFE00182E12 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393241DE06FFE00182E12 /* Protocols.swift */; };
-		06A393371DE06FFE00182E12 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393241DE06FFE00182E12 /* Protocols.swift */; };
-		06A393381DE06FFE00182E12 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A393241DE06FFE00182E12 /* Protocols.swift */; };
 		06A393391DE0709300182E12 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
 		06A3933B1DE0709300182E12 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
@@ -98,6 +98,11 @@
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
+		063DF1051DE1F07800F38082 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataWithPointer.swift; path = Sources/DataWithPointer.swift; sourceTree = SOURCE_ROOT; };
+		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
+		063DF1071DE1F07800F38082 /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanLength.swift; path = Sources/HuffmanLength.swift; sourceTree = SOURCE_ROOT; };
+		063DF1081DE1F07800F38082 /* HuffmanTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanTable.swift; path = Sources/HuffmanTable.swift; sourceTree = SOURCE_ROOT; };
+		063DF1091DE1F07800F38082 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocols.swift; path = Sources/Protocols.swift; sourceTree = SOURCE_ROOT; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		0655693F1DC659FF00A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0655694C1DC65A8000A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,11 +126,6 @@
 		0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
 		0680E1B21DDA3D0A005C05EB /* GzipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipTests.swift; sourceTree = "<group>"; };
 		0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bzip2Tests.swift; sourceTree = "<group>"; };
-		06A393201DE06FFE00182E12 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataWithPointer.swift; sourceTree = "<group>"; };
-		06A393211DE06FFE00182E12 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		06A393221DE06FFE00182E12 /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanLength.swift; sourceTree = "<group>"; };
-		06A393231DE06FFE00182E12 /* HuffmanTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuffmanTable.swift; sourceTree = "<group>"; };
-		06A393241DE06FFE00182E12 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		06A3933E1DE070B500182E12 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		06A3933F1DE070B500182E12 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
@@ -262,11 +262,11 @@
 		06A3931F1DE06FFE00182E12 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				06A393201DE06FFE00182E12 /* DataWithPointer.swift */,
-				06A393211DE06FFE00182E12 /* Extensions.swift */,
-				06A393221DE06FFE00182E12 /* HuffmanLength.swift */,
-				06A393231DE06FFE00182E12 /* HuffmanTable.swift */,
-				06A393241DE06FFE00182E12 /* Protocols.swift */,
+				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
+				063DF1061DE1F07800F38082 /* Extensions.swift */,
+				063DF1071DE1F07800F38082 /* HuffmanLength.swift */,
+				063DF1081DE1F07800F38082 /* HuffmanTable.swift */,
+				063DF1091DE1F07800F38082 /* Protocols.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -591,14 +591,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
-				06A3932A1DE06FFE00182E12 /* Extensions.swift in Sources */,
-				06A393321DE06FFE00182E12 /* HuffmanTable.swift in Sources */,
-				06A393361DE06FFE00182E12 /* Protocols.swift in Sources */,
+				063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */,
+				063DF1141DE1F07800F38082 /* HuffmanTable.swift in Sources */,
+				063DF1171DE1F07800F38082 /* Protocols.swift in Sources */,
 				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
 				06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */,
-				06A3932E1DE06FFE00182E12 /* HuffmanLength.swift in Sources */,
+				063DF1111DE1F07800F38082 /* HuffmanLength.swift in Sources */,
 				065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */,
-				06A393261DE06FFE00182E12 /* DataWithPointer.swift in Sources */,
+				063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,15 +606,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */,
+				063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */,
+				063DF11B1DE1F2E200F38082 /* HuffmanLength.swift in Sources */,
+				063DF11C1DE1F2E200F38082 /* HuffmanTable.swift in Sources */,
+				063DF11D1DE1F2E200F38082 /* Protocols.swift in Sources */,
 				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
-				06A3932B1DE06FFE00182E12 /* Extensions.swift in Sources */,
-				06A393331DE06FFE00182E12 /* HuffmanTable.swift in Sources */,
-				06A393371DE06FFE00182E12 /* Protocols.swift in Sources */,
 				065569711DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */,
-				06A3932F1DE06FFE00182E12 /* HuffmanLength.swift in Sources */,
 				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
-				06A393271DE06FFE00182E12 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,14 +623,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
-				06A3932C1DE06FFE00182E12 /* Extensions.swift in Sources */,
-				06A393341DE06FFE00182E12 /* HuffmanTable.swift in Sources */,
-				06A393381DE06FFE00182E12 /* Protocols.swift in Sources */,
+				063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */,
+				063DF1151DE1F07800F38082 /* HuffmanTable.swift in Sources */,
+				063DF1181DE1F07800F38082 /* Protocols.swift in Sources */,
 				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */,
-				06A393301DE06FFE00182E12 /* HuffmanLength.swift in Sources */,
+				063DF1121DE1F07800F38082 /* HuffmanLength.swift in Sources */,
 				065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
-				06A393281DE06FFE00182E12 /* DataWithPointer.swift in Sources */,
+				063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,14 +639,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				06A393391DE0709300182E12 /* GzipArchive.swift in Sources */,
+				063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */,
+				063DF1131DE1F07800F38082 /* HuffmanTable.swift in Sources */,
+				063DF1161DE1F07800F38082 /* Protocols.swift in Sources */,
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
 				06A3933B1DE0709300182E12 /* Deflate.swift in Sources */,
+				063DF1101DE1F07800F38082 /* HuffmanLength.swift in Sources */,
 				06A3933C1DE0709300182E12 /* BZip2.swift in Sources */,
-				06A393291DE06FFE00182E12 /* Extensions.swift in Sources */,
-				06A393311DE06FFE00182E12 /* HuffmanTable.swift in Sources */,
-				06A393351DE06FFE00182E12 /* Protocols.swift in Sources */,
-				06A3932D1DE06FFE00182E12 /* HuffmanLength.swift in Sources */,
-				06A393251DE06FFE00182E12 /* DataWithPointer.swift in Sources */,
+				063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "1.1.0"
+  s.version      = "1.1.1"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Common' do |sp|
     sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{Common,Service}/*.{swift,h}"
+    sp.source_files  = "Sources/{DataWithPointer.swift,HuffmanTable.swift,HuffmanLength.swift,Protocols.swift,Extensions.swift,Service/*.swift,Service/*.h}"
   end
 
   s.subspec 'Deflate' do |sp|

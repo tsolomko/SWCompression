@@ -96,6 +96,16 @@ let decompressedData = try? ZlibArchive.unarchive(archiveData: data)
 One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.
 
+Why is it so slow?
+-------------
+Is it?
+
+The problem is that if SWCompression is built with 'Debug' configuration for some reason the performance is really bad.
+However, if you use 'Release' configuration varoius optimizations start to take effect and decompression speed will be much better.
+I don't know what is really happening, how Swift compiler works, etc., but bottomline is that you should REALLY use __'Release'__ builds of SWCompression.
+
+_Note:_ There are (mostly, were) performance problems caused by implementation (you can check out v1.0.0, if you want to know what is 'slow'!), but as the time goes on I am trying to find new ways to optimize the code.
+
 Future plans
 -------------
 - Performance improvement.
