@@ -88,6 +88,7 @@ class DataWithPointer {
     // MARK: Manipulations with index and bitShift
 
     func skipUntilNextByte() {
+        guard self.bitShift != 0 else { return }
         self.index += 1
         self.bitShift = 0
     }
