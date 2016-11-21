@@ -41,7 +41,7 @@ public class GzipArchive: Archive {
         let magic: [UInt8]
         let method: UInt8
         let flags: UInt8
-        let mtime: UInt64
+        let mtime: [UInt8]
         let extraFlags: UInt8
         let osType: UInt8
         // Starting point of compressed data. Depends on presence of optional fields.
@@ -72,7 +72,7 @@ public class GzipArchive: Archive {
         var serviceInfo = ServiceInfo(magic: magic,
                                       method: method,
                                       flags: data[3],
-                                      mtime: Data(data[4...7]).to(type: UInt64.self),
+                                      mtime: data.bytes(from: 4..<8),
                                       extraFlags: data[8],
                                       osType: data[9],
                                       startPoint: 10,
