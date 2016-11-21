@@ -196,5 +196,4 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
-
 }
