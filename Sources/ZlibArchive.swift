@@ -38,11 +38,20 @@ public class ZlibArchive: Archive {
         case slowAlgorithm = 3
     }
 
-    struct ServiceInfo {
+    struct ServiceInfo: Equatable {
+
         let compressionMethod: UInt8
         let windowSize: Int
         let compressionLevel: CompressionLevel
         var startPoint: Int
+
+        public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
+            return lhs.compressionMethod == rhs.compressionMethod &&
+                lhs.windowSize == rhs.windowSize &&
+                lhs.compressionLevel == rhs.compressionLevel &&
+                lhs.startPoint == rhs.startPoint
+        }
+        
     }
 
     static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
