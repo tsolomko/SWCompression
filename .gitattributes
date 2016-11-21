@@ -1,3 +1,0 @@
-*..deflate filter=lfs diff=lfs merge=lfs -text
-*..answer filter=lfs diff=lfs merge=lfs -text
-*..bz2 filter=lfs diff=lfs merge=lfs -text
