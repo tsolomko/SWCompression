@@ -8,6 +8,10 @@ env:
 before_install:
 - brew update
 - brew outdated carthage || brew upgrade carthage
+- brew install git-lfs
+- git lfs install
+before_script:
+- git lfs pull
 before_deploy:
 - carthage build --no-skip-current
 - carthage archive $FRAMEWORK_NAME
