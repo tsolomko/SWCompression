@@ -56,7 +56,6 @@ public class Deflate: DecompressionAlgorithm {
 
             if blockType == [0, 0] { // Uncompressed block.
                 pointerData.skipUntilNextByte()
-
                 /// Length of the uncompressed data.
                 let length = pointerData.intFromBits(count: 16)
                 /// 1-complement of the length.
@@ -65,9 +64,9 @@ public class Deflate: DecompressionAlgorithm {
                 // TODO: Rename WrongBlockLengths to WrongUncompressedBlockLengths (or something else)
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
+                // TODO: Replace precondition with guard and error throwing.
                 precondition(pointerData.bitShift == 0, "Misaligned byte.")
-                out.append(contentsOf: data.bytes(from: pointerData.index..<pointerData.index + length))
-                pointerData.index += length
+                out.append(contentsOf: pointerData.alignedBytes(count: length))
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 

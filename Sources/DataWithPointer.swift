@@ -85,6 +85,15 @@ class DataWithPointer {
         return self.bits(count: 1).first!
     }
 
+    /// Skips until next byte and returns next `count` bytes.
+    func alignedBytes(count: Int) -> [UInt8] {
+        self.skipUntilNextByte()
+        var array: [UInt8] = Array(repeating: 0, count: count)
+        CFBitVectorGetBits(self.bitVector, CFRangeMake(self.index * 8, count * 8), &array)
+        self.index += count
+        return array
+    }
+
     // MARK: Manipulations with index and bitShift
 
     func skipUntilNextByte() {
