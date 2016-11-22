@@ -65,7 +65,7 @@ import PackageDescription
 let package = Package(
     name: "PackageName",
     dependencies: [
-        .Package(url: "https://github.com/tsolomko/SWCompression.git")
+        .Package(url: "https://github.com/tsolomko/SWCompression.git", majorVersion: 1)
     ]
 )
 ```

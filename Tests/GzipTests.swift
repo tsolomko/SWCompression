@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import SWCompression
+@testable import SWCompression
 
 class GzipTests: XCTestCase {
 
@@ -20,17 +20,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [219, 127, 19, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 19,
+                                                        fileName: "test.txt",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip2() {
@@ -40,17 +46,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [193, 93, 43, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 23,
+                                                        fileName: "test2.answer",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip3() {
@@ -60,17 +72,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [27, 94, 43, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 23,
+                                                        fileName: "test3.answer",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip4() {
@@ -80,18 +98,25 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [190, 130, 19, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 25,
+                                                        fileName: "secondtest.txt",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
+
 
     func testGzip5() {
         let testName = "test5"
@@ -100,17 +125,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [232, 229, 20, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 20,
+                                                        fileName: "empty.txt",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip6() {
@@ -120,17 +151,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [107, 95, 43, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 23,
+                                                        fileName: "test6.answer",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip7() {
@@ -140,17 +177,23 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
-            XCTFail("Failed to decompress")
+        guard let testServiceInfo = try? GzipArchive.serviceInfo(archiveData: testData) else {
+            XCTFail("Failed to get service info")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
-            return
-        }
+        let answerServiceInfo = GzipArchive.ServiceInfo(magic: [31, 139],
+                                                        method: 8,
+                                                        flags: 8,
+                                                        mtime: [233, 74, 48, 88],
+                                                        extraFlags: 0,
+                                                        osType: 3,
+                                                        startPoint: 23,
+                                                        fileName: "test7.answer",
+                                                        comment: "",
+                                                        crc: 0)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
 }

@@ -36,11 +36,12 @@ public class GzipArchive: Archive {
         static let fcomment: UInt8 = 0x10
     }
 
-    struct ServiceInfo {
+    struct ServiceInfo: Equatable {
+
         let magic: [UInt8]
         let method: UInt8
         let flags: UInt8
-        let mtime: UInt64
+        let mtime: [UInt8]
         let extraFlags: UInt8
         let osType: UInt8
         // Starting point of compressed data. Depends on presence of optional fields.
@@ -49,6 +50,13 @@ public class GzipArchive: Archive {
         var fileName: String
         var comment: String
         var crc: UInt16
+
+        public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
+            return lhs.magic == rhs.magic && lhs.method == rhs.method &&
+                lhs.flags == rhs.flags && lhs.mtime == rhs.mtime && lhs.extraFlags == rhs.extraFlags &&
+                lhs.osType == rhs.osType && lhs.startPoint == rhs.startPoint &&
+                lhs.fileName == rhs.fileName && lhs.comment == rhs.comment && lhs.crc == rhs.crc
+        }
     }
 
     static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
@@ -64,7 +72,7 @@ public class GzipArchive: Archive {
         var serviceInfo = ServiceInfo(magic: magic,
                                       method: method,
                                       flags: data[3],
-                                      mtime: Data(data[4...7]).to(type: UInt64.self),
+                                      mtime: data.bytes(from: 4..<8),
                                       extraFlags: data[8],
                                       osType: data[9],
                                       startPoint: 10,

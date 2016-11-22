@@ -1,4 +1,9 @@
 # Changelog
+v1.1.2
+----------------
+- Fixed memory problem in Deflate.
+- Improved overall performance.
+
 v1.1.1
 ----------------
 - Fixed problems when building with Swift Package Manager.
