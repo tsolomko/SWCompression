@@ -43,20 +43,23 @@ public class ZlibArchive: Archive {
         let compressionMethod: UInt8
         let windowSize: Int
         let compressionLevel: CompressionLevel
-        var startPoint: Int
 
         public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
             return lhs.compressionMethod == rhs.compressionMethod &&
                 lhs.windowSize == rhs.windowSize &&
-                lhs.compressionLevel == rhs.compressionLevel &&
-                lhs.startPoint == rhs.startPoint
+                lhs.compressionLevel == rhs.compressionLevel
         }
-        
+
     }
 
     static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        return try serviceInfo(pointerData: pointerData)
+    }
+
+    static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
         // First byte is compression method and window size
-        let cmf = data[0]
+        let cmf = pointerData.alignedByte()
 
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
@@ -70,7 +73,7 @@ public class ZlibArchive: Archive {
         let windowSize = Int(pow(Double(2), Double(compressionInfo + 8)))
 
         // Second byte is flags
-        let flags = data[1]
+        let flags = pointerData.alignedByte()
 
         // Flags contain fcheck bits which are supposed to be integrity check
         guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.WrongFcheck }
@@ -82,14 +85,13 @@ public class ZlibArchive: Archive {
         guard let compressionLevel = CompressionLevel(rawValue:
             convertToInt(uint8Array: flags[6..<8])) else { throw ZlibError.WrongCompressionLevel }
 
-        var info = ServiceInfo(compressionMethod: compressionMethod,
+        let info = ServiceInfo(compressionMethod: compressionMethod,
                                windowSize: windowSize,
-                               compressionLevel: compressionLevel,
-                               startPoint: 2)
+                               compressionLevel: compressionLevel)
 
         // If preset dictionary is present 4 bytes will be skipped
         if fdict == 1 {
-            info.startPoint += 4
+            pointerData.index += 4
         }
         // TODO: Add parsing of preset dictionary
 
@@ -113,8 +115,11 @@ public class ZlibArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archiveData data: Data) throws -> Data {
-        let info = try serviceInfo(archiveData: data)
-        return try Deflate.decompress(compressedData: Data(data[info.startPoint..<data.count]))
+        /// Object with input data which supports convenient work with bit shifts.
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+
+        _ = try serviceInfo(pointerData: pointerData)
+        return try Deflate.decompress(pointerData: pointerData)
         // TODO: Add Adler-32 check
     }
 
