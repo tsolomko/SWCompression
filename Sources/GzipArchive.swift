@@ -44,38 +44,40 @@ public class GzipArchive: Archive {
         let mtime: [UInt8]
         let extraFlags: UInt8
         let osType: UInt8
-        // Starting point of compressed data. Depends on presence of optional fields.
-        var startPoint: Int
         // Optional fields
         var fileName: String
         var comment: String
-        var crc: UInt16
+        var crc: Int
 
         public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
             return lhs.magic == rhs.magic && lhs.method == rhs.method &&
                 lhs.flags == rhs.flags && lhs.mtime == rhs.mtime && lhs.extraFlags == rhs.extraFlags &&
-                lhs.osType == rhs.osType && lhs.startPoint == rhs.startPoint &&
-                lhs.fileName == rhs.fileName && lhs.comment == rhs.comment && lhs.crc == rhs.crc
+                lhs.osType == rhs.osType && lhs.fileName == rhs.fileName &&
+                lhs.comment == rhs.comment && lhs.crc == rhs.crc
         }
     }
 
-    static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
+    static func serviceInfo(archiveData: Data) throws -> ServiceInfo {
+        let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
+        return try serviceInfo(pointerData: pointerData)
+    }
+
+    static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
         // First two bytes should be correct 'magic' bytes
-        let magic = data.bytes(from: 0..<2)
+        let magic = pointerData.alignedBytes(count: 2)
         guard magic == [31, 139] else { throw GzipError.WrongMagic }
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
-        let method = data[2]
+        let method = pointerData.alignedByte()
         guard method == 8 else { throw GzipError.WrongCompressionMethod }
 
         // Next bytes present some service information
         var serviceInfo = ServiceInfo(magic: magic,
                                       method: method,
-                                      flags: data[3],
-                                      mtime: data.bytes(from: 4..<8),
-                                      extraFlags: data[8],
-                                      osType: data[9],
-                                      startPoint: 10,
+                                      flags: pointerData.alignedByte(),
+                                      mtime: pointerData.alignedBytes(count: 4),
+                                      extraFlags: pointerData.alignedByte(),
+                                      osType: pointerData.alignedByte(),
                                       fileName: "", comment: "", crc: 0)
 
         guard (serviceInfo.flags & 0x20 == 0) &&
@@ -84,39 +86,36 @@ public class GzipArchive: Archive {
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
-            let xlen = Data(data[serviceInfo.startPoint...serviceInfo.startPoint + 1]).to(type: UInt16.self).toInt()
-            serviceInfo.startPoint += 2 + xlen
+            let xlen = pointerData.intFromBits(count: 16)
+            pointerData.index += xlen
             // TODO: Add extra fields' processing
         }
 
         // Some archives may contain source file name (this part ends with zero byte)
         if serviceInfo.flags & Flags.fname != 0 {
-            let fnameStart = serviceInfo.startPoint
+            var fnameBytes: [UInt8] = []
             while true {
-                let byte = data[serviceInfo.startPoint]
-                serviceInfo.startPoint += 1
+                let byte = pointerData.alignedByte()
                 guard byte != 0 else { break }
+                fnameBytes.append(byte)
             }
-            serviceInfo.fileName = String(data: Data(data[fnameStart..<serviceInfo.startPoint - 1]),
-                                          encoding: .utf8) ?? ""
+            serviceInfo.fileName = String(data: Data(fnameBytes), encoding: .utf8) ?? ""
         }
 
         // Some archives may contain comment (this part also ends with zero)
         if serviceInfo.flags & Flags.fcomment != 0 {
-            let fcommentStart = serviceInfo.startPoint
+            var fcommentBytes: [UInt8] = []
             while true {
-                let byte = data[serviceInfo.startPoint]
-                serviceInfo.startPoint += 1
+                let byte = pointerData.alignedByte()
                 guard byte != 0 else { break }
+                fcommentBytes.append(byte)
             }
-            serviceInfo.comment = String(data: Data(data[fcommentStart..<serviceInfo.startPoint - 1]),
-                                         encoding: .utf8) ?? ""
+            serviceInfo.comment = String(data: Data(fcommentBytes), encoding: .utf8) ?? ""
         }
 
         // Some archives may contain 2-bytes checksum
         if serviceInfo.flags & Flags.fhcrc != 0 {
-            serviceInfo.crc = Data(data[serviceInfo.startPoint...serviceInfo.startPoint + 1]).to(type: UInt16.self)
-            serviceInfo.startPoint += 2
+            serviceInfo.crc = pointerData.intFromBits(count: 16)
         }
 
         return serviceInfo
@@ -139,8 +138,11 @@ public class GzipArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archiveData data: Data) throws -> Data {
-        let info = try serviceInfo(archiveData: data)
-        return try Deflate.decompress(compressedData: Data(data[info.startPoint..<data.count]))
+        /// Object with input data which supports convenient work with bit shifts.
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+
+        _ = try serviceInfo(pointerData: pointerData)
+        return try Deflate.decompress(pointerData: pointerData)
         // TODO: Add crc check
     }
 

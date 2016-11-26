@@ -42,11 +42,14 @@ public class Deflate: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
-        /// Object for storing output data
-        var out: [UInt8] = []
-
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        return try decompress(pointerData: pointerData)
+    }
+
+    static func decompress(pointerData: DataWithPointer) throws -> Data {
+        /// Object for storing output data
+        var out: [UInt8] = []
 
         while true {
             /// Is this a last block?
@@ -198,7 +201,7 @@ public class Deflate: DecompressionAlgorithm {
                             // length actually indicates the amount of data we get from this nextSymbol.
                             let repeatCount: Int = length / distance
                             let arrayToRepeat = Array(repeating: out[out.count - distance..<out.count],
-                                                        count: repeatCount).flatMap { $0 }
+                                                      count: repeatCount).flatMap { $0 }
                             out.append(contentsOf: arrayToRepeat)
                             // Now we deal with the remainings.
                             if length - distance * repeatCount == distance {

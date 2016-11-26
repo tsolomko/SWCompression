@@ -27,8 +27,7 @@ class ZlibTests: XCTestCase {
 
         let answerServiceInfo = ZlibArchive.ServiceInfo(compressionMethod: 8,
                                                         windowSize: 32768,
-                                                        compressionLevel: .defaultAlgorithm,
-                                                        startPoint: 2)
+                                                        compressionLevel: .defaultAlgorithm)
 
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
