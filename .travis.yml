@@ -30,3 +30,6 @@ deploy:
   on:
     repo: tsolomko/SWCompression
     tags: true
+addons:
+  code_climate:
+    repo_token: 5a7ef020693bb0a81f75b82c02811d60047179b77140d1f8a38fddd2cc01781e
