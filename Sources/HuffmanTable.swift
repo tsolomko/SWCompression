@@ -8,6 +8,16 @@
 
 import Foundation
 
+class HuffmanTreeNode {
+    let node: HuffmanLength?
+    var left: HuffmanTreeNode? = nil
+    var right: HuffmanTreeNode? = nil
+
+    init(_ node: HuffmanLength? = nil) {
+        self.node = node
+    }
+}
+
 class HuffmanTable: CustomStringConvertible {
 
     struct Constants {
@@ -27,6 +37,8 @@ class HuffmanTable: CustomStringConvertible {
     }
 
     var lengths: [HuffmanLength]
+    var treeRoot: HuffmanTreeNode
+    var reversedTreeRoot: HuffmanTreeNode
 
     var description: String {
         return self.lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
@@ -80,6 +92,30 @@ class HuffmanTable: CustomStringConvertible {
             self.lengths[index].symbol = symbol
             self.lengths[index].reversedSymbol = reverse(bits: loopBits, in: symbol)
         }
+
+
+        let leafCount = Int(pow(Double(2), Double(self.lengths.last!.bits)))
+        var treeLengths: [HuffmanLength?] = Array(repeating: nil, count: leafCount)
+        var reversedTreeLengths: [HuffmanLength?] = Array(repeating: nil, count: leafCount)
+        for length in self.lengths {
+            treeLengths[length.symbol!] = length
+            reversedTreeLengths[length.reversedSymbol!] = length
+        }
+        self.treeRoot = HuffmanTreeNode(treeLengths[0])
+        self.reversedTreeRoot = HuffmanTreeNode(reversedTreeLengths[0])
+        var parents = [treeRoot, reversedTreeRoot]
+        for i in stride(from: 1, to: treeLengths.count - 1, by: 2)  {
+            let treeParent = parents.remove(at: 0)
+            treeParent.left = HuffmanTreeNode(treeLengths[i])
+            treeParent.right = HuffmanTreeNode(treeLengths[i + 1])
+            let reversedTreeParent = parents.remove(at: 0)
+            reversedTreeParent.left = HuffmanTreeNode(reversedTreeLengths[i])
+            reversedTreeParent.right = HuffmanTreeNode(reversedTreeLengths[i + 1])
+            parents.append(treeParent.left!)
+            parents.append(reversedTreeParent.left!)
+            parents.append(treeParent.right!)
+            parents.append(reversedTreeParent.right!)
+        }
     }
 
     convenience init(lengthsToOrder: [Int]) {
@@ -108,4 +144,5 @@ class HuffmanTable: CustomStringConvertible {
         }
         return nil
     }
+
 }
