@@ -8,10 +8,14 @@
 
 import Foundation
 
-class HuffmanTreeNode {
+class HuffmanTreeNode: CustomStringConvertible {
     let node: HuffmanLength?
     var left: HuffmanTreeNode? = nil
     var right: HuffmanTreeNode? = nil
+
+    var description: String {
+        return "value: \(self.node)\n\tleft: \(left)\n\tright: \(right)"
+    }
 
     init(_ node: HuffmanLength? = nil) {
         self.node = node
@@ -116,6 +120,7 @@ class HuffmanTable: CustomStringConvertible {
             parents.append(treeParent.right!)
             parents.append(reversedTreeParent.right!)
         }
+        print("\(self.reversedTreeRoot)")
     }
 
     convenience init(lengthsToOrder: [Int]) {
@@ -127,20 +132,40 @@ class HuffmanTable: CustomStringConvertible {
     }
 
     func findNextSymbol(in bitArray: [UInt8], reversed: Bool = true, bitOrder: BitOrder = .reversed) -> HuffmanLength? {
-        var cachedLength = -1
-        var cached: Int = -1
-
-        for length in self.lengths {
-            let lbits = length.bits
-
-            if cachedLength != lbits {
-                cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]), bitOrder: bitOrder)
-                cachedLength = lbits
+//        var cachedLength = -1
+//        var cached: Int = -1
+//
+//        for length in self.lengths {
+//            let lbits = length.bits
+//
+//            if cachedLength != lbits {
+//                cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]), bitOrder: bitOrder)
+//                cachedLength = lbits
+//            }
+//            if (reversed && length.reversedSymbol == cached) ||
+//                (!reversed && length.symbol == cached) {
+//                return length
+//            }
+//        }
+//        return nil
+        var node = reversed ? self.reversedTreeRoot : self.treeRoot
+        for (bitIndex, bit) in bitArray.enumerated() {
+            let newNode: HuffmanTreeNode?
+            if bit == 0 {
+                print("right")
+                newNode = node.right
+            } else {
+                print("left")
+                newNode = node.left
             }
-            if (reversed && length.reversedSymbol == cached) ||
-                (!reversed && length.symbol == cached) {
-                return length
+
+            guard newNode != nil else {
+                return node.node
             }
+            if newNode?.node == nil {
+                return node.node
+            }
+            node = newNode!
         }
         return nil
     }
