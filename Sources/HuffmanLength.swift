@@ -12,11 +12,9 @@ struct HuffmanLength: Comparable, CustomStringConvertible {
     let code: Int
     let bits: Int
     var symbol: Int? = nil
-    var reversedSymbol: Int? = nil
 
     var description: String {
-        return "(code: \(code), bits: \(bits), symbol: \(symbol), " +
-        "reversedSymbol: \(reversedSymbol))"
+        return "(code: \(code), bits: \(bits), symbol: \(symbol)"
     }
 
     static func < (left: HuffmanLength, right: HuffmanLength) -> Bool {
