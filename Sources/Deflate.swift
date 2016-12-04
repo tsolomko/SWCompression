@@ -163,6 +163,7 @@ public class Deflate: DecompressionAlgorithm {
                     // We read more data than we need so we 'rewind' pointer back to the actual amount of bits we used.
                     pointerData.rewind(bitsCount: 24 - nextSymbolLength.bits)
                     let nextSymbol = nextSymbolLength.code
+                    print("nextSymbol: \(nextSymbol)")
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
