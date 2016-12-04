@@ -27,7 +27,7 @@ class HuffmanTable: CustomStringConvertible {
     }
 
     var lengths: [HuffmanLength]
-    var reversedTree: [HuffmanLength?]
+    var tree: [HuffmanLength?]
     let leafCount: Int
 
     var description: String {
@@ -83,23 +83,18 @@ class HuffmanTable: CustomStringConvertible {
         }
 
         self.leafCount = Int(pow(Double(2), Double(self.lengths.last!.bits + 1)))
-        self.reversedTree = Array(repeating: nil, count: leafCount)
+        self.tree = Array(repeating: nil, count: leafCount)
 
         for length in self.lengths {
             var revSymbol = length.reversedSymbol!
-
             let bits = length.bits
-
             var revIndex = 0
-
             for _ in 0..<bits {
                 let revBit = revSymbol & 1
-
                 revIndex = revBit == 0 ? 2 * revIndex + 1 : 2 * revIndex + 2
-
                 revSymbol >>= 1
             }
-            self.reversedTree[revIndex] = length
+            self.tree[revIndex] = length
         }
     }
 
@@ -117,7 +112,7 @@ class HuffmanTable: CustomStringConvertible {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else { return nil }
-            if let length = self.reversedTree[index] {
+            if let length = self.tree[index] {
                 return length
             }
         }
