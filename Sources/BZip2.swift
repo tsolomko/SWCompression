@@ -196,7 +196,7 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), reversed: false, bitOrder: .straight) else {
+            guard let symbolLength = t?.findNextSymbol(in: data.bits(count: 24), bitOrder: .straight) else {
                 throw BZip2Error.SymbolNotFound
             }
             data.rewind(bitsCount: 24 - symbolLength.bits)
