@@ -8,20 +8,6 @@
 
 import Foundation
 
-class HuffmanTreeNode: CustomStringConvertible {
-    let node: HuffmanLength?
-    var left: HuffmanTreeNode? = nil
-    var right: HuffmanTreeNode? = nil
-
-    var description: String {
-        return "value: \(self.node)\n\tleft: \(left)\n\tright: \(right)"
-    }
-
-    init(_ node: HuffmanLength? = nil) {
-        self.node = node
-    }
-}
-
 class HuffmanTable: CustomStringConvertible {
 
     struct Constants {
@@ -69,7 +55,6 @@ class HuffmanTable: CustomStringConvertible {
 
         func reverse(bits: Int, in symbol: Int) -> Int {
             // Auxiliarly subfunction, which computes reversed order of bits in a number
-            // This is some weird magic
             var a = 1 << 0
             var b = 1 << (bits - 1)
             var z = 0
@@ -83,12 +68,12 @@ class HuffmanTable: CustomStringConvertible {
         }
 
         // Calculates symbol and reversedSymbol properties for each length in 'lengths' array
-        // This is done with the help of some weird magic
         var loopBits = -1
         var symbol = -1
         for index in 0..<self.lengths.count {
             symbol += 1
             let length = self.lengths[index]
+            // We sometimes need to make symbol to have length.bits bit length
             if length.bits != loopBits {
                 symbol <<= (length.bits - loopBits)
                 loopBits = length.bits
@@ -97,24 +82,32 @@ class HuffmanTable: CustomStringConvertible {
             self.lengths[index].reversedSymbol = reverse(bits: loopBits, in: symbol)
         }
 
+        let leafCount = Int(pow(Double(2), Double(self.lengths.last!.bits + 1)))
+        self.reversedTree = Array(repeating: nil, count: leafCount)
+        self.tree = Array(repeating: nil, count: leafCount)
 
-        let leafCount = Int(pow(Double(2), Double(self.lengths.first!.bits)))
-        var treeLengths: [HuffmanLength?] = Array(repeating: nil, count: leafCount)
-        var reversedTreeLengths: [HuffmanLength?] = Array(repeating: nil, count: leafCount)
-//        self.lengths.sorted(by: { $0.symbol < $1.symbol! })
-//        treeLengths.append(contentsOf: )
-        var sortedLengths = self.lengths.sorted(by: { $0.symbol! < $1.symbol! })
-        for length in sortedLengths {
-            treeLengths.append(length)
-        }
-        sortedLengths = self.lengths.sorted(by: { $0.reversedSymbol! < $1.reversedSymbol! })
-        for length in sortedLengths {
-            reversedTreeLengths.append(length)
-        }
+        for length in self.lengths {
+            var revSymbol = length.reversedSymbol!
+            var symbol = length.symbol!
 
-        self.tree = treeLengths
-        self.reversedTree = reversedTreeLengths
-        print()
+            let bits = length.bits
+
+            var revIndex = 0
+            var index = 0
+
+            for _ in 0..<bits {
+                let revBit = revSymbol & 1
+                let bit = symbol & 1
+
+                revIndex = revBit == 0 ? 2 * revIndex + 1 : 2 * revIndex + 2
+                index = bit == 0 ? 2 * index + 1 : 2 * index + 2
+
+                revSymbol >>= 1
+                symbol >>= 1
+            }
+            self.reversedTree[revIndex] = length
+            self.tree[index] = length
+        }
     }
 
     convenience init(lengthsToOrder: [Int]) {
