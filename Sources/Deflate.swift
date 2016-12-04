@@ -114,11 +114,9 @@ public class Deflate: DecompressionAlgorithm {
                     var n = 0
                     while n < (literals + distances) {
                         // Finding next Huffman table's symbol in data.
-                        guard let dynamicCodeHuffmanLength = dynamicCodes.findNextSymbol(in: pointerData.bits(count: 24), pointerData: pointerData) else {
+                        guard let dynamicCodeHuffmanLength = dynamicCodes.findNextSymbol(in: pointerData) else {
                             throw DeflateError.HuffmanTableError
                         }
-                        // We read more data than we need so we 'rewind' pointer back to the actual amount of bits we used.
-//                        pointerData.rewind(bitsCount: 24 - dynamicCodeHuffmanLength.bits)
                         let symbol = dynamicCodeHuffmanLength.code
                         let count: Int
                         let what: Int
@@ -157,11 +155,9 @@ public class Deflate: DecompressionAlgorithm {
                 while true {
                     // Read next symbol from data.
                     // It will be either literal symbol or a length of (previous) data we will need to copy.
-                    guard let nextSymbolLength = mainLiterals.findNextSymbol(in: pointerData.bits(count: 24), pointerData: pointerData) else {
+                    guard let nextSymbolLength = mainLiterals.findNextSymbol(in: pointerData) else {
                         throw DeflateError.HuffmanTableError
                     }
-                    // We read more data than we need so we 'rewind' pointer back to the actual amount of bits we used.
-//                    pointerData.rewind(bitsCount: 24 - nextSymbolLength.bits)
                     let nextSymbol = nextSymbolLength.code
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
@@ -181,11 +177,9 @@ public class Deflate: DecompressionAlgorithm {
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
-                        guard let distanceLength = mainDistances.findNextSymbol(in: pointerData.bits(count: 24), pointerData: pointerData) else {
+                        guard let distanceLength = mainDistances.findNextSymbol(in: pointerData) else {
                             throw DeflateError.HuffmanTableError
                         }
-                        // We read more data than we need so we 'rewind' pointer back to the actual amount of bits we used.
-//                        pointerData.rewind(bitsCount: 24 - distanceLength.bits)
                         let distanceCode = distanceLength.code
 
                         if distanceCode >= 0 && distanceCode <= 29 {
