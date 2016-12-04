@@ -213,7 +213,7 @@ public class Deflate: DecompressionAlgorithm {
                 throw DeflateError.UnknownBlockType
             }
 
-            // End the cycle if it was the last block
+            // End the cycle if it was the last block.
             if isLastBit == 1 { break }
         }
 

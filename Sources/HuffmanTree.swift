@@ -33,7 +33,7 @@ class HuffmanTree: CustomStringConvertible {
     private let leafCount: Int
 
     init(bootstrap: [Array<Int>]) {
-        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
+        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
@@ -42,16 +42,16 @@ class HuffmanTree: CustomStringConvertible {
             let endbits = pair[1]
             if bits > 0 {
                 lengths.append(contentsOf:
-                    (start..<finish).map { HuffmanLength(code: $0, bits: bits, symbol: nil) })
+                    (start..<finish).map { HuffmanLength(code: $0, bits: bits) })
             }
             start = finish
             bits = endbits
         }
-        // Sort the lengths' array to calculate symbols correctly
+        // Sort the lengths' array to calculate symbols correctly.
         lengths.sort()
 
         func reverse(bits: Int, in symbol: Int) -> Int {
-            // Auxiliarly function, which generates reversed order of bits in a number
+            // Auxiliarly function, which generates reversed order of bits in a number.
             var a = 1 << 0
             var b = 1 << (bits - 1)
             var z = 0
@@ -64,34 +64,30 @@ class HuffmanTree: CustomStringConvertible {
             return z
         }
 
-        // Calculates symbols for each length in 'lengths' array
+        // Calculate maximum amount of leaves possible in a tree.
+        self.leafCount = Int(pow(Double(2), Double(lengths.last!.bits + 1)))
+        // Create a tree (array, actually) with all leaves equal nil.
+        self.tree = Array(repeating: nil, count: leafCount)
+
+        // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
         var symbol = -1
-        for index in 0..<lengths.count {
+        for length in lengths {
             symbol += 1
-            let length = lengths[index]
-            // We sometimes need to make symbol to have length.bits bit length
+            // We sometimes need to make symbol to have length.bits bit length.
             if length.bits != loopBits {
                 symbol <<= (length.bits - loopBits)
                 loopBits = length.bits
             }
-            lengths[index].symbol = reverse(bits: loopBits, in: symbol)
-        }
-
-        // Calculate maximum amount of leaves possible in a tree
-        self.leafCount = Int(pow(Double(2), Double(lengths.last!.bits + 1)))
-        // Create a tree (array, actually) with all leaves equal nil
-        self.tree = Array(repeating: nil, count: leafCount)
-
-        // Populate necessary leaves with HuffmanLengths
-        for length in lengths {
-            var symbol = length.symbol!
+            // Then we need to reverse bit order of the symbol.
+            var treeCode = reverse(bits: loopBits, in: symbol)
+            // Finally, we put it at its place in the tree.
             let bits = length.bits
             var index = 0
             for _ in 0..<bits {
-                let bit = symbol & 1
+                let bit = treeCode & 1
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-                symbol >>= 1
+                treeCode >>= 1
             }
             self.tree[index] = length.code
         }
