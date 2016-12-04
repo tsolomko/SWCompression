@@ -29,6 +29,7 @@ class HuffmanTable: CustomStringConvertible {
     var lengths: [HuffmanLength]
     var tree: [HuffmanLength?]
     var reversedTree: [HuffmanLength?]
+    let leafCount: Int
 
     var description: String {
         return self.lengths.reduce("HuffmanTable:\n") { $0.appending("\($1)\n") }
@@ -82,7 +83,7 @@ class HuffmanTable: CustomStringConvertible {
             self.lengths[index].reversedSymbol = reverse(bits: loopBits, in: symbol)
         }
 
-        let leafCount = Int(pow(Double(2), Double(self.lengths.last!.bits + 1)))
+        self.leafCount = Int(pow(Double(2), Double(self.lengths.last!.bits + 1)))
         self.reversedTree = Array(repeating: nil, count: leafCount)
         self.tree = Array(repeating: nil, count: leafCount)
 
@@ -118,31 +119,34 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in bitArray: [UInt8], reversed: Bool = true, bitOrder: BitOrder = .reversed) -> HuffmanLength? {
-        var cachedLength = -1
-        var cached: Int = -1
-
-        for length in self.lengths {
-            let lbits = length.bits
-
-            if cachedLength != lbits {
-                cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]), bitOrder: bitOrder)
-                cachedLength = lbits
+    func findNextSymbol(in bitArray: [UInt8], bitOrder: BitOrder = .reversed) -> HuffmanLength? {
+        if bitOrder == .reversed {
+            var index = 0
+            for bit in bitArray {
+                index = bit == 0 ? 2 * index + 1 : 2 * index + 2
+                guard index < self.leafCount else { return nil }
+                let length = bitOrder == .reversed ? self.reversedTree[index] : self.tree[index]
+                if length != nil {
+                    return length
+                }
             }
-            if (reversed && length.reversedSymbol == cached) ||
-                (!reversed && length.symbol == cached) {
-                return length
+        } else {
+            var cachedLength = -1
+            var cached: Int = -1
+
+            for length in self.lengths {
+                let lbits = length.bits
+
+                if cachedLength != lbits {
+                    cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]), bitOrder: bitOrder)
+                    cachedLength = lbits
+                }
+                if length.symbol == cached {
+                    return length
+                }
             }
         }
-//        var lastIndex = 0
-//        for (treeLevel, bit) in bitArray.enumerated() {
-//            let currentIndex = bit == 0 ? 2 * lastIndex : 2 * lastIndex + 1
-//            print(currentIndex)
-//            if currentIndex >= self.reversedTree.count {
-//                return self.reversedTree[lastIndex]
-//            }
-//            lastIndex = currentIndex
-//        }
+
         return nil
     }
 
