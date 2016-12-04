@@ -77,9 +77,9 @@ public class Deflate: DecompressionAlgorithm {
                 // There are two alphabets in use and each one needs a Huffman table.
 
                 /// Huffman table for literal bytes.
-                var mainLiterals: HuffmanTable
+                var mainLiterals: HuffmanTree
                 /// Huffman table for bytes alphabet and alphabet of pairs (length, backward distance).
-                var mainDistances: HuffmanTable
+                var mainDistances: HuffmanTree
 
                 if blockType == [0, 1] { // Static Huffman
                     // In this case codes for literals and distances are fixed.
@@ -87,8 +87,8 @@ public class Deflate: DecompressionAlgorithm {
                     let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
                     let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
                     // Initialize tables from these bootstraps.
-                    mainLiterals = HuffmanTable(bootstrap: staticHuffmanBootstrap)
-                    mainDistances = HuffmanTable(bootstrap: staticHuffmanLengthsBootstrap)
+                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap)
+                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
@@ -104,10 +104,10 @@ public class Deflate: DecompressionAlgorithm {
                     // Moreover, they are stored in a very specific order (defined by HuffmanTable.Constants.codeLengthOrders).
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[HuffmanTable.Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
+                        lengthsForOrder[HuffmanTree.Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
                     }
                     /// Huffman table for code lengths. Each code in the main alphabets is coded with this table.
-                    let dynamicCodes = HuffmanTable(lengthsToOrder: lengthsForOrder)
+                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder)
 
                     // Now we need to read codes (code lengths) for two main alphabets (tables).
                     var codeLengths: [Int] = []
@@ -147,8 +147,8 @@ public class Deflate: DecompressionAlgorithm {
                     }
                     // We have read codeLengths for both tables at once.
                     // Now we need to split them and make corresponding tables.
-                    mainLiterals = HuffmanTable(lengthsToOrder: Array(codeLengths[0..<literals]))
-                    mainDistances = HuffmanTable(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]))
+                    mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]))
+                    mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]))
                 }
 
                 // Main loop of data decompression.
@@ -173,7 +173,7 @@ public class Deflate: DecompressionAlgorithm {
                         let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
                             0 : (((nextSymbol - 257) >> 2) - 1)
                         // Actually, nextSymbol is not a starting value of length but an index for special array of starting values.
-                        let length = HuffmanTable.Constants.lengthBase[nextSymbol - 257] +
+                        let length = HuffmanTree.Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
@@ -187,7 +187,7 @@ public class Deflate: DecompressionAlgorithm {
                             // which we need to combine with distanceCode to get the actual distance.
                             let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                             // And yes, distanceCode is not a first part of distance but rather an index for special array.
-                            let distance = HuffmanTable.Constants.distanceBase[distanceCode] +
+                            let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
                                 pointerData.intFromBits(count: extraDistance)
 
                             // We should repeat last 'distance' amount of data.

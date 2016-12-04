@@ -8,7 +8,7 @@
 
 import Foundation
 
-class HuffmanTable: CustomStringConvertible {
+class HuffmanTree: CustomStringConvertible {
 
     struct Constants {
         static let codeLengthOrders: [Int] =
@@ -26,12 +26,12 @@ class HuffmanTable: CustomStringConvertible {
 
     }
 
-    var tree: [HuffmanLength?]
-    let leafCount: Int
-
     var description: String {
         return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
     }
+
+    private var tree: [HuffmanLength?]
+    private let leafCount: Int
 
     init(bootstrap: [Array<Int>]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
