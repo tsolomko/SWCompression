@@ -114,10 +114,10 @@ public class Deflate: DecompressionAlgorithm {
                     var n = 0
                     while n < (literals + distances) {
                         // Finding next Huffman table's symbol in data.
-                        guard let dynamicCodeHuffmanLength = dynamicCodes.findNextSymbol(in: pointerData) else {
+                        guard let symbol = dynamicCodes.findNextSymbol(in: pointerData) else {
                             throw DeflateError.HuffmanTableError
                         }
-                        let symbol = dynamicCodeHuffmanLength.code
+
                         let count: Int
                         let what: Int
                         if symbol >= 0 && symbol <= 15 {
@@ -155,10 +155,9 @@ public class Deflate: DecompressionAlgorithm {
                 while true {
                     // Read next symbol from data.
                     // It will be either literal symbol or a length of (previous) data we will need to copy.
-                    guard let nextSymbolLength = mainLiterals.findNextSymbol(in: pointerData) else {
+                    guard let nextSymbol = mainLiterals.findNextSymbol(in: pointerData) else {
                         throw DeflateError.HuffmanTableError
                     }
-                    let nextSymbol = nextSymbolLength.code
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
@@ -177,10 +176,9 @@ public class Deflate: DecompressionAlgorithm {
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
-                        guard let distanceLength = mainDistances.findNextSymbol(in: pointerData) else {
+                        guard let distanceCode = mainDistances.findNextSymbol(in: pointerData) else {
                             throw DeflateError.HuffmanTableError
                         }
-                        let distanceCode = distanceLength.code
 
                         if distanceCode >= 0 && distanceCode <= 29 {
                             // Again, depending on the distanceCode's value there might be additional bits in data,

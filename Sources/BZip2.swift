@@ -196,10 +196,10 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbolLength = t?.findNextSymbol(in: data) else {
+            guard let symbol = t?.findNextSymbol(in: data) else {
                 throw BZip2Error.SymbolNotFound
             }
-            let symbol = symbolLength.code
+
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1
