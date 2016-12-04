@@ -119,35 +119,17 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in bitArray: [UInt8], bitOrder: BitOrder = .reversed) -> HuffmanLength? {
-        if bitOrder == .reversed {
-            var index = 0
-            for bit in bitArray {
-                index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-                guard index < self.leafCount else { return nil }
-                let length = bitOrder == .reversed ? self.reversedTree[index] : self.tree[index]
-                if length != nil {
-                    return length
-                }
-            }
-        } else {
-            var cachedLength = -1
-            var cached: Int = -1
-
-            for length in self.lengths {
-                let lbits = length.bits
-
-                if cachedLength != lbits {
-                    cached = convertToInt(uint8Array: Array(bitArray[0..<lbits]), bitOrder: bitOrder)
-                    cachedLength = lbits
-                }
-                if length.symbol == cached {
-                    return length
-                }
+    func findNextSymbol(in bitArray: [UInt8], bitOrder: BitOrder = .reversed, pointerData: DataWithPointer) -> HuffmanLength? {
+        pointerData.rewind(bitsCount: 24)
+        var index = 0
+        while true {
+            let bit = pointerData.bit()
+            index = bit == 0 ? 2 * index + 1 : 2 * index + 2
+            guard index < self.leafCount else { return nil }
+            if let length = self.reversedTree[index] {
+                return length
             }
         }
-
-        return nil
     }
 
 }
