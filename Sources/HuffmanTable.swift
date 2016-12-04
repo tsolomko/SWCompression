@@ -119,8 +119,7 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in bitArray: [UInt8], bitOrder: BitOrder = .reversed, pointerData: DataWithPointer) -> HuffmanLength? {
-        pointerData.rewind(bitsCount: 24)
+    func findNextSymbol(in pointerData: DataWithPointer) -> HuffmanLength? {
         var index = 0
         while true {
             let bit = pointerData.bit()
