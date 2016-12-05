@@ -58,7 +58,7 @@ Then run `carthage update`.
 Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder into the "Embedded Binaries" section on your targets' "General" tab.
 
 ##### Swift Package Manager
-Add to you package specification's dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`, for example like this:
+Add to you package dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`, for example like this:
 ```swift
 import PackageDescription
 
@@ -79,7 +79,7 @@ If you'd like to decompress "deflated" data just use:
 let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"))
 let decompressedData = try? Deflate.decompress(compressedData: data)
 ```
-**Note:** you should properly handle possible errors in loading data from file
+_Note:_ you should properly handle possible errors in loading data from file
 and decide yourself if you need any `Data.ReadingOptions`.
 
 However, it is unlikely that you will encounter deflated data outside of any archive.
