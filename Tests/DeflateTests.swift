@@ -73,7 +73,6 @@ class DeflateTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
-
     func testDeflate4() {
         let testName = "test4"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: DeflateTests.testType)) else {
@@ -93,7 +92,6 @@ class DeflateTests: XCTestCase {
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
-
 
     func testDeflate5() {
         let testName = "test5"
@@ -115,7 +113,6 @@ class DeflateTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
-
     func testDeflate6() {
         let testName = "test6"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: DeflateTests.testType)) else {
@@ -135,7 +132,6 @@ class DeflateTests: XCTestCase {
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
-
 
     func testDeflate7() {
         let testName = "test7"
