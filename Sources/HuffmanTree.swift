@@ -32,7 +32,7 @@ class HuffmanTree: CustomStringConvertible {
     private var tree: [Int?]
     private let leafCount: Int
 
-    init(bootstrap: [Array<Int>]) {
+    init(bootstrap: [[Int]]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
