@@ -113,7 +113,6 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
-
     func testGzip5() {
         let testName = "test5"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
