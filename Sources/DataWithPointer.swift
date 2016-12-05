@@ -94,23 +94,20 @@ class DataWithPointer {
         return array
     }
 
+    func alignedByte() -> UInt8 {
+        self.skipUntilNextByte()
+        var array: [UInt8] = [0]
+        CFBitVectorGetBits(self.bitVector, CFRangeMake(self.index * 8, 8), &array)
+        self.index += 1
+        return array.first!
+    }
+
     // MARK: Manipulations with index and bitShift
 
     func skipUntilNextByte() {
         guard self.bitShift != 0 else { return }
         self.index += 1
         self.bitShift = 0
-    }
-
-    func rewind(bitsCount: Int) {
-        let amountOfBytes = (bitsCount - self.bitShift) / 8 + 1
-        self.index -= amountOfBytes
-        self.bitShift = 8 - (bitsCount - self.bitShift) % 8
-
-        if self.bitShift == 8 {
-            self.index += 1
-            self.bitShift = 0
-        }
     }
 
 }

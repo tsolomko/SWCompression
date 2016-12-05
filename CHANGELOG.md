@@ -1,4 +1,9 @@
 # Changelog
+v1.2.0
+----------------
+- Reimplemented Huffman Coding using a tree-like structure.
+- Now only DataWithPointer is used during the processing.
+
 v1.1.2
 ----------------
 - Fixed memory problem in Deflate.

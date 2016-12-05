@@ -31,7 +31,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [219, 127, 19, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 19,
                                                         fileName: "test.txt",
                                                         comment: "",
                                                         crc: 0)
@@ -57,7 +56,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [193, 93, 43, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 23,
                                                         fileName: "test2.answer",
                                                         comment: "",
                                                         crc: 0)
@@ -83,7 +81,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [27, 94, 43, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 23,
                                                         fileName: "test3.answer",
                                                         comment: "",
                                                         crc: 0)
@@ -109,14 +106,12 @@ class GzipTests: XCTestCase {
                                                         mtime: [190, 130, 19, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 25,
                                                         fileName: "secondtest.txt",
                                                         comment: "",
                                                         crc: 0)
 
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
-
 
     func testGzip5() {
         let testName = "test5"
@@ -136,7 +131,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [232, 229, 20, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 20,
                                                         fileName: "empty.txt",
                                                         comment: "",
                                                         crc: 0)
@@ -162,7 +156,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [107, 95, 43, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 23,
                                                         fileName: "test6.answer",
                                                         comment: "",
                                                         crc: 0)
@@ -188,7 +181,6 @@ class GzipTests: XCTestCase {
                                                         mtime: [233, 74, 48, 88],
                                                         extraFlags: 0,
                                                         osType: 3,
-                                                        startPoint: 23,
                                                         fileName: "test7.answer",
                                                         comment: "",
                                                         crc: 0)
