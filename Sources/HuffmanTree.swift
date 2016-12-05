@@ -1,5 +1,5 @@
 //
-//  HuffmanTable.swift
+//  HuffmanTree.swift
 //  SWCompression
 //
 //  Created by Timofey Solomko on 24.10.16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class HuffmanTable: CustomStringConvertible {
+class HuffmanTree: CustomStringConvertible {
 
     struct Constants {
         static let codeLengthOrders: [Int] =
@@ -23,18 +23,17 @@ class HuffmanTable: CustomStringConvertible {
             [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
              257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
              8193, 12289, 16385, 24577]
-
     }
-
-    var tree: [HuffmanLength?]
-    let leafCount: Int
 
     var description: String {
         return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
     }
 
-    init(bootstrap: [Array<Int>]) {
-        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'
+    private var tree: [Int?]
+    private let leafCount: Int
+
+    init(bootstrap: [[Int]]) {
+        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [HuffmanLength] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
@@ -43,16 +42,16 @@ class HuffmanTable: CustomStringConvertible {
             let endbits = pair[1]
             if bits > 0 {
                 lengths.append(contentsOf:
-                    (start..<finish).map { HuffmanLength(code: $0, bits: bits, symbol: nil) })
+                    (start..<finish).map { HuffmanLength(code: $0, bits: bits) })
             }
             start = finish
             bits = endbits
         }
-        // Sort the lengths' array to calculate symbols correctly
+        // Sort the lengths' array to calculate symbols correctly.
         lengths.sort()
 
         func reverse(bits: Int, in symbol: Int) -> Int {
-            // Auxiliarly function, which generates reversed order of bits in a number
+            // Auxiliarly function, which generates reversed order of bits in a number.
             var a = 1 << 0
             var b = 1 << (bits - 1)
             var z = 0
@@ -65,36 +64,32 @@ class HuffmanTable: CustomStringConvertible {
             return z
         }
 
-        // Calculates symbols for each length in 'lengths' array
+        // Calculate maximum amount of leaves possible in a tree.
+        self.leafCount = Int(pow(Double(2), Double(lengths.last!.bits + 1)))
+        // Create a tree (array, actually) with all leaves equal nil.
+        self.tree = Array(repeating: nil, count: leafCount)
+
+        // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
         var symbol = -1
-        for index in 0..<lengths.count {
+        for length in lengths {
             symbol += 1
-            let length = lengths[index]
-            // We sometimes need to make symbol to have length.bits bit length
+            // We sometimes need to make symbol to have length.bits bit length.
             if length.bits != loopBits {
                 symbol <<= (length.bits - loopBits)
                 loopBits = length.bits
             }
-            lengths[index].symbol = reverse(bits: loopBits, in: symbol)
-        }
-
-        // Calculate maximum amount of leaves possible in a tree
-        self.leafCount = Int(pow(Double(2), Double(lengths.last!.bits + 1)))
-        // Create a tree (array, actually) with all leaves equal nil
-        self.tree = Array(repeating: nil, count: leafCount)
-
-        // Populate necessary leaves with HuffmanLengths
-        for length in lengths {
-            var symbol = length.symbol!
+            // Then we need to reverse bit order of the symbol.
+            var treeCode = reverse(bits: loopBits, in: symbol)
+            // Finally, we put it at its place in the tree.
             let bits = length.bits
             var index = 0
             for _ in 0..<bits {
-                let bit = symbol & 1
+                let bit = treeCode & 1
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-                symbol >>= 1
+                treeCode >>= 1
             }
-            self.tree[index] = length
+            self.tree[index] = length.code
         }
     }
 
@@ -106,14 +101,14 @@ class HuffmanTable: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in pointerData: DataWithPointer) -> HuffmanLength? {
+    func findNextSymbol(in pointerData: DataWithPointer) -> Int? {
         var index = 0
         while true {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else { return nil }
-            if let length = self.tree[index] {
-                return length
+            if let code = self.tree[index] {
+                return code
             }
         }
     }

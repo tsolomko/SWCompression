@@ -149,8 +149,8 @@ public class BZip2: DecompressionAlgorithm {
         let selectorsList = try computeSelectorsList()
         let symbolsInUse = used.filter { $0 }.count + 2
 
-        func computeTables() throws -> [HuffmanTable] {
-            var tables: [HuffmanTable] = []
+        func computeTables() throws -> [HuffmanTree] {
+            var tables: [HuffmanTree] = []
             for _ in 0..<huffmanGroups {
                 var length = data.intFromBits(count: 5)
                 var lengths: [Int] = []
@@ -161,7 +161,7 @@ public class BZip2: DecompressionAlgorithm {
                     }
                     lengths.append(length)
                 }
-                let codes = HuffmanTable(lengthsToOrder: lengths)
+                let codes = HuffmanTree(lengthsToOrder: lengths)
                 tables.append(codes)
             }
 
@@ -184,7 +184,7 @@ public class BZip2: DecompressionAlgorithm {
         var repeat_ = 0
         var repeatPower = 0
         var buffer: [UInt8] = []
-        var t: HuffmanTable?
+        var t: HuffmanTree?
 
         while true {
             decoded -= 1
@@ -196,10 +196,10 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbolLength = t?.findNextSymbol(in: data) else {
+            guard let symbol = t?.findNextSymbol(in: data) else {
                 throw BZip2Error.SymbolNotFound
             }
-            let symbol = symbolLength.code
+
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1

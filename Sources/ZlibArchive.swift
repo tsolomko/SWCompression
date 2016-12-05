@@ -44,7 +44,7 @@ public class ZlibArchive: Archive {
         let windowSize: Int
         let compressionLevel: CompressionLevel
 
-        public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
+        public static func == (lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
             return lhs.compressionMethod == rhs.compressionMethod &&
                 lhs.windowSize == rhs.windowSize &&
                 lhs.compressionLevel == rhs.compressionLevel
