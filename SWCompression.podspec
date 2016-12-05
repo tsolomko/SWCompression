@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Common' do |sp|
     sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{DataWithPointer.swift,HuffmanTable.swift,HuffmanLength.swift,Protocols.swift,Extensions.swift,Service/*.swift,Service/*.h}"
+    sp.source_files  = "Sources/{DataWithPointer.swift,HuffmanTree.swift,HuffmanLength.swift,Protocols.swift,Extensions.swift,Service/*.swift,Service/*.h}"
   end
 
   s.subspec 'Deflate' do |sp|

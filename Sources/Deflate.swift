@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: Rename HuffmanTableError to HuffmanTreeError.
 /**
  Error happened during deflate decompression. 
  It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
@@ -101,7 +102,7 @@ public class Deflate: DecompressionAlgorithm {
                     let codeLengthsLength = pointerData.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
-                    // Moreover, they are stored in a very specific order (defined by HuffmanTable.Constants.codeLengthOrders).
+                    // Moreover, they are stored in a very specific order (defined by HuffmanTree.Constants.codeLengthOrders).
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
                         lengthsForOrder[HuffmanTree.Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)

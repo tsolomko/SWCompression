@@ -1,5 +1,5 @@
 //
-//  HuffmanTable.swift
+//  HuffmanTree.swift
 //  SWCompression
 //
 //  Created by Timofey Solomko on 24.10.16.
