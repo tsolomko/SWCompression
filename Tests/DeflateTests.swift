@@ -20,7 +20,9 @@ class DeflateTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? Deflate.decompress(compressedData: testData) else {
+        let decompressedData = try? Deflate.decompress(compressedData: testData)
+
+        guard decompressedData != nil  else {
             XCTFail("Failed to decompress")
             return
         }
@@ -31,6 +33,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate2() {
@@ -51,6 +60,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate3() {
@@ -71,6 +87,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate4() {
@@ -91,6 +114,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate5() {
@@ -111,6 +141,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate6() {
@@ -131,6 +168,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testDeflate7() {
@@ -151,6 +195,13 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                let _ = try? Deflate.decompress(compressedData: testData)
+            }
+        #endif
     }
 
 }

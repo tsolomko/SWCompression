@@ -31,6 +31,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testBzip2_2() {
@@ -51,6 +58,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testBzip2_3() {
@@ -71,6 +85,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testBzip2_4() {
@@ -91,6 +112,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testBzip2_5() {
@@ -111,6 +139,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
     func testBzip2_6() {
@@ -131,6 +166,13 @@ class Bzip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
+            self.measure {
+                let _ = try? BZip2.decompress(compressedData: testData)
+            }
+        #endif
     }
 
 //    func testBzip2_7() {
