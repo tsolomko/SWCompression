@@ -48,7 +48,7 @@ class HuffmanTree: CustomStringConvertible {
             bits = endbits
         }
         // Sort the lengths' array to calculate symbols correctly.
-        lengths.sort { (left: [Int], right:[Int]) -> Bool in
+        lengths.sort { (left: [Int], right: [Int]) -> Bool in
             if left[1] == right[1] {
                 return left[0] < right[0]
             } else {
