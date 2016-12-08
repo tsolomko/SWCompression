@@ -17,15 +17,20 @@ enum BitOrder {
 class DataWithPointer {
 
     let bitOrder: BitOrder
-    let bitVector: CFBitVector
-    var index: Int
-    var bitShift: Int
+    private let bitArray: [UInt8]
+    var index: Int = 0
+    var bitMask: UInt8
 
     init(data: Data, bitOrder: BitOrder) {
-        self.index = 0
-        self.bitShift = 0
         self.bitOrder = bitOrder
-        self.bitVector = CFBitVectorCreate(kCFAllocatorDefault, data.toArray(type: UInt8.self), data.count * 8)
+        self.bitArray = data.toArray(type: UInt8.self)
+
+        switch self.bitOrder {
+        case .reversed:
+            self.bitMask = 1
+        case .straight:
+            self.bitMask = 128
+        }
     }
 
     func bits(count: Int) -> [UInt8] {
@@ -33,20 +38,23 @@ class DataWithPointer {
 
         var array: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
-            let currentIndex: Int
+            array[i] = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+
             switch self.bitOrder {
-            case .straight:
-                currentIndex = 8 * index + bitShift
             case .reversed:
-                currentIndex = 8 * (index + 1) - bitShift - 1
-            }
-
-            array[i] = UInt8(truncatingBitPattern: CFBitVectorGetBitAtIndex(self.bitVector, currentIndex))
-
-            self.bitShift += 1
-            if self.bitShift >= 8 {
-                self.bitShift = 0
-                self.index += 1
+                if self.bitMask == 128 {
+                    self.index += 1
+                    self.bitMask = 1
+                } else {
+                    self.bitMask <<= 1
+                }
+            case .straight:
+                if self.bitMask == 1 {
+                    self.index += 1
+                    self.bitMask = 128
+                } else {
+                    self.bitMask >>= 1
+                }
             }
         }
 
@@ -55,26 +63,35 @@ class DataWithPointer {
 
     func intFromBits(count: Int) -> Int {
         guard count > 0 else { return 0 }
+
         var result = 0
         for i in 0..<count {
-            let currentIndex: Int
             let power: Int
             switch self.bitOrder {
             case .straight:
-                currentIndex = 8 * index + bitShift
                 power = count - i - 1
             case .reversed:
-                currentIndex = 8 * (index + 1) - bitShift - 1
                 power = i
             }
 
-            result += Int(pow(Double(2), Double(power))) *
-                Int(bitPattern: UInt(CFBitVectorGetBitAtIndex(self.bitVector, currentIndex)))
+            let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+            result += Int(pow(Double(2), Double(power))) * bit
 
-            self.bitShift += 1
-            if self.bitShift >= 8 {
-                self.bitShift = 0
-                self.index += 1
+            switch self.bitOrder {
+            case .reversed:
+                if self.bitMask == 128 {
+                    self.index += 1
+                    self.bitMask = 1
+                } else {
+                    self.bitMask <<= 1
+                }
+            case .straight:
+                if self.bitMask == 1 {
+                    self.index += 1
+                    self.bitMask = 128
+                } else {
+                    self.bitMask >>= 1
+                }
             }
         }
 
@@ -85,29 +102,24 @@ class DataWithPointer {
         return self.bits(count: 1).first!
     }
 
-    /// Skips until next byte and returns next `count` bytes.
-    func alignedBytes(count: Int) -> [UInt8] {
-        self.skipUntilNextByte()
-        var array: [UInt8] = Array(repeating: 0, count: count)
-        CFBitVectorGetBits(self.bitVector, CFRangeMake(self.index * 8, count * 8), &array)
-        self.index += count
-        return array
-    }
-
     func alignedByte() -> UInt8 {
         self.skipUntilNextByte()
-        var array: [UInt8] = [0]
-        CFBitVectorGetBits(self.bitVector, CFRangeMake(self.index * 8, 8), &array)
         self.index += 1
-        return array.first!
+        return self.bitArray[self.index - 1]
     }
 
     // MARK: Manipulations with index and bitShift
 
     func skipUntilNextByte() {
-        guard self.bitShift != 0 else { return }
+        switch self.bitOrder {
+        case .reversed:
+            guard self.bitMask != 1 else { return }
+            self.bitMask = 1
+        case .straight:
+            guard self.bitMask != 128 else { return }
+            self.bitMask = 128
+        }
         self.index += 1
-        self.bitShift = 0
     }
 
 }
