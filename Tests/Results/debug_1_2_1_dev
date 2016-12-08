@@ -1,0 +1,13 @@
+bz2.test1 average: 0.003
+bz2.test2 average: 0.429
+bz2.test3 average: 0.201
+bz2.test4 average: 0.197
+bz2.test5 average: 0.000
+bz2.test6 average: 9.786
+deflate.test1 average: 0.002
+deflate.test2 average: 0.025
+deflate.test3 average: 0.019
+deflate.test4 average: 0.005
+deflate.test5 average: 0.002
+deflate.test6 average: 44.470
+deflate.test7 average: 0.468
