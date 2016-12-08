@@ -34,7 +34,7 @@ class HuffmanTree: CustomStringConvertible {
 
     init(bootstrap: [[Int]]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
-        var lengths: [HuffmanLength] = []
+        var lengths: [[Int]] = []
         var start = bootstrap[0][0]
         var bits = bootstrap[0][1]
         for pair in bootstrap[1..<bootstrap.count] {
@@ -42,13 +42,19 @@ class HuffmanTree: CustomStringConvertible {
             let endbits = pair[1]
             if bits > 0 {
                 lengths.append(contentsOf:
-                    (start..<finish).map { HuffmanLength(code: $0, bits: bits) })
+                    (start..<finish).map { [$0, bits] })
             }
             start = finish
             bits = endbits
         }
         // Sort the lengths' array to calculate symbols correctly.
-        lengths.sort()
+        lengths.sort { (left: [Int], right:[Int]) -> Bool in
+            if left[1] == right[1] {
+                return left[0] < right[0]
+            } else {
+                return left[1] < right[1]
+            }
+        }
 
         func reverse(bits: Int, in symbol: Int) -> Int {
             // Auxiliarly function, which generates reversed order of bits in a number.
@@ -65,7 +71,7 @@ class HuffmanTree: CustomStringConvertible {
         }
 
         // Calculate maximum amount of leaves possible in a tree.
-        self.leafCount = Int(pow(Double(2), Double(lengths.last!.bits + 1)))
+        self.leafCount = Int(pow(Double(2), Double(lengths.last![1] + 1)))
         // Create a tree (array, actually) with all leaves equal nil.
         self.tree = Array(repeating: nil, count: leafCount)
 
@@ -75,21 +81,21 @@ class HuffmanTree: CustomStringConvertible {
         for length in lengths {
             symbol += 1
             // We sometimes need to make symbol to have length.bits bit length.
-            if length.bits != loopBits {
-                symbol <<= (length.bits - loopBits)
-                loopBits = length.bits
+            let bits = length[1]
+            if bits != loopBits {
+                symbol <<= (bits - loopBits)
+                loopBits = bits
             }
             // Then we need to reverse bit order of the symbol.
             var treeCode = reverse(bits: loopBits, in: symbol)
             // Finally, we put it at its place in the tree.
-            let bits = length.bits
             var index = 0
             for _ in 0..<bits {
                 let bit = treeCode & 1
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = length.code
+            self.tree[index] = length[0]
         }
     }
 
