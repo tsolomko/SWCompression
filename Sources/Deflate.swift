@@ -69,8 +69,10 @@ public class Deflate: DecompressionAlgorithm {
                 guard length & nlength == 0 else { throw DeflateError.WrongBlockLengths }
                 // Process uncompressed data into the output
                 // TODO: Replace precondition with guard and error throwing.
-                precondition(pointerData.bitShift == 0, "Misaligned byte.")
-                out.append(contentsOf: pointerData.alignedBytes(count: length))
+                precondition(pointerData.bitMask == 1, "Misaligned byte.")
+                for _ in 0..<length {
+                    out.append(pointerData.alignedByte())
+                }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
 
