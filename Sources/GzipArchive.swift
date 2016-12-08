@@ -38,10 +38,10 @@ public class GzipArchive: Archive {
 
     struct ServiceInfo: Equatable {
 
-        let magic: [UInt8]
+        let magic: Int
         let method: UInt8
         let flags: UInt8
-        let mtime: [UInt8]
+        let mtime: Int
         let extraFlags: UInt8
         let osType: UInt8
         // Optional fields
@@ -64,8 +64,8 @@ public class GzipArchive: Archive {
 
     static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
         // First two bytes should be correct 'magic' bytes
-        let magic = pointerData.alignedBytes(count: 2)
-        guard magic == [31, 139] else { throw GzipError.WrongMagic }
+        let magic = pointerData.intFromBits(count: 16)
+        guard magic == 0x1f8b else { throw GzipError.WrongMagic }
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
         let method = pointerData.alignedByte()
@@ -75,7 +75,7 @@ public class GzipArchive: Archive {
         var serviceInfo = ServiceInfo(magic: magic,
                                       method: method,
                                       flags: pointerData.alignedByte(),
-                                      mtime: pointerData.alignedBytes(count: 4),
+                                      mtime: pointerData.intFromBits(count: 32),
                                       extraFlags: pointerData.alignedByte(),
                                       osType: pointerData.alignedByte(),
                                       fileName: "", comment: "", crc: 0)
