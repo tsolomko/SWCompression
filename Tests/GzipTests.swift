@@ -5,7 +5,7 @@
 //  Created by Timofey Solomko on 14.11.16.
 //  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
-
+//
 import XCTest
 @testable import SWCompression
 
@@ -23,15 +23,15 @@ class GzipTests: XCTestCase {
             XCTFail("Failed to get service info")
             return
         }
-
+        
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 
     func testGzip1() {
-        self.perform(test: "test1", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test1", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [219, 127, 19, 88],
+                                                                    mtime: 1477672923,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "test.txt",
@@ -40,10 +40,10 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip2() {
-        self.perform(test: "test2", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test2", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [193, 93, 43, 88],
+                                                                    mtime: 1479237057,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "test2.answer",
@@ -53,10 +53,10 @@ class GzipTests: XCTestCase {
 
     func testGzip3() {
 
-        self.perform(test: "test3", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test3", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [27, 94, 43, 88],
+                                                                    mtime: 1479237147,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "test3.answer",
@@ -65,10 +65,10 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip4() {
-        self.perform(test: "test4", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test4", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [190, 130, 19, 88],
+                                                                    mtime: 1477673662,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "secondtest.txt",
@@ -77,10 +77,10 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip5() {
-        self.perform(test: "test5", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test5", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [232, 229, 20, 88],
+                                                                    mtime: 1477764584,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "empty.txt",
@@ -89,10 +89,10 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip6() {
-        self.perform(test: "test6", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test6", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [107, 95, 43, 88],
+                                                                    mtime: 1479237483,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "test6.answer",
@@ -101,10 +101,10 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip7() {
-        self.perform(test: "test7", answer: GzipArchive.ServiceInfo(magic: [31, 139],
+        self.perform(test: "test7", answer: GzipArchive.ServiceInfo(magic: 0x8b1f,
                                                                     method: 8,
                                                                     flags: 8,
-                                                                    mtime: [233, 74, 48, 88],
+                                                                    mtime: 1479559913,
                                                                     extraFlags: 0,
                                                                     osType: 3,
                                                                     fileName: "test7.answer",
