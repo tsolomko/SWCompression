@@ -16,10 +16,10 @@ enum BitOrder {
 
 class DataWithPointer {
 
-    let bitOrder: BitOrder
+    private let bitOrder: BitOrder
     private let bitArray: [UInt8]
     var index: Int = 0
-    var bitMask: UInt8
+    private(set) var bitMask: UInt8
 
     init(data: Data, bitOrder: BitOrder) {
         self.bitOrder = bitOrder
