@@ -70,8 +70,11 @@ public class Deflate: DecompressionAlgorithm {
                 // Process uncompressed data into the output
                 // TODO: Replace precondition with guard and error throwing.
                 precondition(pointerData.bitMask == 1, "Misaligned byte.")
+                var ind = out.count
+                out.append(contentsOf: Array(repeating: 0, count: length))
                 for _ in 0..<length {
-                    out.append(pointerData.alignedByte())
+                    out[ind] = pointerData.alignedByte()
+                    ind += 1
                 }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
