@@ -65,7 +65,7 @@ public class GzipArchive: Archive {
     static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromBits(count: 16)
-        guard magic == 0x1f8b else { throw GzipError.WrongMagic }
+        guard magic == 0x8b1f else { throw GzipError.WrongMagic }
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
         let method = pointerData.alignedByte()
