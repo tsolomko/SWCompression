@@ -76,11 +76,13 @@ Usage
 -------
 If you'd like to decompress "deflated" data just use:
 ```swift
-let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"))
+let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
+                     options: .mappedIfSafe)
 let decompressedData = try? Deflate.decompress(compressedData: data)
 ```
-_Note:_ you should properly handle possible errors in loading data from file
-and decide yourself if you need any `Data.ReadingOptions`.
+_Note:_ It is __highly recommended__ to specify `Data.ReadingOptions.mappedIfSafe`,
+especially if you are working with large files,
+so you don't run out of system memory.
 
 However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:
