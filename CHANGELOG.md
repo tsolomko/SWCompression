@@ -1,4 +1,10 @@
 # Changelog
+v1.2.1
+----------------
+- Removed HuffmanLength.
+- Rewritten DataWithPointer.
+- Added performance tests.
+
 v1.2.0
 ----------------
 - Reimplemented Huffman Coding using a tree-like structure.
