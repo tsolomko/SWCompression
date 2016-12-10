@@ -18,9 +18,6 @@ struct Constants {
         return testBundle.url(forResource: name, withExtension: "answer")!
     }
 
-    static let testBundle = Bundle(for: ZlibTests.self)
-
-    static let relativelyBigFilePath = testBundle.url(forResource: "performance_test1",
-                                                        withExtension: "gz")!
+    static let testBundle = Bundle(for: DeflateTests.self)
 
 }

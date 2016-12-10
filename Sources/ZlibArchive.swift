@@ -40,7 +40,7 @@ public class ZlibArchive: Archive {
 
     struct ServiceInfo: Equatable {
 
-        let compressionMethod: UInt8
+        let compressionMethod: Int
         let windowSize: Int
         let compressionLevel: CompressionLevel
 
@@ -58,32 +58,33 @@ public class ZlibArchive: Archive {
     }
 
     static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
-        // First byte is compression method and window size
-        let cmf = pointerData.alignedByte()
-
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
-        let compressionMethod = convertToUInt8(uint8Array: cmf[0..<4])
+        let compressionMethod = pointerData.intFromBits(count: 4)
         guard compressionMethod == 8 else { throw ZlibError.WrongCompressionMethod }
 
         // Remaining four bits indicate window size
         // For DEFLATE it must not be more than 7
-        let compressionInfo = convertToUInt8(uint8Array: cmf[4..<8])
+        let compressionInfo = pointerData.intFromBits(count: 4)
         guard compressionInfo <= 7 else { throw ZlibError.WrongCompressionInfo }
         let windowSize = Int(pow(Double(2), Double(compressionInfo + 8)))
 
-        // Second byte is flags
-        let flags = pointerData.alignedByte()
+        // compressionMethod and compressionInfo combined are needed later for integrity check
+        let cmf = compressionInfo << 4 + compressionMethod
 
-        // Flags contain fcheck bits which are supposed to be integrity check
-        guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.WrongFcheck }
+        // Next five bits are fcheck bits which are supposed to be integrity check
+        let fcheck = pointerData.intFromBits(count: 5)
 
-        // Fifth bit indicate if archive contain Adler-32 checksum of preset dictionary
-        let fdict = flags[5]
+        // Sixth bit indicate if archive contain Adler-32 checksum of preset dictionary
+        let fdict = pointerData.intFromBits(count: 1)
 
         // Remaining bits indicate compression level
         guard let compressionLevel = CompressionLevel(rawValue:
-            convertToInt(uint8Array: flags[6..<8])) else { throw ZlibError.WrongCompressionLevel }
+            pointerData.intFromBits(count: 2)) else { throw ZlibError.WrongCompressionLevel }
+
+        // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check
+        let flags = compressionLevel.rawValue << 6 + fdict << 5 + fcheck
+        guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.WrongFcheck }
 
         let info = ServiceInfo(compressionMethod: compressionMethod,
                                windowSize: windowSize,
