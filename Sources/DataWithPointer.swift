@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreFoundation
 
 enum BitOrder {
     case straight
