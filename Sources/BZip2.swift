@@ -196,15 +196,14 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbol = t?.findNextSymbol(in: data) else {
-                throw BZip2Error.SymbolNotFound
-            }
+            let symbol = t?.findNextSymbol(in: data)
+            guard symbol != nil && symbol != -1 else { throw BZip2Error.SymbolNotFound }
 
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1
                 }
-                repeat_ += repeatPower << symbol
+                repeat_ += repeatPower << symbol!
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
@@ -214,8 +213,8 @@ public class BZip2: DecompressionAlgorithm {
             if symbol == symbolsInUse - 1 {
                 break
             } else {
-                let o = favourites[symbol - 1]
-                let el = favourites.remove(at: symbol - 1)
+                let o = favourites[symbol! - 1]
+                let el = favourites.remove(at: symbol! - 1)
                 favourites.insert(el, at: 0)
                 buffer.append(o)
             }

@@ -107,12 +107,12 @@ class HuffmanTree: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in pointerData: DataWithPointer) -> Int? {
+    func findNextSymbol(in pointerData: DataWithPointer) -> Int {
         var index = 0
         while true {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-            guard index < self.leafCount else { return nil }
+            guard index < self.leafCount else { return -1 }
             if self.tree[index] > -1 {
                 return self.tree[index]
             }
