@@ -102,17 +102,21 @@ Why is it so slow?
 -------------
 Is it?
 
-The problem is that if SWCompression is built with 'Debug' configuration for some reason the performance is really bad.
+Firstly, the problem is that if SWCompression is built with 'Debug' configuration for some reason the performance is really bad.
 However, if you use 'Release' configuration varoius optimizations start to take effect and decompression speed will be much better.
-I don't know what is really happening, how Swift compiler works, etc., but bottomline is that you should REALLY use __'Release'__ builds of SWCompression.
 
-_Note:_ There are (mostly, were) performance problems caused by implementation (you can check out v1.0.0, if you want to know what is 'slow'!), but as the time goes on I am trying to find new ways to optimize the code.
+Secondly, slow performance might have a fundamental cause.
+A recent investigation showed that the most time consuming operations are memory copying operations.
+And there are a lot of them. So to achieve higher speed of decoding the amount of such operations should be significantly reduced.
+This might require reimplementation of some things (such as `DataWithPointer`), thus it is currently considered as a long-term project.
+
+To sum up, it is __highly recommended__ to build SWCompression with 'Release' configuration and, hopefully, some day SWCompression will become fast.
 
 Future plans
 -------------
-- Performance improvement.
 - LZMA decompression.
 - XZ decompression.
+- Performance improvement.
 - Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
