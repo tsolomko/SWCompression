@@ -120,9 +120,8 @@ public class Deflate: DecompressionAlgorithm {
                     var n = 0
                     while n < (literals + distances) {
                         // Finding next Huffman table's symbol in data.
-                        guard let symbol = dynamicCodes.findNextSymbol(in: pointerData) else {
-                            throw DeflateError.HuffmanTableError
-                        }
+                        let symbol = dynamicCodes.findNextSymbol(in: pointerData)
+                        guard symbol != -1 else { throw DeflateError.HuffmanTableError }
 
                         let count: Int
                         let what: Int
@@ -161,9 +160,8 @@ public class Deflate: DecompressionAlgorithm {
                 while true {
                     // Read next symbol from data.
                     // It will be either literal symbol or a length of (previous) data we will need to copy.
-                    guard let nextSymbol = mainLiterals.findNextSymbol(in: pointerData) else {
-                        throw DeflateError.HuffmanTableError
-                    }
+                    let nextSymbol = mainLiterals.findNextSymbol(in: pointerData)
+                    guard nextSymbol != -1 else { throw DeflateError.HuffmanTableError }
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
@@ -182,9 +180,8 @@ public class Deflate: DecompressionAlgorithm {
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
-                        guard let distanceCode = mainDistances.findNextSymbol(in: pointerData) else {
-                            throw DeflateError.HuffmanTableError
-                        }
+                        let distanceCode = mainDistances.findNextSymbol(in: pointerData)
+                        guard distanceCode != -1 else { throw DeflateError.HuffmanTableError }
 
                         if distanceCode >= 0 && distanceCode <= 29 {
                             // Again, depending on the distanceCode's value there might be additional bits in data,

@@ -23,7 +23,7 @@ class GzipTests: XCTestCase {
             XCTFail("Failed to get service info")
             return
         }
-        
+
         XCTAssertEqual(testServiceInfo, answerServiceInfo, "Incorrect service info")
     }
 

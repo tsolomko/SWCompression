@@ -29,7 +29,7 @@ class HuffmanTree: CustomStringConvertible {
         return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
     }
 
-    private var tree: [Int?]
+    private var tree: [Int]
     private let leafCount: Int
 
     init(bootstrap: [[Int]]) {
@@ -73,7 +73,7 @@ class HuffmanTree: CustomStringConvertible {
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = Int(pow(Double(2), Double(lengths.last![1] + 1)))
         // Create a tree (array, actually) with all leaves equal nil.
-        self.tree = Array(repeating: nil, count: leafCount)
+        self.tree = Array(repeating: -1, count: leafCount)
 
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
@@ -107,14 +107,14 @@ class HuffmanTree: CustomStringConvertible {
         self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol(in pointerData: DataWithPointer) -> Int? {
+    func findNextSymbol(in pointerData: DataWithPointer) -> Int {
         var index = 0
         while true {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-            guard index < self.leafCount else { return nil }
-            if let code = self.tree[index] {
-                return code
+            guard index < self.leafCount else { return -1 }
+            if self.tree[index] > -1 {
+                return self.tree[index]
             }
         }
     }

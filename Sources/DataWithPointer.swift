@@ -97,8 +97,27 @@ class DataWithPointer {
         return result
     }
 
-    func bit() -> UInt8 {
-        return self.bits(count: 1).first!
+    func bit() -> Int {
+        let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+
+        switch self.bitOrder {
+        case .reversed:
+            if self.bitMask == 128 {
+                self.index += 1
+                self.bitMask = 1
+            } else {
+                self.bitMask <<= 1
+            }
+        case .straight:
+            if self.bitMask == 1 {
+                self.index += 1
+                self.bitMask = 128
+            } else {
+                self.bitMask >>= 1
+            }
+        }
+
+        return bit
     }
 
     func alignedByte() -> UInt8 {
