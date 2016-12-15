@@ -9,6 +9,7 @@
 import Foundation
 
 // TODO: Rename HuffmanTableError to HuffmanTreeError.
+// TODO: Expand HuffmanTreeError to more specific errors.
 /**
  Error happened during deflate decompression. 
  It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
@@ -16,14 +17,15 @@ import Foundation
  - `WrongBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
  - `HuffmanTableError`: either error occured while parsing bytes related to Huffman coding or
     problem is happened during various calculations of Huffman coding.
- - `UnknownBlockType`: block type was 3, which is unknown block type.
+ - `UnknownBlockType`: unsupported block type (not 0, 1 or 2).
  */
 public enum DeflateError: Error {
     /// Uncompressed block' `length` and `nlength` bytes were not compatible.
     case WrongBlockLengths
     /// Either error occured while parsing bytes related to Huffman coding or problem is happened during various calculations of Huffman coding.
     case HuffmanTableError
-    /// Block type was 3, which is unknown block type.
+    // TODO: Rename to WrongBlockType.
+    /// Unknown block type (not from 0 to 2).
     case UnknownBlockType
 }
 
