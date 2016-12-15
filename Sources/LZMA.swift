@@ -194,19 +194,13 @@ public final class LZMA: DecompressionAlgorithm {
         let pb = properties / 5
         /// The number of literal pos bits
         let lp = properties % 5
-        var dictionarySizeInProperties = 0
-        for i in 0..<4 {
-            dictionarySizeInProperties |= pointerData.alignedByte().toInt() << (8 * i)
-        }
-        let dictionarySize = dictionarySizeInProperties < (1 << 12) ? 1 << 12 : dictionarySizeInProperties
+        var dictionarySize = pointerData.intFromAlingedBytes(count: 4)
+        dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
 
         print("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
 
         /// Size of uncompressed data. -1 means it is unknown.
-        var uncompressedSize = 0
-        for i in 0..<8 {
-            uncompressedSize |= pointerData.alignedByte().toInt() << (8 * i)
-        }
+        var uncompressedSize = pointerData.intFromAlingedBytes(count: 8)
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
         /// An array for storing output data
