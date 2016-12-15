@@ -126,6 +126,16 @@ class DataWithPointer {
         return self.bitArray[self.index - 1]
     }
 
+    func intFromAlingedBytes(count: Int) -> Int {
+        self.skipUntilNextByte()
+        var result = 0
+        for i in 0..<count {
+            result |= self.bitArray[self.index].toInt() << (8 * i)
+            self.index += 1
+        }
+        return result
+    }
+
     // MARK: Manipulations with index and bitShift
 
     func skipUntilNextByte() {
