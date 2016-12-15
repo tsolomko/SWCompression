@@ -268,6 +268,7 @@ public final class LZMA: DecompressionAlgorithm {
 
         /// An array for storing output data
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
+        var outIndex = uncompressedSize == -1 ? -1 : 0
 
         print("uncompressedSize: \(uncompressedSize)")
 
@@ -277,28 +278,85 @@ public final class LZMA: DecompressionAlgorithm {
             throw LZMAError.RangeDecoderError
         }
 
-        let literalProbs = Array(repeating: Constants.probInitValue, count: 0x300 << (lc + lp).toInt())
-        let isMatch = Array(repeating: Constants.probInitValue,
+        var literalProbs = Array(repeating: Constants.probInitValue, count: 0x300 << (lc + lp).toInt())
+        var isMatch = Array(repeating: Constants.probInitValue,
                             count: Constants.numStates << Constants.numPosBitsMax)
-        let isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        let isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        let isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        let isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        let isRep0Long = Array(repeating: Constants.probInitValue,
+        var isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        var isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        var isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        var isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        var isRep0Long = Array(repeating: Constants.probInitValue,
                                count: Constants.numStates << Constants.numPosBitsMax)
 
-        let posSlotDecoder = Array(repeating: BitTreeDecoder(numBits: 6), count: Constants.numLenToPosStates)
-        let alignDecoder = BitTreeDecoder(numBits: Constants.numAlignBits)
-        let posDecoders = Array(repeating: Constants.probInitValue, count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
+        var posSlotDecoder = Array(repeating: BitTreeDecoder(numBits: 6), count: Constants.numLenToPosStates)
+        var alignDecoder = BitTreeDecoder(numBits: Constants.numAlignBits)
+        var posDecoders = Array(repeating: Constants.probInitValue, count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
 
-        let lenDecoder = LenDecoder()
-        let repLenDecoder = LenDecoder()
+        var lenDecoder = LenDecoder()
+        var repLenDecoder = LenDecoder()
 
         var rep0 = 0
         var rep1 = 0
         var rep2 = 0
         var rep3 = 0
         var state = 0
+
+        func decodeLiteral(_ state: Int, _ rep0: Int) {
+            let prevByte = outWindow.isEmpty() ? 0 : outWindow.byte(at: 1)
+            var symbol = 1
+            var litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
+            let probsIndex = 0x300 * litState
+            if state >= 7 {
+                var matchByte = outWindow.byte(at: rep0 + 1)
+                repeat {
+                    let matchBit = ((matchByte >> 7) & 1).toInt()
+                    matchByte <<= 1
+                    let bit = rangeDecoder.decode(bitWithProb: &literalProbs[((1 + matchBit) << 8) + symbol],
+                                                  pointerData: &pointerData)
+                    symbol = (symbol << 1) | bit
+                    if matchBit != bit {
+                        break
+                    }
+                } while symbol < 0x100
+            }
+            while symbol < 0x100 {
+                symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[symbol], pointerData: &pointerData)
+            }
+            outWindow.put(byte: (symbol - 0x100).toUInt8())
+            if uncompressedSize > 0 {
+                out[outIndex] = (symbol - 0x100).toUInt8()
+                outIndex += 1
+            } else {
+                out.append((symbol - 0x100).toUInt8())
+            }
+        }
+
+        // Main decoding cycle.
+        while true {
+            // If uncompressed size was defined and everything is unpacked then stop.
+            if uncompressedSize == 0 {
+                if rangeDecoder.isFinishedOK() {
+                    break
+                }
+            }
+
+            let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
+            if rangeDecoder.decode(bitWithProb: &isMatch[(state << Constants.numPosBitsMax) + posState], pointerData: &pointerData) == 0 {
+                if uncompressedSize == 0 {
+                    // TODO: throw error
+                }
+                decodeLiteral(state, rep0)
+                if state < 4 {
+                    state = 0
+                } else if (state < 10) {
+                    state -= 3
+                } else {
+                    state -= 6
+                }
+                uncompressedSize -= 1
+            }
+
+        }
 
         return Data(bytes: out)
     }
