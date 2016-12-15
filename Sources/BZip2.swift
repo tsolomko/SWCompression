@@ -12,6 +12,7 @@ import Foundation
  Error happened during bzip2 decompression.
  It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
 
+ - `WrongMagic`: unsupported magic number (not 0x425a).
  - `WrongCompressionMethod`: unsupported compression method (not type 'h').
  - `WrongBlockSize`: unsupported block size (not '0' — '9').
  - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
@@ -22,6 +23,7 @@ import Foundation
  - `SymbolNotFound`: symbol from input data was not found in Huffman table.
  */
 public enum BZip2Error: Error {
+    /// Magic number was not 0x425a.
     case WrongMagic
     /// Compression method was not type 'h' (not Huffman).
     case WrongCompressionMethod
