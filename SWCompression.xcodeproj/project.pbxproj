@@ -251,8 +251,8 @@
 			isa = PBXGroup;
 			children = (
 				06A3931F1DE06FFE00182E12 /* Common */,
-				063364E21DC52979007E313F /* GzipArchive.swift */,
 				069AC20C1E02DB1D0041AC13 /* LZMA.swift */,
+				063364E21DC52979007E313F /* GzipArchive.swift */,
 				064492581DC606D400F10981 /* ZlibArchive.swift */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
 				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
