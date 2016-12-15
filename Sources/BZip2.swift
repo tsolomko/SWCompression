@@ -84,7 +84,7 @@ public class BZip2: DecompressionAlgorithm {
             let _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
-                try out.append(contentsOf: decodeHuffmanBlock(data: pointerData))
+                try out.append(contentsOf: decode(data: pointerData))
             } else if blockType == 0x177245385090 {
                 break
             } else {
@@ -95,7 +95,7 @@ public class BZip2: DecompressionAlgorithm {
         return Data(bytes: out)
     }
 
-    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> [UInt8] {
+    private static func decode(data: DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
