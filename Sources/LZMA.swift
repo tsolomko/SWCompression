@@ -13,14 +13,32 @@ import Foundation
  It may indicate that either the data is damaged or it might not be compressed with LZMA at all.
 
  - `WrongProperties`: unsupported LZMA properties (greater than 225).
+ - `RangeDecoderError`: unable to initialize RanderDecorer.
  */
 public enum LZMAError: Error {
     /// Properties byte was greater than 225.
     case WrongProperties
+    /// Unable to initialize RanderDecorer.
+    case RangeDecoderError
 }
 
 /// Provides function to decompress data, which were compressed with LZMA
 public final class LZMA: DecompressionAlgorithm {
+
+    struct Constants {
+        static let topValue: Int = 1 << 24
+        static let numBitModelTotalBits: Int = 11
+        static let numMoveBits: Int = 5
+        static let probInitValue: Int = ((1 << numBitModelTotalBits) / 2)
+        static let numPosBitsMax: Int = 4
+        static let numStates: Int = 12
+        static let numLenToPosStates: Int = 4
+        static let numAlignBits: Int = 4
+        static let startPosModelIndex: Int = 4
+        static let endPosModelIndex: Int = 14
+        static let numFullDistances: Int = (1 << (endPosModelIndex >> 1))
+        static let matchMinLen: Int = 2
+    }
 
     final class OutWindow {
 
@@ -73,15 +91,11 @@ public final class LZMA: DecompressionAlgorithm {
 
     final class RangeDecoder {
 
-        private static let topValue: Int = 1 << 24
-        private static let numBitModelTotalBits: Int = 11
-        private static let numMoveBits: Int = 5
-
         private var range: Int
         private var code: Int
         private(set) var isCorrupted: Bool
 
-        init?(pointerData: DataWithPointer) {
+        init?(pointerData: inout DataWithPointer) {
             self.isCorrupted = false
             self.range = 0xFFFFFFFF
             self.code = 0
@@ -101,7 +115,7 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func normalize(pointerData: inout DataWithPointer) {
-            if self.range < RangeDecoder.topValue {
+            if self.range < Constants.topValue {
                 self.range <<= 8
                 self.code = (self.code << 8) | pointerData.alignedByte().toInt()
             }
@@ -130,14 +144,14 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func decode(bitWithProb prob: inout Int, pointerData: inout DataWithPointer) -> Int {
-            let bound = (self.range >> RangeDecoder.numBitModelTotalBits) * prob
+            let bound = (self.range >> Constants.numBitModelTotalBits) * prob
             let symbol: Int
             if self.code < bound {
-                prob += ((1 << RangeDecoder.numBitModelTotalBits) - prob) >> RangeDecoder.numMoveBits
+                prob += ((1 << Constants.numBitModelTotalBits) - prob) >> Constants.numMoveBits
                 self.range = bound
                 symbol = 0
             } else {
-                prob -= prob >> RangeDecoder.numMoveBits
+                prob -= prob >> Constants.numMoveBits
                 self.code -= bound
                 self.range -= bound
                 symbol = 1
@@ -162,11 +176,11 @@ public final class LZMA: DecompressionAlgorithm {
      */
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try decompress(pointerData: pointerData)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        return try decompress(pointerData: &pointerData)
     }
 
-    static func decompress(pointerData: DataWithPointer) throws -> Data {
+    static func decompress(pointerData: inout DataWithPointer) throws -> Data {
 
         // First byte contains lzma properties.
         var properties = pointerData.alignedByte()
@@ -202,6 +216,19 @@ public final class LZMA: DecompressionAlgorithm {
 
         let outWindow = OutWindow(dictSize: dictionarySize)
         let literalProbs = Array(repeating: 0, count: 0x300 << (lc + lp).toInt())
+
+        guard let rangeDecoder = RangeDecoder(pointerData: &pointerData) else {
+            throw LZMAError.RangeDecoderError
+        }
+
+        let isMatch = Array(repeating: Constants.probInitValue,
+                            count: Constants.numStates << Constants.numPosBitsMax)
+        let isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        let isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        let isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        let isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        let isRep0Long = Array(repeating: Constants.probInitValue,
+                               count: Constants.numStates << Constants.numPosBitsMax)
 
         return Data(bytes: out)
     }
