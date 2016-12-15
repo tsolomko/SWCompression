@@ -162,6 +162,69 @@ public final class LZMA: DecompressionAlgorithm {
 
     }
 
+    final class BitTreeDecoder {
+
+        var probs: [Int]
+        let numBits: Int
+
+        init(numBits: Int) {
+            self.probs = Array(repeating: Constants.probInitValue, count: 1 << numBits)
+            self.numBits = numBits
+        }
+
+        func decode(with rangeDecoder: RangeDecoder, pointerData: inout DataWithPointer) -> Int {
+            var m = 1
+            for _ in 0..<self.numBits {
+                m = (m << 1) + rangeDecoder.decode(bitWithProb: &self.probs[m], pointerData: &pointerData)
+            }
+            return m - (1 << self.numBits)
+        }
+
+        func reverseDecode(with rangeDecoder: RangeDecoder, pointerData: inout DataWithPointer) -> Int {
+            return LZMA.bitTreeReverseDecode(probs: &self.probs, bits: self.numBits, rangeDecoder: rangeDecoder, pointerData: &pointerData)
+        }
+
+    }
+
+    static func bitTreeReverseDecode(probs: inout [Int], bits: Int, rangeDecoder: RangeDecoder, pointerData: inout DataWithPointer) -> Int {
+        var m = 1
+        var symbol = 0
+        for i in 0..<bits {
+            let bit = rangeDecoder.decode(bitWithProb: &probs[m], pointerData: &pointerData)
+            m <<= 1
+            m += bit
+            symbol |= bit << i
+        }
+        return symbol
+    }
+
+    final class LenDecoder {
+        private var choice: Int
+        private var choice2: Int
+        private var lowCoder: [BitTreeDecoder]
+        private var midCoder: [BitTreeDecoder]
+        private var highCoder: BitTreeDecoder
+
+        init() {
+            self.choice = Constants.probInitValue
+            self.choice2 = Constants.probInitValue
+            self.highCoder = BitTreeDecoder(numBits: 8)
+            self.lowCoder = Array(repeating: BitTreeDecoder(numBits: 3), count: 1 << Constants.numPosBitsMax)
+            self.midCoder = Array(repeating: BitTreeDecoder(numBits: 3), count: 1 << Constants.numPosBitsMax)
+        }
+
+        func decode(with rangeDecoder: RangeDecoder, posState: Int, pointerData: inout DataWithPointer) -> Int {
+            if rangeDecoder.decode(bitWithProb: &self.choice, pointerData: &pointerData) == 0 {
+                return self.lowCoder[posState].decode(with: rangeDecoder, pointerData: &pointerData)
+            }
+            if rangeDecoder.decode(bitWithProb: &self.choice2, pointerData: &pointerData) == 0 {
+                return 8 + self.midCoder[posState].decode(with: rangeDecoder, pointerData: &pointerData)
+            }
+            return 16 + self.highCoder.decode(with: rangeDecoder, pointerData: &pointerData)
+        }
+
+    }
+
     /**
      Decompresses `compressedData` with LZMA algortihm.
 
@@ -209,12 +272,12 @@ public final class LZMA: DecompressionAlgorithm {
         print("uncompressedSize: \(uncompressedSize)")
 
         let outWindow = OutWindow(dictSize: dictionarySize)
-        let literalProbs = Array(repeating: 0, count: 0x300 << (lc + lp).toInt())
 
         guard let rangeDecoder = RangeDecoder(pointerData: &pointerData) else {
             throw LZMAError.RangeDecoderError
         }
 
+        let literalProbs = Array(repeating: Constants.probInitValue, count: 0x300 << (lc + lp).toInt())
         let isMatch = Array(repeating: Constants.probInitValue,
                             count: Constants.numStates << Constants.numPosBitsMax)
         let isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
@@ -223,6 +286,19 @@ public final class LZMA: DecompressionAlgorithm {
         let isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
         let isRep0Long = Array(repeating: Constants.probInitValue,
                                count: Constants.numStates << Constants.numPosBitsMax)
+
+        let posSlotDecoder = Array(repeating: BitTreeDecoder(numBits: 6), count: Constants.numLenToPosStates)
+        let alignDecoder = BitTreeDecoder(numBits: Constants.numAlignBits)
+        let posDecoders = Array(repeating: Constants.probInitValue, count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
+
+        let lenDecoder = LenDecoder()
+        let repLenDecoder = LenDecoder()
+
+        var rep0 = 0
+        var rep1 = 0
+        var rep2 = 0
+        var rep3 = 0
+        var state = 0
 
         return Data(bytes: out)
     }
