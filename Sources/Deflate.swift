@@ -51,7 +51,7 @@ public class Deflate: DecompressionAlgorithm {
     }
 
     static func decompress(pointerData: DataWithPointer) throws -> Data {
-        /// Object for storing output data
+        /// An array for storing output data
         var out: [UInt8] = []
 
         while true {

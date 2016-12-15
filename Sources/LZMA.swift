@@ -209,7 +209,7 @@ public final class LZMA: DecompressionAlgorithm {
         }
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
-        /// Object for storing output data
+        /// An array for storing output data
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
 
         print("uncompressedSize: \(uncompressedSize)")

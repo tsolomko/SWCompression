@@ -59,7 +59,7 @@ public class BZip2: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
-        /// Object for storing output data
+        /// An array for storing output data
         var out: [UInt8] = []
 
         /// Object with input data which supports convenient work with bit shifts.
