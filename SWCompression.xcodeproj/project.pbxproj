@@ -41,7 +41,7 @@
 		069AC20F1E02DB1D0041AC13 /* LZMA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC20C1E02DB1D0041AC13 /* LZMA.swift */; };
 		069AC2101E02DB1D0041AC13 /* LZMA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC20C1E02DB1D0041AC13 /* LZMA.swift */; };
 		069AC2121E02DDAF0041AC13 /* LzmaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC2111E02DDAF0041AC13 /* LzmaTests.swift */; };
-		069AC2181E02DE490041AC13 /* test1.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 069AC2171E02DE490041AC13 /* test1.lzma */; };
+		069AC2181E02DE490041AC13 /* test8.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 069AC2171E02DE490041AC13 /* test8.lzma */; };
 		06A393391DE0709300182E12 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
 		06A3933B1DE0709300182E12 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
@@ -81,6 +81,7 @@
 		06CC187B1DE35269003532F5 /* test7.gz in Resources */ = {isa = PBXBuildFile; fileRef = 06CC185D1DE35269003532F5 /* test7.gz */; };
 		06CC187D1DE35269003532F5 /* test.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 06CC185F1DE35269003532F5 /* test.zlib */; };
 		06CC187F1DE35607003532F5 /* DeflateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC187E1DE35607003532F5 /* DeflateTests.swift */; };
+		06FCA0581E033DDA00B6932F /* test8.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06FCA0571E033DDA00B6932F /* test8.answer */; };
 		06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
 		06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
 		06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FED40B1DD7717E0013DFB2 /* BZip2.swift */; };
@@ -113,7 +114,7 @@
 		0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bzip2Tests.swift; sourceTree = "<group>"; };
 		069AC20C1E02DB1D0041AC13 /* LZMA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LZMA.swift; path = Sources/LZMA.swift; sourceTree = SOURCE_ROOT; };
 		069AC2111E02DDAF0041AC13 /* LzmaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LzmaTests.swift; sourceTree = "<group>"; };
-		069AC2171E02DE490041AC13 /* test1.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.lzma; sourceTree = "<group>"; };
+		069AC2171E02DE490041AC13 /* test8.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.lzma; sourceTree = "<group>"; };
 		06A3933E1DE070B500182E12 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		06A3933F1DE070B500182E12 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
@@ -152,6 +153,7 @@
 		06CC185D1DE35269003532F5 /* test7.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test7.gz; sourceTree = "<group>"; };
 		06CC185F1DE35269003532F5 /* test.zlib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.zlib; sourceTree = "<group>"; };
 		06CC187E1DE35607003532F5 /* DeflateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateTests.swift; sourceTree = "<group>"; };
+		06FCA0571E033DDA00B6932F /* test8.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.answer; sourceTree = "<group>"; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -198,7 +200,7 @@
 		069AC2161E02DE490041AC13 /* LZMA */ = {
 			isa = PBXGroup;
 			children = (
-				069AC2171E02DE490041AC13 /* test1.lzma */,
+				069AC2171E02DE490041AC13 /* test8.lzma */,
 			);
 			path = LZMA;
 			sourceTree = "<group>";
@@ -299,6 +301,7 @@
 				06CC18431DE35269003532F5 /* test5.answer */,
 				06CC18441DE35269003532F5 /* test6.answer */,
 				06CC18451DE35269003532F5 /* test7.answer */,
+				06FCA0571E033DDA00B6932F /* test8.answer */,
 			);
 			path = Answers;
 			sourceTree = "<group>";
@@ -579,6 +582,7 @@
 				06CC186B1DE35269003532F5 /* test5.bz2 in Resources */,
 				06CC18651DE35269003532F5 /* test6.answer in Resources */,
 				06CC18631DE35269003532F5 /* test4.answer in Resources */,
+				06FCA0581E033DDA00B6932F /* test8.answer in Resources */,
 				06CC18761DE35269003532F5 /* test2.gz in Resources */,
 				06CC18721DE35269003532F5 /* test5.deflate in Resources */,
 				06CC186E1DE35269003532F5 /* test1.deflate in Resources */,
@@ -588,7 +592,7 @@
 				06CC187D1DE35269003532F5 /* test.zlib in Resources */,
 				06CC186D1DE35269003532F5 /* test7.bz2 in Resources */,
 				06CC18751DE35269003532F5 /* test1.gz in Resources */,
-				069AC2181E02DE490041AC13 /* test1.lzma in Resources */,
+				069AC2181E02DE490041AC13 /* test8.lzma in Resources */,
 				06CC18601DE35269003532F5 /* test1.answer in Resources */,
 				06CC18641DE35269003532F5 /* test5.answer in Resources */,
 				06CC18671DE35269003532F5 /* test1.bz2 in Resources */,
