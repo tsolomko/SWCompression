@@ -67,7 +67,7 @@ public class ZlibArchive: Archive {
         // For DEFLATE it must not be more than 7
         let compressionInfo = pointerData.intFromBits(count: 4)
         guard compressionInfo <= 7 else { throw ZlibError.WrongCompressionInfo }
-        let windowSize = Int(pow(Double(2), Double(compressionInfo + 8)))
+        let windowSize = 1 << (compressionInfo + 8)
 
         // compressionMethod and compressionInfo combined are needed later for integrity check
         let cmf = compressionInfo << 4 + compressionMethod

@@ -71,7 +71,7 @@ class HuffmanTree: CustomStringConvertible {
         }
 
         // Calculate maximum amount of leaves possible in a tree.
-        self.leafCount = Int(pow(Double(2), Double(lengths.last![1] + 1)))
+        self.leafCount = 1 << (lengths.last![1] + 1)
         // Create a tree (array, actually) with all leaves equal nil.
         self.tree = Array(repeating: -1, count: leafCount)
 

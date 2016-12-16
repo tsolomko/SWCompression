@@ -74,7 +74,7 @@ class DataWithPointer {
             }
 
             let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
-            result += Int(pow(Double(2), Double(power))) * bit
+            result += (1 << power) * bit
 
             switch self.bitOrder {
             case .reversed:
