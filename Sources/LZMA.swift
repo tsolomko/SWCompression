@@ -61,7 +61,6 @@ public final class LZMA: DecompressionAlgorithm {
             self.isFull = false
         }
 
-        /// Don't forget to put byte in `out` array.
         func put(_
             byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
                  _ uncompressedSize: inout Int) {
@@ -289,7 +288,11 @@ public final class LZMA: DecompressionAlgorithm {
             throw LZMAError.RangeDecoderError
         }
 
-        var literalProbs = Array(repeating: Constants.probInitValue, count: 0x300 << (lc + lp).toInt())
+        /**
+         For literal decoding we need `1 << (lc + lp)` amount of tables.
+         Each table contains 0x300 probabilities.
+        */
+        var literalProbs = Array(repeating: Array(repeating: Constants.probInitValue, count: 0x300), count: 1 << (lc + lp).toInt())
         var isMatch = Array(repeating: Constants.probInitValue,
                             count: Constants.numStates << Constants.numPosBitsMax)
         var isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
@@ -328,17 +331,29 @@ public final class LZMA: DecompressionAlgorithm {
                 }
 
                 // DECODE LITERAL:
+                /// Previous literal (zero, if there was none).
                 let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
-                // TODO: Something is not quite right.
+                /// Decoded symbol. Initial value is 1.
                 var symbol = 1
+                /**
+                 Index of table with literal probabilities. It is based on the context which consists of:
+                 - `lc` high bits of from previous literal. If there were none, i.e. it is the first literal, then this part is skipped.
+                 - `lp` low bits from current position in output.
+                */
                 let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
-                let probsIndex = 0x300 * litState
+                /// Selected table for literal decoding.
+                var probs = literalProbs[litState]
+                // If state is greater than 7 we need to do additional decoding with 'matchByte'.
                 if state >= 7 {
+                    /**
+                    Byte in output at position that is the `distance` bytes before current position,
+                     where the `distance` is the distance from the latest decoded match.
+                    */
                     var matchByte = outWindow.byte(at: rep0 + 1)
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
-                        let bit = rangeDecoder.decode(bitWithProb: &literalProbs[((1 + matchBit) << 8) + symbol],
+                        let bit = rangeDecoder.decode(bitWithProb: &probs[((1 + matchBit) << 8) + symbol],
                                                       pointerData: &pointerData)
                         symbol = (symbol << 1) | bit
                         if matchBit != bit {
@@ -347,12 +362,14 @@ public final class LZMA: DecompressionAlgorithm {
                     } while symbol < 0x100
                 }
                 while symbol < 0x100 {
-                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[symbol], pointerData: &pointerData)
+                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &probs[symbol], pointerData: &pointerData)
                 }
+                print(symbol)
                 let byte = (symbol - 0x100).toUInt8()
                 outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                 // END.
 
+                // Finally, we need to update `state`.
                 if state < 4 {
                     state = 0
                 } else if (state < 10) {
