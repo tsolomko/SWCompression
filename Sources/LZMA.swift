@@ -49,6 +49,10 @@ public final class LZMA: DecompressionAlgorithm {
 
         private(set) var totalPosition: Int
 
+        var isEmpty: Bool {
+            return self.position == 0 && !self.isFull
+        }
+
         init(dictSize: Int) {
             self.byteBuffer = Array(repeating: 0, count: dictSize)
             self.position = 0
@@ -83,10 +87,6 @@ public final class LZMA: DecompressionAlgorithm {
             return distance <= self.position || self.isFull
         }
 
-        func isEmpty() -> Bool {
-            return self.position == 0 && !self.isFull
-        }
-
     }
 
     final class RangeDecoder {
@@ -94,6 +94,10 @@ public final class LZMA: DecompressionAlgorithm {
         private var range: Int
         private var code: Int
         private(set) var isCorrupted: Bool
+
+        var isFinishedOK: Bool {
+            return self.code == 0
+        }
 
         init?(pointerData: inout DataWithPointer) {
             self.isCorrupted = false
@@ -108,10 +112,6 @@ public final class LZMA: DecompressionAlgorithm {
                 self.isCorrupted = true
                 return nil
             }
-        }
-
-        func isFinishedOK() -> Bool {
-            return self.code == 0
         }
 
         func normalize(pointerData: inout DataWithPointer) {
@@ -302,9 +302,10 @@ public final class LZMA: DecompressionAlgorithm {
         var state = 0
 
         func decodeLiteral(_ state: Int, _ rep0: Int) {
-            let prevByte = outWindow.isEmpty() ? 0 : outWindow.byte(at: 1)
+            let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
+            // TODO: Something is not quite right.
             var symbol = 1
-            var litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
+            let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
             let probsIndex = 0x300 * litState
             if state >= 7 {
                 var matchByte = outWindow.byte(at: rep0 + 1)
@@ -322,20 +323,45 @@ public final class LZMA: DecompressionAlgorithm {
             while symbol < 0x100 {
                 symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[symbol], pointerData: &pointerData)
             }
-            outWindow.put(byte: (symbol - 0x100).toUInt8())
+            let byte = (symbol - 0x100).toUInt8()
+            outWindow.put(byte: byte)
             if uncompressedSize > 0 {
-                out[outIndex] = (symbol - 0x100).toUInt8()
+                out[outIndex] = byte
                 outIndex += 1
             } else {
-                out.append((symbol - 0x100).toUInt8())
+                out.append(byte)
             }
+        }
+
+        func decodeDistance(_ len: Int) -> Int {
+            var lenState = len
+            if lenState > Constants.numLenToPosStates - 1 {
+                lenState = Constants.numLenToPosStates - 1
+            }
+
+            let posSlot = posSlotDecoder[lenState].decode(with: rangeDecoder, pointerData: &pointerData)
+            if posSlot < 4 {
+                return posSlot
+            }
+
+            let numDirectBits = (posSlot >> 1) - 1
+            var dist = ((2 | (posSlot & 1)) << numDirectBits)
+            if posSlot < Constants.endPosModelIndex {
+                // TODO: Probably incorrect first argument.
+                dist += bitTreeReverseDecode(probs: &posDecoders, bits: numDirectBits, rangeDecoder: rangeDecoder, pointerData: &pointerData)
+            } else {
+                dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits) << Constants.numAlignBits,
+                                            pointerData: &pointerData)
+                dist += alignDecoder.reverseDecode(with: rangeDecoder, pointerData: &pointerData)
+            }
+            return dist
         }
 
         // Main decoding cycle.
         while true {
             // If uncompressed size was defined and everything is unpacked then stop.
             if uncompressedSize == 0 {
-                if rangeDecoder.isFinishedOK() {
+                if rangeDecoder.isFinishedOK {
                     break
                 }
             }
@@ -354,6 +380,83 @@ public final class LZMA: DecompressionAlgorithm {
                     state -= 6
                 }
                 uncompressedSize -= 1
+                continue
+            }
+
+            var len: Int
+            if rangeDecoder.decode(bitWithProb: &isRep[state], pointerData: &pointerData) != 0 {
+                if uncompressedSize == 0 {
+                    // TODO: throw error
+                }
+                if outWindow.isEmpty {
+                    // TODO: throw error
+                }
+                if rangeDecoder.decode(bitWithProb: &isRepG0[state], pointerData: &pointerData) == 0 {
+                    if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << Constants.numPosBitsMax) + posState],
+                                           pointerData: &pointerData) == 0 {
+                        state = state < 7 ? 9 : 11
+                        let byte = outWindow.byte(at: rep0 + 1)
+                        outWindow.put(byte: byte)
+                        if uncompressedSize > 0 {
+                            out[outIndex] = byte
+                            outIndex += 1
+                        } else {
+                            out.append(byte)
+                        }
+                        uncompressedSize -= 1
+                        continue
+                    }
+                } else {
+                    let dist: Int
+                    if rangeDecoder.decode(bitWithProb: &isRepG1[state], pointerData: &pointerData) == 0 {
+                        dist = rep1
+                    } else {
+                        if rangeDecoder.decode(bitWithProb: &isRepG2[state], pointerData: &pointerData) == 0 {
+                            dist = rep2
+                        } else {
+                            dist = rep3
+                            rep3 = rep2
+                        }
+                        rep2 = rep1
+                    }
+                    rep1 = rep0
+                    rep0 = dist
+                }
+                len = repLenDecoder.decode(with: rangeDecoder, posState: posState, pointerData: &pointerData)
+                state = state < 7 ? 8 : 11
+            } else {
+                rep3 = rep2
+                rep2 = rep1
+                rep1 = rep0
+                len = lenDecoder.decode(with: rangeDecoder, posState: posState, pointerData: &pointerData)
+                state = state < 7 ? 7 : 10
+                rep0 = decodeDistance(len)
+                // Check if finished marker is encoutered.
+                if rep0 == 0xFFFFFFFF {
+                    if rangeDecoder.isFinishedOK {
+                        break
+                    } else {
+                        // TODO: throw error.
+                    }
+                }
+
+                if uncompressedSize == 0 {
+                    // TODO: throw error.
+                }
+                if rep0 >= dictionarySize || !outWindow.check(distance: rep0) {
+                    // TODO: throw error.
+                }
+            }
+            len += Constants.matchMinLen
+            var isError = false
+            if uncompressedSize > -1 && uncompressedSize < len {
+                len = uncompressedSize
+                isError = true
+            }
+            outWindow.copyMatch(at: rep0 + 1, length: len)
+            uncompressedSize -= len
+            if isError {
+                // TODO: throw error.
             }
 
         }
