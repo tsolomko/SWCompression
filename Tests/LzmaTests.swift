@@ -40,8 +40,8 @@ class LzmaTests: XCTestCase {
         #endif
     }
 
-//    func testLzma8() {
-//        self.perform(test: "test8")
-//    }
+    func testLzma8() {
+        self.perform(test: "test8")
+    }
 
 }
