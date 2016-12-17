@@ -101,8 +101,8 @@ public final class LZMA: DecompressionAlgorithm {
 
     final class RangeDecoder {
 
-        private var range: Int
-        private var code: Int
+        private var range: UInt32
+        private var code: UInt32
         private(set) var isCorrupted: Bool
 
         var isFinishedOK: Bool {
@@ -116,7 +116,7 @@ public final class LZMA: DecompressionAlgorithm {
 
             let byte = pointerData.alignedByte()
             for _ in 0..<4 {
-                self.code = (self.code << 8) | pointerData.alignedByte().toInt()
+                self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
             }
             if byte != 0 || self.code == self.range {
                 self.isCorrupted = true
@@ -125,20 +125,20 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func normalize(pointerData: inout DataWithPointer) {
-            if self.range < Constants.topValue {
+            if self.range < UInt32(Constants.topValue) {
                 self.range <<= 8
-                self.code = (self.code << 8) | pointerData.alignedByte().toInt()
+                self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
             }
         }
 
         func decode(directBits: Int, pointerData: inout DataWithPointer) -> Int {
-            var res = 0
+            var res: UInt32 = 0
             var count = directBits
             repeat {
                 self.range >>= 1
-                self.code -= self.range
-                let t = 0 - (self.code >> 31)
-                self.code += self.range & t
+                self.code = UInt32.subtractWithOverflow(self.code, self.range).0
+                let t = UInt32.subtractWithOverflow(0, self.code >> 31).0
+                self.code = UInt32.addWithOverflow(self.code, self.range & t).0
 
                 if self.code == self.range {
                     self.isCorrupted = true
@@ -147,14 +147,14 @@ public final class LZMA: DecompressionAlgorithm {
                 self.normalize(pointerData: &pointerData)
 
                 res <<= 1
-                res += t + 1
+                res = UInt32.addWithOverflow(res, UInt32.addWithOverflow(t, 1).0).0
                 count -= 1
             } while count > 0
-            return res
+            return Int(res)
         }
 
         func decode(bitWithProb prob: inout Int, pointerData: inout DataWithPointer) -> Int {
-            let bound = (self.range >> Constants.numBitModelTotalBits) * prob
+            let bound = (self.range >> UInt32(Constants.numBitModelTotalBits)) * UInt32(prob)
             let symbol: Int
             if self.code < bound {
                 prob += ((1 << Constants.numBitModelTotalBits) - prob) >> Constants.numMoveBits
@@ -220,8 +220,12 @@ public final class LZMA: DecompressionAlgorithm {
             self.choice = Constants.probInitValue
             self.choice2 = Constants.probInitValue
             self.highCoder = BitTreeDecoder(numBits: 8)
-            self.lowCoder = Array(repeating: BitTreeDecoder(numBits: 3), count: 1 << Constants.numPosBitsMax)
-            self.midCoder = Array(repeating: BitTreeDecoder(numBits: 3), count: 1 << Constants.numPosBitsMax)
+            self.lowCoder = []
+            self.midCoder = []
+            for _ in 0..<(1 << Constants.numPosBitsMax) {
+                self.lowCoder.append(BitTreeDecoder(numBits: 3))
+                self.midCoder.append(BitTreeDecoder(numBits: 3))
+            }
         }
 
         func decode(with rangeDecoder: inout RangeDecoder, posState: Int, pointerData: inout DataWithPointer) -> Int {
@@ -303,7 +307,10 @@ public final class LZMA: DecompressionAlgorithm {
         var isRep0Long = Array(repeating: Constants.probInitValue,
                                count: Constants.numStates << Constants.numPosBitsMax)
 
-        var posSlotDecoder = Array(repeating: BitTreeDecoder(numBits: 6), count: Constants.numLenToPosStates)
+        var posSlotDecoder: [BitTreeDecoder] = []
+        for _ in 0..<Constants.numLenToPosStates {
+            posSlotDecoder.append(BitTreeDecoder(numBits: 6))
+        }
         var alignDecoder = BitTreeDecoder(numBits: Constants.numAlignBits)
         var posDecoders = Array(repeating: Constants.probInitValue, count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
 
@@ -440,8 +447,8 @@ public final class LZMA: DecompressionAlgorithm {
                         dist += bitTreeReverseDecode(probs: &posDecoders, startIndex: dist - posSlot,
                                                      bits: numDirectBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
                     } else {
-                        dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits) << Constants.numAlignBits,
-                                                    pointerData: &pointerData)
+                        dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits),
+                                                    pointerData: &pointerData) << Constants.numAlignBits
                         dist += alignDecoder.reverseDecode(with: &rangeDecoder, pointerData: &pointerData)
                     }
                     rep0 = dist
