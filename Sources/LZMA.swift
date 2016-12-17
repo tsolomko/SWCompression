@@ -474,7 +474,6 @@ public final class LZMA: DecompressionAlgorithm {
                 isError = true
             }
             outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
-            uncompressedSize -= len
             if isError {
                 // TODO: throw error.
                 break
