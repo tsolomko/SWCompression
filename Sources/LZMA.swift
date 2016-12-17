@@ -341,8 +341,6 @@ public final class LZMA: DecompressionAlgorithm {
                  - `lp` low bits from current position in output.
                 */
                 let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
-                /// Selected table for literal decoding.
-                var probs = literalProbs[litState]
                 // If state is greater than 7 we need to do additional decoding with 'matchByte'.
                 if state >= 7 {
                     /**
@@ -353,7 +351,7 @@ public final class LZMA: DecompressionAlgorithm {
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
-                        let bit = rangeDecoder.decode(bitWithProb: &probs[((1 + matchBit) << 8) + symbol],
+                        let bit = rangeDecoder.decode(bitWithProb: &literalProbs[litState][((1 + matchBit) << 8) + symbol],
                                                       pointerData: &pointerData)
                         symbol = (symbol << 1) | bit
                         if matchBit != bit {
@@ -362,9 +360,9 @@ public final class LZMA: DecompressionAlgorithm {
                     } while symbol < 0x100
                 }
                 while symbol < 0x100 {
-                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &probs[symbol], pointerData: &pointerData)
+                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol],
+                                                                 pointerData: &pointerData)
                 }
-                print(symbol)
                 let byte = (symbol - 0x100).toUInt8()
                 outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                 // END.
@@ -372,7 +370,7 @@ public final class LZMA: DecompressionAlgorithm {
                 // Finally, we need to update `state`.
                 if state < 4 {
                     state = 0
-                } else if (state < 10) {
+                } else if state < 10 {
                     state -= 3
                 } else {
                     state -= 6
@@ -446,7 +444,7 @@ public final class LZMA: DecompressionAlgorithm {
                 }
                 // END.
 
-                // Check if finished marker is encoutered.
+                // Check if finish marker is encoutered.
                 if rep0 == 0xFFFFFFFF {
                     if rangeDecoder.isFinishedOK {
                         break
