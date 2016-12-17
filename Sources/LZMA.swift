@@ -329,6 +329,7 @@ public final class LZMA: DecompressionAlgorithm {
             if rangeDecoder.decode(bitWithProb: &isMatch[(state << Constants.numPosBitsMax) + posState], pointerData: &pointerData) == 0 {
                 if uncompressedSize == 0 {
                     // TODO: throw error
+                    break
                 }
 
                 // DECODE LITERAL:
@@ -384,9 +385,11 @@ public final class LZMA: DecompressionAlgorithm {
             if rangeDecoder.decode(bitWithProb: &isRep[state], pointerData: &pointerData) != 0 {
                 if uncompressedSize == 0 {
                     // TODO: throw error
+                    break
                 }
                 if outWindow.isEmpty {
                     // TODO: throw error
+                    break
                 }
                 if rangeDecoder.decode(bitWithProb: &isRepG0[state], pointerData: &pointerData) == 0 {
                     if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << Constants.numPosBitsMax) + posState],
@@ -451,14 +454,17 @@ public final class LZMA: DecompressionAlgorithm {
                         break
                     } else {
                         // TODO: throw error.
+                        break
                     }
                 }
 
                 if uncompressedSize == 0 {
                     // TODO: throw error.
+                    break
                 }
                 if rep0 >= dictionarySize || !outWindow.check(distance: rep0) {
                     // TODO: throw error.
+                    break
                 }
             }
             len += Constants.matchMinLen
@@ -471,6 +477,7 @@ public final class LZMA: DecompressionAlgorithm {
             uncompressedSize -= len
             if isError {
                 // TODO: throw error.
+                break
             }
 
         }
