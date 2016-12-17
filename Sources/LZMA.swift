@@ -132,15 +132,23 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func decode(directBits: Int, pointerData: inout DataWithPointer) -> Int {
+            lzmaDiagPrint("!!!decodeDirectBits")
+            lzmaDiagPrint("decodeDirectBits_code_start: \(self.code)")
+            lzmaDiagPrint("decodeDirectBits_range_start: \(self.range)")
             var res: UInt32 = 0
             var count = directBits
+            lzmaDiagPrint("decodeDirectBits_count: \(count)")
             repeat {
                 self.range >>= 1
+                lzmaDiagPrint("decodeDirectBits_range_1: \(self.range)")
                 self.code = UInt32.subtractWithOverflow(self.code, self.range).0
+                lzmaDiagPrint("decodeDirectBits_code_1: \(self.code)")
                 let t = UInt32.subtractWithOverflow(0, self.code >> 31).0
+                lzmaDiagPrint("decodeDirectBits_t: \(t)")
                 self.code = UInt32.addWithOverflow(self.code, self.range & t).0
 
                 if self.code == self.range {
+                    lzmaDiagPrint("???Corrupted")
                     self.isCorrupted = true
                 }
 
@@ -155,6 +163,9 @@ public final class LZMA: DecompressionAlgorithm {
 
         func decode(bitWithProb prob: inout Int, pointerData: inout DataWithPointer) -> Int {
             let bound = (self.range >> UInt32(Constants.numBitModelTotalBits)) * UInt32(prob)
+            lzmaDiagPrint("decodebit")
+            lzmaDiagPrint("bound: \(bound)")
+            lzmaDiagPrint("probBefore: \(prob)")
             let symbol: Int
             if self.code < bound {
                 prob += ((1 << Constants.numBitModelTotalBits) - prob) >> Constants.numMoveBits
@@ -166,6 +177,10 @@ public final class LZMA: DecompressionAlgorithm {
                 self.range -= bound
                 symbol = 1
             }
+            lzmaDiagPrint("probAfter: \(prob)")
+            lzmaDiagPrint("codeAfter: \(self.code)")
+            lzmaDiagPrint("rangeAfter: \(self.range)")
+            lzmaDiagPrint("-------------------")
             self.normalize(pointerData: &pointerData)
             return symbol
         }
@@ -184,14 +199,17 @@ public final class LZMA: DecompressionAlgorithm {
 
         func decode(with rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
             var m = 1
-            for _ in 0..<self.numBits {
+            for i in 0..<self.numBits {
                 m = (m << 1) + rangeDecoder.decode(bitWithProb: &self.probs[m], pointerData: &pointerData)
+                lzmaDiagPrint("bitTreeDecoder_decode_m_\(i): \(m)")
             }
+            lzmaDiagPrint("bitTreeDecoder_decode_result: \(m - (1 << self.numBits))")
             return m - (1 << self.numBits)
         }
 
         func reverseDecode(with rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
             // TODO: Check if startIndex is correct.
+            lzmaDiagPrint("!!!BitTreeReverseDecode")
             return LZMA.bitTreeReverseDecode(probs: &self.probs, startIndex: 0, bits: self.numBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
         }
 
@@ -229,10 +247,13 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func decode(with rangeDecoder: inout RangeDecoder, posState: Int, pointerData: inout DataWithPointer) -> Int {
+            lzmaDiagPrint("!!!LenDecoder_DECODE")
             if rangeDecoder.decode(bitWithProb: &self.choice, pointerData: &pointerData) == 0 {
+                lzmaDiagPrint("lenDecoder_lowCoder_posState: \(posState)")
                 return self.lowCoder[posState].decode(with: &rangeDecoder, pointerData: &pointerData)
             }
             if rangeDecoder.decode(bitWithProb: &self.choice2, pointerData: &pointerData) == 0 {
+                lzmaDiagPrint("lenDecoder_midCoder_posState: \(posState)")
                 return 8 + self.midCoder[posState].decode(with: &rangeDecoder, pointerData: &pointerData)
             }
             return 16 + self.highCoder.decode(with: &rangeDecoder, pointerData: &pointerData)
@@ -275,7 +296,7 @@ public final class LZMA: DecompressionAlgorithm {
         var dictionarySize = pointerData.intFromAlingedBytes(count: 4)
         dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
 
-//        print("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
+        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
 
         /// Size of uncompressed data. -1 means it is unknown.
         var uncompressedSize = pointerData.intFromAlingedBytes(count: 8)
@@ -285,7 +306,7 @@ public final class LZMA: DecompressionAlgorithm {
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
         var outIndex = uncompressedSize == -1 ? -1 : 0
 
-//        print("uncompressedSize: \(uncompressedSize)")
+        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
 
         let outWindow = OutWindow(dictSize: dictionarySize)
 
@@ -325,6 +346,8 @@ public final class LZMA: DecompressionAlgorithm {
 
         // Main decoding cycle.
         while true {
+            lzmaDiagPrint("=========================")
+            lzmaDiagPrint("start_unpackSize: \(uncompressedSize)")
             // If uncompressed size was defined and everything is unpacked then stop.
             if uncompressedSize == 0 {
                 if rangeDecoder.isFinishedOK {
@@ -333,6 +356,7 @@ public final class LZMA: DecompressionAlgorithm {
             }
 
             let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
+            lzmaDiagPrint("posState: \(posState)")
             if rangeDecoder.decode(bitWithProb: &isMatch[(state << Constants.numPosBitsMax) + posState], pointerData: &pointerData) == 0 {
                 if uncompressedSize == 0 {
                     // TODO: throw error
@@ -342,6 +366,7 @@ public final class LZMA: DecompressionAlgorithm {
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
                 let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
+                lzmaDiagPrint("decodeLiteral_prevByte: \(prevByte)")
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
@@ -372,6 +397,7 @@ public final class LZMA: DecompressionAlgorithm {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol],
                                                                  pointerData: &pointerData)
                 }
+                lzmaDiagPrint("decodeLiteral_symbol: \(symbol)")
                 let byte = (symbol - 0x100).toUInt8()
                 outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                 // END.
@@ -384,6 +410,7 @@ public final class LZMA: DecompressionAlgorithm {
                 } else {
                     state -= 6
                 }
+                lzmaDiagPrint("decodeLiteral_updatedState: \(state)")
 
                 continue
             }
@@ -402,7 +429,9 @@ public final class LZMA: DecompressionAlgorithm {
                     if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << Constants.numPosBitsMax) + posState],
                                            pointerData: &pointerData) == 0 {
                         state = state < 7 ? 9 : 11
+                        lzmaDiagPrint("updatedState: \(state)")
                         let byte = outWindow.byte(at: rep0 + 1)
+                        lzmaDiagPrint("byte_to_put: \(byte)")
                         outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                         continue
                     }
@@ -421,9 +450,16 @@ public final class LZMA: DecompressionAlgorithm {
                     }
                     rep1 = rep0
                     rep0 = dist
+                    lzmaDiagPrint("rotation_rep0: \(rep0)")
+                    lzmaDiagPrint("rotation_rep1: \(rep1)")
+                    lzmaDiagPrint("rotation_rep2: \(rep2)")
+                    lzmaDiagPrint("rotation_rep3: \(rep3)")
+                    lzmaDiagPrint("rotation_dist: \(dist)")
                 }
                 len = repLenDecoder.decode(with: &rangeDecoder, posState: posState, pointerData: &pointerData)
+                lzmaDiagPrint("read_len: \(len)")
                 state = state < 7 ? 8 : 11
+                lzmaDiagPrint("updatedState: \(state)")
             } else {
                 rep3 = rep2
                 rep2 = rep1
@@ -431,25 +467,41 @@ public final class LZMA: DecompressionAlgorithm {
                 len = lenDecoder.decode(with: &rangeDecoder, posState: posState, pointerData: &pointerData)
                 state = state < 7 ? 7 : 10
 
+                lzmaDiagPrint("beforeDecodeDistance_updatedRep3: \(rep3)")
+                lzmaDiagPrint("beforeDecodeDistance_updatedRep2: \(rep2)")
+                lzmaDiagPrint("beforeDecodeDistance_updatedRep1: \(rep1)")
+                lzmaDiagPrint("beforeDecodeDistance_updatedLen: \(len)")
+                lzmaDiagPrint("beforeDecodeDistance_updatedState: \(state)")
+
                 // DECODE DISTANCE:
                 var lenState = len
                 if lenState > Constants.numLenToPosStates - 1 {
                     lenState = Constants.numLenToPosStates - 1
                 }
 
+                lzmaDiagPrint("decodeDistance_lenState: \(lenState)")
+
                 let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder, pointerData: &pointerData)
+                lzmaDiagPrint("decodeDistance_posSlot: \(posSlot)")
                 if posSlot < 4 {
                     rep0 = posSlot
+                    lzmaDiagPrint("decodeDistance: posSlot => rep0")
                 } else {
+                    lzmaDiagPrint("decodeDistance: dist => rep0")
                     let numDirectBits = (posSlot >> 1) - 1
+                    lzmaDiagPrint("decodeDistance_numDirectBits: \(numDirectBits)")
                     var dist = ((2 | (posSlot & 1)) << numDirectBits)
+                    lzmaDiagPrint("decodeDistance_startDist: \(dist)")
                     if posSlot < Constants.endPosModelIndex {
                         dist += bitTreeReverseDecode(probs: &posDecoders, startIndex: dist - posSlot,
                                                      bits: numDirectBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
+                        lzmaDiagPrint("decodeDistance_updatedDist_0: \(dist)")
                     } else {
                         dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits),
                                                     pointerData: &pointerData) << Constants.numAlignBits
+                        lzmaDiagPrint("decodeDistance_updatedDist_1_1: \(dist)")
                         dist += alignDecoder.reverseDecode(with: &rangeDecoder, pointerData: &pointerData)
+                        lzmaDiagPrint("decodeDistance_updatedDist_1_2: \(dist)")
                     }
                     rep0 = dist
                 }
@@ -457,6 +509,7 @@ public final class LZMA: DecompressionAlgorithm {
 
                 // Check if finish marker is encoutered.
                 if rep0 == 0xFFFFFFFF {
+                    lzmaDiagPrint("finish_marker")
                     if rangeDecoder.isFinishedOK {
                         break
                     } else {
@@ -475,11 +528,13 @@ public final class LZMA: DecompressionAlgorithm {
                 }
             }
             len += Constants.matchMinLen
+            lzmaDiagPrint("finalLen: \(len)")
             var isError = false
             if uncompressedSize > -1 && uncompressedSize < len {
                 len = uncompressedSize
                 isError = true
             }
+            lzmaDiagPrint("copyMatch_at: \(rep0 + 1)")
             outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
             if isError {
                 // TODO: throw error.
@@ -491,4 +546,16 @@ public final class LZMA: DecompressionAlgorithm {
         return Data(bytes: out)
     }
     
+}
+
+fileprivate func lzmaDiagPrint(_ s: String) {
+    #if LZMA_DIAG
+        print(s)
+    #endif
+}
+
+fileprivate func lzmaInfoPrint(_ s: String) {
+    #if LZMA_INFO
+        print(s)
+    #endif
 }
