@@ -210,21 +210,24 @@ public final class LZMA: DecompressionAlgorithm {
         func reverseDecode(with rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
             // TODO: Check if startIndex is correct.
             lzmaDiagPrint("!!!BitTreeReverseDecode")
-            return LZMA.bitTreeReverseDecode(probs: &self.probs, startIndex: 0, bits: self.numBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
+            return BitTreeDecoder.bitTreeReverseDecode(probs: &self.probs, startIndex: 0, bits: self.numBits,
+                                             rangeDecoder: &rangeDecoder, &pointerData)
         }
 
-    }
-
-    static func bitTreeReverseDecode(probs: inout [Int], startIndex: Int, bits: Int, rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
-        var m = 1
-        var symbol = 0
-        for i in 0..<bits {
-            let bit = rangeDecoder.decode(bitWithProb: &probs[startIndex + m], pointerData: &pointerData)
-            m <<= 1
-            m += bit
-            symbol |= bit << i
+        static func bitTreeReverseDecode(probs: inout [Int], startIndex: Int, bits: Int,
+                                         rangeDecoder: inout RangeDecoder,
+                                         _ pointerData: inout DataWithPointer) -> Int {
+            var m = 1
+            var symbol = 0
+            for i in 0..<bits {
+                let bit = rangeDecoder.decode(bitWithProb: &probs[startIndex + m], &pointerData)
+                m <<= 1
+                m += bit
+                symbol |= bit << i
+            }
+            return symbol
         }
-        return symbol
+
     }
 
     final class LenDecoder {
@@ -493,8 +496,11 @@ public final class LZMA: DecompressionAlgorithm {
                     var dist = ((2 | (posSlot & 1)) << numDirectBits)
                     lzmaDiagPrint("decodeDistance_startDist: \(dist)")
                     if posSlot < Constants.endPosModelIndex {
-                        dist += bitTreeReverseDecode(probs: &posDecoders, startIndex: dist - posSlot,
-                                                     bits: numDirectBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
+                        dist += BitTreeDecoder.bitTreeReverseDecode(probs: &posDecoders,
+                                                                    startIndex: dist - posSlot,
+                                                                    bits: numDirectBits,
+                                                                    rangeDecoder: &rangeDecoder,
+                                                                    &pointerData)
                         lzmaDiagPrint("decodeDistance_updatedDist_0: \(dist)")
                     } else {
                         dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits),
