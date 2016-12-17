@@ -191,16 +191,17 @@ public final class LZMA: DecompressionAlgorithm {
         }
 
         func reverseDecode(with rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
-            return LZMA.bitTreeReverseDecode(probs: &self.probs, bits: self.numBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
+            // TODO: Check if startIndex is correct.
+            return LZMA.bitTreeReverseDecode(probs: &self.probs, startIndex: 0, bits: self.numBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
         }
 
     }
 
-    static func bitTreeReverseDecode(probs: inout [Int], bits: Int, rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
+    static func bitTreeReverseDecode(probs: inout [Int], startIndex: Int, bits: Int, rangeDecoder: inout RangeDecoder, pointerData: inout DataWithPointer) -> Int {
         var m = 1
         var symbol = 0
         for i in 0..<bits {
-            let bit = rangeDecoder.decode(bitWithProb: &probs[m], pointerData: &pointerData)
+            let bit = rangeDecoder.decode(bitWithProb: &probs[startIndex + m], pointerData: &pointerData)
             m <<= 1
             m += bit
             symbol |= bit << i
@@ -433,8 +434,8 @@ public final class LZMA: DecompressionAlgorithm {
                     let numDirectBits = (posSlot >> 1) - 1
                     var dist = ((2 | (posSlot & 1)) << numDirectBits)
                     if posSlot < Constants.endPosModelIndex {
-                        // TODO: Probably incorrect first argument.
-                        dist += bitTreeReverseDecode(probs: &posDecoders, bits: numDirectBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
+                        dist += bitTreeReverseDecode(probs: &posDecoders, startIndex: dist - posSlot,
+                                                     bits: numDirectBits, rangeDecoder: &rangeDecoder, pointerData: &pointerData)
                     } else {
                         dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits) << Constants.numAlignBits,
                                                     pointerData: &pointerData)
