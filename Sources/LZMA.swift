@@ -311,10 +311,10 @@ public final class LZMA: DecompressionAlgorithm {
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try decompress(pointerData: &pointerData)
+        return try decompress(&pointerData)
     }
 
-    static func decompress(pointerData: inout DataWithPointer) throws -> Data {
+    static func decompress(_ pointerData: inout DataWithPointer) throws -> Data {
 
         // First byte contains lzma properties.
         var properties = pointerData.alignedByte()
