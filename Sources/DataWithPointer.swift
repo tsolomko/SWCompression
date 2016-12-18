@@ -126,7 +126,17 @@ class DataWithPointer {
         return self.bitArray[self.index - 1]
     }
 
-    func intFromAlingedBytes(count: Int) -> Int {
+    func alignedBytes(count: Int) -> [UInt8] {
+        self.skipUntilNextByte()
+        var result: [UInt8] = Array(repeating: 0, count: count)
+        for i in 0..<count {
+            result[i] = self.bitArray[self.index]
+            self.index += 1
+        }
+        return result
+    }
+
+    func intFromAlignedBytes(count: Int) -> Int {
         self.skipUntilNextByte()
         var result = 0
         for i in 0..<count {
