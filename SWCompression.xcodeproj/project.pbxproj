@@ -39,9 +39,6 @@
 		06991C701E05A9F70030FF07 /* test9.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6D1E05A9F70030FF07 /* test9.lzma */; };
 		06991C711E05A9F70030FF07 /* test10.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6E1E05A9F70030FF07 /* test10.lzma */; };
 		06991C721E05A9F70030FF07 /* test11.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6F1E05A9F70030FF07 /* test11.lzma */; };
-		06991C761E05AA030030FF07 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06991C731E05AA030030FF07 /* test9.answer */; };
-		06991C771E05AA030030FF07 /* test10.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06991C741E05AA030030FF07 /* test10.answer */; };
-		06991C781E05AA030030FF07 /* test11.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06991C751E05AA030030FF07 /* test11.answer */; };
 		069AC20D1E02DB1D0041AC13 /* LZMA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC20C1E02DB1D0041AC13 /* LZMA.swift */; };
 		069AC20E1E02DB1D0041AC13 /* LZMA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC20C1E02DB1D0041AC13 /* LZMA.swift */; };
 		069AC20F1E02DB1D0041AC13 /* LZMA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069AC20C1E02DB1D0041AC13 /* LZMA.swift */; };
@@ -121,9 +118,6 @@
 		06991C6D1E05A9F70030FF07 /* test9.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.lzma; sourceTree = "<group>"; };
 		06991C6E1E05A9F70030FF07 /* test10.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test10.lzma; sourceTree = "<group>"; };
 		06991C6F1E05A9F70030FF07 /* test11.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test11.lzma; sourceTree = "<group>"; };
-		06991C731E05AA030030FF07 /* test9.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test9.answer; sourceTree = "<group>"; };
-		06991C741E05AA030030FF07 /* test10.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test10.answer; sourceTree = "<group>"; };
-		06991C751E05AA030030FF07 /* test11.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test11.answer; sourceTree = "<group>"; };
 		069AC20C1E02DB1D0041AC13 /* LZMA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LZMA.swift; path = Sources/LZMA.swift; sourceTree = SOURCE_ROOT; };
 		069AC2111E02DDAF0041AC13 /* LzmaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LzmaTests.swift; sourceTree = "<group>"; };
 		069AC2171E02DE490041AC13 /* test8.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.lzma; sourceTree = "<group>"; };
@@ -317,9 +311,6 @@
 				06CC18441DE35269003532F5 /* test6.answer */,
 				06CC18451DE35269003532F5 /* test7.answer */,
 				06FCA0571E033DDA00B6932F /* test8.answer */,
-				06991C731E05AA030030FF07 /* test9.answer */,
-				06991C741E05AA030030FF07 /* test10.answer */,
-				06991C751E05AA030030FF07 /* test11.answer */,
 			);
 			path = Answers;
 			sourceTree = "<group>";
@@ -594,7 +585,6 @@
 				06991C701E05A9F70030FF07 /* test9.lzma in Resources */,
 				06CC18781DE35269003532F5 /* test4.gz in Resources */,
 				06CC187B1DE35269003532F5 /* test7.gz in Resources */,
-				06991C771E05AA030030FF07 /* test10.answer in Resources */,
 				06CC18611DE35269003532F5 /* test2.answer in Resources */,
 				06CC18701DE35269003532F5 /* test3.deflate in Resources */,
 				06CC186F1DE35269003532F5 /* test2.deflate in Resources */,
@@ -620,8 +610,6 @@
 				06CC18671DE35269003532F5 /* test1.bz2 in Resources */,
 				06CC18661DE35269003532F5 /* test7.answer in Resources */,
 				06CC18791DE35269003532F5 /* test5.gz in Resources */,
-				06991C781E05AA030030FF07 /* test11.answer in Resources */,
-				06991C761E05AA030030FF07 /* test9.answer in Resources */,
 				06CC18681DE35269003532F5 /* test2.bz2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

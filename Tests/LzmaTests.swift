@@ -25,19 +25,12 @@ class LzmaTests: XCTestCase {
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test8")) else {
             XCTFail("Failed to get the answer")
             return
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
-
-        #if PERF_TESTS
-            print("Performing performance tests for \(LzmaTests.testType).\(testName)")
-            self.measure {
-                let _ = try? LZMA.decompress(compressedData: testData)
-            }
-        #endif
     }
 
     func testLzma8() {
