@@ -12,11 +12,16 @@ import Foundation
  Error happened during unarchiving xz archive.
  It may indicate that either the data is damaged or it might not be xz archive at all.
 
- - `WrongMagic`: first two bytes of archive were not `{ 0xFD, '7', 'z', 'X', 'Z', 0x00 }`.
- - `WrongFlagsFirstByte`: first byte of the flags was not zero.
+ - `WrongMagic`: first two bytes of archive weren't `{ 0xFD, '7', 'z', 'X', 'Z', 0x00 }`.
+ - `WrongFlagsFirstByte`: first byte of the flags wasn't zero.
  - `WrongCheckType`: unsupported check type (not 0x00, 0x01, 0x04 or 0x0A).
- - `WrongFlagsLastFourBits`: Last four bits of the flags were not zero.
+ - `WrongFlagsLastFourBits`: last four bits of the flags weren't zero.
  - `WrongFlagsCRC`: calculated crc-32 for flags doesn't equal to the value stored in the archive.
+ - `WrongFooterFlagsFirstByte`: first byte of the flags in the footer wasn't zero.
+ - `WrongFooterCheckType`: check type in the footer wasn't equal to the one in the header.
+ - `WrongFooterFlagsLastFourBits`: last four bits of the flags in the footer weren't zero.
+ - `WrongFooterCRC`: calculated crc-32 for footer's fields doesn't equal to the value stored in the archive.
+ - `WrongStreamPadding`: the size of stream padding wasn't multiple of four.
  */
 public enum XZError: Error {
     /// First six bytes of archive were not equal to 0xFD377A585A00.
@@ -29,6 +34,16 @@ public enum XZError: Error {
     case WrongFlagsLastFourBits
     /// Checksum for flags is incorrect.
     case WrongFlagsCRC
+    /// First byte of the flags field in footer was not equal to zero.
+    case WrongFooterFlagsFirstByte
+    /// Type of check in the footer was not equal to one from the header's flags.
+    case WrongFooterCheckType
+    /// Last four bits of the flags in footer were not equal to zero.
+    case WrongFooterFlagsLastFourBits
+    /// Checksum for fields in footer is incorrect.
+    case WrongFooterCRC
+    /// Size of stream padding was not multiple of four.
+    case WrongStreamPadding
 }
 
 /// A class with unarchive function for xz archives.
@@ -58,11 +73,15 @@ public class XZArchive: Archive {
 
         // STREAM HEADER
 
-        let magic = pointerData.intFromAlingedBytes(count: 6)
-        guard magic == 0x005A587A37FD else { throw XZError.WrongMagic }
+        // Check magic number.
+        guard pointerData.intFromAlignedBytes(count: 6) == 0x005A587A37FD
+            else { throw XZError.WrongMagic }
 
-        guard pointerData.alignedByte() == 0 else { throw XZError.WrongFlagsFirstByte }
+        // First byte of flags must be equal to zero.
+        guard pointerData.alignedByte() == 0
+            else { throw XZError.WrongFlagsFirstByte }
 
+        // Next four bits indicate type of redundancy check.
         let checkType = pointerData.intFromBits(count: 4)
         switch checkType {
         case 0x00, 0x01, 0x04, 0x0A:
@@ -71,12 +90,59 @@ public class XZArchive: Archive {
             throw XZError.WrongCheckType
         }
 
-        guard pointerData.intFromBits(count: 4) == 0 else { throw XZError.WrongFlagsLastFourBits }
+        // Final four bits must be equal to zero.
+        guard pointerData.intFromBits(count: 4) == 0
+            else { throw XZError.WrongFlagsLastFourBits }
 
-        let flagsCRC = pointerData.intFromAlingedBytes(count: 4)
-        guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC else { throw XZError.WrongFlagsCRC }
+        // CRC-32 of flags must be equal to the value in archive.
+        let flagsCRC = pointerData.intFromAlignedBytes(count: 4)
+        guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
+            else { throw XZError.WrongFlagsCRC }
+
+        // BLOCKS
+        // INDEX
 
         // STREAM FOOTER (Should be after parsing blocks).
+        let footerCRC = pointerData.intFromAlignedBytes(count: 4)
+        let storedBackwardSize = pointerData.alignedBytes(count: 4)
+        let footerStreamFlags = pointerData.alignedBytes(count: 2)
+        guard CheckSums.crc32([storedBackwardSize, footerStreamFlags].flatMap { $0 }) == footerCRC
+            else { throw XZError.WrongFooterCRC }
+
+        /// Indicates the size of Index field. Should match its real size.
+        var realBackwardSize = 0
+        for i in 0..<4 {
+            realBackwardSize |= storedBackwardSize[i].toInt() << (8 * i)
+        }
+        realBackwardSize += 1
+        realBackwardSize *= 4
+
+        // Flags in the footer should be the same as in the header.
+        guard footerStreamFlags[0] == 0
+            else { throw XZError.WrongFooterFlagsFirstByte }
+        guard footerStreamFlags[1] & 0x0F == checkType.toUInt8()
+            else { throw XZError.WrongFooterCheckType }
+        guard footerStreamFlags[1] & 0xF0 == 0
+            else { throw XZError.WrongFooterFlagsLastFourBits }
+
+        // Check footer's magic number
+        guard pointerData.intFromAlignedBytes(count: 2) == 0x5A59
+            else { throw XZError.WrongMagic }
+
+        // STREAM PADDING
+        var rewind = 0
+        while true {
+            let byte = pointerData.alignedByte()
+            if byte != 0 {
+                if rewind % 4 != 0 {
+                    throw XZError.WrongStreamPadding
+                } else {
+                    break
+                }
+            }
+            rewind += 1
+        }
+        pointerData.index -= rewind
 
         return try LZMA.decompress(&pointerData)
     }
