@@ -89,10 +89,15 @@ public class XZArchive: Archive {
 
         let streamHeader = try processStreamHeader(&pointerData)
 
-        // BLOCKS
-        try processBlock(&pointerData)
+        // BLOCKS AND INDEX
+        /// Zero value of blockHeaderSize means that we encountered INDEX.
+        let blockHeaderSize = pointerData.alignedByte()
+        if blockHeaderSize == 0 {
+            try processIndex(&pointerData)
+        } else {
+            try processBlock(blockHeaderSize, &pointerData)
+        }
 
-        // INDEX
 
         // STREAM FOOTER (Should be after parsing blocks).
         try processFooter(streamHeader, &pointerData)
@@ -145,10 +150,9 @@ public class XZArchive: Archive {
         return StreamHeader(checkType: checkType, flagsCRC: flagsCRC)
     }
 
-    private static func processBlock(_ pointerData: inout DataWithPointer) throws {
+    private static func processBlock(_ blockHeaderSize: UInt8, _ pointerData: inout DataWithPointer) throws {
         var blockBytes: [UInt8] = []
-        let blockHeaderStartIndex = pointerData.index
-        let blockHeaderSize = pointerData.alignedByte()
+        let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
             else { throw XZError.WrongBlockHeaderSize }
@@ -156,7 +160,11 @@ public class XZArchive: Archive {
 
         let blockFlags = pointerData.alignedByte()
         blockBytes.append(blockFlags)
-        let numberOfFilters = blockFlags & 0x03
+        /**
+         Bit values 00, 01, 10, 11 indicate filters number from 1 to 4,
+         so we actually need to add 1 to get filters' number.
+         */
+        let numberOfFilters = blockFlags & 0x03 + 1
         guard blockFlags & 0x3C == 0
             else { throw XZError.WrongBlockFlags }
 
@@ -181,6 +189,7 @@ public class XZArchive: Archive {
         }
 
         for _ in 0..<numberOfFilters {
+            let filterID = try pointerData.multiByteDecode()
             //            let filterID = try multiByteDecode(&pointerData)
             //            guard filterID < 0x4000000000000000 else { throw XZError.WrongFilterID }
             //            let sizeOfProperties = try multiByteDecode(&pointerData)
@@ -199,6 +208,10 @@ public class XZArchive: Archive {
         let blockHeaderCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32(blockBytes) == blockHeaderCRC
             else { throw XZError.WrongBlocksCRC }
+    }
+
+    private static func processIndex(_ pointerData: inout DataWithPointer) throws {
+
     }
 
     private static func processFooter(_ streamHeader: StreamHeader,
@@ -255,5 +268,3 @@ fileprivate extension DataWithPointer {
     }
 
 }
-
-
