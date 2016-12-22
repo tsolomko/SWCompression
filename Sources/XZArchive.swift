@@ -21,7 +21,7 @@ import Foundation
  - `WrongFooterCheckType`: check type in the footer wasn't equal to the one in the header.
  - `WrongFooterFlagsLastFourBits`: last four bits of the flags in the footer weren't zero.
  - `WrongFooterCRC`: calculated crc-32 for footer's fields doesn't equal to the value stored in the archive.
- - `WrongStreamPadding`: the size of stream padding wasn't multiple of four.
+ - `WrongPadding`: unsupported padding of one of structures in the archive.
  - `WrongBlockHeaderSize`: unsuported size of block's header (not in 0x01-0xFF range).
  - `WrongBlockFlags`: unsupported block flags.
  */
@@ -44,8 +44,8 @@ public enum XZError: Error {
     case WrongFooterFlagsLastFourBits
     /// Checksum for fields in footer is incorrect.
     case WrongFooterCRC
-    /// Size of stream padding was not multiple of four.
-    case WrongStreamPadding
+    /// Unsupported padding of a structure in the archive.
+    case WrongPadding
     /// Size of the block header is not in range from 0x01 to 0xFF.
     case WrongBlockHeaderSize
     /// Reserved flags of a block were set.
@@ -55,8 +55,10 @@ public enum XZError: Error {
     case WrongCompressedSize
     case WrongUncompressedSize
     case WrongFilterID
-    case WrongBlockHeaderPadding
-    case WrongBlocksCRC
+    case WrongBlockCRC
+    case CheckTypeSHA256
+
+    case WrongCheck
 }
 
 /// A class with unarchive function for xz archives.
@@ -72,7 +74,8 @@ public class XZArchive: Archive {
 
      If data passed is not actually a xz archive, `XZError` will be thrown.
 
-     If data inside the archive is not actually compressed with LZMA algorithm, `LZMAError` will be thrown.
+     If data inside the archive is not actually compressed with LZMA(2) algorithm, `LZMAError` will be thrown.
+     Other filters than LZMA2 are not supported.
 
      - Parameter archiveData: Data compressed with xz.
 
@@ -84,6 +87,7 @@ public class XZArchive: Archive {
     public static func unarchive(archiveData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        var out: [UInt8] = []
 
         // STREAM HEADER
 
@@ -91,11 +95,25 @@ public class XZArchive: Archive {
 
         // BLOCKS AND INDEX
         /// Zero value of blockHeaderSize means that we encountered INDEX.
-        let blockHeaderSize = pointerData.alignedByte()
-        if blockHeaderSize == 0 {
-            try processIndex(&pointerData)
-        } else {
-            try processBlock(blockHeaderSize, &pointerData)
+        while true {
+            let blockHeaderSize = pointerData.alignedByte()
+            if blockHeaderSize == 0 {
+                try processIndex(&pointerData)
+                break
+            } else {
+                let blockResult = try processBlock(blockHeaderSize, &pointerData)
+                out.append(contentsOf: blockResult)
+                switch streamHeader.checkType {
+                case 0x00:
+                    continue
+                case 0x01:
+                    let check = pointerData.intFromAlignedBytes(count: 4)
+                    guard CheckSums.crc32(blockResult) == check
+                        else { throw XZError.WrongCheck }
+                default:
+                    break
+                }
+            }
         }
 
         // STREAM FOOTER
@@ -107,7 +125,7 @@ public class XZArchive: Archive {
             let byte = pointerData.alignedByte()
             if byte != 0 {
                 if paddingBytes % 4 != 0 {
-                    throw XZError.WrongStreamPadding
+                    throw XZError.WrongPadding
                 } else {
                     break
                 }
@@ -116,7 +134,7 @@ public class XZArchive: Archive {
         }
         pointerData.index -= 1
 
-        return try LZMA.decompress(&pointerData)
+        return Data(bytes: out)
     }
 
     private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> StreamHeader {
@@ -149,7 +167,8 @@ public class XZArchive: Archive {
         return StreamHeader(checkType: checkType, flagsCRC: flagsCRC)
     }
 
-    private static func processBlock(_ blockHeaderSize: UInt8, _ pointerData: inout DataWithPointer) throws {
+    private static func processBlock(_ blockHeaderSize: UInt8,
+                                     _ pointerData: inout DataWithPointer) throws -> [UInt8] {
         var blockBytes: [UInt8] = []
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
@@ -187,31 +206,58 @@ public class XZArchive: Archive {
             blockBytes.append(contentsOf: uncompressedSizeDecodeResult.bytesProcessed)
         }
 
+        var filters: [(inout DataWithPointer) throws -> [UInt8]] = []
         for _ in 0..<numberOfFilters {
             let filterIDTuple = try pointerData.multiByteDecode()
             let filterID = filterIDTuple.multiByteInteger
             blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
             guard filterID < 0x4000000000000000
                 else { throw XZError.WrongFilterID }
-            let sizeOfPropertiesTuple = try pointerData.multiByteDecode()
-            let sizeOfProperties = sizeOfPropertiesTuple.multiByteInteger
-            blockBytes.append(contentsOf: sizeOfPropertiesTuple.bytesProcessed)
-            blockBytes.append(pointerData.alignedByte())
-            // TODO: Add parsing of filters' properties.
-            // Don't forget to add this bytes to blockBytes
+            // Only LZMA2 filter is supported.
+            switch filterID {
+            case 0x21: // LZMA2
+                // First, we need to skip byte with the size of filter's properties
+                blockBytes.append(contentsOf: try pointerData.multiByteDecode().bytesProcessed)
+                /// In case of LZMA2 filters property is a dicitonary size.
+                let filterPropeties = pointerData.alignedByte()
+                blockBytes.append(filterPropeties)
+                let closure = { (dwp: inout DataWithPointer) -> [UInt8] in
+                    try LZMA2.decompress(LZMA2.dictionarySize(filterPropeties), &dwp)
+                }
+                filters.append(closure)
+            default:
+                throw XZError.WrongFilterID
+            }
         }
 
         // We need to take into account 4 bytes for CRC32 so thats why "-4".
         while pointerData.index - blockHeaderStartIndex < realBlockHeaderSize.toInt() - 4 {
             let byte = pointerData.alignedByte()
             guard byte == 0x00
-                else { throw XZError.WrongBlockHeaderPadding }
+                else { throw XZError.WrongPadding }
             blockBytes.append(byte)
         }
 
         let blockHeaderCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32(blockBytes) == blockHeaderCRC
-            else { throw XZError.WrongBlocksCRC }
+            else { throw XZError.WrongBlockCRC }
+
+        var intResult = pointerData
+        for filterIndex in 0..<numberOfFilters - 1 {
+            var arrayResult = try filters[numberOfFilters.toInt() - filterIndex.toInt() - 1](&intResult)
+            intResult = DataWithPointer(array: &arrayResult, bitOrder: intResult.bitOrder)
+        }
+
+        let out = try filters[numberOfFilters.toInt() - 1](&intResult)
+
+        let paddingSize = 3 - pointerData.index % 4
+        for _ in 0...paddingSize {
+            let byte = pointerData.alignedByte()
+            guard byte == 0x00
+                else { throw XZError.WrongPadding }
+        }
+
+        return out
     }
 
     private static func processIndex(_ pointerData: inout DataWithPointer) throws {
