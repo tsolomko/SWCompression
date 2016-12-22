@@ -53,6 +53,10 @@
 		06A393441DE0713300182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06A393451DE0713A00182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06A393461DE0714000182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
+		06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
+		06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
+		06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06CC18601DE35269003532F5 /* test1.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06CC183F1DE35269003532F5 /* test1.answer */; };
 		06CC18611DE35269003532F5 /* test2.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06CC18401DE35269003532F5 /* test2.answer */; };
@@ -142,6 +146,7 @@
 		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A393421DE070B500182E12 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
+		06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD81DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -293,6 +298,7 @@
 				063364E21DC52979007E313F /* GzipArchive.swift */,
 				064492581DC606D400F10981 /* ZlibArchive.swift */,
 				069AC20C1E02DB1D0041AC13 /* LZMA.swift */,
+				06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
 				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
 				06A3933D1DE070B500182E12 /* Service */,
@@ -672,6 +678,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
 				063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1141DE1F07800F38082 /* HuffmanTree.swift in Sources */,
@@ -690,6 +697,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */,
 				063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */,
 				063DF11C1DE1F2E200F38082 /* HuffmanTree.swift in Sources */,
@@ -708,6 +716,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1151DE1F07800F38082 /* HuffmanTree.swift in Sources */,
@@ -726,6 +735,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06A393391DE0709300182E12 /* GzipArchive.swift in Sources */,
 				063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1131DE1F07800F38082 /* HuffmanTree.swift in Sources */,
