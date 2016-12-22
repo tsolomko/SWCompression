@@ -188,20 +188,25 @@ public class XZArchive: Archive {
         }
 
         for _ in 0..<numberOfFilters {
-            let filterID = try pointerData.multiByteDecode()
-            guard filterID.multiByteInteger < 0x4000000000000000
+            let filterIDTuple = try pointerData.multiByteDecode()
+            let filterID = filterIDTuple.multiByteInteger
+            blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
+            guard filterID < 0x4000000000000000
                 else { throw XZError.WrongFilterID }
-            let sizeOfProperties = try pointerData.multiByteDecode()
+            let sizeOfPropertiesTuple = try pointerData.multiByteDecode()
+            let sizeOfProperties = sizeOfPropertiesTuple.multiByteInteger
+            blockBytes.append(contentsOf: sizeOfPropertiesTuple.bytesProcessed)
+            blockBytes.append(pointerData.alignedByte())
             // TODO: Add parsing of filters' properties.
             // Don't forget to add this bytes to blockBytes
         }
 
-        while pointerData.index - blockHeaderStartIndex < blockHeaderSize.toInt() {
+        // We need to take into account 4 bytes for CRC32 so thats why "-4".
+        while pointerData.index - blockHeaderStartIndex < realBlockHeaderSize.toInt() - 4 {
             let byte = pointerData.alignedByte()
+            guard byte == 0x00
+                else { throw XZError.WrongBlockHeaderPadding }
             blockBytes.append(byte)
-            if byte != 0x00 {
-                throw XZError.WrongBlockHeaderPadding
-            }
         }
 
         let blockHeaderCRC = pointerData.intFromAlignedBytes(count: 4)
@@ -247,7 +252,6 @@ public class XZArchive: Archive {
 fileprivate extension DataWithPointer {
 
     func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
-        var num: UInt8 = 0
         var bytes: [UInt8] = []
         var i = 0
         var result = 0
@@ -264,7 +268,6 @@ fileprivate extension DataWithPointer {
             if i >= 9 || byte == 0x00 {
                 throw XZError.MultiByteIntegerError
             }
-            num |= (byte & 0x7F) << (i.toUInt8() * 7)
             result = (result << 8) + byte.toInt()
             i += 1
         }
