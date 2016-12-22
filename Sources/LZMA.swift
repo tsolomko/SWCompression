@@ -311,10 +311,6 @@ public final class LZMA: DecompressionAlgorithm {
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try decompress(&pointerData)
-    }
-
-    static func decompress(_ pointerData: inout DataWithPointer) throws -> Data {
 
         // First byte contains lzma properties.
         var properties = pointerData.alignedByte()
@@ -331,17 +327,23 @@ public final class LZMA: DecompressionAlgorithm {
         var dictionarySize = pointerData.intFromAlignedBytes(count: 4)
         dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
 
-        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
-
         /// Size of uncompressed data. -1 means it is unknown.
         var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
+
+        return Data(bytes: try decodeLZMA(lc, lp, pb, dictionarySize, &uncompressedSize, &pointerData))
+    }
+
+    static func decodeLZMA(_ lc: UInt8, _ lp: UInt8, _ pb: UInt8,
+                           _ dictionarySize: Int, _ uncompressedSize: inout Int,
+                           _ pointerData: inout DataWithPointer) throws -> [UInt8] {
+        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
+        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
+
         /// An array for storing output data
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
         var outIndex = uncompressedSize == -1 ? -1 : 0
-
-        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
 
         let outWindow = OutWindow(dictSize: dictionarySize)
 
@@ -577,7 +579,7 @@ public final class LZMA: DecompressionAlgorithm {
             outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
         }
 
-        return Data(bytes: out)
+        return out
     }
 
 }
