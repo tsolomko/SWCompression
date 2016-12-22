@@ -15,14 +15,14 @@ enum BitOrder {
 
 class DataWithPointer {
 
-    private let bitOrder: BitOrder
+    let bitOrder: BitOrder
     private let bitArray: [UInt8]
     var index: Int = 0
     private(set) var bitMask: UInt8
 
-    init(data: Data, bitOrder: BitOrder) {
+    init(array: inout [UInt8], bitOrder: BitOrder) {
         self.bitOrder = bitOrder
-        self.bitArray = data.toArray(type: UInt8.self)
+        self.bitArray = array
 
         switch self.bitOrder {
         case .reversed:
@@ -30,6 +30,11 @@ class DataWithPointer {
         case .straight:
             self.bitMask = 128
         }
+    }
+
+    convenience init(data: Data, bitOrder: BitOrder) {
+        var array = data.toArray(type: UInt8.self)
+        self.init(array: &array, bitOrder: bitOrder)
     }
 
     func bits(count: Int) -> [UInt8] {
@@ -141,6 +146,16 @@ class DataWithPointer {
         var result = 0
         for i in 0..<count {
             result |= self.bitArray[self.index].toInt() << (8 * i)
+            self.index += 1
+        }
+        return result
+    }
+
+    func uint64FromAlignedBytes(count: UInt64) -> UInt64 {
+        self.skipUntilNextByte()
+        var result: UInt64 = 0
+        for i: UInt64 in 0..<count {
+            result |= UInt64(self.bitArray[self.index]) << (8 * i)
             self.index += 1
         }
         return result
