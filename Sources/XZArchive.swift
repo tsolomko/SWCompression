@@ -98,8 +98,7 @@ public class XZArchive: Archive {
             try processBlock(blockHeaderSize, &pointerData)
         }
 
-
-        // STREAM FOOTER (Should be after parsing blocks).
+        // STREAM FOOTER
         try processFooter(streamHeader, &pointerData)
 
         // STREAM PADDING
@@ -190,9 +189,9 @@ public class XZArchive: Archive {
 
         for _ in 0..<numberOfFilters {
             let filterID = try pointerData.multiByteDecode()
-            //            let filterID = try multiByteDecode(&pointerData)
-            //            guard filterID < 0x4000000000000000 else { throw XZError.WrongFilterID }
-            //            let sizeOfProperties = try multiByteDecode(&pointerData)
+            guard filterID.multiByteInteger < 0x4000000000000000
+                else { throw XZError.WrongFilterID }
+            let sizeOfProperties = try pointerData.multiByteDecode()
             // TODO: Add parsing of filters' properties.
             // Don't forget to add this bytes to blockBytes
         }
@@ -248,11 +247,15 @@ public class XZArchive: Archive {
 fileprivate extension DataWithPointer {
 
     func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
-        var result = self.alignedByte().toInt() & 0x7F
+        var num: UInt8 = 0
         var bytes: [UInt8] = []
         var i = 0
+        var result = 0
         while true {
             let byte = self.alignedByte()
+            if byte <= 127 && i == 0 {
+                return (byte.toInt(), [byte])
+            }
             if byte & 0x80 != 0 {
                 self.index -= 1
                 break
@@ -261,7 +264,8 @@ fileprivate extension DataWithPointer {
             if i >= 9 || byte == 0x00 {
                 throw XZError.MultiByteIntegerError
             }
-            result |= byte.toInt() & 0x7F << (i * 7)
+            num |= (byte & 0x7F) << (i.toUInt8() * 7)
+            result = (result << 8) + byte.toInt()
             i += 1
         }
         return (result, bytes)
