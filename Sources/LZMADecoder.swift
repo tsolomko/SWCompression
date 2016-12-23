@@ -33,10 +33,6 @@ final class LZMADecoder {
     private var dictionarySize: Int
     private var uncompressedSize: Int
 
-    /// An array for storing output data
-    private var out: [UInt8]
-    private var outIndex: Int
-
     private var outWindow: LZMAOutWindow
     private var rangeDecoder: LZMARangeDecoder
     private var posSlotDecoder: [LZMABitTreeDecoder] = []
@@ -109,9 +105,6 @@ final class LZMADecoder {
             self.dictionarySize = 0
             self.uncompressedSize = -1
         }
-
-        self.out = uncompressedSize == -1 ? [] : Array(repeating: 0, count: self.uncompressedSize)
-        self.outIndex = uncompressedSize == -1 ? -1 : 0
 
         self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
 
@@ -238,8 +231,10 @@ final class LZMADecoder {
         default:
             throw LZMA2Error.WrongReset
         }
+
+        self.uncompressedSize = unpackSize
         out = try decodeLZMA()
-        guard unpackSize == out.count && dataStartIndex - pointerData.index == compressedSize
+        guard unpackSize == out.count && pointerData.index - dataStartIndex == compressedSize
             else { throw LZMA2Error.UncompatibleSizes }
         return out
     }
@@ -247,6 +242,10 @@ final class LZMADecoder {
     func decodeLZMA() throws -> [UInt8] {
         lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
         lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
+
+        /// An array for storing output data
+        var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
+        var outIndex = uncompressedSize == -1 ? -1 : 0
 
         // Main decoding cycle.
         while true {
