@@ -59,6 +59,9 @@ public enum XZError: Error {
     case CheckTypeSHA256
 
     case WrongCheck
+
+    case WrongCompressedDataSize
+    case WrongUncompressedDataSize
 }
 
 /// A class with unarchive function for xz archives.
@@ -74,7 +77,7 @@ public class XZArchive: Archive {
 
      If data passed is not actually a xz archive, `XZError` will be thrown.
 
-     If data inside the archive is not actually compressed with LZMA(2) algorithm, `LZMAError` will be thrown.
+     If data inside the archive is not actually compressed with LZMA(2), `LZMAError` will be thrown.
      Other filters than LZMA2 are not supported.
 
      - Parameter archiveData: Data compressed with xz.
@@ -90,7 +93,6 @@ public class XZArchive: Archive {
         var out: [UInt8] = []
 
         // STREAM HEADER
-
         let streamHeader = try processStreamHeader(&pointerData)
 
         // BLOCKS AND INDEX
@@ -243,12 +245,17 @@ public class XZArchive: Archive {
             else { throw XZError.WrongBlockCRC }
 
         var intResult = pointerData
+        let compressedDataStart = pointerData.index
         for filterIndex in 0..<numberOfFilters - 1 {
             var arrayResult = try filters[numberOfFilters.toInt() - filterIndex.toInt() - 1](&intResult)
             intResult = DataWithPointer(array: &arrayResult, bitOrder: intResult.bitOrder)
         }
+        guard compressedSize == -1 || compressedSize == pointerData.index - compressedDataStart
+            else { throw XZError.WrongCompressedDataSize }
 
         let out = try filters[numberOfFilters.toInt() - 1](&intResult)
+        guard uncompressedSize == -1 || uncompressedSize == out.count
+            else { throw XZError.WrongUncompressedDataSize }
 
         let paddingSize = 3 - pointerData.index % 4
         for _ in 0...paddingSize {
