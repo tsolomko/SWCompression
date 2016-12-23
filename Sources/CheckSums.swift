@@ -56,8 +56,8 @@ struct CheckSums {
     static func crc64(_ array: [UInt8]) -> UInt64 {
         var crc: UInt64 = ~0
         for i in 0..<array.count {
-            let index = (Int(crc) & 0xFF) ^ (array[i].toInt())
-            crc = CheckSums.crc64table[index] ^ (crc >> 8)
+            let index = (crc & 0xFF) ^ (UInt64(array[i]))
+            crc = CheckSums.crc64table[Int(index)] ^ (crc >> 8)
         }
         return UInt64(~crc)
     }
