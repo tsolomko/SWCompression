@@ -24,99 +24,109 @@ final class LZMADecoder {
         static let numFullDistances: Int = (1 << (endPosModelIndex >> 1))
         static let matchMinLen: Int = 2
     }
-    
+
+    private var pointerData: DataWithPointer
+
+    private let lc: UInt8
+    private let lp: UInt8
+    private let pb: UInt8
+    private var dictionarySize: Int
+    private var uncompressedSize: Int
+
+    /// An array for storing output data
+    private var out: [UInt8]
+    private var outIndex: Int
+
+    private var outWindow: LZMAOutWindow
+    private var rangeDecoder: LZMARangeDecoder
+    private var posSlotDecoder: [LZMABitTreeDecoder]
+    private var alignDecoder: LZMABitTreeDecoder
+    private var lenDecoder: LZMALenDecoder
+    private var repLenDecoder: LZMALenDecoder
+
     /**
-     Decompresses `compressedData` with LZMA algortihm.
-
-     If data passed is not actually compressed with LZMA, `LZMAError` will be thrown.
-
-     - Parameter compressedData: Data compressed with LZMA.
-
-     - Throws: `LZMAError` if unexpected byte (bit) sequence was encountered in `compressedData`.
-     It may indicate that either the data is damaged or it might not be compressed with LZMA at all.
-
-     - Returns: Decompressed data.
+     For literal decoding we need `1 << (lc + lp)` amount of tables.
+     Each table contains 0x300 probabilities.
      */
-    public static func decompress(compressedData data: Data) throws -> Data {
-        /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+    private var literalProbs: [[Int]]
+    private var isMatch: [Int]
+    private var isRep: [Int]
+    private var isRepG0: [Int]
+    private var isRepG1: [Int]
+    private var isRepG2: [Int]
+    private var isRep0Long: [Int]
 
-        // First byte contains lzma properties.
-        var properties = pointerData.alignedByte()
-        if properties >= (9 * 5 * 5) {
-            throw LZMAError.WrongProperties
-        }
-        /// The number of literal context bits
-        let lc = properties % 9
-        properties /= 9
-        /// The number of pos bits
-        let pb = properties / 5
-        /// The number of literal pos bits
-        let lp = properties % 5
-        var dictionarySize = pointerData.intFromAlignedBytes(count: 4)
-        dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
+    private var posDecoders: [Int]
 
-        /// Size of uncompressed data. -1 means it is unknown.
-        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
-        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
+    // 'Distance history table'.
+    private var rep0: Int
+    private var rep1: Int
+    private var rep2: Int
+    private var rep3: Int
+
+    /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1æ and 'IsRepG2' arrays.
+    private var state: Int
+
+    init(lc: UInt8, lp: UInt8, pb: UInt8, dictionarySize: Int, uncompressedSize: inout Int,
+         _ pointerData: inout DataWithPointer) throws {
+        self.pointerData = pointerData
+
+        self.lc = lc
+        self.lp = lp
+        self.pb = pb
+        self.dictionarySize = dictionarySize
+        self.uncompressedSize = uncompressedSize
 
 
-        return Data(bytes: try decodeLZMA(lc, lp, pb, dictionarySize, &uncompressedSize, &pointerData))
-    }
+        self.out = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
+        self.outIndex = uncompressedSize == -1 ? -1 : 0
 
-    static func decodeLZMA(_ lc: UInt8, _ lp: UInt8, _ pb: UInt8,
-                           _ dictionarySize: Int, _ uncompressedSize: inout Int,
-                           _ pointerData: inout DataWithPointer) throws -> [UInt8] {
-        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
-        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
+        self.outWindow = LZMAOutWindow(dictSize: dictionarySize)
 
-        /// An array for storing output data
-        var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
-        var outIndex = uncompressedSize == -1 ? -1 : 0
-
-        let outWindow = LZMAOutWindow(dictSize: dictionarySize)
-
-        guard var rangeDecoder = LZMARangeDecoder(&pointerData) else {
+        guard let rD = LZMARangeDecoder(&self.pointerData) else {
             throw LZMAError.RangeDecoderInitError
         }
+        self.rangeDecoder = rD
 
-        /**
-         For literal decoding we need `1 << (lc + lp)` amount of tables.
-         Each table contains 0x300 probabilities.
-         */
-        var literalProbs = Array(repeating: Array(repeating: Constants.probInitValue, count: 0x300),
+        self.literalProbs = Array(repeating: Array(repeating: Constants.probInitValue, count: 0x300),
                                  count: 1 << (lc + lp).toInt())
         // These arrays are used to select type of match or literal.
-        var isMatch = Array(repeating: Constants.probInitValue,
+        self.isMatch = Array(repeating: Constants.probInitValue,
                             count: Constants.numStates << Constants.numPosBitsMax)
-        var isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        var isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        var isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        var isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        var isRep0Long = Array(repeating: Constants.probInitValue,
+        self.isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        self.isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        self.isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        self.isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
+        self.isRep0Long = Array(repeating: Constants.probInitValue,
                                count: Constants.numStates << Constants.numPosBitsMax)
 
-        var posSlotDecoder: [LZMABitTreeDecoder] = []
+        self.posSlotDecoder = []
         for _ in 0..<Constants.numLenToPosStates {
-            posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6))
+            self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6))
         }
-        let alignDecoder = LZMABitTreeDecoder(numBits: Constants.numAlignBits)
-        var posDecoders = Array(repeating: Constants.probInitValue,
+        self.alignDecoder = LZMABitTreeDecoder(numBits: Constants.numAlignBits)
+        self.posDecoders = Array(repeating: Constants.probInitValue,
                                 count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
 
         // There are two types of matches so we need two decoders for them.
-        let lenDecoder = LZMALenDecoder()
-        let repLenDecoder = LZMALenDecoder()
+        self.lenDecoder = LZMALenDecoder()
+        self.repLenDecoder = LZMALenDecoder()
 
-        // These variables represent 'distance history table'.
-        var rep0 = 0
-        var rep1 = 0
-        var rep2 = 0
-        var rep3 = 0
-        /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1æ and 'IsRepG2' arrays.
-        var state = 0
+        self.rep0 = 0
+        self.rep1 = 0
+        self.rep2 = 0
+        self.rep3 = 0
 
-        // Main decoding cycle.
+        self.state = 0
+        
+
+    }
+
+    func decodeLZMA() throws -> [UInt8] {
+        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
+        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
+
+                // Main decoding cycle.
         while true {
             lzmaDiagPrint("=========================")
             lzmaDiagPrint("start_unpackSize: \(uncompressedSize)")

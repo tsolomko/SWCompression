@@ -78,7 +78,11 @@ public final class LZMA: DecompressionAlgorithm {
         var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
-        return Data(bytes: try LZMADecoder.decodeLZMA(lc, lp, pb, dictionarySize, &uncompressedSize, &pointerData))
+        let lzmaDecoder = try LZMADecoder(lc: lc, lp: lp, pb: pb,
+                                      dictionarySize: dictionarySize, uncompressedSize: &uncompressedSize,
+                                      &pointerData)
+
+        return Data(bytes: try lzmaDecoder.decodeLZMA())
     }
 
 }
