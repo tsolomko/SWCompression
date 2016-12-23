@@ -109,21 +109,27 @@ public class XZArchive: Archive {
             } else {
                 let blockInfo = try processBlock(blockHeaderSize, &pointerData)
                 out.append(contentsOf: blockInfo.blockData)
+                let checkSize: Int
                 switch streamHeader.checkType {
                 case 0x00:
-                    continue
+                    checkSize = 0
+                    break
                 case 0x01:
+                    checkSize = 4
                     let check = pointerData.intFromAlignedBytes(count: 4)
                     guard CheckSums.crc32(blockInfo.blockData) == check
                         else { throw XZError.WrongCheck }
                 case 0x04:
+                    checkSize = 8
                     let check = pointerData.uint64FromAlignedBytes(count: 8)
                     guard CheckSums.crc64(blockInfo.blockData) == check
                         else { throw XZError.WrongCheck }
+                case 0x0A:
+                    throw XZError.CheckTypeSHA256
                 default:
-                    break
+                    throw XZError.WrongCheckType
                 }
-                blockInfos.append((blockInfo.unpaddedSize, blockInfo.uncompressedSize))
+                blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
             }
         }
 
@@ -266,7 +272,7 @@ public class XZArchive: Archive {
         guard uncompressedSize == -1 || uncompressedSize == out.count
             else { throw XZError.WrongBlockUncompressedDataSize }
 
-        let unpaddedSize = blockHeaderStartIndex - pointerData.index
+        let unpaddedSize = pointerData.index - blockHeaderStartIndex
 
         let paddingSize = 3 - pointerData.index % 4
         for _ in 0...paddingSize {
