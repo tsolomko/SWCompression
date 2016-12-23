@@ -81,14 +81,14 @@ public final class LZMA2: DecompressionAlgorithm {
             case 0:
                 break mainLoop
             case 1:
-                lzmaDecoder.resetDictionary()
+                lzmaDecoder.resetDictionary(dictionarySize)
                 out.append(contentsOf: lzmaDecoder.decodeUncompressed())
             case 2:
                 out.append(contentsOf: lzmaDecoder.decodeUncompressed())
             case 3...0x7F:
                 throw LZMA2Error.WrongControlByte
             case 0x80...0xFF:
-                try out.append(contentsOf: lzmaDecoder.decodeLZMA2(controlByte))
+                try out.append(contentsOf: lzmaDecoder.decodeLZMA2(controlByte, dictionarySize))
             default:
                 throw LZMA2Error.WrongControlByte
             }
