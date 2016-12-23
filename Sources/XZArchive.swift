@@ -67,6 +67,8 @@ public enum XZError: Error {
     case WrongIndexRecordUnpaddedSize
     case WrongIndexRecordUncompressedSize
     case WrongIndexCRC
+
+    case WrongBackwardSize
 }
 
 /// A class with unarchive function for xz archives.
@@ -101,10 +103,11 @@ public class XZArchive: Archive {
         // BLOCKS AND INDEX
         /// Zero value of blockHeaderSize means that we encountered INDEX.
         var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
+        var indexSize = -1
         while true {
             let blockHeaderSize = pointerData.alignedByte()
             if blockHeaderSize == 0 {
-                try processIndex(blockInfos, &pointerData)
+                indexSize = try processIndex(blockInfos, &pointerData)
                 break
             } else {
                 let blockInfo = try processBlock(blockHeaderSize, &pointerData)
@@ -134,22 +137,23 @@ public class XZArchive: Archive {
         }
 
         // STREAM FOOTER
-        try processFooter(streamHeader, &pointerData)
+        try processFooter(streamHeader, indexSize, &pointerData)
 
+        // Unsupported: normal files should contain only one stream.
         // STREAM PADDING
-        var paddingBytes = 0
-        while true {
-            let byte = pointerData.alignedByte()
-            if byte != 0 {
-                if paddingBytes % 4 != 0 {
-                    throw XZError.WrongPadding
-                } else {
-                    break
-                }
-            }
-            paddingBytes += 1
-        }
-        pointerData.index -= 1
+//        var paddingBytes = 0
+//        while true {
+//            let byte = pointerData.alignedByte()
+//            if byte != 0 {
+//                if paddingBytes % 4 != 0 {
+//                    throw XZError.WrongPadding
+//                } else {
+//                    break
+//                }
+//            }
+//            paddingBytes += 1
+//        }
+//        pointerData.index -= 1
 
         return Data(bytes: out)
     }
@@ -274,8 +278,8 @@ public class XZArchive: Archive {
 
         let unpaddedSize = pointerData.index - blockHeaderStartIndex
 
-        let paddingSize = 3 - pointerData.index % 4
-        for _ in 0...paddingSize {
+        let paddingSize = unpaddedSize % 4
+        for _ in 0..<paddingSize {
             let byte = pointerData.alignedByte()
             guard byte == 0x00
                 else { throw XZError.WrongPadding }
@@ -285,7 +289,7 @@ public class XZArchive: Archive {
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
-                                     _ pointerData: inout DataWithPointer) throws {
+                                     _ pointerData: inout DataWithPointer) throws -> Int {
         var indexBytes: [UInt8] = [0x00]
         let numberOfRecordsTuple = try pointerData.multiByteDecode()
         indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
@@ -304,8 +308,8 @@ public class XZArchive: Archive {
             indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
         }
 
-        let paddingSize = 3 - pointerData.index % 4
-        for _ in 0...paddingSize {
+        let paddingSize = indexBytes.count % 4
+        for _ in 0..<paddingSize {
             let byte = pointerData.alignedByte()
             guard byte == 0x00
                 else { throw XZError.WrongPadding }
@@ -315,9 +319,12 @@ public class XZArchive: Archive {
         let indexCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32(indexBytes) == indexCRC
             else { throw XZError.WrongIndexCRC }
+
+        return indexBytes.count + 4
     }
 
     private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: Int),
+                                      _ indexSize: Int,
                                       _ pointerData: inout DataWithPointer) throws {
         let footerCRC = pointerData.intFromAlignedBytes(count: 4)
         let storedBackwardSize = pointerData.alignedBytes(count: 4)
@@ -332,6 +339,8 @@ public class XZArchive: Archive {
         }
         realBackwardSize += 1
         realBackwardSize *= 4
+        guard realBackwardSize == indexSize
+            else { throw XZError.WrongBackwardSize }
 
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
