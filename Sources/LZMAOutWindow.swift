@@ -26,8 +26,7 @@ final class LZMAOutWindow {
         self.size = dictSize
     }
 
-    func put(_ byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
-             _ uncompressedSize: inout Int) {
+    func put(_ byte: UInt8) {
         self.totalPosition += 1
         self.byteBuffer[position] = byte
         self.position += 1
@@ -35,6 +34,11 @@ final class LZMAOutWindow {
             self.position = 0
             self.isFull = true
         }
+    }
+
+    func put(_ byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
+             _ uncompressedSize: inout Int) {
+        self.put(byte)
 
         if uncompressedSize > 0 {
             out[outIndex] = byte
