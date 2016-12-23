@@ -218,7 +218,7 @@ final class LZMADecoder {
 
     func decodeLZMA2(_ controlByte: UInt8, _ dictSize: Int) throws -> [UInt8] {
         let uncompressedSizeBits = controlByte & 0x1F
-        let reset = controlByte & 0x60
+        let reset = (controlByte & 0x60) >> 5
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
             self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
         let compressedSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
