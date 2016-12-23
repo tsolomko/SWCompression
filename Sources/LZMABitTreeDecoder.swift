@@ -18,8 +18,8 @@ final class LZMABitTreeDecoder {
 
     init(numBits: Int, _ pointerData: inout DataWithPointer) {
         self.pointerData = pointerData
-        
-        self.probs = Array(repeating: LZMADecoder.Constants.probInitValue, count: 1 << numBits)
+        self.probs = Array(repeating: LZMADecoder.Constants.probInitValue,
+                           count: 1 << numBits)
         self.numBits = numBits
     }
 
@@ -35,8 +35,10 @@ final class LZMABitTreeDecoder {
 
     func reverseDecode(with rangeDecoder: inout LZMARangeDecoder) -> Int {
         lzmaDiagPrint("!!!BitTreeReverseDecode")
-        return LZMABitTreeDecoder.bitTreeReverseDecode(probs: &self.probs, startIndex: 0, bits: self.numBits,
-                                                   rangeDecoder: &rangeDecoder)
+        return LZMABitTreeDecoder.bitTreeReverseDecode(probs: &self.probs,
+                                                       startIndex: 0,
+                                                       bits: self.numBits,
+                                                       rangeDecoder: &rangeDecoder)
     }
 
     static func bitTreeReverseDecode(probs: inout [Int], startIndex: Int, bits: Int,

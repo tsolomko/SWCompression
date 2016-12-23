@@ -12,20 +12,16 @@ final class LZMALenDecoder {
 
     private var pointerData: DataWithPointer
 
-    private var choice: Int
-    private var choice2: Int
-    private var lowCoder: [LZMABitTreeDecoder]
-    private var midCoder: [LZMABitTreeDecoder]
+    private var choice: Int = LZMADecoder.Constants.probInitValue
+    private var choice2: Int = LZMADecoder.Constants.probInitValue
+    private var lowCoder: [LZMABitTreeDecoder] = []
+    private var midCoder: [LZMABitTreeDecoder] = []
     private var highCoder: LZMABitTreeDecoder
 
     init(_ pointerData: inout DataWithPointer) {
         self.pointerData = pointerData
 
-        self.choice = LZMADecoder.Constants.probInitValue
-        self.choice2 = LZMADecoder.Constants.probInitValue
         self.highCoder = LZMABitTreeDecoder(numBits: 8, &self.pointerData)
-        self.lowCoder = []
-        self.midCoder = []
         for _ in 0..<(1 << LZMADecoder.Constants.numPosBitsMax) {
             self.lowCoder.append(LZMABitTreeDecoder(numBits: 3, &self.pointerData))
             self.midCoder.append(LZMABitTreeDecoder(numBits: 3, &self.pointerData))

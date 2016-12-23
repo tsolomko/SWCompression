@@ -39,7 +39,7 @@ final class LZMADecoder {
 
     private var outWindow: LZMAOutWindow
     private var rangeDecoder: LZMARangeDecoder
-    private var posSlotDecoder: [LZMABitTreeDecoder]
+    private var posSlotDecoder: [LZMABitTreeDecoder] = []
     private var alignDecoder: LZMABitTreeDecoder
     private var lenDecoder: LZMALenDecoder
     private var repLenDecoder: LZMALenDecoder
@@ -49,23 +49,30 @@ final class LZMADecoder {
      Each table contains 0x300 probabilities.
      */
     private var literalProbs: [[Int]]
-    private var isMatch: [Int]
-    private var isRep: [Int]
-    private var isRepG0: [Int]
-    private var isRepG1: [Int]
-    private var isRepG2: [Int]
-    private var isRep0Long: [Int]
+    // These arrays are used to select type of match or literal.
+    private var isMatch: [Int] = Array(repeating: Constants.probInitValue,
+                                       count: Constants.numStates << Constants.numPosBitsMax)
+    private var isRep: [Int] = Array(repeating: Constants.probInitValue,
+                                     count: Constants.numStates)
+    private var isRepG0: [Int] = Array(repeating: Constants.probInitValue,
+                                       count: Constants.numStates)
+    private var isRepG1: [Int] = Array(repeating: Constants.probInitValue,
+                                       count: Constants.numStates)
+    private var isRepG2: [Int] = Array(repeating: Constants.probInitValue,
+                                       count: Constants.numStates)
+    private var isRep0Long: [Int] = Array(repeating: Constants.probInitValue,
+                                          count: Constants.numStates << Constants.numPosBitsMax)
 
     private var posDecoders: [Int]
 
     // 'Distance history table'.
-    private var rep0: Int
-    private var rep1: Int
-    private var rep2: Int
-    private var rep3: Int
+    private var rep0: Int = 0
+    private var rep1: Int = 0
+    private var rep2: Int = 0
+    private var rep3: Int = 0
 
     /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1æ and 'IsRepG2' arrays.
-    private var state: Int
+    private var state: Int = 0
 
     init(lc: UInt8, lp: UInt8, pb: UInt8, dictionarySize: Int, uncompressedSize: inout Int,
          _ pointerData: inout DataWithPointer) throws {
@@ -88,19 +95,10 @@ final class LZMADecoder {
         }
         self.rangeDecoder = rD
 
-        self.literalProbs = Array(repeating: Array(repeating: Constants.probInitValue, count: 0x300),
-                                 count: 1 << (lc + lp).toInt())
-        // These arrays are used to select type of match or literal.
-        self.isMatch = Array(repeating: Constants.probInitValue,
-                            count: Constants.numStates << Constants.numPosBitsMax)
-        self.isRep = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        self.isRepG0 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        self.isRepG1 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        self.isRepG2 = Array(repeating: Constants.probInitValue, count: Constants.numStates)
-        self.isRep0Long = Array(repeating: Constants.probInitValue,
-                               count: Constants.numStates << Constants.numPosBitsMax)
+        self.literalProbs = Array(repeating: Array(repeating: Constants.probInitValue,
+                                                   count: 0x300),
+                                  count: 1 << (lc + lp).toInt())
 
-        self.posSlotDecoder = []
         for _ in 0..<Constants.numLenToPosStates {
             self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6, &self.pointerData))
         }
@@ -111,15 +109,6 @@ final class LZMADecoder {
         // There are two types of matches so we need two decoders for them.
         self.lenDecoder = LZMALenDecoder(&self.pointerData)
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
-
-        self.rep0 = 0
-        self.rep1 = 0
-        self.rep2 = 0
-        self.rep3 = 0
-
-        self.state = 0
-        
-
     }
 
     func decodeLZMA() throws -> [UInt8] {

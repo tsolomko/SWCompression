@@ -12,9 +12,9 @@ final class LZMARangeDecoder {
 
     private var pointerData: DataWithPointer
 
-    private var range: UInt32
-    private var code: UInt32
-    private(set) var isCorrupted: Bool
+    private var range: UInt32 = 0xFFFFFFFF
+    private var code: UInt32 = 0
+    private(set) var isCorrupted: Bool = false
 
     var isFinishedOK: Bool {
         return self.code == 0
@@ -22,11 +22,7 @@ final class LZMARangeDecoder {
 
     init?(_ pointerData: inout DataWithPointer) {
         self.pointerData = pointerData
-
-        self.isCorrupted = false
-        self.range = 0xFFFFFFFF
-        self.code = 0
-
+        
         let byte = self.pointerData.alignedByte()
         for _ in 0..<4 {
             self.code = (self.code << 8) | UInt32(self.pointerData.alignedByte())

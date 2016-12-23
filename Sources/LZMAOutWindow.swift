@@ -11,11 +11,11 @@ import Foundation
 final class LZMAOutWindow {
 
     private var byteBuffer: [UInt8]
-    private var position: Int
+    private var position: Int = 0
     private var size: Int
-    private var isFull: Bool
+    private var isFull: Bool = false
 
-    private(set) var totalPosition: Int
+    private(set) var totalPosition: Int = 0
 
     var isEmpty: Bool {
         return self.position == 0 && !self.isFull
@@ -23,15 +23,11 @@ final class LZMAOutWindow {
 
     init(dictSize: Int) {
         self.byteBuffer = Array(repeating: 0, count: dictSize)
-        self.position = 0
-        self.totalPosition = 0
         self.size = dictSize
-        self.isFull = false
     }
 
-    func put(_
-        byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
-                     _ uncompressedSize: inout Int) {
+    func put(_ byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
+             _ uncompressedSize: inout Int) {
         self.totalPosition += 1
         self.byteBuffer[position] = byte
         self.position += 1
