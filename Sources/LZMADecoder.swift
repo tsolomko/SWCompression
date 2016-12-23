@@ -74,9 +74,27 @@ final class LZMADecoder {
     /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1æ and 'IsRepG2' arrays.
     private var state: Int = 0
 
-    init(lc: UInt8, lp: UInt8, pb: UInt8, dictionarySize: Int, uncompressedSize: inout Int,
-         _ pointerData: inout DataWithPointer) throws {
+    init(_ pointerData: inout DataWithPointer) throws {
         self.pointerData = pointerData
+        
+        // First byte contains lzma properties.
+        var properties = pointerData.alignedByte()
+        if properties >= (9 * 5 * 5) {
+            throw LZMAError.WrongProperties
+        }
+        /// The number of literal context bits
+        let lc = properties % 9
+        properties /= 9
+        /// The number of pos bits
+        let pb = properties / 5
+        /// The number of literal pos bits
+        let lp = properties % 5
+        var dictionarySize = pointerData.intFromAlignedBytes(count: 4)
+        dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
+
+        /// Size of uncompressed data. -1 means it is unknown.
+        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
+        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
         self.lc = lc
         self.lp = lp

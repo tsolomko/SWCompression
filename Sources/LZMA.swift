@@ -59,28 +59,7 @@ public final class LZMA: DecompressionAlgorithm {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        // First byte contains lzma properties.
-        var properties = pointerData.alignedByte()
-        if properties >= (9 * 5 * 5) {
-            throw LZMAError.WrongProperties
-        }
-        /// The number of literal context bits
-        let lc = properties % 9
-        properties /= 9
-        /// The number of pos bits
-        let pb = properties / 5
-        /// The number of literal pos bits
-        let lp = properties % 5
-        var dictionarySize = pointerData.intFromAlignedBytes(count: 4)
-        dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
-
-        /// Size of uncompressed data. -1 means it is unknown.
-        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
-        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
-
-        let lzmaDecoder = try LZMADecoder(lc: lc, lp: lp, pb: pb,
-                                      dictionarySize: dictionarySize, uncompressedSize: &uncompressedSize,
-                                      &pointerData)
+        let lzmaDecoder = try LZMADecoder(&pointerData)
 
         return Data(bytes: try lzmaDecoder.decodeLZMA())
     }
