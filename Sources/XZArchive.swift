@@ -356,30 +356,3 @@ public class XZArchive: Archive {
     }
 
 }
-
-fileprivate extension DataWithPointer {
-
-    func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
-        var bytes: [UInt8] = []
-        var i = 0
-        var result = 0
-        while true {
-            let byte = self.alignedByte()
-            if byte <= 127 && i == 0 {
-                return (byte.toInt(), [byte])
-            }
-            if byte & 0x80 != 0 {
-                self.index -= 1
-                break
-            }
-            bytes.append(byte)
-            if i >= 9 || byte == 0x00 {
-                throw XZError.MultiByteIntegerError
-            }
-            result = (result << 8) + byte.toInt()
-            i += 1
-        }
-        return (result, bytes)
-    }
-
-}
