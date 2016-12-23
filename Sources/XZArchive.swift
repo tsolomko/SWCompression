@@ -60,8 +60,13 @@ public enum XZError: Error {
 
     case WrongCheck
 
-    case WrongCompressedDataSize
-    case WrongUncompressedDataSize
+    case WrongBlockCompressedDataSize
+    case WrongBlockUncompressedDataSize
+
+    case WrongIndexRecordsNumber
+    case WrongIndexRecordUnpaddedSize
+    case WrongIndexRecordUncompressedSize
+    case WrongIndexCRC
 }
 
 /// A class with unarchive function for xz archives.
@@ -97,24 +102,30 @@ public class XZArchive: Archive {
 
         // BLOCKS AND INDEX
         /// Zero value of blockHeaderSize means that we encountered INDEX.
+        var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
         while true {
             let blockHeaderSize = pointerData.alignedByte()
             if blockHeaderSize == 0 {
-                try processIndex(&pointerData)
+                try processIndex(blockInfos, &pointerData)
                 break
             } else {
-                let blockResult = try processBlock(blockHeaderSize, &pointerData)
-                out.append(contentsOf: blockResult)
+                let blockInfo = try processBlock(blockHeaderSize, &pointerData)
+                out.append(contentsOf: blockInfo.blockData)
                 switch streamHeader.checkType {
                 case 0x00:
                     continue
                 case 0x01:
                     let check = pointerData.intFromAlignedBytes(count: 4)
-                    guard CheckSums.crc32(blockResult) == check
+                    guard CheckSums.crc32(blockInfo.blockData) == check
+                        else { throw XZError.WrongCheck }
+                case 0x04:
+                    let check = pointerData.uint64FromAlignedBytes(count: 8)
+                    guard CheckSums.crc64(blockInfo.blockData) == check
                         else { throw XZError.WrongCheck }
                 default:
                     break
                 }
+                blockInfos.append((blockInfo.unpaddedSize, blockInfo.uncompressedSize))
             }
         }
 
@@ -170,7 +181,7 @@ public class XZArchive: Archive {
     }
 
     private static func processBlock(_ blockHeaderSize: UInt8,
-                                     _ pointerData: inout DataWithPointer) throws -> [UInt8] {
+                                     _ pointerData: inout DataWithPointer)  throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
         var blockBytes: [UInt8] = []
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
@@ -251,11 +262,13 @@ public class XZArchive: Archive {
             intResult = DataWithPointer(array: &arrayResult, bitOrder: intResult.bitOrder)
         }
         guard compressedSize == -1 || compressedSize == pointerData.index - compressedDataStart
-            else { throw XZError.WrongCompressedDataSize }
+            else { throw XZError.WrongBlockCompressedDataSize }
 
         let out = try filters[numberOfFilters.toInt() - 1](&intResult)
         guard uncompressedSize == -1 || uncompressedSize == out.count
-            else { throw XZError.WrongUncompressedDataSize }
+            else { throw XZError.WrongBlockUncompressedDataSize }
+
+        let unpaddedSize = blockHeaderStartIndex - pointerData.index
 
         let paddingSize = 3 - pointerData.index % 4
         for _ in 0...paddingSize {
@@ -264,11 +277,40 @@ public class XZArchive: Archive {
                 else { throw XZError.WrongPadding }
         }
 
-        return out
+        return (out, unpaddedSize, out.count)
     }
 
-    private static func processIndex(_ pointerData: inout DataWithPointer) throws {
+    private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
+                                     _ pointerData: inout DataWithPointer) throws {
+        var indexBytes: [UInt8] = [0x00]
+        let numberOfRecordsTuple = try pointerData.multiByteDecode()
+        indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
+        let numberOfRecords = numberOfRecordsTuple.multiByteInteger
+        guard numberOfRecords == blockInfos.count
+            else { throw XZError.WrongIndexRecordsNumber }
+        for blockInfo in blockInfos {
+            let unpaddedSizeTuple = try pointerData.multiByteDecode()
+            guard unpaddedSizeTuple.multiByteInteger == blockInfo.unpaddedSize
+                else { throw XZError.WrongIndexRecordUnpaddedSize }
+            indexBytes.append(contentsOf: unpaddedSizeTuple.bytesProcessed)
 
+            let uncompSizeTuple = try pointerData.multiByteDecode()
+            guard uncompSizeTuple.multiByteInteger == blockInfo.uncompSize
+                else { throw XZError.WrongIndexRecordUncompressedSize }
+            indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
+        }
+
+        let paddingSize = 3 - pointerData.index % 4
+        for _ in 0...paddingSize {
+            let byte = pointerData.alignedByte()
+            guard byte == 0x00
+                else { throw XZError.WrongPadding }
+            indexBytes.append(byte)
+        }
+
+        let indexCRC = pointerData.intFromAlignedBytes(count: 4)
+        guard CheckSums.crc32(indexBytes) == indexCRC
+            else { throw XZError.WrongIndexCRC }
     }
 
     private static func processFooter(_ streamHeader: StreamHeader,
