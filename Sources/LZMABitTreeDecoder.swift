@@ -18,7 +18,7 @@ final class LZMABitTreeDecoder {
 
     init(numBits: Int, _ pointerData: inout DataWithPointer) {
         self.pointerData = pointerData
-        self.probs = Array(repeating: LZMADecoder.Constants.probInitValue,
+        self.probs = Array(repeating: LZMAConstants.probInitValue,
                            count: 1 << numBits)
         self.numBits = numBits
     }

@@ -33,9 +33,16 @@ final class LZMARangeDecoder {
         }
     }
 
+    init() {
+        self.pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
+        self.range = 0xFFFFFFFF
+        self.code = 0
+        self.isCorrupted = false
+    }
+
     /// `range` property cannot be smaller than `(1 << 24)`. This function keeps it bigger.
     func normalize() {
-        if self.range < UInt32(LZMADecoder.Constants.topValue) {
+        if self.range < UInt32(LZMAConstants.topValue) {
             self.range <<= 8
             self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
         }
@@ -74,17 +81,17 @@ final class LZMARangeDecoder {
 
     /// Decodes binary symbol (bit) with predicted (estimated) probability.
     func decode(bitWithProb prob: inout Int) -> Int {
-        let bound = (self.range >> UInt32(LZMADecoder.Constants.numBitModelTotalBits)) * UInt32(prob)
+        let bound = (self.range >> UInt32(LZMAConstants.numBitModelTotalBits)) * UInt32(prob)
         lzmaDiagPrint("decodebit")
         lzmaDiagPrint("bound: \(bound)")
         lzmaDiagPrint("probBefore: \(prob)")
         let symbol: Int
         if self.code < bound {
-            prob += ((1 << LZMADecoder.Constants.numBitModelTotalBits) - prob) >> LZMADecoder.Constants.numMoveBits
+            prob += ((1 << LZMAConstants.numBitModelTotalBits) - prob) >> LZMAConstants.numMoveBits
             self.range = bound
             symbol = 0
         } else {
-            prob -= prob >> LZMADecoder.Constants.numMoveBits
+            prob -= prob >> LZMAConstants.numMoveBits
             self.code -= bound
             self.range -= bound
             symbol = 1
