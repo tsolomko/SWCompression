@@ -72,11 +72,6 @@ public enum XZError: Error {
 /// A class with unarchive function for xz archives.
 public class XZArchive: Archive {
 
-    private struct StreamHeader {
-        let checkType: Int
-        let flagsCRC: Int
-    }
-
     /**
      Unarchives xz archive stored in `archiveData`.
 
@@ -150,7 +145,7 @@ public class XZArchive: Archive {
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> StreamHeader {
+    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: Int) {
         // Check magic number.
         guard pointerData.intFromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.WrongMagic }
@@ -177,7 +172,7 @@ public class XZArchive: Archive {
         guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
             else { throw XZError.WrongFlagsCRC }
 
-        return StreamHeader(checkType: checkType, flagsCRC: flagsCRC)
+        return (checkType, flagsCRC)
     }
 
     private static func processBlock(_ blockHeaderSize: UInt8,
@@ -313,7 +308,7 @@ public class XZArchive: Archive {
             else { throw XZError.WrongIndexCRC }
     }
 
-    private static func processFooter(_ streamHeader: StreamHeader,
+    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: Int),
                                       _ pointerData: inout DataWithPointer) throws {
         let footerCRC = pointerData.intFromAlignedBytes(count: 4)
         let storedBackwardSize = pointerData.alignedBytes(count: 4)
