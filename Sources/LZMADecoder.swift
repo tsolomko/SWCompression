@@ -189,9 +189,6 @@ final class LZMADecoder {
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
-        self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
-                                                   count: 0x300),
-                                  count: 1 << (lc + lp).toInt())
 
         for _ in 0..<LZMAConstants.numLenToPosStates {
             self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6, &self.pointerData))
@@ -251,7 +248,7 @@ final class LZMADecoder {
         lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
         lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
 
-                // Main decoding cycle.
+        // Main decoding cycle.
         while true {
             lzmaDiagPrint("=========================")
             lzmaDiagPrint("start_unpackSize: \(uncompressedSize)")
