@@ -230,12 +230,12 @@ final class LZMADecoder {
         case 1:
             try self.resetState()
         case 2:
-            try self.resetState()
             try self.resetProperties()
+            try self.resetState()
             dataStartIndex += 1
         case 3:
-            try self.resetState()
             try self.resetProperties()
+            try self.resetState()
             dataStartIndex += 1
             self.resetDictionary(dictSize)
         default:
