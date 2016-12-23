@@ -20,6 +20,10 @@ public enum LZMA2Error: Error {
     case WrongProperties
     /// Dictionary size was too big.
     case WrongDictionarySize
+
+    case WrongControlByte
+    case WrongReset
+    case UncompatibleSizes
 }
 
 /// Provides function to decompress data, which were compressed with LZMA2
@@ -66,22 +70,31 @@ public final class LZMA2: DecompressionAlgorithm {
     }
 
     static func decompress(_ dictionarySize: Int, _ pointerData: inout DataWithPointer) throws -> [UInt8] {
-        // First byte contains lzma properties.
-        var properties = pointerData.alignedByte()
-        if properties >= (9 * 5 * 5) {
-            throw LZMAError.WrongProperties
+        // At this point lzmaDecoder will be in a VERY bad state.
+        let lzmaDecoder = try LZMADecoder(&pointerData, false)
+
+        var out: [UInt8] = []
+
+        mainLoop: while true {
+            let controlByte = pointerData.alignedByte()
+            switch controlByte {
+            case 0:
+                break mainLoop
+            case 1:
+                lzmaDecoder.resetDictionary()
+                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
+            case 2:
+                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
+            case 3...0x7F:
+                throw LZMA2Error.WrongControlByte
+            case 0x80...0xFF:
+                try out.append(contentsOf: lzmaDecoder.decodeLZMA2(controlByte))
+            default:
+                throw LZMA2Error.WrongControlByte
+            }
         }
-        /// The number of literal context bits
-        let lc = properties % 9
-        properties /= 9
-        /// The number of pos bits
-        let pb = properties / 5
-        /// The number of literal pos bits
-        let lp = properties % 5
 
-        var uncompressedSize = -1
-
-        return try LZMA.decodeLZMA(lc, lp, pb, dictionarySize, &uncompressedSize, &pointerData)
+        return out
     }
 
 }
