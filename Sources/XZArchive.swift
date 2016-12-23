@@ -74,16 +74,19 @@ public class XZArchive: Archive {
 
     /**
      Unarchives xz archive stored in `archiveData`.
+     This functions supports only archives with one stream, 
+     but this should be the case in the majority of real-world archives.
 
      If data passed is not actually a xz archive, `XZError` will be thrown.
 
-     If data inside the archive is not actually compressed with LZMA(2), `LZMAError` will be thrown.
+     If data inside the archive is not actually compressed with LZMA2,
+     `LZMAError` or `LZMA2Error` will be thrown.
      Other filters than LZMA2 are not supported.
 
      - Parameter archiveData: Data compressed with xz.
 
-     - Throws: `LZMAError` or `XZError` depending on the type of inconsistency in data.
-     It may indicate that either the data is damaged or it might not be compressed with xz or LZMA at all.
+     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of inconsistency in data.
+     It may indicate that either the data is damaged or it might not be compressed with xz or LZMA(2) at all.
 
      - Returns: Unarchived data.
      */
