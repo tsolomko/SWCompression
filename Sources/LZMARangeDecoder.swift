@@ -10,6 +10,8 @@ import Foundation
 
 final class LZMARangeDecoder {
 
+    private var pointerData: DataWithPointer
+
     private var range: UInt32
     private var code: UInt32
     private(set) var isCorrupted: Bool
@@ -19,13 +21,15 @@ final class LZMARangeDecoder {
     }
 
     init?(_ pointerData: inout DataWithPointer) {
+        self.pointerData = pointerData
+
         self.isCorrupted = false
         self.range = 0xFFFFFFFF
         self.code = 0
 
-        let byte = pointerData.alignedByte()
+        let byte = self.pointerData.alignedByte()
         for _ in 0..<4 {
-            self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
+            self.code = (self.code << 8) | UInt32(self.pointerData.alignedByte())
         }
         if byte != 0 || self.code == self.range {
             self.isCorrupted = true
@@ -34,7 +38,7 @@ final class LZMARangeDecoder {
     }
 
     /// `range` property cannot be smaller than `(1 << 24)`. This function keeps it bigger.
-    func normalize(_ pointerData: inout DataWithPointer) {
+    func normalize() {
         if self.range < UInt32(LZMADecoder.Constants.topValue) {
             self.range <<= 8
             self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
@@ -42,7 +46,7 @@ final class LZMARangeDecoder {
     }
 
     /// Decodes sequence of direct bits (binary symbols with fixed and equal probabilities).
-    func decode(directBits: Int, _ pointerData: inout DataWithPointer) -> Int {
+    func decode(directBits: Int) -> Int {
         lzmaDiagPrint("!!!decodeDirectBits")
         lzmaDiagPrint("decodeDirectBits_code_start: \(self.code)")
         lzmaDiagPrint("decodeDirectBits_range_start: \(self.range)")
@@ -63,7 +67,7 @@ final class LZMARangeDecoder {
                 self.isCorrupted = true
             }
 
-            self.normalize(&pointerData)
+            self.normalize()
 
             res <<= 1
             res = UInt32.addWithOverflow(res, UInt32.addWithOverflow(t, 1).0).0
@@ -73,7 +77,7 @@ final class LZMARangeDecoder {
     }
 
     /// Decodes binary symbol (bit) with predicted (estimated) probability.
-    func decode(bitWithProb prob: inout Int, _ pointerData: inout DataWithPointer) -> Int {
+    func decode(bitWithProb prob: inout Int) -> Int {
         let bound = (self.range >> UInt32(LZMADecoder.Constants.numBitModelTotalBits)) * UInt32(prob)
         lzmaDiagPrint("decodebit")
         lzmaDiagPrint("bound: \(bound)")
@@ -93,7 +97,7 @@ final class LZMARangeDecoder {
         lzmaDiagPrint("codeAfter: \(self.code)")
         lzmaDiagPrint("rangeAfter: \(self.range)")
         lzmaDiagPrint("-------------------")
-        self.normalize(&pointerData)
+        self.normalize()
         return symbol
     }
 

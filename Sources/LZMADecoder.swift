@@ -102,15 +102,15 @@ final class LZMADecoder {
 
         self.posSlotDecoder = []
         for _ in 0..<Constants.numLenToPosStates {
-            self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6))
+            self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6, &self.pointerData))
         }
-        self.alignDecoder = LZMABitTreeDecoder(numBits: Constants.numAlignBits)
+        self.alignDecoder = LZMABitTreeDecoder(numBits: Constants.numAlignBits, &self.pointerData)
         self.posDecoders = Array(repeating: Constants.probInitValue,
                                 count: 1 + Constants.numFullDistances - Constants.endPosModelIndex)
 
         // There are two types of matches so we need two decoders for them.
-        self.lenDecoder = LZMALenDecoder()
-        self.repLenDecoder = LZMALenDecoder()
+        self.lenDecoder = LZMALenDecoder(&self.pointerData)
+        self.repLenDecoder = LZMALenDecoder(&self.pointerData)
 
         self.rep0 = 0
         self.rep1 = 0
@@ -139,7 +139,7 @@ final class LZMADecoder {
 
             let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
             lzmaDiagPrint("posState: \(posState)")
-            if rangeDecoder.decode(bitWithProb: &isMatch[(state << Constants.numPosBitsMax) + posState], &pointerData) == 0 {
+            if rangeDecoder.decode(bitWithProb: &isMatch[(state << Constants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
 
                 // DECODE LITERAL:
@@ -150,7 +150,8 @@ final class LZMADecoder {
                 var symbol = 1
                 /**
                  Index of table with literal probabilities. It is based on the context which consists of:
-                 - `lc` high bits of from previous literal. If there were none, i.e. it is the first literal, then this part is skipped.
+                 - `lc` high bits of from previous literal. 
+                    If there were none, i.e. it is the first literal, then this part is skipped.
                  - `lp` low bits from current position in output.
                  */
                 let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
@@ -164,7 +165,7 @@ final class LZMADecoder {
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
-                        let bit = rangeDecoder.decode(bitWithProb: &literalProbs[litState][((1 + matchBit) << 8) + symbol], &pointerData)
+                        let bit = rangeDecoder.decode(bitWithProb: &literalProbs[litState][((1 + matchBit) << 8) + symbol])
                         symbol = (symbol << 1) | bit
                         if matchBit != bit {
                             break
@@ -172,8 +173,7 @@ final class LZMADecoder {
                     } while symbol < 0x100
                 }
                 while symbol < 0x100 {
-                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol],
-                                                                 &pointerData)
+                    symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
                 lzmaDiagPrint("decodeLiteral_symbol: \(symbol)")
                 let byte = (symbol - 0x100).toUInt8()
@@ -194,14 +194,13 @@ final class LZMADecoder {
             }
 
             var len: Int
-            if rangeDecoder.decode(bitWithProb: &isRep[state], &pointerData) != 0 {
+            if rangeDecoder.decode(bitWithProb: &isRep[state]) != 0 {
                 // REP MATCH CASE
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
                 if outWindow.isEmpty { throw LZMAError.WindowIsEmpty }
-                if rangeDecoder.decode(bitWithProb: &isRepG0[state], &pointerData) == 0 {
+                if rangeDecoder.decode(bitWithProb: &isRepG0[state]) == 0 {
                     // (We use last distance from 'distance history table').
-                    if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << Constants.numPosBitsMax) + posState],
-                                           &pointerData) == 0 {
+                    if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << Constants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
                         lzmaDiagPrint("updatedState: \(state)")
@@ -215,10 +214,10 @@ final class LZMADecoder {
                     // So the following code selectes one distance from history...
                     // based on the binary data.
                     let dist: Int
-                    if rangeDecoder.decode(bitWithProb: &isRepG1[state], &pointerData) == 0 {
+                    if rangeDecoder.decode(bitWithProb: &isRepG1[state]) == 0 {
                         dist = rep1
                     } else {
-                        if rangeDecoder.decode(bitWithProb: &isRepG2[state], &pointerData) == 0 {
+                        if rangeDecoder.decode(bitWithProb: &isRepG2[state]) == 0 {
                             dist = rep2
                         } else {
                             dist = rep3
@@ -234,7 +233,7 @@ final class LZMADecoder {
                     lzmaDiagPrint("rep_match_rep3: \(rep3)")
                     lzmaDiagPrint("rep_match_dist: \(dist)")
                 }
-                len = repLenDecoder.decode(with: &rangeDecoder, posState: posState, &pointerData)
+                len = repLenDecoder.decode(with: &rangeDecoder, posState: posState)
                 lzmaDiagPrint("read_len: \(len)")
                 state = state < 7 ? 8 : 11
                 lzmaDiagPrint("updatedState: \(state)")
@@ -243,7 +242,7 @@ final class LZMADecoder {
                 rep3 = rep2
                 rep2 = rep1
                 rep1 = rep0
-                len = lenDecoder.decode(with: &rangeDecoder, posState: posState, &pointerData)
+                len = lenDecoder.decode(with: &rangeDecoder, posState: posState)
                 state = state < 7 ? 7 : 10
 
                 lzmaDiagPrint("beforeDecodeDistance_updatedRep3: \(rep3)")
@@ -262,7 +261,7 @@ final class LZMADecoder {
                 lzmaDiagPrint("decodeDistance_lenState: \(lenState)")
 
                 /// Defines decoding scheme for distance value.
-                let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder, &pointerData)
+                let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder)
                 lzmaDiagPrint("decodeDistance_posSlot: \(posSlot)")
                 if posSlot < 4 {
                     // If `posSlot` is less than 4 then distance has defined value (no need to decode).
@@ -282,17 +281,16 @@ final class LZMADecoder {
                         dist += LZMABitTreeDecoder.bitTreeReverseDecode(probs: &posDecoders,
                                                                     startIndex: dist - posSlot,
                                                                     bits: numDirectBits,
-                                                                    rangeDecoder: &rangeDecoder,
-                                                                    &pointerData)
+                                                                    rangeDecoder: &rangeDecoder)
                         lzmaDiagPrint("decodeDistance_updatedDist_0: \(dist)")
                     } else {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
-                        dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits),
-                                                    &pointerData) << Constants.numAlignBits
+                        dist += rangeDecoder.decode(directBits: (numDirectBits - Constants.numAlignBits))
+                            << Constants.numAlignBits
                         lzmaDiagPrint("decodeDistance_updatedDist_1_1: \(dist)")
                         // Low 4 bits are decoded with a bit tree decoder (called 'AlignDecoder')...
                         // ...with "Reverse" scheme.
-                        dist += alignDecoder.reverseDecode(with: &rangeDecoder, &pointerData)
+                        dist += alignDecoder.reverseDecode(with: &rangeDecoder)
                         lzmaDiagPrint("decodeDistance_updatedDist_1_2: \(dist)")
                     }
                     rep0 = dist
