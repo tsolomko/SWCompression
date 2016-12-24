@@ -88,7 +88,7 @@ public final class LZMA2: DecompressionAlgorithm {
             case 3...0x7F:
                 throw LZMA2Error.WrongControlByte
             case 0x80...0xFF:
-                try out.append(contentsOf: lzmaDecoder.decodeLZMA2(controlByte, dictionarySize))
+                out.append(contentsOf: try lzmaDecoder.decodeLZMA2(controlByte, dictionarySize))
             default:
                 throw LZMA2Error.WrongControlByte
             }
