@@ -166,8 +166,7 @@ final class LZMADecoder {
         self.outWindow = LZMAOutWindow(dictSize: dictSize)
     }
 
-    func resetState() throws {
-
+    func resetState() {
         self.state = 0
 
         self.rep0 = 0
@@ -175,18 +174,30 @@ final class LZMADecoder {
         self.rep2 = 0
         self.rep3 = 0
 
+        self.isMatch = Array(repeating: LZMAConstants.probInitValue,
+                             count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
+        self.isRep = Array(repeating: LZMAConstants.probInitValue,
+                           count: LZMAConstants.numStates)
+        self.isRepG0 = Array(repeating: LZMAConstants.probInitValue,
+                             count: LZMAConstants.numStates)
+        self.isRepG1 = Array(repeating: LZMAConstants.probInitValue,
+                             count: LZMAConstants.numStates)
+        self.isRepG2 = Array(repeating: LZMAConstants.probInitValue,
+                             count: LZMAConstants.numStates)
+        self.isRep0Long = Array(repeating: LZMAConstants.probInitValue,
+                                count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
+
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
 
+        self.posSlotDecoder = []
         for _ in 0..<LZMAConstants.numLenToPosStates {
             self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6, &self.pointerData))
         }
         self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits, &self.pointerData)
         self.posDecoders = Array(repeating: LZMAConstants.probInitValue,
                                  count: 1 + LZMAConstants.numFullDistances - LZMAConstants.endPosModelIndex)
-
-        // There are two types of matches so we need two decoders for them.
         self.lenDecoder = LZMALenDecoder(&self.pointerData)
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
     }
@@ -214,14 +225,14 @@ final class LZMADecoder {
         case 0:
             break
         case 1:
-            try self.resetState()
+            self.resetState()
         case 2:
             try self.resetProperties()
-            try self.resetState()
+            self.resetState()
             dataStartIndex += 1
         case 3:
             try self.resetProperties()
-            try self.resetState()
+            self.resetState()
             dataStartIndex += 1
             self.resetDictionary(dictSize)
         default:
