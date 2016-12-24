@@ -13,16 +13,19 @@ import Foundation
  It may indicate that either the data is damaged or it might not be gzip archive at all.
 
  - `WrongMagic`: first two bytes of archive were not 31 and 139.
- - `WrongCompressionMethod`: compression method was other than 8 which is the only supported one.
- - `NonZeroReservedFlags`: reserved flags bits were not equal to 0, which is bad.
+ - `WrongCompressionMethod`: unsupported compression method (not 8 aka Deflate).
+ - `WrongFlags`: unsupported flags (reserved flags weren't 0).
+ - `WrongCRC`: computed Cyclic Redundancy Check didn't match the value stored in the archive.
  */
 public enum GzipError: Error {
     /// First two bytes of archive were not 31 and 139.
     case WrongMagic
     /// Compression method was other than 8 which is the only supported one.
     case WrongCompressionMethod
-    /// Reserved flags bits were not equal to 0, which is bad.
-    case NonZeroReservedFlags
+    /// Reserved flags bits were not equal to 0.
+    case WrongFlags
+    /// Computed CRC of uncompressed data didn't match the value stored in the archive.
+    case WrongCRC
 }
 
 /// A class with unarchive function for gzip archives.
@@ -82,7 +85,7 @@ public class GzipArchive: Archive {
 
         guard (serviceInfo.flags & 0x20 == 0) &&
             (serviceInfo.flags & 0x40 == 0) &&
-            (serviceInfo.flags & 0x80 == 0) else { throw GzipError.NonZeroReservedFlags }
+            (serviceInfo.flags & 0x80 == 0) else { throw GzipError.WrongFlags }
 
         // Some archives may contain extra fields
         if serviceInfo.flags & Flags.fextra != 0 {
@@ -141,7 +144,7 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try serviceInfo(pointerData: pointerData)
+        let serviceInfo = try self.serviceInfo(pointerData)
         
         return Data(bytes: try Deflate.decompress(&pointerData))
         // TODO: Add crc check
