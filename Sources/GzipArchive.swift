@@ -16,6 +16,7 @@ import Foundation
  - `WrongCompressionMethod`: unsupported compression method (not 8 aka Deflate).
  - `WrongFlags`: unsupported flags (reserved flags weren't 0).
  - `WrongCRC`: computed Cyclic Redundancy Check didn't match the value stored in the archive.
+ - `WrongISize`: size of uncompressed data modulo 2^32 didn't match the value stored in the archive.
  */
 public enum GzipError: Error {
     /// First two bytes of archive were not 31 and 139.
@@ -26,6 +27,8 @@ public enum GzipError: Error {
     case WrongFlags
     /// Computed CRC of uncompressed data didn't match the value stored in the archive.
     case WrongCRC
+    /// Computed isize didn't match the value stored in the archive.
+    case WrongISize
 }
 
 /// A class with unarchive function for gzip archives.
@@ -144,10 +147,19 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        let serviceInfo = try self.serviceInfo(pointerData)
-        
-        return Data(bytes: try Deflate.decompress(&pointerData))
-        // TODO: Add crc check
+        _ = try self.serviceInfo(pointerData)
+
+        // TODO: Add 'members' support.
+
+        let out = try Deflate.decompress(&pointerData)
+
+        let crc32 = pointerData.intFromAlignedBytes(count: 4)
+        guard CheckSums.crc32(out) == crc32 else { throw GzipError.WrongCRC }
+
+        let isize = pointerData.intFromAlignedBytes(count: 4)
+        guard out.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+
+        return Data(bytes: out)
     }
 
 }
