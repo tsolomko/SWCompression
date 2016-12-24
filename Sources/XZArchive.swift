@@ -278,11 +278,13 @@ public class XZArchive: Archive {
 
         let unpaddedSize = pointerData.index - blockHeaderStartIndex
 
-        let paddingSize = unpaddedSize % 4
-        for _ in 0..<paddingSize {
-            let byte = pointerData.alignedByte()
-            guard byte == 0x00
-                else { throw XZError.WrongPadding }
+        if unpaddedSize % 4 != 0 {
+            let paddingSize = 4 - unpaddedSize % 4
+            for _ in 0..<paddingSize {
+                let byte = pointerData.alignedByte()
+                guard byte == 0x00
+                    else { throw XZError.WrongPadding }
+            }
         }
 
         return (out, unpaddedSize, out.count)
@@ -308,12 +310,14 @@ public class XZArchive: Archive {
             indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
         }
 
-        let paddingSize = indexBytes.count % 4
-        for _ in 0..<paddingSize {
-            let byte = pointerData.alignedByte()
-            guard byte == 0x00
-                else { throw XZError.WrongPadding }
-            indexBytes.append(byte)
+        if indexBytes.count % 4 != 0 {
+            let paddingSize = 4 - indexBytes.count % 4
+            for _ in 0..<paddingSize {
+                let byte = pointerData.alignedByte()
+                guard byte == 0x00
+                    else { throw XZError.WrongPadding }
+                indexBytes.append(byte)
+            }
         }
 
         let indexCRC = pointerData.intFromAlignedBytes(count: 4)
