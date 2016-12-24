@@ -175,7 +175,7 @@ final class DataWithPointer {
                 throw XZError.MultiByteIntegerError
             }
             bytes.append(byte)
-            result += byte.toInt() << (7 * i)
+            result += (byte.toInt() & 0x7F) << (7 * i)
             i += 1
         }
         return (result, bytes)
