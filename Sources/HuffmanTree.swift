@@ -25,6 +25,8 @@ class HuffmanTree: CustomStringConvertible {
              8193, 12289, 16385, 24577]
     }
 
+    private var pointerData: DataWithPointer
+
     var description: String {
         return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
     }
@@ -32,7 +34,9 @@ class HuffmanTree: CustomStringConvertible {
     private var tree: [Int]
     private let leafCount: Int
 
-    init(bootstrap: [[Int]]) {
+    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer) {
+        self.pointerData = pointerData
+
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [[Int]] = []
         var start = bootstrap[0][0]
@@ -99,15 +103,15 @@ class HuffmanTree: CustomStringConvertible {
         }
     }
 
-    convenience init(lengthsToOrder: [Int]) {
+    convenience init(lengthsToOrder: [Int], _ pointerData: inout DataWithPointer) {
         var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
+        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, &pointerData)
     }
 
-    func findNextSymbol(in pointerData: DataWithPointer) -> Int {
+    func findNextSymbol() -> Int {
         var index = 0
         while true {
             let bit = pointerData.bit()

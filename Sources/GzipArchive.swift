@@ -139,10 +139,10 @@ public class GzipArchive: Archive {
      */
     public static func unarchive(archiveData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
         _ = try serviceInfo(pointerData: pointerData)
-        return try Deflate.decompress(pointerData: pointerData)
+        return try Deflate.decompress(pointerData: &pointerData)
         // TODO: Add crc check
     }
 

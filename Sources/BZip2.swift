@@ -63,7 +63,7 @@ public class BZip2: DecompressionAlgorithm {
         var out: [UInt8] = []
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data, bitOrder: .straight)
+        var pointerData = DataWithPointer(data: data, bitOrder: .straight)
 
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.WrongMagic }
@@ -84,7 +84,7 @@ public class BZip2: DecompressionAlgorithm {
             let _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
-                try out.append(contentsOf: decode(data: pointerData))
+                try out.append(contentsOf: decode(data: &pointerData))
             } else if blockType == 0x177245385090 {
                 break
             } else {
@@ -95,7 +95,7 @@ public class BZip2: DecompressionAlgorithm {
         return Data(bytes: out)
     }
 
-    private static func decode(data: DataWithPointer) throws -> [UInt8] {
+    private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
@@ -163,7 +163,7 @@ public class BZip2: DecompressionAlgorithm {
                     }
                     lengths.append(length)
                 }
-                let codes = HuffmanTree(lengthsToOrder: lengths)
+                let codes = HuffmanTree(lengthsToOrder: lengths, &data)
                 tables.append(codes)
             }
 
@@ -198,7 +198,7 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            let symbol = t?.findNextSymbol(in: data)
+            let symbol = t?.findNextSymbol()
             guard symbol != nil && symbol != -1 else { throw BZip2Error.SymbolNotFound }
 
             if symbol == 1 || symbol == 0 {
@@ -256,7 +256,9 @@ public class BZip2: DecompressionAlgorithm {
         while i < nt.count {
             if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
                 let sCount = nt[i + 4].toInt() + 4
-                out.append(contentsOf: Array(repeating: nt[i], count: sCount))
+                for _ in 0..<sCount {
+                    out.append(nt[i])
+                }
                 i += 5
             } else {
                 out.append(nt[i])
