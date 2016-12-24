@@ -12,7 +12,7 @@ struct CheckSums {
 
     static let crc32table: [UInt32] = {
         var table: [UInt32] = Array(repeating: 0, count: 256)
-        let crc32poly = 0xEDB88320
+        let crc32poly = 0xEDB88320 // IEEE
         var r = 0
         var j = 0
         for i in 0..<256 {
@@ -29,7 +29,7 @@ struct CheckSums {
 
     static let crc64table: [UInt64] = {
         var table: [UInt64] = Array(repeating: 0, count: 256)
-        let crc64poly: UInt64 = 0xC96C5795D7870F42
+        let crc64poly: UInt64 = 0xC96C5795D7870F42 // ECMA
         var r: UInt64 = 0
         var j = 0
         for i in 0..<256 {
@@ -57,9 +57,9 @@ struct CheckSums {
         var crc: UInt64 = ~0
         for i in 0..<array.count {
             let index = (crc & 0xFF) ^ (UInt64(array[i]))
-            crc = CheckSums.crc64table[Int(index)] ^ (crc >> 8)
+            crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingBitPattern: index))] ^ (crc >> 8)
         }
-        return UInt64(~crc)
+        return ~crc
     }
 
 }
