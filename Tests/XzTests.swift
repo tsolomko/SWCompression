@@ -68,5 +68,5 @@ class XZTests: XCTestCase {
     func testXz7() {
         self.perform(test: "test7")
     }
-    
+
 }

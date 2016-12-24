@@ -72,7 +72,7 @@ final class LZMADecoder {
 
     init(_ pointerData: inout DataWithPointer, _ initProperties: Bool = true) throws {
         self.pointerData = pointerData
-        
+
         // First byte contains lzma properties.
         if initProperties {
             var properties = pointerData.alignedByte()
@@ -436,10 +436,10 @@ final class LZMADecoder {
             lzmaDiagPrint("copyMatch_at: \(rep0 + 1)")
             outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
         }
-        
+
         return out
     }
-    
+
 }
 
 func lzmaDiagPrint(_ s: String) {

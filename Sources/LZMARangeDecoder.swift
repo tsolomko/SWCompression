@@ -22,7 +22,7 @@ final class LZMARangeDecoder {
 
     init?(_ pointerData: inout DataWithPointer) {
         self.pointerData = pointerData
-        
+
         let byte = self.pointerData.alignedByte()
         for _ in 0..<4 {
             self.code = (self.code << 8) | UInt32(self.pointerData.alignedByte())
