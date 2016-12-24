@@ -54,10 +54,10 @@ public class ZlibArchive: Archive {
 
     static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
         let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try serviceInfo(pointerData: pointerData)
+        return try serviceInfo(pointerData)
     }
 
-    static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
+    static func serviceInfo(_ pointerData: DataWithPointer) throws -> ServiceInfo {
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
         let compressionMethod = pointerData.intFromBits(count: 4)
@@ -119,8 +119,8 @@ public class ZlibArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try serviceInfo(pointerData: pointerData)
-        return try Deflate.decompress(pointerData: &pointerData)
+        _ = try serviceInfo(pointerData)
+        return Data(bytes: try Deflate.decompress(&pointerData))
         // TODO: Add Adler-32 check
     }
 

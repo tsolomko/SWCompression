@@ -47,10 +47,10 @@ public class Deflate: DecompressionAlgorithm {
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try decompress(pointerData: &pointerData)
+        return Data(bytes: try decompress(&pointerData))
     }
 
-    static func decompress(pointerData: inout DataWithPointer) throws -> Data {
+    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
         /// An array for storing output data
         var out: [UInt8] = []
 
@@ -226,7 +226,7 @@ public class Deflate: DecompressionAlgorithm {
             if isLastBit == 1 { break }
         }
 
-        return Data(bytes: out)
+        return out
     }
 
 }

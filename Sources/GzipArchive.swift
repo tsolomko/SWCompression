@@ -59,10 +59,10 @@ public class GzipArchive: Archive {
 
     static func serviceInfo(archiveData: Data) throws -> ServiceInfo {
         let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
-        return try serviceInfo(pointerData: pointerData)
+        return try serviceInfo(pointerData)
     }
 
-    static func serviceInfo(pointerData: DataWithPointer) throws -> ServiceInfo {
+    static func serviceInfo(_ pointerData: DataWithPointer) throws -> ServiceInfo {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x8b1f else { throw GzipError.WrongMagic }
@@ -142,7 +142,8 @@ public class GzipArchive: Archive {
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
         _ = try serviceInfo(pointerData: pointerData)
-        return try Deflate.decompress(pointerData: &pointerData)
+        
+        return Data(bytes: try Deflate.decompress(&pointerData))
         // TODO: Add crc check
     }
 
