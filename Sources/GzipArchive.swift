@@ -169,17 +169,19 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try self.serviceInfo(pointerData)
+        var out: [UInt8] = []
 
-        // TODO: Add 'members' support.
+        while !pointerData.isAtTheEnd {
+            _ = try self.serviceInfo(pointerData)
 
-        let out = try Deflate.decompress(&pointerData)
+            out.append(contentsOf: try Deflate.decompress(&pointerData))
 
-        let crc32 = pointerData.intFromAlignedBytes(count: 4)
-        guard CheckSums.crc32(out) == crc32 else { throw GzipError.WrongCRC }
+            let crc32 = pointerData.intFromAlignedBytes(count: 4)
+            guard CheckSums.crc32(out) == crc32 else { throw GzipError.WrongCRC }
 
-        let isize = pointerData.intFromAlignedBytes(count: 4)
-        guard out.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+            let isize = pointerData.intFromAlignedBytes(count: 4)
+            guard out.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+        }
 
         return Data(bytes: out)
     }
