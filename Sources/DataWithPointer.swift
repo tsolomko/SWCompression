@@ -16,13 +16,19 @@ enum BitOrder {
 final class DataWithPointer {
 
     let bitOrder: BitOrder
+    let size: Int
     private let bitArray: [UInt8]
     var index: Int = 0
     private(set) var bitMask: UInt8
 
+    var isAtTheEnd: Bool {
+        return self.size == self.index
+    }
+
     init(array: inout [UInt8], bitOrder: BitOrder) {
         self.bitOrder = bitOrder
         self.bitArray = array
+        self.size = self.bitArray.count
 
         switch self.bitOrder {
         case .reversed:
