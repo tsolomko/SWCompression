@@ -62,4 +62,15 @@ struct CheckSums {
         return ~crc
     }
 
+    static func adler32(_ array: [UInt8]) -> Int {
+        let base = 65521
+        var s1 = 1
+        var s2 = 0
+        for i in 0..<array.count {
+            s1 = (s1 + array[i].toInt()) % base
+            s2 = (s2 + s1) % base
+        }
+        return (s2 << 16) + s1
+    }
+
 }
