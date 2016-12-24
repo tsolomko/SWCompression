@@ -167,10 +167,6 @@ final class LZMADecoder {
     }
 
     func resetState() throws {
-        guard let rD = LZMARangeDecoder(&self.pointerData) else {
-            throw LZMAError.RangeDecoderInitError
-        }
-        self.rangeDecoder = rD
 
         self.state = 0
 
@@ -231,6 +227,12 @@ final class LZMADecoder {
         default:
             throw LZMA2Error.WrongReset
         }
+
+        // Apparently, we need to reinitialize RangeDecoder each time.
+        guard let rD = LZMARangeDecoder(&self.pointerData, self.rangeDecoder.range) else {
+            throw LZMAError.RangeDecoderInitError
+        }
+        self.rangeDecoder = rD
 
         self.uncompressedSize = unpackSize
         out = try decodeLZMA()
