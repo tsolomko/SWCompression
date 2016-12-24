@@ -229,7 +229,7 @@ final class LZMADecoder {
         }
 
         // Apparently, we need to reinitialize RangeDecoder each time.
-        guard let rD = LZMARangeDecoder(&self.pointerData, self.rangeDecoder.range) else {
+        guard let rD = LZMARangeDecoder(&self.pointerData) else {
             throw LZMAError.RangeDecoderInitError
         }
         self.rangeDecoder = rD
