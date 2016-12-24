@@ -73,6 +73,9 @@
 		06A393441DE0713300182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06A393451DE0713A00182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06A393461DE0714000182E12 /* SWCompression.h in Headers */ = {isa = PBXBuildFile; fileRef = 06A393421DE070B500182E12 /* SWCompression.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06B374C71E0EECB700064853 /* random_file.answer in Resources */ = {isa = PBXBuildFile; fileRef = 06B374C61E0EECB700064853 /* random_file.answer */; };
+		06B374C91E0EECCC00064853 /* random_file.gz in Resources */ = {isa = PBXBuildFile; fileRef = 06B374C81E0EECCC00064853 /* random_file.gz */; };
+		06B374CB1E0EECD500064853 /* random_file.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 06B374CA1E0EECD500064853 /* random_file.zlib */; };
 		06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
 		06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
 		06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
@@ -171,6 +174,9 @@
 		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A393421DE070B500182E12 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
+		06B374C61E0EECB700064853 /* random_file.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = random_file.answer; sourceTree = "<group>"; };
+		06B374C81E0EECCC00064853 /* random_file.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = random_file.gz; sourceTree = "<group>"; };
+		06B374CA1E0EECD500064853 /* random_file.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = random_file.zlib; sourceTree = "<group>"; };
 		06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -370,6 +376,7 @@
 				06CC18561DE35269003532F5 /* GZip */,
 				069AC2161E02DE490041AC13 /* LZMA */,
 				06CC185F1DE35269003532F5 /* test.zlib */,
+				06B374CA1E0EECD500064853 /* random_file.zlib */,
 			);
 			path = "Test Files";
 			sourceTree = "<group>";
@@ -385,6 +392,7 @@
 				06CC18441DE35269003532F5 /* test6.answer */,
 				06CC18451DE35269003532F5 /* test7.answer */,
 				06FCA0571E033DDA00B6932F /* test8.answer */,
+				06B374C61E0EECB700064853 /* random_file.answer */,
 			);
 			path = Answers;
 			sourceTree = "<group>";
@@ -427,6 +435,7 @@
 				06CC185B1DE35269003532F5 /* test5.gz */,
 				06CC185C1DE35269003532F5 /* test6.gz */,
 				06CC185D1DE35269003532F5 /* test7.gz */,
+				06B374C81E0EECCC00064853 /* random_file.gz */,
 			);
 			path = GZip;
 			sourceTree = "<group>";
@@ -672,6 +681,7 @@
 				06CC18771DE35269003532F5 /* test3.gz in Resources */,
 				06CC18731DE35269003532F5 /* test6.deflate in Resources */,
 				06E2347A1E069A7F00F18798 /* test3.xz in Resources */,
+				06B374C91E0EECCC00064853 /* random_file.gz in Resources */,
 				06991C701E05A9F70030FF07 /* test9.lzma in Resources */,
 				06CC18781DE35269003532F5 /* test4.gz in Resources */,
 				06CC187B1DE35269003532F5 /* test7.gz in Resources */,
@@ -683,12 +693,14 @@
 				06CC186B1DE35269003532F5 /* test5.bz2 in Resources */,
 				06CC18651DE35269003532F5 /* test6.answer in Resources */,
 				06CC18631DE35269003532F5 /* test4.answer in Resources */,
+				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
 				06FCA0581E033DDA00B6932F /* test8.answer in Resources */,
 				06E2347D1E069A7F00F18798 /* test6.xz in Resources */,
 				06991C711E05A9F70030FF07 /* test10.lzma in Resources */,
 				06CC18761DE35269003532F5 /* test2.gz in Resources */,
 				06CC18721DE35269003532F5 /* test5.deflate in Resources */,
 				06CC186E1DE35269003532F5 /* test1.deflate in Resources */,
+				06B374C71E0EECB700064853 /* random_file.answer in Resources */,
 				06CC186A1DE35269003532F5 /* test4.bz2 in Resources */,
 				06CC18741DE35269003532F5 /* test7.deflate in Resources */,
 				06CC18691DE35269003532F5 /* test3.bz2 in Resources */,

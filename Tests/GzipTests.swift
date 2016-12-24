@@ -111,4 +111,25 @@ class GzipTests: XCTestCase {
                                                                     crc: 0))
     }
 
+    func testGzipFull() {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file", withType: GzipTests.testType)) else {
+            XCTFail("Failed to load test archive")
+            return
+        }
+
+        let decompressedData = try? GzipArchive.unarchive(archiveData: testData)
+
+        guard decompressedData != nil  else {
+            XCTFail("Failed to decompress")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "random_file")) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+    }
+
 }
