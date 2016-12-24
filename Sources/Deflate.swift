@@ -72,11 +72,8 @@ public class Deflate: DecompressionAlgorithm {
                 // Process uncompressed data into the output
                 // TODO: Replace precondition with guard and error throwing.
                 precondition(pointerData.bitMask == 1, "Misaligned byte.")
-                var ind = out.count
-                out.append(contentsOf: Array(repeating: 0, count: length))
                 for _ in 0..<length {
-                    out[ind] = pointerData.alignedByte()
-                    ind += 1
+                    out.append(pointerData.alignedByte())
                 }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
@@ -149,7 +146,9 @@ public class Deflate: DecompressionAlgorithm {
                         } else {
                             throw DeflateError.HuffmanTableError
                         }
-                        codeLengths.append(contentsOf: Array(repeating: what, count: count))
+                        for _ in 0..<count {
+                            codeLengths.append(what)
+                        }
                         n += count
                     }
                     // We have read codeLengths for both tables at once.
@@ -197,9 +196,12 @@ public class Deflate: DecompressionAlgorithm {
                             // The amount of times we do this is round(length / distance).
                             // length actually indicates the amount of data we get from this nextSymbol.
                             let repeatCount: Int = length / distance
-                            let arrayToRepeat = Array(repeating: out[out.count - distance..<out.count],
-                                                      count: repeatCount).flatMap { $0 }
-                            out.append(contentsOf: arrayToRepeat)
+                            let count = out.count
+                            for _ in 0..<repeatCount {
+                                for i in count - distance..<count {
+                                    out.append(out[i])
+                                }
+                            }
                             // Now we deal with the remainings.
                             if length - distance * repeatCount == distance {
                                 for i in out.count - distance..<out.count {

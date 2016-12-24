@@ -15,7 +15,8 @@ class ZlibTests: XCTestCase {
 
     func testZlib() {
         let testName = "test"
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: ZlibTests.testType)) else {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
+                                                                 withType: ZlibTests.testType)) else {
             XCTFail("Failed to load test archive")
             return
         }
@@ -33,7 +34,8 @@ class ZlibTests: XCTestCase {
     }
 
     func testZlibFull() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file", withType: ZlibTests.testType)) else {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file",
+                                                                 withType: ZlibTests.testType)) else {
             XCTFail("Failed to load test archive")
             return
         }

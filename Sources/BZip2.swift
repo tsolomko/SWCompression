@@ -80,6 +80,7 @@ public class BZip2: DecompressionAlgorithm {
 
         while true {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
+            // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
             let _ = pointerData.intFromBits(count: 32)
 
@@ -114,7 +115,9 @@ public class BZip2: DecompressionAlgorithm {
                         bitMask >>= 1
                     }
                 } else {
-                    used.append(contentsOf: Array(repeating: false, count: 16))
+                    for _ in 0..<16 {
+                        used.append(false)
+                    }
                 }
                 mapMask >>= 1
             }
@@ -209,7 +212,9 @@ public class BZip2: DecompressionAlgorithm {
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
-                buffer.append(contentsOf: Array(repeating: favourites[0], count: repeat_))
+                for _ in 0..<repeat_ {
+                    buffer.append(favourites[0])
+                }
                 repeat_ = 0
             }
             if symbol == symbolsInUse - 1 {

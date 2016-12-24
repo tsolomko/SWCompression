@@ -14,7 +14,8 @@ class GzipTests: XCTestCase {
     static let testType: String = "gz"
 
     func perform(test testName: String, answer answerServiceInfo: GzipArchive.ServiceInfo) {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: GzipTests.testType)) else {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
+                                                                 withType: GzipTests.testType)) else {
             XCTFail("Failed to load test archive")
             return
         }
@@ -112,7 +113,8 @@ class GzipTests: XCTestCase {
     }
 
     func testGzipFull() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file", withType: GzipTests.testType)) else {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file",
+                                                                 withType: GzipTests.testType)) else {
             XCTFail("Failed to load test archive")
             return
         }

@@ -45,8 +45,9 @@ class HuffmanTree: CustomStringConvertible {
             let finish = pair[0]
             let endbits = pair[1]
             if bits > 0 {
-                lengths.append(contentsOf:
-                    (start..<finish).map { [$0, bits] })
+                for i in start..<finish{
+                    lengths.append([i, bits])
+                }
             }
             start = finish
             bits = endbits

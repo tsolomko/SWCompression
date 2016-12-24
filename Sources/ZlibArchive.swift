@@ -97,7 +97,6 @@ public class ZlibArchive: Archive {
         if fdict == 1 {
             pointerData.index += 4
         }
-        // TODO: Add parsing of preset dictionary
 
         return info
     }
@@ -108,8 +107,8 @@ public class ZlibArchive: Archive {
         If data passed is not actually a zlib archive, `ZlibError` will be thrown.
 
         If data inside the archive is not actually compressed with DEFLATE algorithm, `DeflateError` will be thrown.
-     
-     - Note: This function is NOT specification compliant because it does not checks ADLER-32 checksum and preset dicitionaries.
+    
+     - Note: This function is specification compliant.
 
      - Parameter archiveData: Data compressed with zlib.
 
