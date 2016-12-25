@@ -17,6 +17,7 @@ import Foundation
  - `WrongFcheck`: first two bytes were inconsistent with each other.
  - `WrongCompressionLevel`: unsupported compression level (not 0, 1, 2 or 3).
  - `WrongAdler32`: computed Adler-32 checksum of uncompressed data didn't match the archive's value.
+    Associated value contains already decompressed data.
  */
 public enum ZlibError: Error {
     /// Compression method was other than 8 which is the only supported one.
@@ -27,8 +28,11 @@ public enum ZlibError: Error {
     case WrongFcheck
     /// Compression level was other than 0, 1, 2, 3.
     case WrongCompressionLevel
-    /// Computed Adler-32 sum of uncompressed data didn't match the value stored in the archive.
-    case WrongAdler32
+    /**
+        Computed Adler-32 sum of uncompressed data didn't match the value stored in the archive.
+        Associated value contains already decompressed data.
+    */
+    case WrongAdler32(Data)
 }
 
 /// A strucutre which provides information about zlib archive.
@@ -140,7 +144,7 @@ public final class ZlibArchive: Archive {
         let out = try Deflate.decompress(&pointerData)
 
         let adler32 = pointerData.intFromBits(count: 32).reverseBytes()
-        guard CheckSums.adler32(out) == adler32 else { throw ZlibError.WrongAdler32 }
+        guard CheckSums.adler32(out) == adler32 else { throw ZlibError.WrongAdler32(Data(bytes: out)) }
 
         return Data(bytes: out)
     }

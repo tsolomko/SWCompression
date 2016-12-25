@@ -24,6 +24,8 @@ import Foundation
  - `WrongPadding`: unsupported padding of one of structures in the archive.
  - `WrongBlockHeaderSize`: unsuported size of block's header (not in 0x01-0xFF range).
  - `WrongBlockFlags`: unsupported block flags.
+ - `WrongCheck`: computed checksum of uncompressed data didn't match the archive's value.
+    Associated value contains already decompressed data.
  */
 public enum XZError: Error {
     /// First six bytes of archive were not equal to 0xFD377A585A00.
@@ -50,6 +52,11 @@ public enum XZError: Error {
     case WrongBlockHeaderSize
     /// Reserved flags of a block were set.
     case WrongBlockFlags
+    /**
+     Computed checksum of uncompressed data didn't match the value stored in the archive.
+     Associated value contains already decompressed data.
+     */
+    case WrongCheck(Data)
 
     case MultiByteIntegerError
     case WrongCompressedSize
@@ -57,8 +64,6 @@ public enum XZError: Error {
     case WrongFilterID
     case WrongBlockCRC
     case CheckTypeSHA256
-
-    case WrongCheck
 
     case WrongBlockCompressedDataSize
     case WrongBlockUncompressedDataSize
@@ -122,12 +127,12 @@ public final class XZArchive: Archive {
                         checkSize = 4
                         let check = pointerData.intFromAlignedBytes(count: 4)
                         guard CheckSums.crc32(blockInfo.blockData) == check
-                            else { throw XZError.WrongCheck }
+                            else { throw XZError.WrongCheck(Data(bytes: out)) }
                     case 0x04:
                         checkSize = 8
                         let check = pointerData.uint64FromAlignedBytes(count: 8)
                         guard CheckSums.crc64(blockInfo.blockData) == check
-                            else { throw XZError.WrongCheck }
+                            else { throw XZError.WrongCheck(Data(bytes: out)) }
                     case 0x0A:
                         throw XZError.CheckTypeSHA256
                     default:

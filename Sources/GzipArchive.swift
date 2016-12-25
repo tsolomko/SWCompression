@@ -18,6 +18,7 @@ import Foundation
  - `WrongHeaderCRC`: computed Cyclic Redundancy Check of archive's header
         didn't match the archive's value.
  - `WrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
+    Associated value contains already decompressed data.
  - `WrongISize`: size of uncompressed data modulo 2^32 didn't match the archive's value.
  */
 public enum GzipError: Error {
@@ -29,8 +30,11 @@ public enum GzipError: Error {
     case WrongFlags
     /// Computed CRC of header didn't match the value stored in the archive.
     case WrongHeaderCRC
-    /// Computed CRC of uncompressed data didn't match the value stored in the archive.
-    case WrongCRC
+    /**
+     Computed CRC of uncompressed data didn't match the value stored in the archive.
+     Associated value contains already decompressed data.
+     */
+    case WrongCRC(Data)
     /// Computed isize didn't match the value stored in the archive.
     case WrongISize
 }
@@ -207,7 +211,7 @@ public final class GzipArchive: Archive {
             let memberData = try Deflate.decompress(&pointerData)
 
             let crc32 = pointerData.intFromAlignedBytes(count: 4)
-            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC }
+            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC(Data(bytes: out)) }
 
             let isize = pointerData.intFromAlignedBytes(count: 4)
             guard memberData.count % (1 << 32) == isize else { throw GzipError.WrongISize }
