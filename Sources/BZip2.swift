@@ -20,7 +20,7 @@ import Foundation
  - `WrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
  - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
  - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
- - `SymbolNotFound`: symbol from input data was not found in Huffman table.
+ - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
  */
 public enum BZip2Error: Error {
     /// Magic number was not 0x425a.
@@ -39,7 +39,7 @@ public enum BZip2Error: Error {
     case WrongSelector
     /// Wrong code of Huffman length (should be between 0 and 20).
     case WrongHuffmanLengthCode
-    /// Symbol was not found in Huffman table.
+    /// Symbol was not found in Huffman tree.
     case SymbolNotFound
 }
 
