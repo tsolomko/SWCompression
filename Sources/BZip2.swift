@@ -44,7 +44,7 @@ public enum BZip2Error: Error {
 }
 
 /// Provides function to decompress data, which were compressed using BZip2
-public class BZip2: DecompressionAlgorithm {
+public final class BZip2: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with BZip2 algortihm.

@@ -30,7 +30,7 @@ public enum DeflateError: Error {
 }
 
 /// Provides function to decompress data, which were compressed with DEFLATE
-public class Deflate: DecompressionAlgorithm {
+public final class Deflate: DecompressionAlgorithm {
 
     /**
         Decompresses `compressedData` with DEFLATE algortihm.

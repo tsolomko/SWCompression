@@ -32,7 +32,7 @@ public enum ZlibError: Error {
 }
 
 /// A class with unarchive function for Zlib archives.
-public class ZlibArchive: Archive {
+public final class ZlibArchive: Archive {
 
     enum CompressionLevel: Int {
         case fastestAlgorithm = 0

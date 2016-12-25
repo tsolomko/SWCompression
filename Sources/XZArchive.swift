@@ -72,7 +72,7 @@ public enum XZError: Error {
 }
 
 /// A class with unarchive function for xz archives.
-public class XZArchive: Archive {
+public final class XZArchive: Archive {
 
     /**
      Unarchives xz archive stored in `archiveData`.

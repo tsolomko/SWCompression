@@ -36,7 +36,7 @@ public enum GzipError: Error {
 }
 
 /// A class with unarchive function for gzip archives.
-public class GzipArchive: Archive {
+public final class GzipArchive: Archive {
 
     struct Flags {
         static let ftext: UInt8 = 0x01
