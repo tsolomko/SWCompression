@@ -105,8 +105,7 @@ public final class GzipArchive: Archive {
         static let fcomment: UInt8 = 0x10
     }
 
-    struct ServiceInfo: Equatable {
-
+    struct ServiceInfo {
         let magic: Int
         let method: UInt8
         let flags: UInt8
@@ -117,13 +116,6 @@ public final class GzipArchive: Archive {
         var fileName: String
         var comment: String
         var crc: Int
-
-        public static func ==(lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
-            return lhs.magic == rhs.magic && lhs.method == rhs.method &&
-                lhs.flags == rhs.flags && lhs.mtime == rhs.mtime && lhs.extraFlags == rhs.extraFlags &&
-                lhs.osType == rhs.osType && lhs.fileName == rhs.fileName &&
-                lhs.comment == rhs.comment && lhs.crc == rhs.crc
-        }
     }
 
     static func serviceInfo(archiveData: Data) throws -> ServiceInfo {
