@@ -35,6 +35,65 @@ public enum GzipError: Error {
     case WrongISize
 }
 
+/// A strucutre which provides information about gzip archive.
+public struct GzipHeader {
+
+    /// Supported compression methods in gzip archive.
+    public enum CompressionMethod: Int {
+        case deflate = 8
+    }
+
+    /// Type of file system on which gzip archive was created.
+    public enum FileSystemType: Int {
+        case fat = 0
+        case amiga = 1
+        case vms = 2
+        case unix = 3
+        case vm = 4
+        case atariTos = 5
+        case hpfs = 6
+        case macintosh = 7
+        case zSystem = 8
+        case cpm = 9
+        case tops20 = 10
+        case ntfs = 11
+        case qdos = 12
+        case acornRiscos = 13
+        case unknown = 255
+    }
+
+    /// Compression method of archive. Always equals to `.deflate`.
+    public let compressionMethod: CompressionMethod
+    /// The most recent modification time of the original file.
+    public let modificationTime: Date
+    /// Type of file system on which compression took place.
+    public let osType: FileSystemType
+    /// Name of the original file.
+    public let originalFileName: String?
+    /// Comment inside the archive.
+    public let comment: String?
+
+    /**
+        Initializes the structure with the values of first 'member' in gzip archive presented in `archiveData`.
+
+        If data passed is not actually a gzip archive, `GzipError` will be thrown.
+
+        - Parameter archiveData: Data compressed with gzip.
+
+        - Throws: `GzipError`. It may indicate that either the data is damaged or
+        it might not be compressed with gzip at all.
+    */
+    public init(archiveData: Data) throws {
+        let serviceInfo = try GzipArchive.serviceInfo(archiveData: archiveData)
+        self.compressionMethod = .deflate
+        self.modificationTime = Date(timeIntervalSince1970: TimeInterval(serviceInfo.mtime))
+        self.osType = FileSystemType(rawValue: serviceInfo.osType.toInt()) ?? .unknown
+        self.originalFileName = serviceInfo.fileName == "" ? nil : serviceInfo.fileName
+        self.comment = serviceInfo.comment == "" ? nil : serviceInfo.comment
+    }
+
+}
+
 /// A class with unarchive function for gzip archives.
 public final class GzipArchive: Archive {
 
