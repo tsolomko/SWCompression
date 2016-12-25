@@ -16,7 +16,8 @@ class ZlibTests: XCTestCase {
     func testZlib() {
         let testName = "test"
         guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
-                                                                 withType: ZlibTests.testType)) else {
+                                                                 withType: ZlibTests.testType),
+                                       options: .mappedIfSafe) else {
             XCTFail("Failed to load test archive")
             return
         }
