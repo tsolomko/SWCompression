@@ -174,13 +174,15 @@ public class GzipArchive: Archive {
         while !pointerData.isAtTheEnd {
             _ = try self.serviceInfo(pointerData)
 
-            out.append(contentsOf: try Deflate.decompress(&pointerData))
+            let memberData = try Deflate.decompress(&pointerData)
 
             let crc32 = pointerData.intFromAlignedBytes(count: 4)
-            guard CheckSums.crc32(out) == crc32 else { throw GzipError.WrongCRC }
+            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC }
 
             let isize = pointerData.intFromAlignedBytes(count: 4)
-            guard out.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+            guard memberData.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+
+            out.append(contentsOf: memberData)
         }
 
         return Data(bytes: out)
