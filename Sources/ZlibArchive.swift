@@ -31,7 +31,6 @@ public enum ZlibError: Error {
     case WrongAdler32
 }
 
-
 /// A strucutre which provides information about zlib archive.
 public struct ZlibHeader {
 
@@ -104,7 +103,6 @@ public struct ZlibHeader {
         // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check
         let flags = compressionLevel.rawValue << 6 + fdict << 5 + fcheck
         guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.WrongFcheck }
-
 
         // If preset dictionary is present 4 bytes will be skipped
         if fdict == 1 {

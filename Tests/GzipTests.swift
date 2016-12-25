@@ -5,7 +5,6 @@
 //  Created by Timofey Solomko on 14.11.16.
 //  Copyright © 2016 Timofey Solomko. All rights reserved.
 //
-//
 
 import XCTest
 import SWCompression
@@ -22,16 +21,16 @@ class GzipTests: XCTestCase {
             return
         }
 
-        guard let gzipHeader = try? GzipHeader(archiveData: testData) else {
+        guard let testGzipHeader = try? GzipHeader(archiveData: testData) else {
             XCTFail("Failed to get archive header")
             return
         }
 
-        XCTAssertEqual(gzipHeader.compressionMethod, .deflate, "Incorrect compression method")
-        XCTAssertEqual(gzipHeader.modificationTime, mtime, "Incorrect mtime")
-        XCTAssertEqual(gzipHeader.osType, .unix, "Incorrect os type")
-        XCTAssertEqual(gzipHeader.originalFileName, originalFileName, "Incorrect original file name")
-        XCTAssertEqual(gzipHeader.comment, nil, "Incorrect comment")
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method")
+        XCTAssertEqual(testGzipHeader.modificationTime, mtime, "Incorrect mtime")
+        XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect os type")
+        XCTAssertEqual(testGzipHeader.originalFileName, originalFileName, "Incorrect original file name")
+        XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment")
     }
 
     func testGzip1() {

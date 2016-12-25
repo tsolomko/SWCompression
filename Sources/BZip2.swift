@@ -82,7 +82,7 @@ public final class BZip2: DecompressionAlgorithm {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
             // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
-            let _ = pointerData.intFromBits(count: 32)
+            _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
                 try out.append(contentsOf: decode(data: &pointerData))

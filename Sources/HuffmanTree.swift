@@ -41,7 +41,7 @@ class HuffmanTree {
             let finish = pair[0]
             let endbits = pair[1]
             if bits > 0 {
-                for i in start..<finish{
+                for i in start..<finish {
                     lengths.append([i, bits])
                 }
             }
