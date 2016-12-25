@@ -38,6 +38,14 @@ public enum GzipError: Error {
 /// A strucutre which provides information about gzip archive.
 public struct GzipHeader {
 
+    struct Flags {
+        static let ftext: UInt8 = 0x01
+        static let fhcrc: UInt8 = 0x02
+        static let fextra: UInt8 = 0x04
+        static let fname: UInt8 = 0x08
+        static let fcomment: UInt8 = 0x10
+    }
+
     /// Supported compression methods in gzip archive.
     public enum CompressionMethod: Int {
         case deflate = 8
@@ -83,47 +91,13 @@ public struct GzipHeader {
         - Throws: `GzipError`. It may indicate that either the data is damaged or
         it might not be compressed with gzip at all.
     */
+
     public init(archiveData: Data) throws {
-        let serviceInfo = try GzipArchive.serviceInfo(archiveData: archiveData)
-        self.compressionMethod = .deflate
-        self.modificationTime = Date(timeIntervalSince1970: TimeInterval(serviceInfo.mtime))
-        self.osType = FileSystemType(rawValue: serviceInfo.osType.toInt()) ?? .unknown
-        self.originalFileName = serviceInfo.fileName == "" ? nil : serviceInfo.fileName
-        self.comment = serviceInfo.comment == "" ? nil : serviceInfo.comment
-    }
-
-}
-
-/// A class with unarchive function for gzip archives.
-public final class GzipArchive: Archive {
-
-    struct Flags {
-        static let ftext: UInt8 = 0x01
-        static let fhcrc: UInt8 = 0x02
-        static let fextra: UInt8 = 0x04
-        static let fname: UInt8 = 0x08
-        static let fcomment: UInt8 = 0x10
-    }
-
-    struct ServiceInfo {
-        let magic: Int
-        let method: UInt8
-        let flags: UInt8
-        let mtime: Int
-        let extraFlags: UInt8
-        let osType: UInt8
-        // Optional fields
-        var fileName: String
-        var comment: String
-        var crc: Int
-    }
-
-    static func serviceInfo(archiveData: Data) throws -> ServiceInfo {
         let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
-        return try serviceInfo(pointerData)
+        try self.init(pointerData)
     }
 
-    static func serviceInfo(_ pointerData: DataWithPointer) throws -> ServiceInfo {
+    init(_ pointerData: DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromAlignedBytes(count: 2)
         guard magic == 0x8b1f else { throw GzipError.WrongMagic }
@@ -134,28 +108,26 @@ public final class GzipArchive: Archive {
         guard method == 8 else { throw GzipError.WrongCompressionMethod }
         headerBytes.append(method)
 
-        // Next bytes present some service information
-        var serviceInfo = ServiceInfo(magic: magic,
-                                      method: method,
-                                      flags: pointerData.alignedByte(),
-                                      mtime: pointerData.intFromAlignedBytes(count: 4),
-                                      extraFlags: pointerData.alignedByte(),
-                                      osType: pointerData.alignedByte(),
-                                      fileName: "", comment: "", crc: 0)
+        self.compressionMethod = .deflate
 
-        guard (serviceInfo.flags & 0x20 == 0) &&
-            (serviceInfo.flags & 0x40 == 0) &&
-            (serviceInfo.flags & 0x80 == 0) else { throw GzipError.WrongFlags }
-        headerBytes.append(serviceInfo.flags)
+        let flags = pointerData.alignedByte()
+        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.WrongFlags }
+        headerBytes.append(flags)
 
+        let mtime = pointerData.intFromAlignedBytes(count: 4)
         for i in 0..<4 {
-            headerBytes.append(((serviceInfo.mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
+            headerBytes.append(((mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
         }
-        headerBytes.append(serviceInfo.extraFlags)
-        headerBytes.append(serviceInfo.osType)
+        self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+
+        let extraFlags = pointerData.alignedByte()
+        headerBytes.append(extraFlags)
+
+        self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .unknown
+        headerBytes.append(self.osType.rawValue.toUInt8())
 
         // Some archives may contain extra fields
-        if serviceInfo.flags & Flags.fextra != 0 {
+        if flags & Flags.fextra != 0 {
             let xlen = pointerData.intFromAlignedBytes(count: 2)
             for i in 0..<2 {
                 headerBytes.append(((xlen & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
@@ -166,7 +138,7 @@ public final class GzipArchive: Archive {
         }
 
         // Some archives may contain source file name (this part ends with zero byte)
-        if serviceInfo.flags & Flags.fname != 0 {
+        if flags & Flags.fname != 0 {
             var fnameBytes: [UInt8] = []
             while true {
                 let byte = pointerData.alignedByte()
@@ -174,11 +146,13 @@ public final class GzipArchive: Archive {
                 fnameBytes.append(byte)
                 headerBytes.append(byte)
             }
-            serviceInfo.fileName = String(data: Data(fnameBytes), encoding: .utf8) ?? ""
+            self.originalFileName = String(data: Data(fnameBytes), encoding: .utf8)
+        } else {
+            self.originalFileName = nil
         }
 
         // Some archives may contain comment (this part also ends with zero)
-        if serviceInfo.flags & Flags.fcomment != 0 {
+        if flags & Flags.fcomment != 0 {
             var fcommentBytes: [UInt8] = []
             while true {
                 let byte = pointerData.alignedByte()
@@ -186,19 +160,24 @@ public final class GzipArchive: Archive {
                 fcommentBytes.append(byte)
                 headerBytes.append(byte)
             }
-            serviceInfo.comment = String(data: Data(fcommentBytes), encoding: .utf8) ?? ""
+            self.comment = String(data: Data(fcommentBytes), encoding: .utf8)
+        } else {
+            self.comment = nil
         }
 
         // Some archives may contain 2-bytes checksum
-        if serviceInfo.flags & Flags.fhcrc != 0 {
+        if flags & Flags.fhcrc != 0 {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
             let crc16 = pointerData.intFromAlignedBytes(count: 2)
             let ourCRC32 = CheckSums.crc32(headerBytes)
             guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.WrongHeaderCRC }
         }
-
-        return serviceInfo
     }
+
+}
+
+/// A class with unarchive function for gzip archives.
+public final class GzipArchive: Archive {
 
     /**
      Unarchives gzip archive stored in `archiveData`.
@@ -223,7 +202,7 @@ public final class GzipArchive: Archive {
         var out: [UInt8] = []
 
         while !pointerData.isAtTheEnd {
-            _ = try self.serviceInfo(pointerData)
+            _ = try GzipHeader(pointerData)
 
             let memberData = try Deflate.decompress(&pointerData)
 
