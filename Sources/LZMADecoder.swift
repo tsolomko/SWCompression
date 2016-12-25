@@ -147,7 +147,7 @@ final class LZMADecoder {
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
     }
 
-    func resetProperties() throws {
+    private func resetProperties() throws {
         var properties = pointerData.alignedByte()
         if properties >= (9 * 5 * 5) {
             throw LZMAError.WrongProperties
@@ -166,7 +166,7 @@ final class LZMADecoder {
         self.outWindow = LZMAOutWindow(dictSize: dictSize)
     }
 
-    func resetState() {
+    private func resetState() {
         self.state = 0
 
         self.rep0 = 0

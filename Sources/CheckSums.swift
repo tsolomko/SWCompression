@@ -10,7 +10,7 @@ import Foundation
 
 struct CheckSums {
 
-    static let crc32table: [UInt32] = {
+    private static let crc32table: [UInt32] = {
         var table: [UInt32] = Array(repeating: 0, count: 256)
         let crc32poly = 0xEDB88320 // IEEE
         var r = 0
@@ -27,7 +27,7 @@ struct CheckSums {
         return table
     }()
 
-    static let crc64table: [UInt64] = {
+    private static let crc64table: [UInt64] = {
         var table: [UInt64] = Array(repeating: 0, count: 256)
         let crc64poly: UInt64 = 0xC96C5795D7870F42 // ECMA
         var r: UInt64 = 0
