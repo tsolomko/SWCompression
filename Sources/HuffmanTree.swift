@@ -8,7 +8,7 @@
 
 import Foundation
 
-class HuffmanTree: CustomStringConvertible {
+class HuffmanTree {
 
     struct Constants {
         static let codeLengthOrders: [Int] =
@@ -26,10 +26,6 @@ class HuffmanTree: CustomStringConvertible {
     }
 
     private var pointerData: DataWithPointer
-
-    var description: String {
-        return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
-    }
 
     private var tree: [Int]
     private let leafCount: Int
