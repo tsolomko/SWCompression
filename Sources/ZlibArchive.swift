@@ -31,46 +31,60 @@ public enum ZlibError: Error {
     case WrongAdler32
 }
 
-/// A class with unarchive function for Zlib archives.
-public final class ZlibArchive: Archive {
 
-    enum CompressionLevel: Int {
+/// A strucutre which provides information about zlib archive.
+public struct ZlibHeader {
+
+    /// Supported compression methods in zlib archive.
+    public enum CompressionMethod: Int {
+        case deflate = 8
+    }
+
+    /// Levels of compression which can be used to create zlib archive.
+    public enum CompressionLevel: Int {
         case fastestAlgorithm = 0
         case fastAlgorithm = 1
         case defaultAlgorithm = 2
         case slowAlgorithm = 3
     }
 
-    struct ServiceInfo: Equatable {
+    /// Compression method of archive. Always equals to `.deflate`.
+    public let compressionMethod: CompressionMethod
+    /// Level of compression in the archive.
+    public let compressionLevel: CompressionLevel
+    /// Size of 'window': moving interval of data which was used to make the archive
+    public let windowSize: Int
 
-        let compressionMethod: Int
-        let windowSize: Int
-        let compressionLevel: CompressionLevel
+    /**
+     Initializes the structure with the values from zlib archive presented in `archiveData`.
 
-        public static func == (lhs: ServiceInfo, rhs: ServiceInfo) -> Bool {
-            return lhs.compressionMethod == rhs.compressionMethod &&
-                lhs.windowSize == rhs.windowSize &&
-                lhs.compressionLevel == rhs.compressionLevel
-        }
+     If data passed is not actually a zlib archive, `ZlibError` will be thrown.
 
+     - Parameter archiveData: Data compressed with zlib.
+
+     - Throws: `ZlibError`. It may indicate that either the data is damaged or
+     it might not be compressed with zlib at all.
+     */
+    public init(archiveData: Data) throws {
+        let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
+        try self.init(pointerData)
     }
 
-    static func serviceInfo(archiveData data: Data) throws -> ServiceInfo {
-        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return try serviceInfo(pointerData)
-    }
-
-    static func serviceInfo(_ pointerData: DataWithPointer) throws -> ServiceInfo {
+    init(_ pointerData: DataWithPointer) throws {
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
         let compressionMethod = pointerData.intFromBits(count: 4)
         guard compressionMethod == 8 else { throw ZlibError.WrongCompressionMethod }
+
+        self.compressionMethod = .deflate
 
         // Remaining four bits indicate window size
         // For DEFLATE it must not be more than 7
         let compressionInfo = pointerData.intFromBits(count: 4)
         guard compressionInfo <= 7 else { throw ZlibError.WrongCompressionInfo }
         let windowSize = 1 << (compressionInfo + 8)
+
+        self.windowSize = windowSize
 
         // compressionMethod and compressionInfo combined are needed later for integrity check
         let cmf = compressionInfo << 4 + compressionMethod
@@ -82,24 +96,26 @@ public final class ZlibArchive: Archive {
         let fdict = pointerData.intFromBits(count: 1)
 
         // Remaining bits indicate compression level
-        guard let compressionLevel = CompressionLevel(rawValue:
+        guard let compressionLevel = ZlibHeader.CompressionLevel(rawValue:
             pointerData.intFromBits(count: 2)) else { throw ZlibError.WrongCompressionLevel }
+
+        self.compressionLevel = compressionLevel
 
         // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check
         let flags = compressionLevel.rawValue << 6 + fdict << 5 + fcheck
         guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.WrongFcheck }
 
-        let info = ServiceInfo(compressionMethod: compressionMethod,
-                               windowSize: windowSize,
-                               compressionLevel: compressionLevel)
 
         // If preset dictionary is present 4 bytes will be skipped
         if fdict == 1 {
             pointerData.index += 4
         }
-
-        return info
     }
+
+}
+
+/// A class with unarchive function for Zlib archives.
+public final class ZlibArchive: Archive {
 
     /**
      Unarchives Zlib archive stored in `archiveData`.
@@ -121,7 +137,7 @@ public final class ZlibArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try serviceInfo(pointerData)
+        _ = try ZlibHeader(pointerData)
 
         let out = try Deflate.decompress(&pointerData)
 
