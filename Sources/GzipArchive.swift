@@ -52,26 +52,22 @@ public struct GzipHeader {
 
     /// Supported compression methods in gzip archive.
     public enum CompressionMethod: Int {
+        /// The only one supported compression method (Deflate).
         case deflate = 8
     }
 
     /// Type of file system on which gzip archive was created.
     public enum FileSystemType: Int {
-        case fat = 0
-        case amiga = 1
-        case vms = 2
+        /// One of many Linux systems. (It seems like modern macOS systems also fall into this category).
         case unix = 3
-        case vm = 4
-        case atariTos = 5
-        case hpfs = 6
+        /// Older Macintosh (Mac OS, OS X) systems.
         case macintosh = 7
-        case zSystem = 8
-        case cpm = 9
-        case tops20 = 10
+        /// File system used in Microsoft(TM)(R)(C) Windows(TM)(R)(C).
         case ntfs = 11
-        case qdos = 12
-        case acornRiscos = 13
+        /// File system was unknown to the archiver.
         case unknown = 255
+        /// File system was one of the rare systems..
+        case other = 256
     }
 
     /// Compression method of archive. Always equals to `.deflate`.
@@ -127,7 +123,7 @@ public struct GzipHeader {
         let extraFlags = pointerData.alignedByte()
         headerBytes.append(extraFlags)
 
-        self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .unknown
+        self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .other
         headerBytes.append(self.osType.rawValue.toUInt8())
 
         // Some archives may contain extra fields

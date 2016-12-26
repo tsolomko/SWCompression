@@ -40,14 +40,19 @@ public struct ZlibHeader {
 
     /// Supported compression methods in zlib archive.
     public enum CompressionMethod: Int {
+        /// The only one supported compression method (Deflate).
         case deflate = 8
     }
 
     /// Levels of compression which can be used to create zlib archive.
     public enum CompressionLevel: Int {
+        /// Fastest algorithm.
         case fastestAlgorithm = 0
+        /// Fast algorithm.
         case fastAlgorithm = 1
+        /// Default algorithm.
         case defaultAlgorithm = 2
+        /// Slowest algorithm but with maximum compression.
         case slowAlgorithm = 3
     }
 
