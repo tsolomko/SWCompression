@@ -344,3 +344,25 @@ public final class XZArchive: Archive {
     }
 
 }
+
+extension DataWithPointer {
+    func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
+        var i = 1
+        var result = self.alignedByte().toInt()
+        var bytes: [UInt8] = [result.toUInt8()]
+        if result <= 127 {
+            return (result, bytes)
+        }
+        result &= 0x7F
+        while self.bitArray[self.index - 1] & 0x80 != 0 {
+            let byte = self.alignedByte()
+            if i >= 9 || byte == 0x00 {
+                throw XZError.MultiByteIntegerError
+            }
+            bytes.append(byte)
+            result += (byte.toInt() & 0x7F) << (7 * i)
+            i += 1
+        }
+        return (result, bytes)
+    }
+}
