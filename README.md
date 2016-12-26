@@ -22,15 +22,18 @@ And here comes SWCompression: no Objective-C, pure Swift.
 Features
 ----------------
 - (De)compression algorithms:
+  - LZMA/LZMA2
   - Deflate
   - BZip2
 - Archives:
+  - XZ
+  - LZMA
   - GZip
   - Zlib
 - Platform independent.
-- _Swift only_
+- _Swift only._
 
-By the way, it seems like GZip and Deflate decompressor implementations are **specification compliant**.
+By the way, it seems like GZip, Deflate and Zlib implementations are **specification compliant**.
 
 Installation
 ----------------
@@ -40,15 +43,21 @@ SWCompression can be integrated into your project either using CocoaPods, Cartha
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
 
-Since 1.1.0 version of SWCompression there are several sub-podspecs
-if you need only parts of functionality of SWCompression.
-There are `pod 'SWCompression/GZip'`, `pod 'SWCompression/Zlib'`, `pod 'SWCompression/Deflate'` and `pod 'SWCompression/BZip2'` subspecs. You can add some or all of them instead of `pod 'SWCompression'`
+There are several sub-podspecs if you need only parts of framework's functionaliry.
+Available subspecs:
+  - SWCompression/LZMA
+  - SWCompression/XZ
+  - SWCompression/Deflate
+  - SWCompression/Gzip
+  - SWCompression/Zlib
+  - SWCompression/BZip2
+You can add some or all of them instead of `pod 'SWCompression'`
 
-Also, do not forget to have `use_frameworks!` line in the Podfile.
+Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. This subspec is included in other subspecs such as SWCompression/GZip and should not be specified directly in Podfile.
+_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. This subspec is included in any other subspecs and should not be specified directly in Podfile.
 
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
@@ -65,12 +74,12 @@ import PackageDescription
 let package = Package(
     name: "PackageName",
     dependencies: [
-        .Package(url: "https://github.com/tsolomko/SWCompression.git", majorVersion: 1)
+        .Package(url: "https://github.com/tsolomko/SWCompression.git", majorVersion: 2)
     ]
 )
 ```
 
-More info you may find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
 Usage
 -------
@@ -98,25 +107,43 @@ let decompressedData = try? ZlibArchive.unarchive(archiveData: data)
 One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.
 
+##### Handling Errors
+If you look at list of available erros types and their cases,
+you may be frightened by their number.
+However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic purposes.
+
+Thus, you only need to handle the most common type of error for your archive/algorithm.
+For example:
+```swift
+do {
+  let data = try Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
+                      options: .mappedIfSafe)
+  let decompressedData = XZArchive.unarchive(archiveData: data)
+} catch let error as XZError {
+  <handle XZ related error here>
+} catch let error {
+  <handle all other errors here>
+}
+```
+
 Why is it so slow?
--------------
-Is it?
+------------------
+Version 2.0 came with a great performance improvement.
+Just look at the test results at 'Tests/Test Result'.
+So if it's slow the first thing you should do is to make sure you are using version >= 2.0.
 
-Firstly, the problem is that if SWCompression is built with 'Debug' configuration for some reason the performance is really bad.
-However, if you use 'Release' configuration varoius optimizations start to take effect and decompression speed will be much better.
+Is it still slow?
+Maybe you are compiling SWCompression not for 'Release' but with 'Debug' build configuration?
+For some reason, when framework is built for 'Debug' its performance __significantly__ worse.
+You can once again check test results if you want to convince yourself that this is the case.
 
-Secondly, slow performance might have a fundamental cause.
-A recent investigation showed that the most time consuming operations are memory copying operations.
-And there are a lot of them. So to achieve higher speed of decoding the amount of such operations should be significantly reduced.
-This might require reimplementation of some things (such as `DataWithPointer`), thus it is currently considered as a long-term project.
+Finally, SWCompression's code is not as optimized as original C/C++ versions of corresponding algorithms,
+so some difference in speed is expected.
 
-To sum up, it is __highly recommended__ to build SWCompression with 'Release' configuration and, hopefully, some day SWCompression will become fast.
+To sum up, it is __highly recommended__ to build SWCompression with 'Release' configuration and use the latest version (at least 2.0).
 
 Future plans
 -------------
-- LZMA decompression.
-- XZ decompression.
-- Performance improvement.
 - Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
@@ -124,10 +151,10 @@ Future plans
 
 References
 -----------
-The main source of information was [pyflate](http://www.paul.sladen.org/projects/pyflate/) —
-python implementation of GZip and BZip2.
-
-There are also several specifications which were also very useful:
+- [pyflate](http://www.paul.sladen.org/projects/pyflate/)
 - [Deflate specification](https://www.ietf.org/rfc/rfc1951.txt)
 - [GZip specification](https://www.ietf.org/rfc/rfc1952.txt)
 - [Zlib specfication](https://www.ietf.org/rfc/rfc1950.txt)
+- [XZ specification](http://tukaani.org/xz/xz-file-format-1.0.4.txt)
+- [Wikipedia article about LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov_chain_algorithm)
+- [LZMA SDK and specification](http://www.7-zip.org/sdk.html)
