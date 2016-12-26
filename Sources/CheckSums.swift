@@ -12,11 +12,11 @@ struct CheckSums {
 
     private static let crc32table: [UInt32] = {
         var table: [UInt32] = Array(repeating: 0, count: 256)
-        let crc32poly = 0xEDB88320 // IEEE
-        var r = 0
+        let crc32poly: UInt32 = 0xEDB88320 // IEEE
+        var r: UInt32 = 0
         var j = 0
         for i in 0..<256 {
-            r = i
+            r = UInt32(i)
             j = 8
             while j > 0 {
                 r = r & 1 > 0 ? (r >> 1) ^ crc32poly : r >> 1

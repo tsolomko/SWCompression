@@ -168,7 +168,7 @@ public final class XZArchive: Archive {
 
     private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: Int) {
         // Check magic number.
-        guard pointerData.intFromAlignedBytes(count: 6) == 0x005A587A37FD
+        guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.WrongMagic }
 
         // First byte of flags must be equal to zero.
@@ -240,7 +240,7 @@ public final class XZArchive: Archive {
             let filterIDTuple = try pointerData.multiByteDecode()
             let filterID = filterIDTuple.multiByteInteger
             blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
-            guard filterID < 0x4000000000000000
+            guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.WrongFilterID }
             // Only LZMA2 filter is supported.
             switch filterID {

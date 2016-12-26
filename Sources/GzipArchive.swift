@@ -214,7 +214,7 @@ public final class GzipArchive: Archive {
             guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC(Data(bytes: out)) }
 
             let isize = pointerData.intFromAlignedBytes(count: 4)
-            guard memberData.count % (1 << 32) == isize else { throw GzipError.WrongISize }
+            guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.WrongISize }
 
             out.append(contentsOf: memberData)
         }
