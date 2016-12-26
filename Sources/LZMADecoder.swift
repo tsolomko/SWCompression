@@ -248,7 +248,7 @@ final class LZMADecoder {
         self.uncompressedSize = unpackSize
         out = try decodeLZMA()
         guard unpackSize == out.count && pointerData.index - dataStartIndex == compressedSize
-            else { throw LZMA2Error.UncompatibleSizes }
+            else { throw LZMA2Error.WrongSizes }
         return out
     }
 
