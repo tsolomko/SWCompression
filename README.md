@@ -7,8 +7,8 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-A framework which contains native (*written in Swift*)
-implementations of some compression algorithms.
+A framework which contains implementations of some compression algorithms.
+__Developed with Swift__
 
 Why have you made compression framework?
 ----------------------------------------
@@ -105,16 +105,11 @@ So, in case of GZip archive you should use:
 let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 ```
 
-And, finally, for zlib the corresponding code is:
-```swift
-let decompressedData = try? ZlibArchive.unarchive(archiveData: data)
-```
-
 One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.
 
 ##### Handling Errors
-If you look at list of available erros types and their cases,
+If you look at list of available error types and their cases,
 you may be frightened by their number.
 However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic purposes.
 
