@@ -1,16 +1,14 @@
 # SWCompression
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE) [![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression) [![Swift 3](https://img.shields.io/badge/Swift-3.0.2-lightgrey.svg)](https://developer.apple.com/swift/)
-
-
 [![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression) [![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-A framework which contains implementations of some compression algorithms.
-__Developed with Swift__
+A framework which contains implementations of compression algorithms.
+__Developed with Swift.__
 
-Why have you made compression framework?
+Why have you made this framework?
 ----------------------------------------
 There are a couple of reasons for this.
 
@@ -33,7 +31,6 @@ Features
   - BZip2
 - Archives:
   - XZ
-  - LZMA
   - GZip
   - Zlib
 - Platform independent.
@@ -51,12 +48,14 @@ Add to your Podfile `pod 'SWCompression'`.
 
 There are several sub-podspecs if you need only parts of framework's functionaliry.
 Available subspecs:
+
   - SWCompression/LZMA
   - SWCompression/XZ
   - SWCompression/Deflate
   - SWCompression/Gzip
   - SWCompression/Zlib
   - SWCompression/BZip2
+
 You can add some or all of them instead of `pod 'SWCompression'`
 
 Also, do not forget to include `use_frameworks!` line in your Podfile.
@@ -74,6 +73,7 @@ Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder in
 
 ##### Swift Package Manager
 Add to you package dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`, for example like this:
+
 ```swift
 import PackageDescription
 
@@ -90,17 +90,20 @@ More info about SPM you can find at [Swift Package Manager's Documentation](http
 Usage
 -------
 If you'd like to decompress "deflated" data just use:
+
 ```swift
 let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
                      options: .mappedIfSafe)
 let decompressedData = try? Deflate.decompress(compressedData: data)
 ```
+
 _Note:_ It is __highly recommended__ to specify `Data.ReadingOptions.mappedIfSafe`,
 especially if you are working with large files,
 so you don't run out of system memory.
 
 However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:
+
 ```swift
 let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 ```
@@ -115,6 +118,7 @@ However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic
 
 Thus, you only need to handle the most common type of error for your archive/algorithm.
 For example:
+
 ```swift
 do {
   let data = try Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
