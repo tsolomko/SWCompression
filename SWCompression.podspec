@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
                    DESC
 
   s.homepage     = "https://github.com/tsolomko/SWCompression"
+  s.documentation_url = "http://tsolomko.github.io/SWCompression"
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
