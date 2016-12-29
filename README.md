@@ -5,7 +5,7 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-A framework which contains implementations of compression algorithms.
+A framework which contains implementations of (de)compression algorithms.
 
 __Developed with Swift.__
 
@@ -47,7 +47,7 @@ SWCompression can be integrated into your project either using CocoaPods, Cartha
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
 
-There are several sub-podspecs if you need only parts of framework's functionality.
+There are several sub-podspecs in case you need only parts of framework's functionality.
 Available subspecs:
 
   - SWCompression/LZMA
@@ -63,7 +63,7 @@ Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. This subspec is included in any other subspecs and should not be specified directly in Podfile.
+_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. It is included in every other subspec and should not be specified directly in Podfile.
 
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
@@ -170,6 +170,6 @@ References
 - [Deflate specification](https://www.ietf.org/rfc/rfc1951.txt)
 - [GZip specification](https://www.ietf.org/rfc/rfc1952.txt)
 - [Zlib specfication](https://www.ietf.org/rfc/rfc1950.txt)
+- [LZMA SDK and specification](http://www.7-zip.org/sdk.html)
 - [XZ specification](http://tukaani.org/xz/xz-file-format-1.0.4.txt)
 - [Wikipedia article about LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov_chain_algorithm)
-- [LZMA SDK and specification](http://www.7-zip.org/sdk.html)
