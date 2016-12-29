@@ -1,4 +1,16 @@
 # Changelog
+v2.0.0
+----------------
+- LZMA decompression.
+- XZ unarchiving.
+- Once again performance improvement (this time for real).
+- Added public API functions for reading gzip/zlib headers.
+- Added documentation.
+- Added checksums support.
+- Added new errors subtypes.
+- Added two build options for diagnostical use.
+- Rephrased comments to public API.
+
 v1.2.2
 ----------------
 - Small performance improvement.

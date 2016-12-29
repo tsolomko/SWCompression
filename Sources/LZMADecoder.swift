@@ -248,7 +248,7 @@ final class LZMADecoder {
         self.uncompressedSize = unpackSize
         out = try decodeLZMA()
         guard unpackSize == out.count && pointerData.index - dataStartIndex == compressedSize
-            else { throw LZMA2Error.UncompatibleSizes }
+            else { throw LZMA2Error.WrongSizes }
         return out
     }
 
@@ -433,7 +433,7 @@ final class LZMADecoder {
 
                 // Check if finish marker is encountered.
                 // Distance value of 2^32 is used to indicate 'End of Stream' marker.
-                if rep0 == 0xFFFFFFFF {
+                if UInt32(rep0) == 0xFFFFFFFF {
                     lzmaDiagPrint("finish_marker")
                     guard rangeDecoder.isFinishedOK else { throw LZMAError.RangeDecoderFinishError }
                     break

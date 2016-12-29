@@ -12,68 +12,46 @@ import Foundation
  Error happened during unarchiving xz archive.
  It may indicate that either the data is damaged or it might not be xz archive at all.
 
- - `WrongMagic`: first two bytes of archive weren't `{ 0xFD, '7', 'z', 'X', 'Z', 0x00 }`.
- - `WrongFlagsFirstByte`: first byte of the flags wasn't zero.
- - `WrongCheckType`: unsupported check type (not 0x00, 0x01, 0x04 or 0x0A).
- - `WrongFlagsLastFourBits`: last four bits of the flags weren't zero.
- - `WrongFlagsCRC`: calculated crc-32 for flags doesn't equal to the value stored in the archive.
- - `WrongFooterFlagsFirstByte`: first byte of the flags in the footer wasn't zero.
- - `WrongFooterCheckType`: check type in the footer wasn't equal to the one in the header.
- - `WrongFooterFlagsLastFourBits`: last four bits of the flags in the footer weren't zero.
- - `WrongFooterCRC`: calculated crc-32 for footer's fields doesn't equal to the value stored in the archive.
- - `WrongPadding`: unsupported padding of one of structures in the archive.
- - `WrongBlockHeaderSize`: unsuported size of block's header (not in 0x01-0xFF range).
- - `WrongBlockFlags`: unsupported block flags.
+ - `WrongMagic`: 'magic' bytes in archive's header or footer weren't equal to predefined value.
+ - `WrongArchiveInfo`: incorrect value of one of archive's special field (in block, index, header or footer).
+ - `FieldReservedValue`: value of one of archive's special field 
+    (in block, index, header or footer) had reserved value.
+ - `WrongInfoCRC`: incorrect value of one of archive's special field (in block, index, header or footer).
+ - `WrongFilterID`: unsupported value of filter ID (not LZMA2's 0x21).
+ - `CheckTypeSHA256`: checksum's type was SHA-256.
+ - `WrongDataSize`: size of compressed or decompressed data wasn't the same as specified in block.
  - `WrongCheck`: computed checksum of uncompressed data didn't match the archive's value.
     Associated value contains already decompressed data.
+ - `WrongPadding`: unsupported padding of one of structures in the archive.
+ - `MultiByteIntegerError`: error happened during reading of one of so called 'multi-byte' numbers.
  */
 public enum XZError: Error {
-    /// First six bytes of archive were not equal to 0xFD377A585A00.
+    /// Either magic number in header or footer was not equal to predefined value.
     case WrongMagic
-    /// First byte of the flags was not equal to zero.
-    case WrongFlagsFirstByte
-    /// Type of check was equal to one of the reserved values.
-    case WrongCheckType
-    /// Last four bits of the flags were not equal to zero.
-    case WrongFlagsLastFourBits
-    /// Checksum for flags is incorrect.
-    case WrongFlagsCRC
-    /// First byte of the flags field in footer was not equal to zero.
-    case WrongFooterFlagsFirstByte
-    /// Type of check in the footer was not equal to one from the header's flags.
-    case WrongFooterCheckType
-    /// Last four bits of the flags in footer were not equal to zero.
-    case WrongFooterFlagsLastFourBits
-    /// Checksum for fields in footer is incorrect.
-    case WrongFooterCRC
-    /// Unsupported padding of a structure in the archive.
-    case WrongPadding
-    /// Size of the block header is not in range from 0x01 to 0xFF.
-    case WrongBlockHeaderSize
-    /// Reserved flags of a block were set.
-    case WrongBlockFlags
+    /// One of special fields of archive had an incorrect value.
+    case WrongArchiveInfo
+    /// One of special fields of archive had a reserved value.
+    case FieldReservedValue
+    /// Checksum of one of special fields of archive was incorrect.
+    case WrongInfoCRC
+    /// ID of filter(s) used in archvie was unsupported.
+    case WrongFilterID
+    /// Type of checksum of archive was SHA-256.
+    case CheckTypeSHA256
+    /**
+     Either size of decompressed data was not equal to specified one in block header or
+     amount of compressed data read was different from the one stored in block header.
+     */
+    case WrongDataSize
     /**
      Computed checksum of uncompressed data didn't match the value stored in the archive.
      Associated value contains already decompressed data.
      */
     case WrongCheck(Data)
-
+    /// Unsupported padding of a structure in the archive.
+    case WrongPadding
+    /// Either null byte encountered or exceeded maximum amount bytes during reading multi byte number.
     case MultiByteIntegerError
-    case WrongCompressedSize
-    case WrongUncompressedSize
-    case WrongFilterID
-    case WrongBlockCRC
-    case CheckTypeSHA256
-
-    case WrongBlockCompressedDataSize
-    case WrongBlockUncompressedDataSize
-
-    case WrongIndexRecordsNumber
-    case WrongIndexRecordUnpaddedSize
-    case WrongIndexRecordUncompressedSize
-    case WrongIndexCRC
-
-    case WrongBackwardSize
 }
 
 /// A class with unarchive function for xz archives.
@@ -81,14 +59,12 @@ public final class XZArchive: Archive {
 
     /**
      Unarchives xz archive stored in `archiveData`.
-     This functions supports only archives with one stream, 
-     but this should be the case in the majority of real-world archives.
 
      If data passed is not actually a xz archive, `XZError` will be thrown.
+     If filters other than LZMA2 are used in archive then `XZError.WrongFilterID` will be thrown.
 
      If data inside the archive is not actually compressed with LZMA2,
      `LZMAError` or `LZMA2Error` will be thrown.
-     Other filters than LZMA2 are not supported.
 
      - Parameter archiveData: Data compressed with xz.
 
@@ -136,7 +112,7 @@ public final class XZArchive: Archive {
                     case 0x0A:
                         throw XZError.CheckTypeSHA256
                     default:
-                        throw XZError.WrongCheckType
+                        throw XZError.FieldReservedValue
                     }
                     blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
                 }
@@ -168,12 +144,12 @@ public final class XZArchive: Archive {
 
     private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: Int) {
         // Check magic number.
-        guard pointerData.intFromAlignedBytes(count: 6) == 0x005A587A37FD
+        guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.WrongMagic }
 
         // First byte of flags must be equal to zero.
         guard pointerData.alignedByte() == 0
-            else { throw XZError.WrongFlagsFirstByte }
+            else { throw XZError.FieldReservedValue }
 
         // Next four bits indicate type of redundancy check.
         let checkType = pointerData.intFromBits(count: 4)
@@ -181,17 +157,17 @@ public final class XZArchive: Archive {
         case 0x00, 0x01, 0x04, 0x0A:
             break
         default:
-            throw XZError.WrongCheckType
+            throw XZError.FieldReservedValue
         }
 
         // Final four bits must be equal to zero.
         guard pointerData.intFromBits(count: 4) == 0
-            else { throw XZError.WrongFlagsLastFourBits }
+            else { throw XZError.FieldReservedValue }
 
         // CRC-32 of flags must be equal to the value in archive.
         let flagsCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
-            else { throw XZError.WrongFlagsCRC }
+            else { throw XZError.WrongInfoCRC }
 
         return (checkType, flagsCRC)
     }
@@ -202,7 +178,7 @@ public final class XZArchive: Archive {
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
-            else { throw XZError.WrongBlockHeaderSize }
+            else { throw XZError.WrongArchiveInfo }
         let realBlockHeaderSize = (blockHeaderSize + 1) * 4
 
         let blockFlags = pointerData.alignedByte()
@@ -213,7 +189,7 @@ public final class XZArchive: Archive {
          */
         let numberOfFilters = blockFlags & 0x03 + 1
         guard blockFlags & 0x3C == 0
-            else { throw XZError.WrongBlockFlags }
+            else { throw XZError.FieldReservedValue }
 
         /// Should match size of compressed data.
         var compressedSize = -1
@@ -221,7 +197,7 @@ public final class XZArchive: Archive {
             let compressedSizeDecodeResult = try pointerData.multiByteDecode()
             compressedSize = compressedSizeDecodeResult.multiByteInteger
             guard compressedSize > 0
-                else { throw XZError.WrongCompressedSize }
+                else { throw XZError.WrongArchiveInfo }
             blockBytes.append(contentsOf: compressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -231,7 +207,7 @@ public final class XZArchive: Archive {
             let uncompressedSizeDecodeResult = try pointerData.multiByteDecode()
             uncompressedSize = uncompressedSizeDecodeResult.multiByteInteger
             guard uncompressedSize > 0
-                else { throw XZError.WrongUncompressedSize }
+                else { throw XZError.WrongArchiveInfo }
             blockBytes.append(contentsOf: uncompressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -240,7 +216,7 @@ public final class XZArchive: Archive {
             let filterIDTuple = try pointerData.multiByteDecode()
             let filterID = filterIDTuple.multiByteInteger
             blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
-            guard filterID < 0x4000000000000000
+            guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.WrongFilterID }
             // Only LZMA2 filter is supported.
             switch filterID {
@@ -269,7 +245,7 @@ public final class XZArchive: Archive {
 
         let blockHeaderCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32(blockBytes) == blockHeaderCRC
-            else { throw XZError.WrongBlockCRC }
+            else { throw XZError.WrongInfoCRC }
 
         var intResult = pointerData
         let compressedDataStart = pointerData.index
@@ -278,11 +254,11 @@ public final class XZArchive: Archive {
             intResult = DataWithPointer(array: &arrayResult, bitOrder: intResult.bitOrder)
         }
         guard compressedSize == -1 || compressedSize == pointerData.index - compressedDataStart
-            else { throw XZError.WrongBlockCompressedDataSize }
+            else { throw XZError.WrongDataSize }
 
         let out = try filters[numberOfFilters.toInt() - 1](&intResult)
         guard uncompressedSize == -1 || uncompressedSize == out.count
-            else { throw XZError.WrongBlockUncompressedDataSize }
+            else { throw XZError.WrongDataSize }
 
         let unpaddedSize = pointerData.index - blockHeaderStartIndex
 
@@ -305,16 +281,16 @@ public final class XZArchive: Archive {
         indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
         let numberOfRecords = numberOfRecordsTuple.multiByteInteger
         guard numberOfRecords == blockInfos.count
-            else { throw XZError.WrongIndexRecordsNumber }
+            else { throw XZError.WrongArchiveInfo }
         for blockInfo in blockInfos {
             let unpaddedSizeTuple = try pointerData.multiByteDecode()
             guard unpaddedSizeTuple.multiByteInteger == blockInfo.unpaddedSize
-                else { throw XZError.WrongIndexRecordUnpaddedSize }
+                else { throw XZError.WrongArchiveInfo }
             indexBytes.append(contentsOf: unpaddedSizeTuple.bytesProcessed)
 
             let uncompSizeTuple = try pointerData.multiByteDecode()
             guard uncompSizeTuple.multiByteInteger == blockInfo.uncompSize
-                else { throw XZError.WrongIndexRecordUncompressedSize }
+                else { throw XZError.WrongDataSize }
             indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
         }
 
@@ -330,7 +306,7 @@ public final class XZArchive: Archive {
 
         let indexCRC = pointerData.intFromAlignedBytes(count: 4)
         guard CheckSums.crc32(indexBytes) == indexCRC
-            else { throw XZError.WrongIndexCRC }
+            else { throw XZError.WrongInfoCRC }
 
         return indexBytes.count + 4
     }
@@ -342,7 +318,7 @@ public final class XZArchive: Archive {
         let storedBackwardSize = pointerData.alignedBytes(count: 4)
         let footerStreamFlags = pointerData.alignedBytes(count: 2)
         guard CheckSums.crc32([storedBackwardSize, footerStreamFlags].flatMap { $0 }) == footerCRC
-            else { throw XZError.WrongFooterCRC }
+            else { throw XZError.WrongInfoCRC }
 
         /// Indicates the size of Index field. Should match its real size.
         var realBackwardSize = 0
@@ -352,19 +328,41 @@ public final class XZArchive: Archive {
         realBackwardSize += 1
         realBackwardSize *= 4
         guard realBackwardSize == indexSize
-            else { throw XZError.WrongBackwardSize }
+            else { throw XZError.WrongArchiveInfo }
 
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
-            else { throw XZError.WrongFooterFlagsFirstByte }
+            else { throw XZError.FieldReservedValue }
         guard footerStreamFlags[1] & 0x0F == streamHeader.checkType.toUInt8()
-            else { throw XZError.WrongFooterCheckType }
+            else { throw XZError.WrongArchiveInfo }
         guard footerStreamFlags[1] & 0xF0 == 0
-            else { throw XZError.WrongFooterFlagsLastFourBits }
+            else { throw XZError.FieldReservedValue }
 
         // Check footer's magic number
         guard pointerData.intFromAlignedBytes(count: 2) == 0x5A59
             else { throw XZError.WrongMagic }
     }
 
+}
+
+extension DataWithPointer {
+    func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
+        var i = 1
+        var result = self.alignedByte().toInt()
+        var bytes: [UInt8] = [result.toUInt8()]
+        if result <= 127 {
+            return (result, bytes)
+        }
+        result &= 0x7F
+        while self.bitArray[self.index - 1] & 0x80 != 0 {
+            let byte = self.alignedByte()
+            if i >= 9 || byte == 0x00 {
+                throw XZError.MultiByteIntegerError
+            }
+            bytes.append(byte)
+            result += (byte.toInt() & 0x7F) << (7 * i)
+            i += 1
+        }
+        return (result, bytes)
+    }
 }

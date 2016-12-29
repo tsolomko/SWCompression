@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "1.2.2"
+  s.version      = "2.0.0"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
                    DESC
 
   s.homepage     = "https://github.com/tsolomko/SWCompression"
+  s.documentation_url = "http://tsolomko.github.io/SWCompression"
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
@@ -24,9 +25,11 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "v#{s.version}" }
 
+  # This is subspec for internal use by other subspecs.
+  # It should not be included directly in Podfile.
   s.subspec 'Common' do |sp|
     sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{DataWithPointer.swift,HuffmanTree.swift,Protocols.swift,Extensions.swift,Service/*.swift,Service/*.h}"
+    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,HuffmanTree.swift,Protocols.swift,Service/*.swift,Service/*.h}"
   end
 
   s.subspec 'Deflate' do |sp|
@@ -49,6 +52,17 @@ Pod::Spec.new do |s|
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.source_files = 'Sources/BZip2.swift'
+  end
+
+  s.subspec 'LZMA' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.source_files = 'Sources/LZMA*.swift'
+  end
+
+  s.subspec 'XZ' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.dependency 'SWCompression/LZMA'
+    sp.source_files = 'Sources/XZArchive.swift'
   end
 
 end

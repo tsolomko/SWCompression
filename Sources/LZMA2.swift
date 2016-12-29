@@ -12,18 +12,26 @@ import Foundation
  Error happened during LZMA2 decompression.
  It may indicate that either the data is damaged or it might not be compressed with LZMA2 at all.
 
- - `WrongProperties`: unsupported LZMA2 properties (greater than 225).
+ - `WrongProperties`: reserved bits of LZMA2 properties byte weren't zero.
  - `WrongDictionarySize`: dictionary size was greater than 2^32.
+ - `WrongControlByte`: unsupported value of LZMA2 packet's control byte.
+ - `WrongReset`: unsupported 'reset' value of LZMA2 packet's.
+ - `WrongSizes`: size of compressed or decompressed data wasn't the same as specified in LZMA2 packet.
  */
 public enum LZMA2Error: Error {
-    /// Properties byte was greater than 225.
+    /// Reserved bits of LZMA2 properties byte were not equal to zero.
     case WrongProperties
     /// Dictionary size was too big.
     case WrongDictionarySize
-
+    /// Unknown conrol byte value of LZMA2 packet.
     case WrongControlByte
+    /// Unknown reset instruction encounetered in LZMA2 packet.
     case WrongReset
-    case UncompatibleSizes
+    /**
+     Either size of decompressed data was not equal to specified one in LZMA2 packet or
+     amount of compressed data read was different from the one stored in LZMA2 packet.
+     */
+    case WrongSizes
 }
 
 /// Provides function to decompress data, which were compressed with LZMA2
@@ -47,15 +55,13 @@ public final class LZMA2: DecompressionAlgorithm {
     }
 
     /**
-     Decompresses `compressedData` with LZMA2 algortihm.
-     LZMA2 is a modification of LZMA and differs only in how properties are coded.
-     (Actually, this is true only in case of decompression).
+     Decompresses `compressedData` with LZMA2 algortihm. LZMA2 is a modification of LZMA.
 
      If data passed is not actually compressed with LZMA2, `LZMA2Error` or `LZMAError` will be thrown.
 
      - Parameter compressedData: Data compressed with LZMA2.
 
-     - Throws: `LZMA2Error` if unexpected byte (bit) sequence was encountered in `compressedData`.
+     - Throws: `LZMA2Error` or `LZMAError` if unexpected byte (bit) sequence was encountered in `compressedData`.
      It may indicate that either the data is damaged or it might not be compressed with LZMA2 at all.
 
      - Returns: Decompressed data.
