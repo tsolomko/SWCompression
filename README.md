@@ -6,6 +6,7 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 A framework which contains implementations of compression algorithms.
+
 __Developed with Swift.__
 
 Why have you made this framework?
@@ -46,7 +47,7 @@ SWCompression can be integrated into your project either using CocoaPods, Cartha
 ##### CocoaPods
 Add to your Podfile `pod 'SWCompression'`.
 
-There are several sub-podspecs if you need only parts of framework's functionaliry.
+There are several sub-podspecs if you need only parts of framework's functionality.
 Available subspecs:
 
   - SWCompression/LZMA
@@ -89,6 +90,7 @@ More info about SPM you can find at [Swift Package Manager's Documentation](http
 
 Usage
 -------
+#### Basics
 If you'd like to decompress "deflated" data just use:
 
 ```swift
@@ -111,7 +113,11 @@ let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.
 
-##### Handling Errors
+#### Documentation
+Every function or class of public API of SWCompression is documented.
+This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
+
+#### Handling Errors
 If you look at list of available error types and their cases,
 you may be frightened by their number.
 However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic purposes.
@@ -130,6 +136,10 @@ do {
   <handle all other errors here>
 }
 ```
+
+#### Sophisticated example
+There is a small program, [swcomp](https://github.com/tsolomko/swcomp),
+which uses SWCompression for unarchiving several types of archives.
 
 Why is it so slow?
 ------------------
