@@ -13,16 +13,22 @@ enum BitOrder {
     case reversed
 }
 
-class DataWithPointer {
+final class DataWithPointer {
 
-    private let bitOrder: BitOrder
-    private let bitArray: [UInt8]
+    let bitOrder: BitOrder
+    let size: Int
+    private(set) var bitArray: [UInt8]
     var index: Int = 0
     private(set) var bitMask: UInt8
 
-    init(data: Data, bitOrder: BitOrder) {
+    var isAtTheEnd: Bool {
+        return self.size == self.index
+    }
+
+    init(array: inout [UInt8], bitOrder: BitOrder) {
         self.bitOrder = bitOrder
-        self.bitArray = data.toArray(type: UInt8.self)
+        self.bitArray = array
+        self.size = self.bitArray.count
 
         switch self.bitOrder {
         case .reversed:
@@ -30,6 +36,11 @@ class DataWithPointer {
         case .straight:
             self.bitMask = 128
         }
+    }
+
+    convenience init(data: Data, bitOrder: BitOrder) {
+        var array = data.toArray(type: UInt8.self)
+        self.init(array: &array, bitOrder: bitOrder)
     }
 
     func bits(count: Int) -> [UInt8] {
@@ -74,7 +85,7 @@ class DataWithPointer {
             }
 
             let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
-            result += Int(pow(Double(2), Double(power))) * bit
+            result += (1 << power) * bit
 
             switch self.bitOrder {
             case .reversed:
@@ -124,6 +135,36 @@ class DataWithPointer {
         self.skipUntilNextByte()
         self.index += 1
         return self.bitArray[self.index - 1]
+    }
+
+    func alignedBytes(count: Int) -> [UInt8] {
+        self.skipUntilNextByte()
+        var result: [UInt8] = Array(repeating: 0, count: count)
+        for i in 0..<count {
+            result[i] = self.bitArray[self.index]
+            self.index += 1
+        }
+        return result
+    }
+
+    func intFromAlignedBytes(count: Int) -> Int {
+        self.skipUntilNextByte()
+        var result = 0
+        for i in 0..<count {
+            result |= self.bitArray[self.index].toInt() << (8 * i)
+            self.index += 1
+        }
+        return result
+    }
+
+    func uint64FromAlignedBytes(count: UInt64) -> UInt64 {
+        self.skipUntilNextByte()
+        var result: UInt64 = 0
+        for i: UInt64 in 0..<count {
+            result |= UInt64(self.bitArray[self.index]) << (8 * i)
+            self.index += 1
+        }
+        return result
     }
 
     // MARK: Manipulations with index and bitShift

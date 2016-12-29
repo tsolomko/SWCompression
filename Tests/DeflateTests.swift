@@ -37,7 +37,7 @@ class DeflateTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for \(DeflateTests.testType).\(testName)")
             self.measure {
-                let _ = try? Deflate.decompress(compressedData: testData)
+                _ = try? Deflate.decompress(compressedData: testData)
             }
         #endif
     }

@@ -12,6 +12,7 @@ import Foundation
  Error happened during bzip2 decompression.
  It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
 
+ - `WrongMagic`: unsupported magic number (not 0x425a).
  - `WrongCompressionMethod`: unsupported compression method (not type 'h').
  - `WrongBlockSize`: unsupported block size (not '0' — '9').
  - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
@@ -19,9 +20,10 @@ import Foundation
  - `WrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
  - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
  - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
- - `SymbolNotFound`: symbol from input data was not found in Huffman table.
+ - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
  */
 public enum BZip2Error: Error {
+    /// Magic number was not 0x425a.
     case WrongMagic
     /// Compression method was not type 'h' (not Huffman).
     case WrongCompressionMethod
@@ -37,12 +39,12 @@ public enum BZip2Error: Error {
     case WrongSelector
     /// Wrong code of Huffman length (should be between 0 and 20).
     case WrongHuffmanLengthCode
-    /// Symbol was not found in Huffman table.
+    /// Symbol was not found in Huffman tree.
     case SymbolNotFound
 }
 
 /// Provides function to decompress data, which were compressed using BZip2
-public class BZip2: DecompressionAlgorithm {
+public final class BZip2: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with BZip2 algortihm.
@@ -57,11 +59,11 @@ public class BZip2: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
-        /// Object for storing output data
+        /// An array for storing output data
         var out: [UInt8] = []
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data, bitOrder: .straight)
+        var pointerData = DataWithPointer(data: data, bitOrder: .straight)
 
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.WrongMagic }
@@ -78,11 +80,12 @@ public class BZip2: DecompressionAlgorithm {
 
         while true {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
+            // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
-            let _ = pointerData.intFromBits(count: 32)
+            _ = pointerData.intFromBits(count: 32)
 
             if blockType == 0x314159265359 {
-                try out.append(contentsOf: decodeHuffmanBlock(data: pointerData))
+                try out.append(contentsOf: decode(data: &pointerData))
             } else if blockType == 0x177245385090 {
                 break
             } else {
@@ -93,7 +96,7 @@ public class BZip2: DecompressionAlgorithm {
         return Data(bytes: out)
     }
 
-    private static func decodeHuffmanBlock(data: DataWithPointer) throws -> [UInt8] {
+    private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
         guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
 
@@ -112,7 +115,9 @@ public class BZip2: DecompressionAlgorithm {
                         bitMask >>= 1
                     }
                 } else {
-                    used.append(contentsOf: Array(repeating: false, count: 16))
+                    for _ in 0..<16 {
+                        used.append(false)
+                    }
                 }
                 mapMask >>= 1
             }
@@ -161,7 +166,7 @@ public class BZip2: DecompressionAlgorithm {
                     }
                     lengths.append(length)
                 }
-                let codes = HuffmanTree(lengthsToOrder: lengths)
+                let codes = HuffmanTree(lengthsToOrder: lengths, &data)
                 tables.append(codes)
             }
 
@@ -196,7 +201,7 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            let symbol = t?.findNextSymbol(in: data)
+            let symbol = t?.findNextSymbol()
             guard symbol != nil && symbol != -1 else { throw BZip2Error.SymbolNotFound }
 
             if symbol == 1 || symbol == 0 {
@@ -207,7 +212,9 @@ public class BZip2: DecompressionAlgorithm {
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
-                buffer.append(contentsOf: Array(repeating: favourites[0], count: repeat_))
+                for _ in 0..<repeat_ {
+                    buffer.append(favourites[0])
+                }
                 repeat_ = 0
             }
             if symbol == symbolsInUse - 1 {
@@ -254,7 +261,9 @@ public class BZip2: DecompressionAlgorithm {
         while i < nt.count {
             if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
                 let sCount = nt[i + 4].toInt() + 4
-                out.append(contentsOf: Array(repeating: nt[i], count: sCount))
+                for _ in 0..<sCount {
+                    out.append(nt[i])
+                }
                 i += 5
             } else {
                 out.append(nt[i])

@@ -36,4 +36,13 @@ extension Int {
         return UInt8(truncatingBitPattern: UInt(self))
     }
 
+    func reverseBytes() -> Int {
+        var result = 0
+        for i in 0..<4 {
+            let byte = ((self & (0xFF << (i * 8))) >> (i * 8))
+            result += byte << (8 * (3 - i))
+        }
+        return result
+    }
+
 }

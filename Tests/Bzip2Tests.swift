@@ -35,7 +35,7 @@ class Bzip2Tests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for \(Bzip2Tests.testType).\(testName)")
             self.measure {
-                let _ = try? BZip2.decompress(compressedData: testData)
+                _ = try? BZip2.decompress(compressedData: testData)
             }
         #endif
     }

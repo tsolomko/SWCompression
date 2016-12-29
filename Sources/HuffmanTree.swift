@@ -8,7 +8,7 @@
 
 import Foundation
 
-class HuffmanTree: CustomStringConvertible {
+class HuffmanTree {
 
     struct Constants {
         static let codeLengthOrders: [Int] =
@@ -25,14 +25,14 @@ class HuffmanTree: CustomStringConvertible {
              8193, 12289, 16385, 24577]
     }
 
-    var description: String {
-        return self.tree.reduce("HuffmanTree:\n") { $0.appending("\($1)\n") }
-    }
+    private var pointerData: DataWithPointer
 
     private var tree: [Int]
     private let leafCount: Int
 
-    init(bootstrap: [[Int]]) {
+    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer) {
+        self.pointerData = pointerData
+
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [[Int]] = []
         var start = bootstrap[0][0]
@@ -41,8 +41,9 @@ class HuffmanTree: CustomStringConvertible {
             let finish = pair[0]
             let endbits = pair[1]
             if bits > 0 {
-                lengths.append(contentsOf:
-                    (start..<finish).map { [$0, bits] })
+                for i in start..<finish {
+                    lengths.append([i, bits])
+                }
             }
             start = finish
             bits = endbits
@@ -71,7 +72,7 @@ class HuffmanTree: CustomStringConvertible {
         }
 
         // Calculate maximum amount of leaves possible in a tree.
-        self.leafCount = Int(pow(Double(2), Double(lengths.last![1] + 1)))
+        self.leafCount = 1 << (lengths.last![1] + 1)
         // Create a tree (array, actually) with all leaves equal nil.
         self.tree = Array(repeating: -1, count: leafCount)
 
@@ -99,15 +100,15 @@ class HuffmanTree: CustomStringConvertible {
         }
     }
 
-    convenience init(lengthsToOrder: [Int]) {
+    convenience init(lengthsToOrder: [Int], _ pointerData: inout DataWithPointer) {
         var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
+        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, &pointerData)
     }
 
-    func findNextSymbol(in pointerData: DataWithPointer) -> Int {
+    func findNextSymbol() -> Int {
         var index = 0
         while true {
             let bit = pointerData.bit()
