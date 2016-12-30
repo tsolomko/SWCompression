@@ -21,6 +21,7 @@ struct LZMAConstants {
     static let endPosModelIndex: Int = 14
     static let numFullDistances: Int = (1 << (endPosModelIndex >> 1))
     static let matchMinLen: Int = 2
+    // LZMAConstants.numStates << LZMAConstants.numPosBitsMax = 192
 }
 
 final class LZMADecoder {
@@ -45,19 +46,18 @@ final class LZMADecoder {
      Each table contains 0x300 probabilities.
      */
     private var literalProbs: [[Int]]
-    // These arrays are used to select type of match or literal.
-    private var isMatch: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                       count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
-    private var isRep: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                     count: LZMAConstants.numStates)
-    private var isRepG0: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                       count: LZMAConstants.numStates)
-    private var isRepG1: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                       count: LZMAConstants.numStates)
-    private var isRepG2: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                       count: LZMAConstants.numStates)
-    private var isRep0Long: [Int] = Array(repeating: LZMAConstants.probInitValue,
-                                          count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
+
+    /**
+     Array with all probabilities:
+     
+     - 0..<192: isMatch
+     - 193..<205: isRep
+     - 205..<217: isRepG0
+     - 217..<229: isRepG1
+     - 229..<241: isRepG2
+     - 241..<433: isRep0Long
+    */
+    private var probabilities: [Int] = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
 
     private var posDecoders: [Int]
 
@@ -117,19 +117,8 @@ final class LZMADecoder {
             self.rangeDecoder = LZMARangeDecoder()
         }
 
-        self.isMatch = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
-        self.isRep = Array(repeating: LZMAConstants.probInitValue,
-                           count: LZMAConstants.numStates)
-        self.isRepG0 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRepG1 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRepG2 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRep0Long = Array(repeating: LZMAConstants.probInitValue,
-                                count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
 
+        self.probabilities = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
@@ -174,19 +163,7 @@ final class LZMADecoder {
         self.rep2 = 0
         self.rep3 = 0
 
-        self.isMatch = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
-        self.isRep = Array(repeating: LZMAConstants.probInitValue,
-                           count: LZMAConstants.numStates)
-        self.isRepG0 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRepG1 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRepG2 = Array(repeating: LZMAConstants.probInitValue,
-                             count: LZMAConstants.numStates)
-        self.isRep0Long = Array(repeating: LZMAConstants.probInitValue,
-                                count: LZMAConstants.numStates << LZMAConstants.numPosBitsMax)
-
+        self.probabilities = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
@@ -273,7 +250,7 @@ final class LZMADecoder {
 
             let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
             lzmaDiagPrint("posState: \(posState)")
-            if rangeDecoder.decode(bitWithProb: &isMatch[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
+            if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
 
                 // DECODE LITERAL:
@@ -328,13 +305,13 @@ final class LZMADecoder {
             }
 
             var len: Int
-            if rangeDecoder.decode(bitWithProb: &isRep[state]) != 0 {
+            if rangeDecoder.decode(bitWithProb: &probabilities[193 + state]) != 0 {
                 // REP MATCH CASE
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
                 if outWindow.isEmpty { throw LZMAError.WindowIsEmpty }
-                if rangeDecoder.decode(bitWithProb: &isRepG0[state]) == 0 {
+                if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
-                    if rangeDecoder.decode(bitWithProb: &isRep0Long[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
+                    if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
                         lzmaDiagPrint("updatedState: \(state)")
@@ -348,10 +325,10 @@ final class LZMADecoder {
                     // So the following code selectes one distance from history...
                     // based on the binary data.
                     let dist: Int
-                    if rangeDecoder.decode(bitWithProb: &isRepG1[state]) == 0 {
+                    if rangeDecoder.decode(bitWithProb: &probabilities[217 + state]) == 0 {
                         dist = rep1
                     } else {
-                        if rangeDecoder.decode(bitWithProb: &isRepG2[state]) == 0 {
+                        if rangeDecoder.decode(bitWithProb: &probabilities[229 + state]) == 0 {
                             dist = rep2
                         } else {
                             dist = rep3
