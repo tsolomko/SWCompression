@@ -98,25 +98,22 @@ final class LZMADecoder {
             self.pb = pb
             self.dictionarySize = dictionarySize
             self.uncompressedSize = uncompressedSize
+
+            guard let rD = LZMARangeDecoder(&self.pointerData) else {
+                throw LZMAError.RangeDecoderInitError
+            }
+            self.rangeDecoder = rD
         } else {
             self.lc = 0
             self.lp = 0
             self.pb = 0
             self.dictionarySize = 0
             self.uncompressedSize = -1
-        }
 
-        self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
-
-        if initProperties {
-            guard let rD = LZMARangeDecoder(&self.pointerData) else {
-                throw LZMAError.RangeDecoderInitError
-            }
-            self.rangeDecoder = rD
-        } else {
             self.rangeDecoder = LZMARangeDecoder()
         }
 
+        self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
 
         self.probabilities = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
