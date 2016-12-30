@@ -227,17 +227,12 @@ final class LZMADecoder {
     }
 
     func decodeLZMA() throws -> [UInt8] {
-        lzmaInfoPrint("lc: \(lc), lp: \(lp), pb: \(pb), dictionarySize: \(dictionarySize)")
-        lzmaInfoPrint("uncompressedSize: \(uncompressedSize)")
-
         /// An array for storing output data
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
         var outIndex = uncompressedSize == -1 ? -1 : 0
 
         // Main decoding cycle.
         while true {
-            lzmaDiagPrint("=========================")
-            lzmaDiagPrint("start_unpackSize: \(uncompressedSize)")
             // If uncompressed size was defined and everything is unpacked then stop.
             if uncompressedSize == 0 {
                 if rangeDecoder.isFinishedOK {
@@ -246,14 +241,12 @@ final class LZMADecoder {
             }
 
             let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
-            lzmaDiagPrint("posState: \(posState)")
             if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
                 let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
-                lzmaDiagPrint("decodeLiteral_prevByte: \(prevByte)")
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
@@ -283,7 +276,6 @@ final class LZMADecoder {
                 while symbol < 0x100 {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
-                lzmaDiagPrint("decodeLiteral_symbol: \(symbol)")
                 let byte = (symbol - 0x100).toUInt8()
                 outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                 // END.
@@ -296,7 +288,6 @@ final class LZMADecoder {
                 } else {
                     state -= 6
                 }
-                lzmaDiagPrint("decodeLiteral_updatedState: \(state)")
 
                 continue
             }
@@ -311,9 +302,7 @@ final class LZMADecoder {
                     if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
-                        lzmaDiagPrint("updatedState: \(state)")
                         let byte = outWindow.byte(at: rep0 + 1)
-                        lzmaDiagPrint("byte_to_put: \(byte)")
                         outWindow.put(byte, &out, &outIndex, &uncompressedSize)
                         continue
                     }
@@ -335,16 +324,9 @@ final class LZMADecoder {
                     }
                     rep1 = rep0
                     rep0 = dist
-                    lzmaDiagPrint("rep_match_rep0: \(rep0)")
-                    lzmaDiagPrint("rep_match_rep1: \(rep1)")
-                    lzmaDiagPrint("rep_match_rep2: \(rep2)")
-                    lzmaDiagPrint("rep_match_rep3: \(rep3)")
-                    lzmaDiagPrint("rep_match_dist: \(dist)")
                 }
                 len = repLenDecoder.decode(with: &rangeDecoder, posState: posState)
-                lzmaDiagPrint("read_len: \(len)")
                 state = state < 7 ? 8 : 11
-                lzmaDiagPrint("updatedState: \(state)")
             } else { // SIMPLE MATCH CASE
                 // First, we need to move history of distance values.
                 rep3 = rep2
@@ -353,12 +335,6 @@ final class LZMADecoder {
                 len = lenDecoder.decode(with: &rangeDecoder, posState: posState)
                 state = state < 7 ? 7 : 10
 
-                lzmaDiagPrint("beforeDecodeDistance_updatedRep3: \(rep3)")
-                lzmaDiagPrint("beforeDecodeDistance_updatedRep2: \(rep2)")
-                lzmaDiagPrint("beforeDecodeDistance_updatedRep1: \(rep1)")
-                lzmaDiagPrint("beforeDecodeDistance_updatedLen: \(len)")
-                lzmaDiagPrint("beforeDecodeDistance_updatedState: \(state)")
-
                 // DECODE DISTANCE:
                 /// Is used to define context for distance decoding.
                 var lenState = len
@@ -366,22 +342,16 @@ final class LZMADecoder {
                     lenState = LZMAConstants.numLenToPosStates - 1
                 }
 
-                lzmaDiagPrint("decodeDistance_lenState: \(lenState)")
 
                 /// Defines decoding scheme for distance value.
                 let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder)
-                lzmaDiagPrint("decodeDistance_posSlot: \(posSlot)")
                 if posSlot < 4 {
                     // If `posSlot` is less than 4 then distance has defined value (no need to decode).
                     // And distance is actually equal to `posSlot`.
                     rep0 = posSlot
-                    lzmaDiagPrint("decodeDistance: posSlot => rep0")
                 } else {
-                    lzmaDiagPrint("decodeDistance: dist => rep0")
                     let numDirectBits = (posSlot >> 1) - 1
-                    lzmaDiagPrint("decodeDistance_numDirectBits: \(numDirectBits)")
                     var dist = ((2 | (posSlot & 1)) << numDirectBits)
-                    lzmaDiagPrint("decodeDistance_startDist: \(dist)")
                     if posSlot < LZMAConstants.endPosModelIndex {
                         // In this case we need a sequence of bits decoded with bit tree...
                         // ...(separate trees for different `posSlot` values)...
@@ -390,16 +360,13 @@ final class LZMADecoder {
                                                                     startIndex: dist - posSlot,
                                                                     bits: numDirectBits,
                                                                     rangeDecoder: &rangeDecoder)
-                        lzmaDiagPrint("decodeDistance_updatedDist_0: \(dist)")
                     } else {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
                         dist += rangeDecoder.decode(directBits: (numDirectBits - LZMAConstants.numAlignBits))
                             << LZMAConstants.numAlignBits
-                        lzmaDiagPrint("decodeDistance_updatedDist_1_1: \(dist)")
                         // Low 4 bits are decoded with a bit tree decoder (called 'AlignDecoder')...
                         // ...with "Reverse" scheme.
                         dist += alignDecoder.reverseDecode(with: &rangeDecoder)
-                        lzmaDiagPrint("decodeDistance_updatedDist_1_2: \(dist)")
                     }
                     rep0 = dist
                 }
@@ -408,7 +375,6 @@ final class LZMADecoder {
                 // Check if finish marker is encountered.
                 // Distance value of 2^32 is used to indicate 'End of Stream' marker.
                 if UInt32(rep0) == 0xFFFFFFFF {
-                    lzmaDiagPrint("finish_marker")
                     guard rangeDecoder.isFinishedOK else { throw LZMAError.RangeDecoderFinishError }
                     break
                 }
@@ -418,25 +384,11 @@ final class LZMADecoder {
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
-            lzmaDiagPrint("finalLen: \(len)")
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
-            lzmaDiagPrint("copyMatch_at: \(rep0 + 1)")
             outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
         }
 
         return out
     }
 
-}
-
-func lzmaDiagPrint(_ s: String) {
-    #if LZMA_DIAG
-        print(s)
-    #endif
-}
-
-func lzmaInfoPrint(_ s: String) {
-    #if LZMA_INFO
-        print(s)
-    #endif
 }
