@@ -46,3 +46,52 @@ extension Int {
     }
 
 }
+
+func +(lhs: UInt8, rhs: UInt16) -> UInt16 {
+    return UInt16(lhs) + rhs
+}
+
+func +(lhs: UInt16, rhs: UInt8) -> UInt16 {
+    return lhs + UInt16(rhs)
+}
+
+func +(lhs: UInt8, rhs: UInt32) -> UInt32 {
+    return UInt32(lhs) + rhs
+}
+
+func +(lhs: UInt32, rhs: UInt8) -> UInt32 {
+    return lhs + UInt32(rhs)
+}
+
+func +(lhs: UInt8, rhs: UInt64) -> UInt64 {
+    return UInt64(lhs) + rhs
+}
+
+func +(lhs: UInt64, rhs: UInt8) -> UInt64 {
+    return lhs + UInt64(rhs)
+}
+
+func +(lhs: UInt16, rhs: UInt32) -> UInt32 {
+    return UInt32(lhs) + rhs
+}
+
+func +(lhs: UInt32, rhs: UInt16) -> UInt32 {
+    return lhs + UInt32(rhs)
+}
+
+func +(lhs: UInt16, rhs: UInt64) -> UInt64 {
+    return UInt64(lhs) + rhs
+}
+
+func +(lhs: UInt64, rhs: UInt16) -> UInt64 {
+    return lhs + UInt64(rhs)
+}
+
+func +(lhs: UInt32, rhs: UInt64) -> UInt64 {
+    return UInt64(lhs) + rhs
+}
+
+func +(lhs: UInt64, rhs: UInt32) -> UInt64 {
+    return lhs + UInt64(rhs)
+}
+
