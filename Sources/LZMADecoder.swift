@@ -98,24 +98,18 @@ final class LZMADecoder {
             self.pb = pb
             self.dictionarySize = dictionarySize
             self.uncompressedSize = uncompressedSize
-
-            guard let rD = LZMARangeDecoder(&self.pointerData) else {
-                throw LZMAError.RangeDecoderInitError
-            }
-            self.rangeDecoder = rD
         } else {
             self.lc = 0
             self.lp = 0
             self.pb = 0
             self.dictionarySize = 0
             self.uncompressedSize = -1
-
-            self.rangeDecoder = LZMARangeDecoder()
         }
+
+        self.rangeDecoder = LZMARangeDecoder()
 
         self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
 
-        self.probabilities = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
@@ -213,12 +207,6 @@ final class LZMADecoder {
             throw LZMA2Error.WrongReset
         }
 
-        // Apparently, we need to reinitialize RangeDecoder each time.
-        guard let rD = LZMARangeDecoder(&self.pointerData) else {
-            throw LZMAError.RangeDecoderInitError
-        }
-        self.rangeDecoder = rD
-
         self.uncompressedSize = unpackSize
         out = try decodeLZMA()
         guard unpackSize == out.count && pointerData.index - dataStartIndex == compressedSize
@@ -227,6 +215,12 @@ final class LZMADecoder {
     }
 
     func decodeLZMA() throws -> [UInt8] {
+        // First, we need to initialize Rande Decoder.
+        guard let rD = LZMARangeDecoder(&self.pointerData) else {
+            throw LZMAError.RangeDecoderInitError
+        }
+        self.rangeDecoder = rD
+
         /// An array for storing output data
         var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
         var outIndex = uncompressedSize == -1 ? -1 : 0
