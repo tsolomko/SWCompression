@@ -32,7 +32,6 @@ final class LZMADecoder {
     private var lp: UInt8
     private var pb: UInt8
     private var dictionarySize: Int
-//    private var uncompressedSize: Int
 
     private var outWindow: LZMAOutWindow
     private var rangeDecoder: LZMARangeDecoder
@@ -67,7 +66,7 @@ final class LZMADecoder {
     private var rep2: Int = 0
     private var rep3: Int = 0
 
-    /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1æ and 'IsRepG2' arrays.
+    /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state: Int = 0
 
     init(_ pointerData: inout DataWithPointer, _ lc: UInt8, _ pb: UInt8, _ lp: UInt8,
