@@ -354,7 +354,7 @@ extension DataWithPointer {
             return (result, bytes)
         }
         result &= 0x7F
-        while self.bitArray[self.index - 1] & 0x80 != 0 {
+        while self.prevAlignedByte & 0x80 != 0 {
             let byte = self.alignedByte()
             if i >= 9 || byte == 0x00 {
                 throw XZError.MultiByteIntegerError

@@ -1,4 +1,10 @@
 # Changelog
+v2.0.1
+----------------
+- Fixed incorrect reading adler32 checksum from zlib archives.
+- Removed LZMA_INFO and LZMA_DIAG build options.
+- (2.0.0) GZip archives with multiple 'members' are now parsed correctly.
+
 v2.0.0
 ----------------
 - LZMA decompression.

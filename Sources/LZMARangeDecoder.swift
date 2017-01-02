@@ -50,23 +50,15 @@ final class LZMARangeDecoder {
 
     /// Decodes sequence of direct bits (binary symbols with fixed and equal probabilities).
     func decode(directBits: Int) -> Int {
-        lzmaDiagPrint("!!!decodeDirectBits")
-        lzmaDiagPrint("decodeDirectBits_code_start: \(self.code)")
-        lzmaDiagPrint("decodeDirectBits_range_start: \(self.range)")
         var res: UInt32 = 0
         var count = directBits
-        lzmaDiagPrint("decodeDirectBits_count: \(count)")
         repeat {
             self.range >>= 1
-            lzmaDiagPrint("decodeDirectBits_range_1: \(self.range)")
             self.code = UInt32.subtractWithOverflow(self.code, self.range).0
-            lzmaDiagPrint("decodeDirectBits_code_1: \(self.code)")
             let t = UInt32.subtractWithOverflow(0, self.code >> 31).0
-            lzmaDiagPrint("decodeDirectBits_t: \(t)")
             self.code = UInt32.addWithOverflow(self.code, self.range & t).0
 
             if self.code == self.range {
-                lzmaDiagPrint("???Corrupted")
                 self.isCorrupted = true
             }
 
@@ -82,9 +74,6 @@ final class LZMARangeDecoder {
     /// Decodes binary symbol (bit) with predicted (estimated) probability.
     func decode(bitWithProb prob: inout Int) -> Int {
         let bound = (self.range >> UInt32(LZMAConstants.numBitModelTotalBits)) * UInt32(prob)
-        lzmaDiagPrint("decodebit")
-        lzmaDiagPrint("bound: \(bound)")
-        lzmaDiagPrint("probBefore: \(prob)")
         let symbol: Int
         if self.code < bound {
             prob += ((1 << LZMAConstants.numBitModelTotalBits) - prob) >> LZMAConstants.numMoveBits
@@ -96,10 +85,6 @@ final class LZMARangeDecoder {
             self.range -= bound
             symbol = 1
         }
-        lzmaDiagPrint("probAfter: \(prob)")
-        lzmaDiagPrint("codeAfter: \(self.code)")
-        lzmaDiagPrint("rangeAfter: \(self.range)")
-        lzmaDiagPrint("-------------------")
         self.normalize()
         return symbol
     }

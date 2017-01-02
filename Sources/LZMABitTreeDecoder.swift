@@ -25,16 +25,13 @@ final class LZMABitTreeDecoder {
 
     func decode(with rangeDecoder: inout LZMARangeDecoder) -> Int {
         var m = 1
-        for i in 0..<self.numBits {
+        for _ in 0..<self.numBits {
             m = (m << 1) + rangeDecoder.decode(bitWithProb: &self.probs[m])
-            lzmaDiagPrint("bitTreeDecoder_decode_m_\(i): \(m)")
         }
-        lzmaDiagPrint("bitTreeDecoder_decode_result: \(m - (1 << self.numBits))")
         return m - (1 << self.numBits)
     }
 
     func reverseDecode(with rangeDecoder: inout LZMARangeDecoder) -> Int {
-        lzmaDiagPrint("!!!BitTreeReverseDecode")
         return LZMABitTreeDecoder.bitTreeReverseDecode(probs: &self.probs,
                                                        startIndex: 0,
                                                        bits: self.numBits,

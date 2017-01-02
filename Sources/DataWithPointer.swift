@@ -17,12 +17,16 @@ final class DataWithPointer {
 
     let bitOrder: BitOrder
     let size: Int
-    private(set) var bitArray: [UInt8]
+    private var bitArray: [UInt8]
     var index: Int = 0
     private(set) var bitMask: UInt8
 
     var isAtTheEnd: Bool {
         return self.size == self.index
+    }
+
+    var prevAlignedByte: UInt8 {
+        return self.bitArray[self.index - 1]
     }
 
     init(array: inout [UInt8], bitOrder: BitOrder) {

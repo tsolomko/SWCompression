@@ -37,23 +37,6 @@ public enum LZMA2Error: Error {
 /// Provides function to decompress data, which were compressed with LZMA2
 public final class LZMA2: DecompressionAlgorithm {
 
-    static func dictionarySize(_ byte: UInt8) throws -> Int {
-        let bits = byte & 0x3F
-        guard byte & 0xC0 == 0
-            else { throw LZMA2Error.WrongProperties }
-        guard bits < 40
-            else { throw LZMA2Error.WrongDictionarySize }
-
-        var dictSize: UInt32 = 0
-        if bits == 40 {
-            dictSize = UInt32.max
-        } else {
-            dictSize = UInt32(2 | (bits.toInt() & 1))
-            dictSize <<= UInt32(bits.toInt() / 2 + 11)
-        }
-        return Int(dictSize)
-    }
-
     /**
      Decompresses `compressedData` with LZMA2 algortihm. LZMA2 is a modification of LZMA.
 
@@ -77,7 +60,7 @@ public final class LZMA2: DecompressionAlgorithm {
 
     static func decompress(_ dictionarySize: Int, _ pointerData: inout DataWithPointer) throws -> [UInt8] {
         // At this point lzmaDecoder will be in a VERY bad state.
-        let lzmaDecoder = try LZMADecoder(&pointerData, false)
+        let lzmaDecoder = try LZMADecoder(&pointerData, 0, 0, 0, 0)
 
         var out: [UInt8] = []
 
@@ -101,6 +84,23 @@ public final class LZMA2: DecompressionAlgorithm {
         }
 
         return out
+    }
+
+    static func dictionarySize(_ byte: UInt8) throws -> Int {
+        let bits = byte & 0x3F
+        guard byte & 0xC0 == 0
+            else { throw LZMA2Error.WrongProperties }
+        guard bits < 40
+            else { throw LZMA2Error.WrongDictionarySize }
+
+        var dictSize: UInt32 = 0
+        if bits == 40 {
+            dictSize = UInt32.max
+        } else {
+            dictSize = UInt32(2 | (bits.toInt() & 1))
+            dictSize <<= UInt32(bits.toInt() / 2 + 11)
+        }
+        return Int(dictSize)
     }
 
 }

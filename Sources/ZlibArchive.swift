@@ -148,7 +148,7 @@ public final class ZlibArchive: Archive {
 
         let out = try Deflate.decompress(&pointerData)
 
-        let adler32 = pointerData.intFromBits(count: 32).reverseBytes()
+        let adler32 = pointerData.intFromAlignedBytes(count: 4).reverseBytes()
         guard CheckSums.adler32(out) == adler32 else { throw ZlibError.WrongAdler32(Data(bytes: out)) }
 
         return Data(bytes: out)
