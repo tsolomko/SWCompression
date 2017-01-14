@@ -14,6 +14,7 @@ public enum ZipError: Error {
     case WrongZip64LocatorSignature
     case WrongZip64EndCentralDirectorySignature
     case WrongVersion
+    case WrongCentralDirectoryHeaderSignature
 }
 
 public class ZipContainer {
@@ -27,8 +28,8 @@ public class ZipContainer {
 
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
-            let signature = pointerData.uint64FromAlignedBytes(count: 4)
-            if signature == 0x06054b50 {
+            // Check signature.
+            if pointerData.uint64FromAlignedBytes(count: 4) == 0x06054b50 {
                 // We found it!
                 break
             }
@@ -67,7 +68,7 @@ public class ZipContainer {
             zip64RecordExists = true
         }
 
-        let zipComment = String(data: data.subdata(in: pointerData.index..<pointerData.index + zipCommentLength),
+        let zipComment = String(data: Data(bytes: pointerData.alignedBytes(count: zipCommentLength)),
                                 encoding: .utf8)
 
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
@@ -75,12 +76,15 @@ public class ZipContainer {
             pointerData.index -= zipCommentLength + 22
             // Zip64 locator takes exactly 20 bytes.
             pointerData.index -= 20
-            let zip64CDLocatorSignature = pointerData.uint64FromAlignedBytes(count: 4)
-            guard zip64CDLocatorSignature == 0x07064b50
+
+            // Check signature.
+            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x07064b50
                 else { throw ZipError.WrongZip64LocatorSignature }
+
             let zip64CDStartDisk = pointerData.uint64FromAlignedBytes(count: 4)
             guard currentDiskNumber == zip64CDStartDisk
                 else { throw ZipError.WrongCentralDirectoryDisk } // TODO: Probably it should be another error.
+
             let zip64CDEndOffset = pointerData.uint64FromAlignedBytes(count: 8)
             let totalDisks = pointerData.uint64FromAlignedBytes(count: 1)
             guard totalDisks == 1
@@ -88,9 +92,11 @@ public class ZipContainer {
 
             // Now we need to move to Zip64 End of CD.
             pointerData.index = Int(UInt(truncatingBitPattern: zip64CDEndOffset))
-            let zip64EndCDSignature = pointerData.uint64FromAlignedBytes(count: 4)
-            guard zip64EndCDSignature == 0x06064b50
+
+            // Check signature.
+            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x06064b50
                 else { throw ZipError.WrongZip64EndCentralDirectorySignature }
+
             let zip64EndCDSize = pointerData.uint64FromAlignedBytes(count: 8)
 
             let versionMadeBy = pointerData.uint64FromAlignedBytes(count: 2)
@@ -114,8 +120,55 @@ public class ZipContainer {
 
             // Then, there might be 'zip64 extensible data sector' with 'special purpose data'.
             // But we don't need them currently, so let's skip them.
+
+            // To find the size of these data:
+            // let specialPurposeDataSize = zip64EndCDSize - 56
         }
 
+        // OK, now we are ready to read Central Directory itself.
+        pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
+        for _ in 0..<cdEntries {
+            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
+                else { throw ZipError.WrongCentralDirectoryHeaderSignature }
+
+            let versionMadeBy = pointerData.uint64FromAlignedBytes(count: 2)
+            let versionNeeded = pointerData.uint64FromAlignedBytes(count: 2)
+            guard versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
+                else { throw ZipError.WrongVersion }
+
+            let generalPurposeBitFlags = pointerData.uint64FromAlignedBytes(count: 2)
+
+            let compressionMethod = pointerData.uint64FromAlignedBytes(count: 2)
+
+            let lastModFileTime = pointerData.uint64FromAlignedBytes(count: 2)
+            let lastModFileDate = pointerData.uint64FromAlignedBytes(count: 2)
+
+            let crc32 = pointerData.uint64FromAlignedBytes(count: 4)
+
+            let compSize = pointerData.uint64FromAlignedBytes(count: 4)
+            let uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
+
+            let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
+            let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
+            let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
+
+            let diskNumberStart = pointerData.uint64FromAlignedBytes(count: 2)
+            guard diskNumberStart == currentDiskNumber
+                else { throw ZipError.WrongCentralDirectoryDisk }
+
+            let internalFileAttributes = pointerData.uint64FromAlignedBytes(count: 2)
+            let externalFileAttributes = pointerData.uint64FromAlignedBytes(count: 4)
+
+            let relOffset = pointerData.uint64FromAlignedBytes(count: 4)
+
+            let fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                                  encoding: .utf8)
+            // TODO: extraField is not a String!
+            let extraField = String(data: Data(bytes: pointerData.alignedBytes(count: extraFieldLength)),
+                                    encoding: .utf8)
+            let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
+                                     encoding: .utf8)
+        }
         return [:]
     }
 
