@@ -159,6 +159,7 @@ To sum up, it is __highly recommended__ to build SWCompression with 'Release' co
 
 Future plans
 -------------
+- ZIP (mostly according to ISO/IEC 21320 standard).
 - Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
