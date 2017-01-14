@@ -2,3 +2,4 @@
 *.deflate filter=lfs diff=lfs merge=lfs -text
 *.answer filter=lfs diff=lfs merge=lfs -text
 *.xz filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
