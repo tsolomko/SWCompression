@@ -106,9 +106,11 @@ public class ZipContainer {
             guard pointerData.uint64FromAlignedBytes(count: 4) == 0x06064b50
                 else { throw ZipError.WrongZip64EndCentralDirectorySignature }
 
-            let zip64EndCDSize = pointerData.uint64FromAlignedBytes(count: 8)
+            // Following 8 bytes are size of end of zip64 CD, but we don't need it.
+            _ = pointerData.uint64FromAlignedBytes(count: 8)
 
-            let versionMadeBy = pointerData.uint64FromAlignedBytes(count: 2)
+            // Next two bytes are version of compressor, but we don't need it.
+            _ = pointerData.uint64FromAlignedBytes(count: 2)
             let versionNeeded = pointerData.uint64FromAlignedBytes(count: 2)
             guard versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
                 else { throw ZipError.WrongVersion }
@@ -136,7 +138,7 @@ public class ZipContainer {
 
         // OK, now we are ready to read Central Directory itself.
         pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
-        
+
         var result: [String : Data] = [:]
         for _ in 0..<cdEntries {
             // Check signature.
