@@ -20,8 +20,13 @@ class ZipTests: XCTestCase {
                                         return
         }
 
-        guard (try? ZipContainer.open(containerData: testData)) != nil else {
+        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
+            return
+        }
+
+        guard zipDict.count == 211 else {
+            XCTFail("Incorrect number of entries.")
             return
         }
     }
@@ -33,8 +38,13 @@ class ZipTests: XCTestCase {
                                         return
         }
 
-        guard (try? ZipContainer.open(containerData: testData)) != nil else {
+        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
+            return
+        }
+
+        guard zipDict.count == 1 else {
+            XCTFail("Incorrect number of entries.")
             return
         }
     }
