@@ -159,7 +159,6 @@ struct CentralDirectoryEntry {
     let uncompSize: UInt32
 
     let fileName: String?
-    let extraField: [UInt8]
     let fileComment: String?
 
     let diskNumberStart: Int
@@ -198,7 +197,22 @@ struct CentralDirectoryEntry {
 
         self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
                               encoding: .utf8)
-        self.extraField = pointerData.alignedBytes(count: extraFieldLength)
+
+        let extraFieldStart = pointerData.index
+        while pointerData.index - extraFieldStart < extraFieldLength {
+            // There are a lot of possible extra fields.
+            // But we are (currently) only interested in Zip64 related fields (with headerID = 0x0001),
+            // because they directly impact further extraction process.
+            let headerID = pointerData.intFromAlignedBytes(count: 2)
+            let size = pointerData.intFromAlignedBytes(count: 2)
+            switch headerID {
+            case 0x0001:
+                print()
+            default:
+                pointerData.index += size
+            }
+        }
+
         self.fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
                                  encoding: .utf8)
     }
