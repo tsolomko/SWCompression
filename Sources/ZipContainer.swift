@@ -156,6 +156,57 @@ public class ZipContainer {
         }
 
         return [:]
+struct LocalHeader {
+
+    let versionNeeded: Int
+    let generalPurposeBitFlags: Int
+    let compressionMethod: Int
+    let lastModFileTime: Int
+    let lastModFileDate: Int
+
+    let crc32: UInt32
+    private(set) var compSize: UInt64
+    private(set) var uncompSize: UInt64
+
+    let fileName: String?
+
+    init(_ pointerData: inout DataWithPointer) {
+        self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
+
+        self.generalPurposeBitFlags = pointerData.intFromAlignedBytes(count: 2)
+
+        self.compressionMethod = pointerData.intFromAlignedBytes(count: 2)
+
+        self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
+        self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
+
+        self.crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+
+        self.compSize = pointerData.uint64FromAlignedBytes(count: 4)
+        self.uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
+
+        let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
+        let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
+
+        self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                               encoding: .utf8)
+
+        let extraFieldStart = pointerData.index
+        while pointerData.index - extraFieldStart < extraFieldLength {
+            // There are a lot of possible extra fields.
+            // But we are (currently) only interested in Zip64 related fields (with headerID = 0x0001),
+            // because they directly impact further extraction process.
+            let headerID = pointerData.intFromAlignedBytes(count: 2)
+            let size = pointerData.intFromAlignedBytes(count: 2)
+            switch headerID {
+            case 0x0001:
+                // In local header both uncompressed size and compressed size fields are required.
+                self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
+                self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
+            default:
+                pointerData.index += size
+            }
+        }
     }
 
 }
