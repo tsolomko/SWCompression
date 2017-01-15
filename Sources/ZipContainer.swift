@@ -75,8 +75,10 @@ public class ZipContainer {
             zip64RecordExists = true
         }
 
-        let zipComment = String(data: Data(bytes: pointerData.alignedBytes(count: zipCommentLength)),
-                                encoding: .utf8)
+        // There is also a .ZIP file comment, but we don't need it.
+        // Here's how it can be processed:
+        // let zipComment = String(data: Data(bytes: pointerData.alignedBytes(count: zipCommentLength)),
+        //                         encoding: .utf8)
 
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
             // Back to start of end of CD record.
