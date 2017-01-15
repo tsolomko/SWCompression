@@ -155,18 +155,18 @@ struct CentralDirectoryEntry {
     let lastModFileTime: Int
     let lastModFileDate: Int
     let crc32: UInt32
-    let compSize: UInt32
-    let uncompSize: UInt32
+    private(set) var compSize: UInt64
+    private(set) var uncompSize: UInt64
 
     let fileName: String?
     let fileComment: String?
 
-    let diskNumberStart: Int
+    private(set) var diskNumberStart: UInt64
 
     let internalFileAttributes: Int
     let externalFileAttributes: UInt32
 
-    let offset: UInt32
+    private(set) var offset: UInt64
 
     init(_ pointerData: inout DataWithPointer) {
         self.versionMadeBy = pointerData.intFromAlignedBytes(count: 2)
@@ -181,19 +181,19 @@ struct CentralDirectoryEntry {
 
         self.crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
 
-        self.compSize = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
-        self.uncompSize = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.compSize = pointerData.uint64FromAlignedBytes(count: 4)
+        self.uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
 
         let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
         let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
         let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
 
-        self.diskNumberStart = pointerData.intFromAlignedBytes(count: 2)
+        self.diskNumberStart = pointerData.uint64FromAlignedBytes(count: 2)
 
         self.internalFileAttributes = pointerData.intFromAlignedBytes(count: 2)
         self.externalFileAttributes = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
 
-        self.offset = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.offset = pointerData.uint64FromAlignedBytes(count: 4)
 
         self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
                               encoding: .utf8)
@@ -207,7 +207,18 @@ struct CentralDirectoryEntry {
             let size = pointerData.intFromAlignedBytes(count: 2)
             switch headerID {
             case 0x0001:
-                print()
+                if self.uncompSize == 0xFFFFFFFF {
+                    self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
+                }
+                if self.compSize == 0xFFFFFFFF {
+                    self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
+                }
+                if self.offset == 0xFFFFFFFF {
+                    self.offset = pointerData.uint64FromAlignedBytes(count: 8)
+                }
+                if self.diskNumberStart == 0xFFFF {
+                    self.diskNumberStart = pointerData.uint64FromAlignedBytes(count: 4)
+                }
             default:
                 pointerData.index += size
             }
