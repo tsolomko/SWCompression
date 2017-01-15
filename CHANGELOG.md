@@ -1,4 +1,8 @@
 # Changelog
+v2.1.0-test
+----------------
+- ZIP archives opening.
+
 v2.0.1
 ----------------
 - Fixed incorrect reading adler32 checksum from zlib archives.

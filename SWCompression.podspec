@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "2.0.1"
+  s.version      = "2.1.0-test"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -63,6 +63,12 @@ Pod::Spec.new do |s|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/LZMA'
     sp.source_files = 'Sources/XZArchive.swift'
+  end
+
+  s.subspec 'ZIP' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.dependency 'SWCompression/Deflate'
+    sp.source_files = 'Sources/ZipContainer.swift'
   end
 
 end
