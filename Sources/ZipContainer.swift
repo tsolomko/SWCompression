@@ -127,49 +127,80 @@ public class ZipContainer {
 
         // OK, now we are ready to read Central Directory itself.
         pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
+        var entries: [CentralDirectoryEntry] = []
         for _ in 0..<cdEntries {
             guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
                 else { throw ZipError.WrongCentralDirectoryHeaderSignature }
 
-            let versionMadeBy = pointerData.uint64FromAlignedBytes(count: 2)
-            let versionNeeded = pointerData.uint64FromAlignedBytes(count: 2)
-            guard versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
+            let newEntry = CentralDirectoryEntry(&pointerData)
+            guard newEntry.versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
                 else { throw ZipError.WrongVersion }
-
-            let generalPurposeBitFlags = pointerData.uint64FromAlignedBytes(count: 2)
-
-            let compressionMethod = pointerData.uint64FromAlignedBytes(count: 2)
-
-            let lastModFileTime = pointerData.uint64FromAlignedBytes(count: 2)
-            let lastModFileDate = pointerData.uint64FromAlignedBytes(count: 2)
-
-            let crc32 = pointerData.uint64FromAlignedBytes(count: 4)
-
-            let compSize = pointerData.uint64FromAlignedBytes(count: 4)
-            let uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
-
-            let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
-            let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
-            let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
-
-            let diskNumberStart = pointerData.uint64FromAlignedBytes(count: 2)
-            guard diskNumberStart == currentDiskNumber
+            guard newEntry.diskNumberStart == Int(UInt32(truncatingBitPattern: currentDiskNumber))
                 else { throw ZipError.WrongCentralDirectoryDisk }
 
-            let internalFileAttributes = pointerData.uint64FromAlignedBytes(count: 2)
-            let externalFileAttributes = pointerData.uint64FromAlignedBytes(count: 4)
-
-            let relOffset = pointerData.uint64FromAlignedBytes(count: 4)
-
-            let fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
-                                  encoding: .utf8)
-            // TODO: extraField is not a String!
-            let extraField = String(data: Data(bytes: pointerData.alignedBytes(count: extraFieldLength)),
-                                    encoding: .utf8)
-            let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
-                                     encoding: .utf8)
+            entries.append(newEntry)
         }
+
         return [:]
+    }
+
+}
+
+struct CentralDirectoryEntry {
+
+    let versionMadeBy: Int
+    let versionNeeded: Int
+    let generalPurposeBitFlags: Int
+    let compressionMethod: Int
+    let lastModFileTime: Int
+    let lastModFileDate: Int
+    let crc32: UInt32
+    let compSize: UInt32
+    let uncompSize: UInt32
+
+    let fileName: String?
+    let extraField: [UInt8]
+    let fileComment: String?
+
+    let diskNumberStart: Int
+
+    let internalFileAttributes: Int
+    let externalFileAttributes: UInt32
+
+    let offset: UInt32
+
+    init(_ pointerData: inout DataWithPointer) {
+        self.versionMadeBy = pointerData.intFromAlignedBytes(count: 2)
+        self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
+
+        self.generalPurposeBitFlags = pointerData.intFromAlignedBytes(count: 2)
+
+        self.compressionMethod = pointerData.intFromAlignedBytes(count: 2)
+
+        self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
+        self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
+
+        self.crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+
+        self.compSize = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.uncompSize = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+
+        let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
+        let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
+        let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
+
+        self.diskNumberStart = pointerData.intFromAlignedBytes(count: 2)
+
+        self.internalFileAttributes = pointerData.intFromAlignedBytes(count: 2)
+        self.externalFileAttributes = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+
+        self.offset = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+
+        self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                              encoding: .utf8)
+        self.extraField = pointerData.alignedBytes(count: extraFieldLength)
+        self.fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
+                                 encoding: .utf8)
     }
 
 }
