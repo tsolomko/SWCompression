@@ -307,7 +307,6 @@
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
 				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
-				063DF1081DE1F07800F38082 /* HuffmanTree.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
 			);
 			path = Common;
@@ -351,6 +350,7 @@
 			children = (
 				06A3931F1DE06FFE00182E12 /* Common */,
 				069D0FFE1E0D6CF200D8AA87 /* LZMA */,
+				063DF1081DE1F07800F38082 /* HuffmanTree.swift */,
 				06E2346B1E068E9600F18798 /* XZArchive.swift */,
 				063364E21DC52979007E313F /* GzipArchive.swift */,
 				064492581DC606D400F10981 /* ZlibArchive.swift */,

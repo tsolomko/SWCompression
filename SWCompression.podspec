@@ -29,12 +29,12 @@ Pod::Spec.new do |s|
   # It should not be included directly in Podfile.
   s.subspec 'Common' do |sp|
     sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,HuffmanTree.swift,Protocols.swift,Service/*.swift,Service/*.h}"
+    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,Protocols.swift,Service/*.swift,Service/*.h}"
   end
 
   s.subspec 'Deflate' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/Deflate.swift'
+    sp.source_files = 'Sources/{Deflate.swift,HuffmanTree.swift}'
   end
 
   s.subspec 'GZip' do |sp|
@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/BZip2.swift'
+    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift}'
   end
 
   s.subspec 'LZMA' do |sp|
