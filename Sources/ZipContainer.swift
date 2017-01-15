@@ -18,6 +18,10 @@ public enum ZipError: Error {
     case EncryptionNotSupported
     case PatchingNotSupported
     case CompressionNotSupported
+    case WrongLocalHeaderSignature
+    case WrongLocalHeader
+    case DataDescriptorNotSupported
+    case WrongCRC32
 }
 
 public class ZipContainer {
@@ -155,7 +159,51 @@ public class ZipContainer {
             entries.append(newEntry)
         }
 
-        return [:]
+        var result: [String : Data] = [:]
+        for cdEntry in entries {
+            // First, let's move to the location of local header.
+            pointerData.index = Int(UInt32(truncatingBitPattern: cdEntry.offset))
+
+            // Check signature.
+            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x04034b50
+                else { throw ZipError.WrongLocalHeaderSignature }
+
+            let localHeader = LocalHeader(&pointerData)
+
+            // Check local header for consistency.
+            guard localHeader.versionNeeded <= 45 &&
+                localHeader.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+                localHeader.compressionMethod == cdEntry.compressionMethod &&
+                localHeader.lastModFileTime == cdEntry.lastModFileTime &&
+                localHeader.lastModFileDate == cdEntry.lastModFileDate
+                else { throw ZipError.WrongLocalHeader }
+            guard localHeader.generalPurposeBitFlags & 0x08 == 0
+                else { throw ZipError.DataDescriptorNotSupported }
+
+            let fileBytes: [UInt8]
+            switch localHeader.compressionMethod {
+            case 0:
+                fileBytes = pointerData.alignedBytes(count: Int(UInt32(truncatingBitPattern: localHeader.uncompSize)))
+            case 8:
+                fileBytes = try Deflate.decompress(&pointerData)
+                // Sometimes pointerData stays in not-aligned state after deflate decompression.
+                // Following line ensures that this is not the case.
+                pointerData.skipUntilNextByte()
+            default:
+                throw ZipError.CompressionNotSupported
+            }
+
+            guard localHeader.crc32 == UInt32(CheckSums.crc32(fileBytes))
+                else { throw ZipError.WrongCRC32 }
+
+            result[localHeader.fileName!] = Data(bytes: fileBytes)
+        }
+
+        return result
+    }
+
+}
+
 struct LocalHeader {
 
     let versionNeeded: Int
