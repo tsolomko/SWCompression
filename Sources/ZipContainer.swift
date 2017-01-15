@@ -135,33 +135,30 @@ public class ZipContainer {
         // OK, now we are ready to read Central Directory itself.
         pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
         
-        var entries: [CentralDirectoryEntry] = []
+        var result: [String : Data] = [:]
         for _ in 0..<cdEntries {
             // Check signature.
             guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
                 else { throw ZipError.WrongCentralDirectoryHeaderSignature }
 
-            let newEntry = CentralDirectoryEntry(&pointerData)
+            let cdEntry = CentralDirectoryEntry(&pointerData)
             // Let's check entry's values for consistency.
-            guard newEntry.versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
+            guard cdEntry.versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
                 else { throw ZipError.WrongVersion }
-            guard newEntry.diskNumberStart == currentDiskNumber
+            guard cdEntry.diskNumberStart == currentDiskNumber
                 else { throw ZipError.WrongCentralDirectoryDisk }
-            guard newEntry.generalPurposeBitFlags & 0x2000 == 0 ||
-                newEntry.generalPurposeBitFlags & 0x40 == 0 ||
-                newEntry.generalPurposeBitFlags & 0x01 == 0
+            guard cdEntry.generalPurposeBitFlags & 0x2000 == 0 ||
+                cdEntry.generalPurposeBitFlags & 0x40 == 0 ||
+                cdEntry.generalPurposeBitFlags & 0x01 == 0
                 else { throw ZipError.EncryptionNotSupported }
-            guard newEntry.generalPurposeBitFlags & 0x20 == 0
+            guard cdEntry.generalPurposeBitFlags & 0x20 == 0
                 else { throw ZipError.PatchingNotSupported }
-            guard newEntry.compressionMethod == 8 || newEntry.compressionMethod == 0
+            guard cdEntry.compressionMethod == 8 || cdEntry.compressionMethod == 0
                 else { throw ZipError.CompressionNotSupported }
 
-            entries.append(newEntry)
-        }
+            let currentCDOffset = pointerData.index
 
-        var result: [String : Data] = [:]
-        for cdEntry in entries {
-            // First, let's move to the location of local header.
+            // Now, let's move to the location of local header.
             pointerData.index = Int(UInt32(truncatingBitPattern: cdEntry.offset))
 
             // Check signature.
@@ -197,6 +194,8 @@ public class ZipContainer {
                 else { throw ZipError.WrongCRC32 }
 
             result[localHeader.fileName!] = Data(bytes: fileBytes)
+
+            pointerData.index = currentCDOffset
         }
 
         return result
