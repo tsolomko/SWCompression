@@ -15,11 +15,14 @@ public enum ZipError: Error {
     case WrongZip64EndCentralDirectorySignature
     case WrongVersion
     case WrongCentralDirectoryHeaderSignature
+    case EncryptionNotSupported
+    case PatchingNotSupported
+    case CompressionNotSupported
 }
 
 public class ZipContainer {
 
-    public static func open(containerData data: Data) throws -> [String: Data] {
+    public static func open(containerData data: Data) throws -> [String : Data] {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
@@ -127,16 +130,27 @@ public class ZipContainer {
 
         // OK, now we are ready to read Central Directory itself.
         pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
+        
         var entries: [CentralDirectoryEntry] = []
         for _ in 0..<cdEntries {
+            // Check signature.
             guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
                 else { throw ZipError.WrongCentralDirectoryHeaderSignature }
 
             let newEntry = CentralDirectoryEntry(&pointerData)
+            // Let's check entry's values for consistency.
             guard newEntry.versionNeeded <= 45 // TODO: This value should probably be adjusted according to really supported features.
                 else { throw ZipError.WrongVersion }
-            guard newEntry.diskNumberStart == Int(UInt32(truncatingBitPattern: currentDiskNumber))
+            guard newEntry.diskNumberStart == currentDiskNumber
                 else { throw ZipError.WrongCentralDirectoryDisk }
+            guard newEntry.generalPurposeBitFlags & 0x2000 == 0 ||
+                newEntry.generalPurposeBitFlags & 0x40 == 0 ||
+                newEntry.generalPurposeBitFlags & 0x01 == 0
+                else { throw ZipError.EncryptionNotSupported }
+            guard newEntry.generalPurposeBitFlags & 0x20 == 0
+                else { throw ZipError.PatchingNotSupported }
+            guard newEntry.compressionMethod == 8 || newEntry.compressionMethod == 0
+                else { throw ZipError.CompressionNotSupported }
 
             entries.append(newEntry)
         }
