@@ -22,6 +22,8 @@ public enum ZipError: Error {
     case WrongLocalHeader
     case DataDescriptorNotSupported
     case WrongCRC32
+    case WrongCompressedSize
+    case WrongUncompressedSize
 }
 
 public class ZipContainer {
@@ -178,13 +180,23 @@ public class ZipContainer {
                 localHeader.lastModFileTime == cdEntry.lastModFileTime &&
                 localHeader.lastModFileDate == cdEntry.lastModFileDate
                 else { throw ZipError.WrongLocalHeader }
-            guard localHeader.generalPurposeBitFlags & 0x08 == 0
-                else { throw ZipError.DataDescriptorNotSupported }
+            let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+
+            // If file has data descriptor, then some values in local header are absent.
+            // So we need to use values from CD entry.
+            var uncompSize = hasDataDescriptor ?
+                Int(UInt32(truncatingBitPattern: cdEntry.uncompSize)) :
+                Int(UInt32(truncatingBitPattern: localHeader.uncompSize))
+            var compSize = hasDataDescriptor ?
+                Int(UInt32(truncatingBitPattern: cdEntry.compSize)) :
+                Int(UInt32(truncatingBitPattern: localHeader.compSize))
+            var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader.crc32
 
             let fileBytes: [UInt8]
+            let fileDataStart = pointerData.index
             switch localHeader.compressionMethod {
             case 0:
-                fileBytes = pointerData.alignedBytes(count: Int(UInt32(truncatingBitPattern: localHeader.uncompSize)))
+                fileBytes = pointerData.alignedBytes(count: uncompSize)
             case 8:
                 fileBytes = try Deflate.decompress(&pointerData)
                 // Sometimes pointerData stays in not-aligned state after deflate decompression.
@@ -193,8 +205,26 @@ public class ZipContainer {
             default:
                 throw ZipError.CompressionNotSupported
             }
+            let realCompSize = pointerData.index - fileDataStart
 
-            guard localHeader.crc32 == UInt32(CheckSums.crc32(fileBytes))
+            if hasDataDescriptor {
+                // Now we need to parse data descriptor itself.
+                // First, it might or might not have signature.
+                let ddSignature = pointerData.uint64FromAlignedBytes(count: 4)
+                if ddSignature != 0x08074b50 {
+                    pointerData.index -= 4
+                }
+                // Now, let's update from CD with values from data descriptor.
+                crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+                compSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
+                uncompSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
+            }
+
+            guard compSize == realCompSize
+                else { throw ZipError.WrongCompressedSize }
+            guard uncompSize == fileBytes.count
+                else { throw ZipError.WrongUncompressedSize }
+            guard crc32 == UInt32(CheckSums.crc32(fileBytes))
                 else { throw ZipError.WrongCRC32 }
 
             result[localHeader.fileName!] = Data(bytes: fileBytes)
