@@ -1,7 +1,8 @@
 # Changelog
-v2.1.0-test
+v2.1.0-test2
 ----------------
 - ZIP archives opening.
+- HuffmanTree is no longer part of SWCompression/Common.
 
 v2.0.1
 ----------------
