@@ -61,7 +61,8 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard zipDict.count == 5 else {
+        // This archive has a lot of macOS service files inside.
+        guard zipDict.count == 10 else {
             XCTFail("Incorrect number of entries.")
             return
         }
