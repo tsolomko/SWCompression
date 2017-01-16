@@ -27,7 +27,7 @@ public enum ZipError: Error {
 
 public class ZipContainer {
 
-    public static func open(containerData data: Data) throws -> [String : Data] {
+    public static func open(containerData data: Data) throws -> [(entryName: String, entryData: Data)] {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
@@ -140,7 +140,7 @@ public class ZipContainer {
         // OK, now we are ready to read Central Directory itself.
         pointerData.index = Int(UInt(truncatingBitPattern: cdOffset))
 
-        var result: [String : Data] = [:]
+        var result: [(entryName: String, entryData: Data)] = []
         for _ in 0..<cdEntries {
             // Check signature.
             guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
@@ -226,7 +226,7 @@ public class ZipContainer {
             guard crc32 == UInt32(CheckSums.crc32(fileBytes))
                 else { throw ZipError.WrongCRC32 }
 
-            result[localHeader.fileName!] = Data(bytes: fileBytes)
+            result.append((localHeader.fileName!, Data(bytes: fileBytes)))
 
             pointerData.index = currentCDOffset
         }
