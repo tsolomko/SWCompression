@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
+		0636D6A11E2BAF7D0029C94F /* DataDescriptorTest.zip in Resources */ = {isa = PBXBuildFile; fileRef = 0636D6A01E2BAF7D0029C94F /* DataDescriptorTest.zip */; };
 		063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
@@ -154,6 +155,7 @@
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
+		0636D6A01E2BAF7D0029C94F /* DataDescriptorTest.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = DataDescriptorTest.zip; sourceTree = "<group>"; };
 		063DF1051DE1F07800F38082 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataWithPointer.swift; path = Sources/DataWithPointer.swift; sourceTree = SOURCE_ROOT; };
 		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		063DF1081DE1F07800F38082 /* HuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanTree.swift; path = Sources/HuffmanTree.swift; sourceTree = SOURCE_ROOT; };
@@ -392,6 +394,7 @@
 				06B374CA1E0EECD500064853 /* random_file.zlib */,
 				0675183A1E2A881F00D16354 /* SWCompressionSourceCode.zip */,
 				064FF4571E2B7F0E0062054B /* Zip64Test.zip */,
+				0636D6A01E2BAF7D0029C94F /* DataDescriptorTest.zip */,
 			);
 			path = "Test Files";
 			sourceTree = "<group>";
@@ -713,6 +716,7 @@
 				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
 				06FCA0581E033DDA00B6932F /* test8.answer in Resources */,
 				06E2347D1E069A7F00F18798 /* test6.xz in Resources */,
+				0636D6A11E2BAF7D0029C94F /* DataDescriptorTest.zip in Resources */,
 				06991C711E05A9F70030FF07 /* test10.lzma in Resources */,
 				06CC18761DE35269003532F5 /* test2.gz in Resources */,
 				06CC18721DE35269003532F5 /* test5.deflate in Resources */,

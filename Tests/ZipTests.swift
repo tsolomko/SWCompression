@@ -49,4 +49,23 @@ class ZipTests: XCTestCase {
         }
     }
 
+    func testDataDescriptor() {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "DataDescriptorTest", withType: ZipTests.testType),
+                                       options: .mappedIfSafe) else {
+                                        XCTFail("Failed to load test archive")
+                                        return
+        }
+
+        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+            XCTFail("Unable to open ZIP archive.")
+            return
+        }
+
+        guard zipDict.count == 5 else {
+            XCTFail("Incorrect number of entries.")
+            return
+        }
+    }
+
+
 }
