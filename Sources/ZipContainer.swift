@@ -20,7 +20,6 @@ public enum ZipError: Error {
     case CompressionNotSupported
     case WrongLocalHeaderSignature
     case WrongLocalHeader
-    case DataDescriptorNotSupported
     case WrongCRC32
     case WrongCompressedSize
     case WrongUncompressedSize
