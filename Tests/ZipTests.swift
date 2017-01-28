@@ -31,8 +31,8 @@ class ZipTests: XCTestCase {
         }
     }
 
-    func test64() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "Zip64Test", withType: ZipTests.testType),
+    func testZip64() {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64", withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
@@ -43,14 +43,14 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard zipDict.count == 1 else {
+        guard zipDict.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
         }
     }
 
     func testDataDescriptor() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "DataDescriptorTest", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor", withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
@@ -62,7 +62,7 @@ class ZipTests: XCTestCase {
         }
 
         // This archive has a lot of macOS service files inside.
-        guard zipDict.count == 10 else {
+        guard zipDict.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
         }
