@@ -9,8 +9,8 @@
 import Foundation
 
 /**
- Error happened during unarchiving xz archive.
- It may indicate that either the data is damaged or it might not be xz archive at all.
+ Error happened during unarchiving XZ archive.
+ It may indicate that either the data is damaged or it might not be XZ archive at all.
 
  - `WrongMagic`: 'magic' bytes in archive's header or footer weren't equal to predefined value.
  - `WrongArchiveInfo`: incorrect value of one of archive's special field (in block, index, header or footer).
