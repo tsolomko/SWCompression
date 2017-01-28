@@ -54,7 +54,7 @@ public enum XZError: Error {
     case MultiByteIntegerError
 }
 
-/// A class with unarchive function for xz archives.
+/// Provides unarchive function for XZ archives.
 public final class XZArchive: Archive {
 
     /**
