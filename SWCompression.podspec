@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "2.0.1"
+  s.version      = "2.1.0"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -29,12 +29,12 @@ Pod::Spec.new do |s|
   # It should not be included directly in Podfile.
   s.subspec 'Common' do |sp|
     sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,HuffmanTree.swift,Protocols.swift,Service/*.swift,Service/*.h}"
+    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,Protocols.swift,Service/*.swift,Service/*.h}"
   end
 
   s.subspec 'Deflate' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/Deflate.swift'
+    sp.source_files = 'Sources/{Deflate.swift,HuffmanTree.swift}'
   end
 
   s.subspec 'GZip' do |sp|
@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/BZip2.swift'
+    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift}'
   end
 
   s.subspec 'LZMA' do |sp|
@@ -63,6 +63,12 @@ Pod::Spec.new do |s|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/LZMA'
     sp.source_files = 'Sources/XZArchive.swift'
+  end
+
+  s.subspec 'ZIP' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.dependency 'SWCompression/Deflate'
+    sp.source_files = 'Sources/ZipContainer.swift'
   end
 
 end

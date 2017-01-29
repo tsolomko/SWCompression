@@ -3,7 +3,7 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 30.10.16.
-//  Copyright © 2016 Timofey Solomko. All rights reserved.
+//  Copyright © 2017 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
@@ -35,7 +35,7 @@ public enum ZlibError: Error {
     case WrongAdler32(Data)
 }
 
-/// A strucutre which provides information about zlib archive.
+/// A structure which provides information about zlib archive.
 public struct ZlibHeader {
 
     /// Supported compression methods in zlib archive.
@@ -121,7 +121,7 @@ public struct ZlibHeader {
 
 }
 
-/// A class with unarchive function for Zlib archives.
+/// Provides unarchive function for Zlib archives.
 public final class ZlibArchive: Archive {
 
     /**

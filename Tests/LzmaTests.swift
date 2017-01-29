@@ -3,7 +3,7 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 15.12.16.
-//  Copyright © 2016 Timofey Solomko. All rights reserved.
+//  Copyright © 2017 Timofey Solomko. All rights reserved.
 //
 
 import XCTest
@@ -45,7 +45,7 @@ class LzmaTests: XCTestCase {
         self.perform(test: "test10")
     }
 
-    func testLzm11() {
+    func testLzma11() {
         self.perform(test: "test11")
     }
 

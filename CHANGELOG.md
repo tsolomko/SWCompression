@@ -1,4 +1,10 @@
 # Changelog
+v2.1.0
+----------------
+- ZIP containers support.
+- HuffmanTree is no longer part of SWCompression/Common.
+- Updated documentation.
+
 v2.0.1
 ----------------
 - Fixed incorrect reading adler32 checksum from zlib archives.

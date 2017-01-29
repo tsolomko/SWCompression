@@ -3,7 +3,7 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 29.10.16.
-//  Copyright © 2016 Timofey Solomko. All rights reserved.
+//  Copyright © 2017 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
@@ -39,7 +39,7 @@ public enum GzipError: Error {
     case WrongISize
 }
 
-/// A strucutre which provides information about gzip archive.
+/// A structure which provides information about gzip archive.
 public struct GzipHeader {
 
     struct Flags {
@@ -176,7 +176,7 @@ public struct GzipHeader {
 
 }
 
-/// A class with unarchive function for gzip archives.
+/// Provides unarchive function for GZip archives.
 public final class GzipArchive: Archive {
 
     /**

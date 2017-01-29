@@ -3,14 +3,14 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 18.12.16.
-//  Copyright © 2016 Timofey Solomko. All rights reserved.
+//  Copyright © 2017 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
 
 /**
- Error happened during unarchiving xz archive.
- It may indicate that either the data is damaged or it might not be xz archive at all.
+ Error happened during unarchiving XZ archive.
+ It may indicate that either the data is damaged or it might not be XZ archive at all.
 
  - `WrongMagic`: 'magic' bytes in archive's header or footer weren't equal to predefined value.
  - `WrongArchiveInfo`: incorrect value of one of archive's special field (in block, index, header or footer).
@@ -54,7 +54,7 @@ public enum XZError: Error {
     case MultiByteIntegerError
 }
 
-/// A class with unarchive function for xz archives.
+/// Provides unarchive function for XZ archives.
 public final class XZArchive: Archive {
 
     /**
