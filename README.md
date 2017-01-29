@@ -26,6 +26,8 @@ And here comes SWCompression: no Objective-C, pure Swift.
 
 Features
 ----------------
+- Containers:
+  - ZIP (complying to ISO/IEC 21320 standard)
 - (De)compression algorithms:
   - LZMA/LZMA2
   - Deflate
@@ -159,7 +161,6 @@ To sum up, it is __highly recommended__ to build SWCompression with 'Release' co
 
 Future plans
 -------------
-- ZIP (mostly according to ISO/IEC 21320 standard).
 - Tar unarchiving.
 - Deflate compression.
 - BZip2 compression.
@@ -174,3 +175,6 @@ References
 - [LZMA SDK and specification](http://www.7-zip.org/sdk.html)
 - [XZ specification](http://tukaani.org/xz/xz-file-format-1.0.4.txt)
 - [Wikipedia article about LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov_chain_algorithm)
+- [.ZIP Application Note](http://www.pkware.com/appnote)
+- [ISO/IEC 21320-1](http://www.iso.org/iso/catalogue_detail.htm?csnumber=60101)
+- [List of defined ZIP extra fields](https://opensource.apple.com/source/zip/zip-6/unzip/unzip/proginfo/extra.fld)
