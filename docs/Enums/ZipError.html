@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>LZMAError Enum Reference</title>
+    <title>ZipError Enum Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -11,9 +11,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/LZMAError" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/ZipError" class="dashAnchor"></a>
 
-    <a title="LZMAError Enum Reference"></a>
+    <a title="ZipError Enum Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -35,7 +35,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SWCompression Reference</a>
       <img class="carat" src="../img/carat.png" />
-      LZMAError Enum Reference
+      ZipError Enum Reference
     </p>
 
     <div class="content-wrapper">
@@ -139,27 +139,28 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>LZMAError</h1>
+            <h1>ZipError</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LZMAError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ZipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>Error happened during LZMA decompression.
-It may indicate that either the data is damaged or it might not be compressed with LZMA at all.</p>
+            <p>Error happened during processing ZIP archive (container).
+It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.</p>
 
 <ul>
-<li><code>WrongProperties</code>: unsupported LZMA properties (greater than 225).</li>
-<li><code>RangeDecoderInitError</code>: unable to initialize RangedDecoder.</li>
-<li><code>ExceededUncompressedSize</code>: the number of uncompressed bytes reached amount specified by archive
-while decoding wasn&rsquo;t finished.</li>
-<li><code>WindowIsEmpty</code>: unable to repeat bytes because there is nothing to repeat.</li>
-<li><code>RangeDecoderFinishError</code>: range decoder was in a bad state when finish marker was reached.</li>
-<li><code>RepeatWillExceed</code>: unable to repeat bytes because the number of bytes to repeat is greater 
-than the amount bytes that is left to decode.</li>
-<li><code>NotEnoughToRepeat</code>: unable to repeat bytes because the amount of already decoded bytes is smaller
-than the repeat length.</li>
+<li><code>NotFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
+<li><code>WrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
+<li><code>WrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
+<li><code>WrongVersion</code>: unsupported number of version needed to extract ZIP container 
+(unsupported features are required to open this file).</li>
+<li><code>MultiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
+<li><code>EncryptionNotSupported</code>: unsupported feature: encryption.</li>
+<li><code>PatchingNotSupported</code>: unsupported feature: patched data.</li>
+<li><code>CompressionNotSupported</code>: unsupported feature: specified compression method.</li>
+<li><code>WrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
+<li><code>WrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
 </ul>
 
           </div>
@@ -172,9 +173,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError15WrongPropertiesFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongProperties" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError15WrongPropertiesFMS0_S0_">WrongProperties</a>
+                    <a name="/s:FO13SWCompression8ZipError27NotFoundCentralDirectoryEndFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/NotFoundCentralDirectoryEnd" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError27NotFoundCentralDirectoryEndFMS0_S0_">NotFoundCentralDirectoryEnd</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -182,19 +183,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Properties byte was greater than 225.</p>
+                        <p>End of Central Directoty record was not found.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongProperties</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NotFoundCentralDirectoryEnd</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -206,9 +207,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError21RangeDecoderInitErrorFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RangeDecoderInitError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError21RangeDecoderInitErrorFMS0_S0_">RangeDecoderInitError</a>
+                    <a name="/s:FO13SWCompression8ZipError14WrongSignatureFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/WrongSignature" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError14WrongSignatureFMS0_S0_">WrongSignature</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -216,19 +217,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Unable to initialize RanderDecorer.</p>
+                        <p>Wrong signature of one of ZIP container&rsquo;s structures.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RangeDecoderInitError</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSignature</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -240,9 +241,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError24ExceededUncompressedSizeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/ExceededUncompressedSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError24ExceededUncompressedSizeFMS0_S0_">ExceededUncompressedSize</a>
+                    <a name="/s:FO13SWCompression8ZipError9WrongSizeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/WrongSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError9WrongSizeFMS0_S0_">WrongSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -250,19 +251,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The number of uncompressed bytes hit limit in the middle of decoding.</p>
+                        <p>Wrong either compressed or uncompressed size of a ZIP container&rsquo;s entry.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ExceededUncompressedSize</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSize</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -274,9 +275,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError13WindowIsEmptyFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WindowIsEmpty" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError13WindowIsEmptyFMS0_S0_">WindowIsEmpty</a>
+                    <a name="/s:FO13SWCompression8ZipError12WrongVersionFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/WrongVersion" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError12WrongVersionFMS0_S0_">WrongVersion</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -284,19 +285,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Unable to perfrom repeat-distance decoding because there is nothing to repeat.</p>
+                        <p>Wrong number of version needed to extract ZIP container.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WindowIsEmpty</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongVersion</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L34">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -308,9 +309,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError23RangeDecoderFinishErrorFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RangeDecoderFinishError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError23RangeDecoderFinishErrorFMS0_S0_">RangeDecoderFinishError</a>
+                    <a name="/s:FO13SWCompression8ZipError24MultiVolumesNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/MultiVolumesNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError24MultiVolumesNotSupportedFMS0_S0_">MultiVolumesNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -318,19 +319,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>End of stream marker is reached, but range decoder is in incorrect state.</p>
+                        <p>Archive either spanned or consists of several volumes. This feature is not supported.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RangeDecoderFinishError</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">MultiVolumesNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L36">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -342,9 +343,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError16RepeatWillExceedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RepeatWillExceed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError16RepeatWillExceedFMS0_S0_">RepeatWillExceed</a>
+                    <a name="/s:FO13SWCompression8ZipError22EncryptionNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/EncryptionNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError22EncryptionNotSupportedFMS0_S0_">EncryptionNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -352,19 +353,19 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The number of bytes to repeat is greater than the amount bytes that is left to decode.</p>
+                        <p>Entry or record is encrypted. This feature is not supported.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RepeatWillExceed</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EncryptionNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -376,9 +377,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError17NotEnoughToRepeatFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/NotEnoughToRepeat" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError17NotEnoughToRepeatFMS0_S0_">NotEnoughToRepeat</a>
+                    <a name="/s:FO13SWCompression8ZipError20PatchingNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/PatchingNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError20PatchingNotSupportedFMS0_S0_">PatchingNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -386,19 +387,121 @@ than the repeat length.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The amount of already decoded bytes is smaller than repeat length.</p>
+                        <p>Entry contains patched data. This feature is not supported.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NotEnoughToRepeat</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">PatchingNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L40">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L41">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression8ZipError23CompressionNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/CompressionNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError23CompressionNotSupportedFMS0_S0_">CompressionNotSupported</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Wrong compression method of an entry.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">CompressionNotSupported</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L43">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression8ZipError16WrongLocalHeaderFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/WrongLocalHeader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError16WrongLocalHeaderFMS0_S0_">WrongLocalHeader</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Wrong local header of an entry.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongLocalHeader</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L45">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression8ZipError10WrongCRC32FMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/WrongCRC32" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError10WrongCRC32FMS0_S0_">WrongCRC32</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Wrong computed CRC32 of an entry.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCRC32</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
