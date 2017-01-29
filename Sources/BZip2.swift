@@ -43,7 +43,7 @@ public enum BZip2Error: Error {
     case SymbolNotFound
 }
 
-/// Provides function to decompress data, which were compressed using BZip2
+/// Provides function to decompress data, which were compressed using BZip2.
 public final class BZip2: DecompressionAlgorithm {
 
     /**

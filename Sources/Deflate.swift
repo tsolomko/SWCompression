@@ -28,7 +28,7 @@ public enum DeflateError: Error {
     case SymbolNotFound
 }
 
-/// Provides function to decompress data, which were compressed with DEFLATE
+/// Provides function to decompress data, which were compressed with DEFLATE.
 public final class Deflate: DecompressionAlgorithm {
 
     /**
