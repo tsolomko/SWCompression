@@ -47,36 +47,114 @@ public enum ZipError: Error {
     case WrongCRC32
 }
 
+public struct ZipEntry {
+
+    fileprivate let cdEntry: CentralDirectoryEntry
+
+    public var fileName: String? {
+        return self.cdEntry.fileComment
+    }
+
+    public var fileComment: String? {
+        return self.cdEntry.fileComment
+    }
+
+    public var fileAttributes: UInt32 {
+        return self.cdEntry.externalFileAttributes
+    }
+
+    init(_ cdEntry: CentralDirectoryEntry) {
+        self.cdEntry = cdEntry
+    }
+
+}
+
 /// Provides function to open ZIP archives (containers).
 public class ZipContainer {
 
-    /**
-     Processes ZIP archive (container) and returns an array of tuples `(String, Data)`.
-     First member of a tuple is entry's name, second member is entry's data.
-     
-     - Important: The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT assume that this is the case.
-     
-     - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-     One can check this by looking at the size of entry's data (it should be 0 for directory) AND
-     the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
-     
-     - Note: Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.
-    
-     - Parameter containerData: Data of ZIP container.
-     
-     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
-     It may indicate that either the container is damaged or it might not be ZIP container or  compressed with Deflate at all.
+    private var pointerData: DataWithPointer
+    public private(set) var entries: [ZipEntry]
 
-     - Returns: Array of pairs (tuples) where first member is `entryName` and second member is `entryData`.
-     */
-    public static func open(containerData data: Data) throws -> [(entryName: String, entryData: Data)] {
+    public init(containerData data: Data) throws {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        self.pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        self.entries = []
+        try ZipContainer.findEndOfCD(&pointerData)
 
-        // Looking for the end of central directory (CD) record.
-        var zip64RecordExists = false
+        let endOfCD = try EndOfCentralDirectory(&pointerData)
+        let cdEntries = endOfCD.cdEntries
+
+        // OK, now we are ready to read Central Directory itself.
+        pointerData.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
+
+        for _ in 0..<cdEntries {
+            let cdEntry = try CentralDirectoryEntry(&pointerData, endOfCD.currentDiskNumber)
+            self.entries.append(ZipEntry(cdEntry))
+        }
+
+    }
+
+    public func data(for zipEntry: ZipEntry) throws -> Data {
+        // Now, let's move to the location of local header.
+        pointerData.index = Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.offset))
+
+        let localHeader = try LocalHeader(&pointerData)
+
+        // Check local header for consistency with Central Directory entry.
+        guard localHeader.versionNeeded <= 45 &&
+            localHeader.generalPurposeBitFlags == zipEntry.cdEntry.generalPurposeBitFlags &&
+            localHeader.compressionMethod == zipEntry.cdEntry.compressionMethod &&
+            localHeader.lastModFileTime == zipEntry.cdEntry.lastModFileTime &&
+            localHeader.lastModFileDate == zipEntry.cdEntry.lastModFileDate
+            else { throw ZipError.WrongLocalHeader }
+        let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+
+        // If file has data descriptor, then some values in local header are absent.
+        // So we need to use values from CD entry.
+        var uncompSize = hasDataDescriptor ?
+            Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.uncompSize)) :
+            Int(UInt32(truncatingBitPattern: localHeader.uncompSize))
+        var compSize = hasDataDescriptor ?
+            Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.compSize)) :
+            Int(UInt32(truncatingBitPattern: localHeader.compSize))
+        var crc32 = hasDataDescriptor ? zipEntry.cdEntry.crc32 : localHeader.crc32
+
+        let fileBytes: [UInt8]
+        let fileDataStart = pointerData.index
+        switch localHeader.compressionMethod {
+        case 0:
+            fileBytes = pointerData.alignedBytes(count: uncompSize)
+        case 8:
+            fileBytes = try Deflate.decompress(&pointerData)
+            // Sometimes pointerData stays in not-aligned state after deflate decompression.
+            // Following line ensures that this is not the case.
+            pointerData.skipUntilNextByte()
+        default:
+            throw ZipError.CompressionNotSupported
+        }
+        let realCompSize = pointerData.index - fileDataStart
+
+        if hasDataDescriptor {
+            // Now we need to parse data descriptor itself.
+            // First, it might or might not have signature.
+            let ddSignature = pointerData.uint64FromAlignedBytes(count: 4)
+            if ddSignature != 0x08074b50 {
+                pointerData.index -= 4
+            }
+            // Now, let's update from CD with values from data descriptor.
+            crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+            compSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
+            uncompSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
+        }
+
+        guard compSize == realCompSize && uncompSize == fileBytes.count
+            else { throw ZipError.WrongSize }
+        guard crc32 == UInt32(CheckSums.crc32(fileBytes))
+            else { throw ZipError.WrongCRC32 }
+
+
+        return Data(bytes: fileBytes)
+    }
 
     private static func findEndOfCD(_ pointerData: inout DataWithPointer) throws {
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
