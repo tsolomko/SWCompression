@@ -73,6 +73,7 @@ public struct ZipEntry {
 public class ZipContainer {
 
     private var pointerData: DataWithPointer
+
     public private(set) var entries: [ZipEntry]
 
     public init(containerData data: Data) throws {
@@ -163,7 +164,6 @@ public class ZipContainer {
             else { throw ZipError.WrongSize }
         guard crc32 == UInt32(CheckSums.crc32(fileBytes))
             else { throw ZipError.WrongCRC32 }
-
 
         return Data(bytes: fileBytes)
     }
@@ -408,7 +408,7 @@ struct EndOfCentralDirectory {
         // Check if zip64 records are present.
         if self.currentDiskNumber == 0xFFFF || self.cdDiskNumber == 0xFFFF ||
             cdEntriesCurrentDisk == 0xFFFF || self.cdEntries == 0xFFFF ||
-            self.cdSize == 0xFFFFFFFF || self.cdOffset == 0xFFFFFFFF{
+            self.cdSize == 0xFFFFFFFF || self.cdOffset == 0xFFFFFFFF {
             zip64RecordExists = true
         }
 
@@ -468,10 +468,10 @@ struct EndOfCentralDirectory {
 
             // Then, there might be 'zip64 extensible data sector' with 'special purpose data'.
             // But we don't need them currently, so let's skip them.
-            
+
             // To find the size of these data:
             // let specialPurposeDataSize = zip64EndCDSize - 56
         }
     }
-    
+
 }
