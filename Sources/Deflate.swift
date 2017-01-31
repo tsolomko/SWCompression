@@ -162,6 +162,7 @@ public final class Deflate: DecompressionAlgorithm {
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
+                        print("raw symbol: \(nextSymbol)")
                         out.append(nextSymbol.toUInt8())
                     } else if nextSymbol == 256 {
                         // It is a symbol indicating the end of data.
@@ -176,6 +177,8 @@ public final class Deflate: DecompressionAlgorithm {
                         let length = HuffmanTree.Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
+                        print("length: \(length)")
+
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
                         guard distanceCode != -1 else { throw DeflateError.SymbolNotFound }
@@ -188,6 +191,8 @@ public final class Deflate: DecompressionAlgorithm {
                             let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
                                 pointerData.intFromBits(count: extraDistance)
 
+                            print("distance: \(distance)")
+                            
                             // We should repeat last 'distance' amount of data.
                             // The amount of times we do this is round(length / distance).
                             // length actually indicates the amount of data we get from this nextSymbol.

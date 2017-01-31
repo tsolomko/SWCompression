@@ -70,4 +70,22 @@ class DeflateTests: XCTestCase {
         self.perform(test: "test7")
     }
 
+    func testLengthEncode() {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test4")) else {
+            XCTFail("Failed to get the answer")
+            return
+        }
+
+        print(String(data: answerData, encoding: .utf8)!)
+
+        let answerBytes = answerData.toArray(type: UInt8.self)
+
+        print(answerBytes.count)
+
+        let compBytes = Deflate.lengthEncode(answerBytes)
+
+        print(compBytes)
+        print(compBytes.count)
+    }
+
 }
