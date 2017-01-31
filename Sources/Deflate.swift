@@ -182,39 +182,37 @@ public final class Deflate: DecompressionAlgorithm {
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
                         guard distanceCode != -1 else { throw DeflateError.SymbolNotFound }
+                        guard distanceCode >= 0 && distanceCode <= 29
+                            else { throw DeflateError.WrongSymbol }
 
-                        if distanceCode >= 0 && distanceCode <= 29 {
-                            // Again, depending on the distanceCode's value there might be additional bits in data,
-                            // which we need to combine with distanceCode to get the actual distance.
-                            let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
-                            // And yes, distanceCode is not a first part of distance but rather an index for special array.
-                            let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
-                                pointerData.intFromBits(count: extraDistance)
+                        // Again, depending on the distanceCode's value there might be additional bits in data,
+                        // which we need to combine with distanceCode to get the actual distance.
+                        let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
+                        // And yes, distanceCode is not a first part of distance but rather an index for special array.
+                        let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
+                            pointerData.intFromBits(count: extraDistance)
 
-                            print("distance: \(distance)")
-                            
-                            // We should repeat last 'distance' amount of data.
-                            // The amount of times we do this is round(length / distance).
-                            // length actually indicates the amount of data we get from this nextSymbol.
-                            let repeatCount: Int = length / distance
-                            let count = out.count
-                            for _ in 0..<repeatCount {
-                                for i in count - distance..<count {
-                                    out.append(out[i])
-                                }
+                        print("distance: \(distance)")
+                        
+                        // We should repeat last 'distance' amount of data.
+                        // The amount of times we do this is round(length / distance).
+                        // length actually indicates the amount of data we get from this nextSymbol.
+                        let repeatCount: Int = length / distance
+                        let count = out.count
+                        for _ in 0..<repeatCount {
+                            for i in count - distance..<count {
+                                out.append(out[i])
                             }
-                            // Now we deal with the remainings.
-                            if length - distance * repeatCount == distance {
-                                for i in out.count - distance..<out.count {
-                                    out.append(out[i])
-                                }
-                            } else {
-                                for i in out.count - distance..<out.count + length - distance * (repeatCount + 1) {
-                                    out.append(out[i])
-                                }
+                        }
+                        // Now we deal with the remainings.
+                        if length - distance * repeatCount == distance {
+                            for i in out.count - distance..<out.count {
+                                out.append(out[i])
                             }
                         } else {
-                            throw DeflateError.WrongSymbol
+                            for i in out.count - distance..<out.count + length - distance * (repeatCount + 1) {
+                                out.append(out[i])
+                            }
                         }
                     } else {
                         throw DeflateError.WrongSymbol
