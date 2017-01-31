@@ -227,4 +227,57 @@ public final class Deflate: DecompressionAlgorithm {
         return out
     }
 
+    // TODO: Remove public when release.
+    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [UInt8] {
+        var dictionary: [UInt8] = Array(repeating: 0, count: dictSize)
+        var buffer: [UInt8] = []
+        var dictPos = 0
+        var inputIndex = 0
+        while inputIndex < rawBytes.count {
+            let byte = rawBytes[inputIndex]
+            inputIndex += 1
+
+            if let matchStartIndex = dictionary.index(of: byte) {
+                var matchEndIndex = matchStartIndex + 1
+                var matchLength: UInt8 = 1
+
+                while inputIndex < rawBytes.count {
+                    if rawBytes[inputIndex] == dictionary[matchStartIndex + matchLength.toInt()] {
+
+                        matchEndIndex += 1
+                        if matchEndIndex >= dictSize {
+                            matchEndIndex = 0
+                        }
+
+                        inputIndex += 1
+                        matchLength += 1
+                    } else {
+                        break
+                    }
+                }
+
+                if matchLength < 3 {
+                    while matchLength > 0 {
+                        buffer.append(rawBytes[inputIndex - matchLength.toInt()])
+                        matchLength -= 1
+                    }
+                } else {
+                    buffer.append(matchLength)
+                    buffer.append(UInt8(matchStartIndex))
+                }
+            } else {
+                buffer.append(byte)
+
+                dictionary[dictPos] = byte
+                dictPos += 1
+                if dictPos >= dictSize {
+                    dictPos = 0
+                }
+            }
+
+        }
+        return buffer
+    }
+
+
 }
