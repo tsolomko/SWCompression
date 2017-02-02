@@ -76,7 +76,7 @@ class DeflateTests: XCTestCase {
             return
         }
 
-        print(String(data: answerData, encoding: .utf8)!)
+//        print(String(data: answerData, encoding: .utf8)!)
 
         let answerBytes = answerData.toArray(type: UInt8.self)
 

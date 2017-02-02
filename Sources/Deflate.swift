@@ -231,25 +231,31 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Remove public when release.
-    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [UInt8] {
+    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [UInt8] {
         var dictionary: [UInt8] = Array(repeating: 0, count: dictSize)
         var buffer: [UInt8] = []
         var dictPos = 0
         var inputIndex = 0
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
+            if byte == 97 {
+                print()
+            }
             inputIndex += 1
 
             if let matchStartIndex = dictionary.index(of: byte) {
-                var matchEndIndex = matchStartIndex + 1
+                var matchIndex = matchStartIndex + 1
+                if matchIndex >= dictPos {
+                    matchIndex = 0
+                }
                 var matchLength: UInt8 = 1
 
                 while inputIndex < rawBytes.count {
-                    if rawBytes[inputIndex] == dictionary[matchStartIndex + matchLength.toInt()] {
+                    if rawBytes[inputIndex] == dictionary[matchIndex] {
 
-                        matchEndIndex += 1
-                        if matchEndIndex >= dictSize {
-                            matchEndIndex = 0
+                        matchIndex += 1
+                        if matchIndex >= dictPos {
+                            matchIndex = 0
                         }
 
                         inputIndex += 1
@@ -260,9 +266,12 @@ public final class Deflate: DecompressionAlgorithm {
                 }
 
                 if matchLength < 3 {
-                    while matchLength > 0 {
-                        buffer.append(rawBytes[inputIndex - matchLength.toInt()])
-                        matchLength -= 1
+                    buffer.append(byte)
+
+                    dictionary[dictPos] = byte
+                    dictPos += 1
+                    if dictPos >= dictSize {
+                        dictPos = 0
                     }
                 } else {
                     buffer.append(matchLength)
