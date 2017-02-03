@@ -259,36 +259,47 @@ public final class Deflate: DecompressionAlgorithm {
             let byte = rawBytes[inputIndex]
 
             if let matchStartIndex = dictionary.index(of: byte) {
-                var matchEndIndex = matchStartIndex + 1
+                if dictPos != 0 {
+                    var matchEndIndex = matchStartIndex + 1
 
-                let distance = dictPos - matchStartIndex
-                if distance <= 32768 {
-                    while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
-                        if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
-                            matchEndIndex - matchStartIndex >= 258 {
-                            break
+                    let distance = dictPos - matchStartIndex
+                    if distance <= 32768 {
+                        while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
+                            if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
+                                matchEndIndex - matchStartIndex >= 258 {
+                                break
+                            }
+                            matchEndIndex += 1
                         }
-                        matchEndIndex += 1
+                    }
+
+                    let matchLength = matchEndIndex - matchStartIndex
+                    if matchLength >= 3 {
+                        buffer.append(BLDCode.lengthDistance(matchLength, distance))
+                        inputIndex += matchLength
+                    } else {
+                        dictionary[dictPos] = byte
+                        dictPos += 1
+                        // TODO: This is probably is not efficient.
+                        if dictPos >= dictSize {
+                            dictionary.removeFirst()
+                            dictionary.append(0)
+                            dictPos -= 1
+                        }
+
+                        buffer.append(BLDCode.byte(byte))
+                        inputIndex += 1
                     }
                 }
-
-                let matchLength = matchEndIndex - matchStartIndex
-                if matchLength >= 3 {
-                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
-                    inputIndex += matchLength
-                } else {
-                    dictionary[dictPos] = byte
-                    dictPos += 1
-                    // TODO: Dictionary index out of bounds.
-
-                    buffer.append(BLDCode.byte(byte))
-                    inputIndex += 1
-                }
-
             } else {
                 dictionary[dictPos] = byte
                 dictPos += 1
-                // TODO: Dictionary index out of bounds.
+                // TODO: This is probably is not efficient.
+                if dictPos >= dictSize {
+                    dictionary.removeFirst()
+                    dictionary.append(0)
+                    dictPos -= 1
+                }
 
                 buffer.append(BLDCode.byte(byte))
                 inputIndex += 1
