@@ -260,17 +260,21 @@ public final class Deflate: DecompressionAlgorithm {
 
             if let matchStartIndex = dictionary.index(of: byte) {
                 var matchEndIndex = matchStartIndex + 1
-                while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
-                    if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
-                        matchEndIndex - matchStartIndex >= 258 {
-                        break
+
+                let distance = dictPos - matchStartIndex
+                if distance <= 32768 {
+                    while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
+                        if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
+                            matchEndIndex - matchStartIndex >= 258 {
+                            break
+                        }
+                        matchEndIndex += 1
                     }
-                    matchEndIndex += 1
                 }
 
                 let matchLength = matchEndIndex - matchStartIndex
                 if matchLength >= 3 {
-                    buffer.append(BLDCode.lengthDistance(matchLength, dictPos - matchStartIndex))
+                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
                     inputIndex += matchLength
                 } else {
                     dictionary[dictPos] = byte
