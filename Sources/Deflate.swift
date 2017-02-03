@@ -309,5 +309,49 @@ public final class Deflate: DecompressionAlgorithm {
         return buffer
     }
 
+    // TODO: Remove public when release.
+    public static func huffmanEncode(_ bldCodes: [BLDCode]) -> [UInt8] {
+        /// Empty DWP object for creating Huffman trees.
+        var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
+
+        let bitWriter = BitToByteWriter(bitOrder: .reversed)
+        // Write block header.
+        // Note: For now it is only static huffman blocks.
+        // Note: Only one block is supported for now.
+
+        bitWriter.write(bit: 1)
+        bitWriter.write(bits: [1, 0]) // TODO: Is it correct value?
+
+        // Constructing Huffman trees.
+        var mainLiterals: HuffmanTree
+        /// Huffman table for bytes alphabet and alphabet of pairs (length, backward distance).
+        var mainDistances: HuffmanTree
+        // Static Huffman
+        // In this case codes for literals and distances are fixed.
+        // Bootstraps for tables (first element in pair is code, second is number of bits).
+        let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
+        let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
+        mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData)
+        mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData)
+
+        for code in bldCodes {
+            switch code {
+            case .byte(let byte):
+                // TODO: Add check for empty returned array.
+                bitWriter.write(bits: mainLiterals.code(symbol: byte.toInt()))
+            case .lengthDistance(let length, let distance):
+                // TODO:
+                break
+            }
+        }
+
+        // End data symbol.
+        bitWriter.write(bits: mainLiterals.code(symbol: 256))
+        bitWriter.finish()
+
+        return bitWriter.buffer
+    }
+
+
 
 }
