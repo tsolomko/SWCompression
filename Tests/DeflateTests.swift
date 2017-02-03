@@ -84,7 +84,9 @@ class DeflateTests: XCTestCase {
 
         let compBytes = Deflate.lengthEncode(answerBytes)
 
-        print(compBytes)
+        for code in compBytes {
+            print(code)
+        }
         print(compBytes.count)
     }
 

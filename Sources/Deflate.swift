@@ -270,7 +270,7 @@ public final class Deflate: DecompressionAlgorithm {
 
                 let matchLength = matchEndIndex - matchStartIndex
                 if matchLength >= 3 {
-                    buffer.append(BLDCode.lengthDistance(matchLength, matchStartIndex))
+                    buffer.append(BLDCode.lengthDistance(matchLength, dictPos - matchStartIndex))
                     inputIndex += matchLength
                 } else {
                     dictionary[dictPos] = byte
