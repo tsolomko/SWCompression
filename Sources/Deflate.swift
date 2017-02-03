@@ -246,6 +246,7 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Remove public when release.
+    // TODO: Expand dictionary size.
     public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [BLDCode] {
         precondition(rawBytes.count >= 3, "Too small array!")
 
@@ -262,7 +263,7 @@ public final class Deflate: DecompressionAlgorithm {
                 if dictPos != 0 {
                     var matchEndIndex = matchStartIndex + 1
 
-                    let distance = dictPos - matchStartIndex
+                    let distance = dictPos - matchStartIndex // FIXME: This is the problem.
                     if distance <= 32768 {
                         while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
                             if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
@@ -340,8 +341,41 @@ public final class Deflate: DecompressionAlgorithm {
                 // TODO: Add check for empty returned array.
                 bitWriter.write(bits: mainLiterals.code(symbol: byte.toInt()))
             case .lengthDistance(let length, let distance):
-                // TODO:
-                break
+                let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
+                var lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
+
+                // TODO: Add check for empty returned array.
+                bitWriter.write(bits: mainLiterals.code(symbol: lengthSymbol))
+
+                var mask = 1
+                while lengthExtra > 0 {
+                    if lengthExtra & mask > 0 {
+                        bitWriter.write(bit: 1)
+                        lengthExtra -= mask
+                    } else {
+                        bitWriter.write(bit: 0)
+                    }
+                    mask <<= 1
+                }
+
+                // TODO: Unwrapping Optional is a bad practice.
+                let distanceSymbol = (HuffmanTree.Constants.distanceBase.index { $0 > distance })! - 1
+                var distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
+
+                // TODO: Add check for empty returned array.
+                bitWriter.write(bits: mainDistances.code(symbol: distanceSymbol))
+
+                mask = 1
+                while distanceExtra > 0 {
+                    if distanceExtra & mask > 0 {
+                        bitWriter.write(bit: 1)
+                        distanceExtra -= mask
+                    } else {
+                        bitWriter.write(bit: 0)
+                    }
+                    mask <<= 1
+                }
+
             }
         }
 
