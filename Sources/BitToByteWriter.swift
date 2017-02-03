@@ -78,5 +78,18 @@ final class BitToByteWriter {
         }
     }
 
+    func finish() {
+        self.buffer.append(self.currentByte)
+        self.currentByte = 0
+
+        switch self.bitOrder {
+        case .reversed:
+            self.bitMask = 1
+        case .straight:
+            self.bitMask = 128
+        }
+        self.buffer.append(self.currentByte)
+        self.currentByte = 0
+    }
 
 }
