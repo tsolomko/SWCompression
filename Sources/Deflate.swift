@@ -231,63 +231,66 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Remove public when release.
-    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [UInt8] {
+    public enum BLDCode: CustomStringConvertible {
+        case byte(UInt8)
+        case lengthDistance(Int, Int)
+
+        public var description: String {
+            switch self {
+            case .byte(let byte):
+                return "raw symbol: \(byte)"
+            case .lengthDistance(let length, let distance):
+                return "length: \(length), distance: \(distance)"
+            }
+        }
+    }
+
+    // TODO: Remove public when release.
+    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [BLDCode] {
+        precondition(rawBytes.count >= 3, "Too small array!")
+
         var dictionary: [UInt8] = Array(repeating: 0, count: dictSize)
-        var buffer: [UInt8] = []
+        var buffer: [BLDCode] = []
         var dictPos = 0
+
         var inputIndex = 0
+
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
-            if byte == 97 {
-                print()
-            }
-            inputIndex += 1
 
             if let matchStartIndex = dictionary.index(of: byte) {
-                var matchIndex = matchStartIndex + 1
-                if matchIndex >= dictPos {
-                    matchIndex = 0
-                }
-                var matchLength: UInt8 = 1
-
-                while inputIndex < rawBytes.count {
-                    if rawBytes[inputIndex] == dictionary[matchIndex] {
-
-                        matchIndex += 1
-                        if matchIndex >= dictPos {
-                            matchIndex = 0
-                        }
-
-                        inputIndex += 1
-                        matchLength += 1
-                    } else {
+                var matchEndIndex = matchStartIndex + 1
+                while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
+                    if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
+                        matchEndIndex - matchStartIndex >= 258 {
                         break
                     }
+                    matchEndIndex += 1
                 }
 
-                if matchLength < 3 {
-                    buffer.append(byte)
-
+                let matchLength = matchEndIndex - matchStartIndex
+                if matchLength >= 3 {
+                    buffer.append(BLDCode.lengthDistance(matchLength, matchStartIndex))
+                    inputIndex += matchLength
+                } else {
                     dictionary[dictPos] = byte
                     dictPos += 1
-                    if dictPos >= dictSize {
-                        dictPos = 0
-                    }
-                } else {
-                    buffer.append(matchLength)
-                    buffer.append(UInt8(matchStartIndex))
-                }
-            } else {
-                buffer.append(byte)
+                    // TODO: Dictionary index out of bounds.
 
+                    buffer.append(BLDCode.byte(byte))
+                    inputIndex += 1
+                }
+
+            } else {
                 dictionary[dictPos] = byte
                 dictPos += 1
-                if dictPos >= dictSize {
-                    dictPos = 0
-                }
-            }
+                // TODO: Dictionary index out of bounds.
 
+                buffer.append(BLDCode.byte(byte))
+                inputIndex += 1
+            }
         }
+
         return buffer
     }
 
