@@ -120,4 +120,21 @@ class HuffmanTree {
         }
     }
 
+    func code(symbol: Int) -> [UInt8] {
+        var bits: [UInt8] = []
+        if var symbolIndex = self.tree.index(of: symbol) {
+            while symbolIndex > 0 {
+                if symbolIndex % 2 == 0 {
+                    bits.append(1)
+                    symbolIndex /= 2
+                    symbolIndex -= 1
+                } else {
+                    bits.append(0)
+                    symbolIndex /= 2
+                }
+            }
+        }
+        return bits.reversed()
+    }
+
 }
