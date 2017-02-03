@@ -70,24 +70,17 @@ class DeflateTests: XCTestCase {
         self.perform(test: "test7")
     }
 
-    func testLengthEncode() {
+    func testEncode() {
         guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test4")) else {
             XCTFail("Failed to get the answer")
             return
         }
 
-//        print(String(data: answerData, encoding: .utf8)!)
-
         let answerBytes = answerData.toArray(type: UInt8.self)
-
-        print(answerBytes.count)
-
-        let compBytes = Deflate.lengthEncode(answerBytes)
-
-        for code in compBytes {
-            print(code)
-        }
-        print(compBytes.count)
+        let bldCodes = Deflate.lengthEncode(answerBytes)
+        let huffmanEncodedBytes = Deflate.huffmanEncode(bldCodes)
+        let reUncompData = try! Deflate.decompress(compressedData: Data(bytes: huffmanEncodedBytes))
+        print(String(data: reUncompData, encoding: .utf8)!)
     }
 
 }
