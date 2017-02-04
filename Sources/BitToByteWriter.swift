@@ -3,7 +3,7 @@
 //  SWCompression
 //
 //  Created by Timofey Solomko on 03.02.17.
-//  Copyright © 2017 tsolomko. All rights reserved.
+//  Copyright © 2017 Timofey Solomko. All rights reserved.
 //
 
 import Foundation
