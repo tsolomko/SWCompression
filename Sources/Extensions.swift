@@ -8,14 +8,13 @@
 
 import Foundation
 
-// TODO: Remove public when release.
-public extension Data {
+extension Data {
 
-    public func to<T>(type: T.Type) -> T {
+    func to<T>(type: T.Type) -> T {
         return self.withUnsafeBytes { $0.pointee }
     }
 
-    public func toArray<T>(type: T.Type) -> [T] {
+    func toArray<T>(type: T.Type) -> [T] {
         return self.withUnsafeBytes {
             [T](UnsafeBufferPointer(start: $0, count: self.count/MemoryLayout<T>.size))
         }

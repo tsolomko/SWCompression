@@ -230,8 +230,14 @@ public final class Deflate: DecompressionAlgorithm {
         return out
     }
 
-    // TODO: Remove public when release.
-    public static func huffmanEncode(_ bldCodes: [BLDCode]) -> [UInt8] {
+    public static func compress(data: Data) throws -> Data {
+        let bytes = data.toArray(type: UInt8.self)
+        let bldCodes = Deflate.lengthEncode(bytes)
+        let huffmanEncodedBytes = Deflate.huffmanEncode(bldCodes)
+        return Data(bytes: huffmanEncodedBytes)
+    }
+
+    private static func huffmanEncode(_ bldCodes: [BLDCode]) -> [UInt8] {
         /// Empty DWP object for creating Huffman trees.
         var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
 
@@ -319,9 +325,9 @@ public final class Deflate: DecompressionAlgorithm {
         }
     }
 
-    // TODO: Remove public when release.
     // TODO: Expand dictionary size.
-    public static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [BLDCode] {
+        // TODO: We shouldn't discard arrays shorter than 3 elements. Or maybe we should?
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var dictionary: [UInt8] = Array(repeating: 0, count: dictSize)
