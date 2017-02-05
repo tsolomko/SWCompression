@@ -310,8 +310,7 @@ public final class Deflate: DecompressionAlgorithm {
         return bitWriter.buffer
     }
 
-    // TODO: Remove public when release.
-    public enum BLDCode: CustomStringConvertible {
+    private enum BLDCode: CustomStringConvertible {
         case byte(UInt8)
         case lengthDistance(Int, Int)
 
@@ -326,67 +325,15 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Expand dictionary size.
-    private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1944) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8]) -> [BLDCode] {
         // TODO: We shouldn't discard arrays shorter than 3 elements. Or maybe we should?
         precondition(rawBytes.count >= 3, "Too small array!")
 
-        var dictionary: [UInt8] = Array(repeating: 0, count: dictSize)
-        var buffer: [BLDCode] = []
-        var dictPos = 0
-
-        var inputIndex = 0
-
-        while inputIndex < rawBytes.count {
-            let byte = rawBytes[inputIndex]
-
-            if let matchStartIndex = dictionary.index(of: byte) {
-                if dictPos != 0 {
-                    var matchEndIndex = matchStartIndex + 1
-
-                    let distance = dictPos - matchStartIndex // FIXME: This is the problem.
-                    if distance <= 32768 {
-                        while inputIndex + matchEndIndex - matchStartIndex < rawBytes.count {
-                            if rawBytes[inputIndex + matchEndIndex - matchStartIndex] != dictionary[matchEndIndex % dictPos] ||
-                                matchEndIndex - matchStartIndex >= 258 {
-                                break
-                            }
-                            matchEndIndex += 1
-                        }
-                    }
-
-                    let matchLength = matchEndIndex - matchStartIndex
-                    if matchLength >= 3 {
-                        buffer.append(BLDCode.lengthDistance(matchLength, distance))
-                        inputIndex += matchLength
-                    } else {
-                        dictionary[dictPos] = byte
-                        dictPos += 1
-                        // TODO: This is probably is not efficient.
-                        if dictPos >= dictSize {
-                            dictionary.removeFirst()
-                            dictionary.append(0)
-                            dictPos -= 1
-                        }
-
-                        buffer.append(BLDCode.byte(byte))
-                        inputIndex += 1
-                    }
-                }
-            } else {
-                dictionary[dictPos] = byte
-                dictPos += 1
-                // TODO: This is probably is not efficient.
-                if dictPos >= dictSize {
-                    dictionary.removeFirst()
-                    dictionary.append(0)
-                    dictPos -= 1
-                }
-
-                buffer.append(BLDCode.byte(byte))
-                inputIndex += 1
-            }
+        var buffer = [BLDCode]()
+        for byte in rawBytes {
+            buffer.append(.byte(byte))
         }
-        
+
         return buffer
     }
 

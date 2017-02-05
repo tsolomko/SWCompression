@@ -80,8 +80,10 @@ class DeflateTests: XCTestCase {
             XCTFail("Unable to deflate data")
             return
         }
+
         let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
-        print(String(data: reUncompData, encoding: .utf8)!)
+        XCTAssertEqual(answerData, reUncompData,
+                       "Data before compression and after decompression of compressed data aren't equal")
     }
 
 }
