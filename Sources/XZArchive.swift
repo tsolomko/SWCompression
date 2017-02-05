@@ -101,7 +101,7 @@ public final class XZArchive: Archive {
                         break
                     case 0x01:
                         checkSize = 4
-                        let check = pointerData.intFromAlignedBytes(count: 4)
+                        let check = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
                         guard CheckSums.crc32(blockInfo.blockData) == check
                             else { throw XZError.WrongCheck(Data(bytes: out)) }
                     case 0x04:
@@ -142,7 +142,7 @@ public final class XZArchive: Archive {
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: Int) {
+    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.WrongMagic }
@@ -165,7 +165,7 @@ public final class XZArchive: Archive {
             else { throw XZError.FieldReservedValue }
 
         // CRC-32 of flags must be equal to the value in archive.
-        let flagsCRC = pointerData.intFromAlignedBytes(count: 4)
+        let flagsCRC = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
         guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
             else { throw XZError.WrongInfoCRC }
 
@@ -243,7 +243,7 @@ public final class XZArchive: Archive {
             blockBytes.append(byte)
         }
 
-        let blockHeaderCRC = pointerData.intFromAlignedBytes(count: 4)
+        let blockHeaderCRC = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
         guard CheckSums.crc32(blockBytes) == blockHeaderCRC
             else { throw XZError.WrongInfoCRC }
 
@@ -304,17 +304,17 @@ public final class XZArchive: Archive {
             }
         }
 
-        let indexCRC = pointerData.intFromAlignedBytes(count: 4)
+        let indexCRC = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
         guard CheckSums.crc32(indexBytes) == indexCRC
             else { throw XZError.WrongInfoCRC }
 
         return indexBytes.count + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: Int),
+    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: UInt32),
                                       _ indexSize: Int,
                                       _ pointerData: inout DataWithPointer) throws {
-        let footerCRC = pointerData.intFromAlignedBytes(count: 4)
+        let footerCRC = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
         let storedBackwardSize = pointerData.alignedBytes(count: 4)
         let footerStreamFlags = pointerData.alignedBytes(count: 2)
         guard CheckSums.crc32([storedBackwardSize, footerStreamFlags].flatMap { $0 }) == footerCRC

@@ -44,13 +44,13 @@ struct CheckSums {
         return table
     }()
 
-    static func crc32(_ array: [UInt8]) -> Int {
-        var crc: UInt32 = ~0
+    static func crc32(_ array: [UInt8], prevValue: UInt32 = 0) -> UInt32 {
+        var crc = ~prevValue
         for i in 0..<array.count {
-            let index = (Int(crc) & 0xFF) ^ (array[i].toInt())
-            crc = CheckSums.crc32table[index] ^ (crc >> 8)
+            let index = (crc & 0xFF) ^ (UInt32(array[i]))
+            crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
         }
-        return Int(~crc)
+        return ~crc
     }
 
     static func crc64(_ array: [UInt8]) -> UInt64 {
