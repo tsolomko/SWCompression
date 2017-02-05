@@ -76,10 +76,11 @@ class DeflateTests: XCTestCase {
             return
         }
 
-        let answerBytes = answerData.toArray(type: UInt8.self)
-        let bldCodes = Deflate.lengthEncode(answerBytes)
-        let huffmanEncodedBytes = Deflate.huffmanEncode(bldCodes)
-        let reUncompData = try! Deflate.decompress(compressedData: Data(bytes: huffmanEncodedBytes))
+        guard let deflatedData = try? Deflate.compress(data: answerData) else {
+            XCTFail("Unable to deflate data")
+            return
+        }
+        let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
         print(String(data: reUncompData, encoding: .utf8)!)
     }
 
