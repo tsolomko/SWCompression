@@ -283,7 +283,7 @@ public final class Deflate: DecompressionAlgorithm {
                     mask <<= 1
                 }
 
-                let distanceSymbol = (HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30 - 1
+                let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
                 let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
                 let extraDistanceBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
 
