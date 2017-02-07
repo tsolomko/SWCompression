@@ -266,16 +266,17 @@ public final class Deflate: DecompressionAlgorithm {
                 bitWriter.write(bits: mainLiterals.code(symbol: byte.toInt()))
             case .lengthDistance(let length, let distance):
                 let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
-                var lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
+                let lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
+                let extraLengthBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
+                    0 : (((lengthSymbol - 257) >> 2) - 1)
 
                 // TODO: Add check for empty returned array.
                 bitWriter.write(bits: mainLiterals.code(symbol: lengthSymbol))
 
                 var mask = 1
-                while lengthExtra > 0 {
+                for _ in 0..<extraLengthBitsCount {
                     if lengthExtra & mask > 0 {
                         bitWriter.write(bit: 1)
-                        lengthExtra -= mask
                     } else {
                         bitWriter.write(bit: 0)
                     }
@@ -284,22 +285,22 @@ public final class Deflate: DecompressionAlgorithm {
 
                 // TODO: Unwrapping Optional is a bad practice.
                 let distanceSymbol = (HuffmanTree.Constants.distanceBase.index { $0 > distance })! - 1
-                var distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
+                let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
+                let extraDistanceBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
+
 
                 // TODO: Add check for empty returned array.
                 bitWriter.write(bits: mainDistances.code(symbol: distanceSymbol))
 
                 mask = 1
-                while distanceExtra > 0 {
+                for _ in 0..<extraDistanceBitsCount {
                     if distanceExtra & mask > 0 {
                         bitWriter.write(bit: 1)
-                        distanceExtra -= mask
                     } else {
                         bitWriter.write(bit: 0)
                     }
                     mask <<= 1
                 }
-
             }
         }
 
