@@ -330,11 +330,45 @@ public final class Deflate: DecompressionAlgorithm {
         // TODO: We shouldn't discard arrays shorter than 3 elements. Or maybe we should?
         precondition(rawBytes.count >= 3, "Too small array!")
 
-        var buffer = [BLDCode]()
-        for byte in rawBytes {
-            buffer.append(.byte(byte))
-        }
+        var buffer: [BLDCode] = []
+        var inputIndex = 0
 
+        while inputIndex < rawBytes.count {
+            let byte = rawBytes[inputIndex]
+
+            if let matchStartIndex = rawBytes[0..<inputIndex].index(of: byte){
+                /// Cyclic index which is used to compare bytes in match and in input.
+                var repeatIndex = matchStartIndex + 1
+                var matchLength = 1
+
+                let distance = inputIndex - matchStartIndex
+                if distance <= 32768 {
+                    while inputIndex + matchLength < rawBytes.count {
+                        if rawBytes[inputIndex + matchLength] != rawBytes[repeatIndex] ||
+                            matchLength >= 258 {
+                            break
+                        }
+                        matchLength += 1
+                        repeatIndex += 1
+                        if repeatIndex > inputIndex {
+                            repeatIndex = matchStartIndex + 1
+                        }
+                    }
+                }
+
+                if matchLength >= 3 {
+                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
+                    inputIndex += matchLength
+                } else {
+                    buffer.append(BLDCode.byte(byte))
+                    inputIndex += 1
+                }
+            } else {
+                buffer.append(BLDCode.byte(byte))
+                inputIndex += 1
+            }
+        }
+        
         return buffer
     }
 
