@@ -35,7 +35,7 @@ class DeflateTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
 
         #if PERF_TESTS
-            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            print("Performing performance tests for un\(DeflateTests.testType).\(testName)")
             self.measure {
                 _ = try? Deflate.decompress(compressedData: testData)
             }
@@ -53,6 +53,13 @@ class DeflateTests: XCTestCase {
             return
         }
 
+
+        #if PERF_TESTS
+            print("Performing performance tests for \(DeflateTests.testType).\(testName)")
+            self.measure {
+                _ = try? Deflate.compress(data: answerData)
+            }
+        #endif
 
         let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
         XCTAssertEqual(answerData, reUncompData,
@@ -111,8 +118,8 @@ class DeflateTests: XCTestCase {
         self.perform(compressionTest: "test6")
     }
 
-//    func testDeflate7() {
-//        self.perform(compressionTest: "test7")
-//    }
+    func testDeflate7() {
+        self.perform(compressionTest: "test7")
+    }
 
 }

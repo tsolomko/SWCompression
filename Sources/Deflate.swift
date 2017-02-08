@@ -341,7 +341,6 @@ public final class Deflate: DecompressionAlgorithm {
 
     // TODO: Expand dictionary size.
     private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [BLDCode] {
-        // TODO: We shouldn't discard arrays shorter than 3 elements. Or maybe we should?
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var buffer: [BLDCode] = []
@@ -352,9 +351,9 @@ public final class Deflate: DecompressionAlgorithm {
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
 
-            // For last two bytes there certainly will be no match,
-            // so `threeByteCrc` cannot be computed.
-            // To simplify code we check this case explicitly.
+            // For last two bytes there certainly will be no match.
+            // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
+            // To simplify code we check for this case explicitly.
             if inputIndex >= rawBytes.count - 2 {
                 buffer.append(BLDCode.byte(byte))
                 if inputIndex != rawBytes.count - 1 { // For the case of two remaining bytes.
