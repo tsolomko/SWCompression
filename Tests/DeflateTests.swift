@@ -103,7 +103,9 @@ class DeflateTests: XCTestCase {
         self.perform(compressionTest: "test4")
     }
 
-    // - Note: Comrepssion Test #5 is skipped intentionally: because of precondition() in Deflate.swift.
+    func testDeflate5() {
+        self.perform(compressionTest: "test5")
+    }
 
     func testDeflate6() {
         self.perform(compressionTest: "test6")

@@ -232,11 +232,43 @@ public final class Deflate: DecompressionAlgorithm {
 
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)
+
+        if bytes.count < 3 {
+            return Data(bytes: Deflate.createUncompressedBlock(bytes))
+        }
+
         let bldCodes = Deflate.lengthEncode(bytes)
         let huffmanEncodedBytes = Deflate.encodeHuffmanBlock(bldCodes)
         return Data(bytes: huffmanEncodedBytes)
     }
 
+    private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
+        let bitWriter = BitToByteWriter(bitOrder: .reversed)
+
+        // Write block header.
+        // Note: Only one block is supported for now.
+        bitWriter.write(bit: 1)
+        bitWriter.write(bits: [0, 0])
+
+        // Before writing lengths we need to discard remaining bits in current byte.
+        bitWriter.finish()
+
+        // Write data's length.
+        bitWriter.write(number: bytes.count, bitsCount: 16)
+        // Write data's n-length.
+        bitWriter.write(number: bytes.count ^ (1 << 16 - 1), bitsCount: 16)
+
+        // Finishing block header.
+        bitWriter.finish()
+        var out = bitWriter.buffer
+
+        // Write actual data.
+        for byte in bytes {
+            out.append(byte)
+        }
+
+        return out
+    }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> [UInt8] {
         let bitWriter = BitToByteWriter(bitOrder: .reversed)
