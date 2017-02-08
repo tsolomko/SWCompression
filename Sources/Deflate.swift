@@ -233,21 +233,22 @@ public final class Deflate: DecompressionAlgorithm {
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)
         let bldCodes = Deflate.lengthEncode(bytes)
-        let huffmanEncodedBytes = Deflate.huffmanEncode(bldCodes)
+        let huffmanEncodedBytes = Deflate.encodeHuffmanBlock(bldCodes)
         return Data(bytes: huffmanEncodedBytes)
     }
 
-    private static func huffmanEncode(_ bldCodes: [BLDCode]) -> [UInt8] {
-        /// Empty DWP object for creating Huffman trees.
-        var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
 
+    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> [UInt8] {
         let bitWriter = BitToByteWriter(bitOrder: .reversed)
+
         // Write block header.
         // Note: For now it is only static huffman blocks.
         // Note: Only one block is supported for now.
-
         bitWriter.write(bit: 1)
         bitWriter.write(bits: [1, 0])
+
+        /// Empty DWP object for creating Huffman trees.
+        var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
 
         // Constructing Huffman trees for the case of block with preset alphabets.
         // In this case codes for literals and distances are fixed.
@@ -272,16 +273,7 @@ public final class Deflate: DecompressionAlgorithm {
 
                 // TODO: Add check for empty returned array.
                 bitWriter.write(bits: mainLiterals.code(symbol: lengthSymbol))
-
-                var mask = 1
-                for _ in 0..<extraLengthBitsCount {
-                    if lengthExtra & mask > 0 {
-                        bitWriter.write(bit: 1)
-                    } else {
-                        bitWriter.write(bit: 0)
-                    }
-                    mask <<= 1
-                }
+                bitWriter.write(number: lengthExtra, bitsCount: extraLengthBitsCount)
 
                 let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
                 let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
@@ -290,16 +282,7 @@ public final class Deflate: DecompressionAlgorithm {
 
                 // TODO: Add check for empty returned array.
                 bitWriter.write(bits: mainDistances.code(symbol: distanceSymbol))
-
-                mask = 1
-                for _ in 0..<extraDistanceBitsCount {
-                    if distanceExtra & mask > 0 {
-                        bitWriter.write(bit: 1)
-                    } else {
-                        bitWriter.write(bit: 0)
-                    }
-                    mask <<= 1
-                }
+                bitWriter.write(number: distanceExtra, bitsCount: extraDistanceBitsCount)
             }
         }
 
