@@ -325,28 +325,45 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Expand dictionary size.
-    private static func lengthEncode(_ rawBytes: [UInt8]) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [BLDCode] {
         // TODO: We shouldn't discard arrays shorter than 3 elements. Or maybe we should?
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var buffer: [BLDCode] = []
         var inputIndex = 0
+        /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
+        var dictionary = [UInt32 : Int]()
 
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
 
-            if let matchStartIndex = rawBytes[0..<inputIndex].index(of: byte){
-                /// Cyclic index which is used to compare bytes in match and in input.
-                var repeatIndex = matchStartIndex + 1
-                var matchLength = 1
+            // For last two bytes there certainly will be no match,
+            // so `threeByteCrc` cannot be computed.
+            // To simplify code we check this case explicitly.
+            if inputIndex >= rawBytes.count - 2 {
+                buffer.append(BLDCode.byte(byte))
+                if inputIndex != rawBytes.count - 1 { // For the case of two remaining bytes.
+                    buffer.append(BLDCode.byte(rawBytes[inputIndex + 1]))
+                }
+                break
+            }
 
+            let threeByteCrc = CheckSums.crc32([rawBytes[inputIndex],
+                                                rawBytes[inputIndex + 1],
+                                                rawBytes[inputIndex + 2]])
+
+            if let matchStartIndex = dictionary[threeByteCrc] {
+                /// - Note: Minimum match length equals to three.
+                var matchLength = 3
+                /// Cyclic index which is used to compare bytes in match and in input.
+                var repeatIndex = matchStartIndex + matchLength
+
+                /// - Note: Maximum allowed distance equals to 32768.
                 let distance = inputIndex - matchStartIndex
+
                 if distance <= 32768 {
-                    while inputIndex + matchLength < rawBytes.count {
-                        if rawBytes[inputIndex + matchLength] != rawBytes[repeatIndex] ||
-                            matchLength >= 258 {
-                            break
-                        }
+                    while inputIndex + matchLength < rawBytes.count &&
+                        rawBytes[inputIndex + matchLength] == rawBytes[repeatIndex] && matchLength < 258 {
                         matchLength += 1
                         repeatIndex += 1
                         if repeatIndex > inputIndex {
@@ -355,17 +372,19 @@ public final class Deflate: DecompressionAlgorithm {
                     }
                 }
 
-                if matchLength >= 3 {
-                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
-                    inputIndex += matchLength
-                } else {
-                    buffer.append(BLDCode.byte(byte))
-                    inputIndex += 1
-                }
+                // We need to update position of this match to keep distances as small as possible.
+                dictionary[threeByteCrc] = inputIndex
+
+                buffer.append(BLDCode.lengthDistance(matchLength, distance))
+                inputIndex += matchLength
             } else {
+                // We need to remember where we met this three-byte sequence.
+                dictionary[threeByteCrc] = inputIndex
+
                 buffer.append(BLDCode.byte(byte))
                 inputIndex += 1
             }
+            // TODO: Add limitation for dictionary size.
         }
         
         return buffer
