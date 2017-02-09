@@ -45,7 +45,8 @@ class HuffmanTree {
 
     private var pointerData: DataWithPointer
 
-    private var tree: [Int]
+    /// Array of [code, bitsCount] arrays.
+    private var tree: [[Int]]
     private let leafCount: Int
 
     init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer) {
@@ -92,7 +93,7 @@ class HuffmanTree {
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = 1 << (lengths.last![1] + 1)
         // Create a tree (array, actually) with all leaves equal nil.
-        self.tree = Array(repeating: -1, count: leafCount)
+        self.tree = Array(repeating: [-1, -1], count: leafCount)
 
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
@@ -114,7 +115,7 @@ class HuffmanTree {
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = length[0]
+            self.tree[index] = length
         }
     }
 
@@ -132,27 +133,30 @@ class HuffmanTree {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else { return -1 }
-            if self.tree[index] > -1 {
-                return self.tree[index]
+            if self.tree[index][0] > -1 {
+                return self.tree[index][0]
             }
         }
     }
 
     func code(symbol: Int) -> [UInt8] {
-        var bits: [UInt8] = []
-        if var symbolIndex = self.tree.index(of: symbol) {
+        if var symbolIndex = self.tree.index(where: { $0[0] == symbol }) {
+            var bits: [UInt8] = Array(repeating: 0, count: self.tree[symbolIndex][1])
+            var i = bits.count - 1
             while symbolIndex > 0 {
                 if symbolIndex % 2 == 0 {
-                    bits.append(1)
+                    bits[i] = 1
                     symbolIndex /= 2
                     symbolIndex -= 1
                 } else {
-                    bits.append(0)
                     symbolIndex /= 2
                 }
+                i -= 1
             }
+            return bits
+        } else {
+            return []
         }
-        return bits.reversed()
     }
 
 }
