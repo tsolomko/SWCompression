@@ -329,7 +329,7 @@ public final class Deflate: DecompressionAlgorithm {
         case byte(UInt8)
         case lengthDistance(Int, Int)
 
-        public var description: String {
+        var description: String {
             switch self {
             case .byte(let byte):
                 return "raw symbol: \(byte)"
