@@ -100,8 +100,6 @@ final class BitToByteWriter {
         case .straight:
             self.bitMask = 128
         }
-        self.buffer.append(self.currentByte)
-        self.currentByte = 0
     }
 
 }
