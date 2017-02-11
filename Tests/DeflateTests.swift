@@ -53,6 +53,9 @@ class DeflateTests: XCTestCase {
             return
         }
 
+        let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
+        XCTAssertEqual(answerData, reUncompData,
+                       "Data before compression and after decompression of compressed data aren't equal")
 
         #if PERF_TESTS
             print("Performing performance tests for \(DeflateTests.testType).\(testName)")
@@ -61,9 +64,6 @@ class DeflateTests: XCTestCase {
             }
         #endif
 
-        let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
-        XCTAssertEqual(answerData, reUncompData,
-                       "Data before compression and after decompression of compressed data aren't equal")
     }
 
     func testUnDeflate1() {

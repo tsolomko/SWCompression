@@ -367,6 +367,9 @@ public final class Deflate: DecompressionAlgorithm {
                                                 rawBytes[inputIndex + 2]])
 
             if let matchStartIndex = dictionary[threeByteCrc] {
+                // We need to update position of this match to keep distances as small as possible.
+                dictionary[threeByteCrc] = inputIndex
+
                 /// - Note: Minimum match length equals to three.
                 var matchLength = 3
                 /// Cyclic index which is used to compare bytes in match and in input.
@@ -375,6 +378,7 @@ public final class Deflate: DecompressionAlgorithm {
                 /// - Note: Maximum allowed distance equals to 32768.
                 let distance = inputIndex - matchStartIndex
 
+                // Again, the distance cannot be greater than 32768.
                 if distance <= 32768 {
                     while inputIndex + matchLength < rawBytes.count &&
                         rawBytes[inputIndex + matchLength] == rawBytes[repeatIndex] && matchLength < 258 {
@@ -384,13 +388,12 @@ public final class Deflate: DecompressionAlgorithm {
                             repeatIndex = matchStartIndex + 1
                         }
                     }
+                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
+                    inputIndex += matchLength
+                } else {
+                    buffer.append(BLDCode.byte(byte))
+                    inputIndex += 1
                 }
-
-                // We need to update position of this match to keep distances as small as possible.
-                dictionary[threeByteCrc] = inputIndex
-
-                buffer.append(BLDCode.lengthDistance(matchLength, distance))
-                inputIndex += matchLength
             } else {
                 // We need to remember where we met this three-byte sequence.
                 dictionary[threeByteCrc] = inputIndex
