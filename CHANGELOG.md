@@ -1,4 +1,9 @@
 # Changelog
+v2.2.0-test
+----------------
+- Deflate compression (limited).
+- More ZIP public functions (API).
+
 v2.1.0
 ----------------
 - ZIP containers support.

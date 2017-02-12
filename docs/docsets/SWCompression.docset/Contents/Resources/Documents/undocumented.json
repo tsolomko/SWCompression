@@ -1,6 +1,61 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Deflate.swift",
+      "line": 228,
+      "symbol": "Deflate.compress(data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 50,
+      "symbol": "ZipEntry",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 54,
+      "symbol": "ZipEntry.fileName",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 58,
+      "symbol": "ZipEntry.fileComment",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 62,
+      "symbol": "ZipEntry.fileAttributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 77,
+      "symbol": "ZipContainer.entries",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 79,
+      "symbol": "ZipContainer.init(containerData:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 110,
+      "symbol": "ZipContainer.data(for:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/timofeysolomko/Developer/SWCompression"
 }
