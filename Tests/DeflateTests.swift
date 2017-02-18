@@ -118,8 +118,8 @@ class DeflateTests: XCTestCase {
         self.perform(compressionTest: "test6")
     }
 
-    func testDeflate7() {
-        self.perform(compressionTest: "test7")
-    }
+//    func testDeflate7() {
+//        self.perform(compressionTest: "test7")
+//    }
 
 }
