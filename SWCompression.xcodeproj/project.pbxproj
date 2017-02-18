@@ -41,6 +41,10 @@
 		0680E1B11DDA2D7C005C05EB /* ZlibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */; };
 		0680E1B31DDA3D0A005C05EB /* GzipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B21DDA3D0A005C05EB /* GzipTests.swift */; };
 		0680E1B51DDA4076005C05EB /* Bzip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */; };
+		0681B3DE1E44F674001A9D79 /* BitToByteWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */; };
+		0681B3DF1E44F674001A9D79 /* BitToByteWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */; };
+		0681B3E01E44F674001A9D79 /* BitToByteWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */; };
+		0681B3E11E44F674001A9D79 /* BitToByteWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */; };
 		06991C701E05A9F70030FF07 /* test9.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6D1E05A9F70030FF07 /* test9.lzma */; };
 		06991C711E05A9F70030FF07 /* test10.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6E1E05A9F70030FF07 /* test10.lzma */; };
 		06991C721E05A9F70030FF07 /* test11.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6F1E05A9F70030FF07 /* test11.lzma */; };
@@ -168,6 +172,7 @@
 		0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
 		0680E1B21DDA3D0A005C05EB /* GzipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipTests.swift; sourceTree = "<group>"; };
 		0680E1B41DDA4075005C05EB /* Bzip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bzip2Tests.swift; sourceTree = "<group>"; };
+		0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitToByteWriter.swift; path = Sources/BitToByteWriter.swift; sourceTree = SOURCE_ROOT; };
 		06991C6D1E05A9F70030FF07 /* test9.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.lzma; sourceTree = "<group>"; };
 		06991C6E1E05A9F70030FF07 /* test10.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test10.lzma; sourceTree = "<group>"; };
 		06991C6F1E05A9F70030FF07 /* test11.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test11.lzma; sourceTree = "<group>"; };
@@ -310,6 +315,7 @@
 				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
+				0681B3DD1E44F674001A9D79 /* BitToByteWriter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -769,6 +775,7 @@
 				06E234831E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20E1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
+				0681B3DF1E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
 				069D0FE71E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				069D0FF61E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
@@ -794,6 +801,7 @@
 				06E234841E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20F1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
+				0681B3E01E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
 				069D0FE81E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				065569711DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				069D0FF71E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
@@ -819,6 +827,7 @@
 				06E234851E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC2101E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
+				0681B3E11E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
 				069D0FE91E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */,
 				069D0FF81E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
@@ -844,6 +853,7 @@
 				06E234821E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20D1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
+				0681B3DE1E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
 				069D0FE61E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06A3933B1DE0709300182E12 /* Deflate.swift in Sources */,
 				069D0FF51E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,

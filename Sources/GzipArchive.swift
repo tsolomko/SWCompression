@@ -168,7 +168,7 @@ public struct GzipHeader {
         // Some archives may contain 2-bytes checksum
         if flags & Flags.fhcrc != 0 {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
-            let crc16 = pointerData.intFromAlignedBytes(count: 2)
+            let crc16 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 2))
             let ourCRC32 = CheckSums.crc32(headerBytes)
             guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.WrongHeaderCRC }
         }
@@ -206,7 +206,7 @@ public final class GzipArchive: Archive {
 
             let memberData = try Deflate.decompress(&pointerData)
 
-            let crc32 = pointerData.intFromAlignedBytes(count: 4)
+            let crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
             guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC(Data(bytes: out)) }
 
             let isize = pointerData.intFromAlignedBytes(count: 4)

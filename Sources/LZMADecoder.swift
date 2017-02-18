@@ -307,7 +307,6 @@ final class LZMADecoder {
                     lenState = LZMAConstants.numLenToPosStates - 1
                 }
 
-
                 /// Defines decoding scheme for distance value.
                 let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder)
                 if posSlot < 4 {

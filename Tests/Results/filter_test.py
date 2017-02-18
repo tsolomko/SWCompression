@@ -7,7 +7,7 @@ out_filename = sys.argv[2]
 inp = open(filename)
 content = inp.read()
 
-p = re.compile('( average: \d{1,3}\.\d{1,3})|(\w{2,7}\.test\d)')
+p = re.compile('( average: \d{1,3}\.\d{1,3})|(\w{2,9}\.test\d)')
 matches = p.findall(content)
 f = open(out_filename, 'w')
 for i, match in enumerate(matches):
