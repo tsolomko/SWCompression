@@ -78,27 +78,20 @@ final class BitToByteWriter {
         }
     }
 
-    func write(number: Int, bitsCount: Int) {
-        var mask = 1
+    func write(number: Int, bitsCount: Int, bitOrder: BitOrder = .straight) {
+        var mask = bitOrder == .straight ? 1 : 1 << bitsCount
         for _ in 0..<bitsCount {
             if number & mask > 0 {
                 self.write(bit: 1)
             } else {
                 self.write(bit: 0)
             }
-            mask <<= 1
-        }
-    }
-
-    func writeReversed(number: Int, bitsCount: Int) {
-        var mask = 1 << bitsCount
-        for _ in 0..<bitsCount {
-            if number & mask > 0 {
-                self.write(bit: 1)
-            } else {
-                self.write(bit: 0)
+            switch bitOrder {
+            case .straight:
+                mask <<= 1
+            case .reversed:
+                mask >>= 1
             }
-            mask >>= 1
         }
     }
 
