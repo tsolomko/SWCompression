@@ -8,6 +8,9 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -20,6 +23,12 @@
           SWCompression Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -122,6 +131,9 @@
                 <a class="nav-group-task-link" href="Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ZipEntry.html">ZipEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader.html">ZlibHeader</a>
               </li>
               <li class="nav-group-task">
@@ -174,7 +186,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA2.swift#L38-L106">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/LZMA2.swift#L38-L106">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -209,7 +221,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/GzipArchive.swift#L180-L221">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/GzipArchive.swift#L180-L221">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -244,7 +256,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZipContainer.swift#L51-L279">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/ZipContainer.swift#L77-L236">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -279,7 +291,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/LZMA.swift#L44-L90">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/LZMA.swift#L44-L90">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -314,7 +326,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/ZlibArchive.swift#L125-L157">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/ZlibArchive.swift#L125-L157">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -349,7 +361,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/Deflate.swift#L32-L230">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/Deflate.swift#L32-L419">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -384,7 +396,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/BZip2.swift#L47-L277">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/BZip2.swift#L47-L277">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -419,7 +431,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.1.0/Sources/XZArchive.swift#L58-L346">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0/Sources/XZArchive.swift#L58-L346">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -433,7 +445,7 @@
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

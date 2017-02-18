@@ -162,7 +162,6 @@ public final class Deflate: DecompressionAlgorithm {
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
-                        print("raw symbol: \(nextSymbol)")
                         out.append(nextSymbol.toUInt8())
                     } else if nextSymbol == 256 {
                         // It is a symbol indicating the end of data.
@@ -177,8 +176,6 @@ public final class Deflate: DecompressionAlgorithm {
                         let length = HuffmanTree.Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
-                        print("length: \(length)")
-
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
                         guard distanceCode != -1 else { throw DeflateError.SymbolNotFound }
@@ -192,8 +189,6 @@ public final class Deflate: DecompressionAlgorithm {
                         let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
                             pointerData.intFromBits(count: extraDistance)
 
-                        print("distance: \(distance)")
-                        
                         // We should repeat last 'distance' amount of data.
                         // The amount of times we do this is round(length / distance).
                         // length actually indicates the amount of data we get from this nextSymbol.
@@ -230,6 +225,16 @@ public final class Deflate: DecompressionAlgorithm {
         return out
     }
 
+    /**
+     Compresses `data` with DEFLATE algortihm.
+
+     If during compression something goes wrong `DeflateError` will be thrown.
+
+     - Note: Currently, SWCompression creates only one block for all data
+     and the block can either be uncompressed or compressed with static Huffman encoding.
+     Uncompressed block is created if amount of data provided is less than 3 bytes and
+     static Huffman is used in all other cases.
+     */
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)
 
@@ -238,7 +243,7 @@ public final class Deflate: DecompressionAlgorithm {
         }
 
         let bldCodes = Deflate.lengthEncode(bytes)
-        let huffmanEncodedBytes = Deflate.encodeHuffmanBlock(bldCodes)
+        let huffmanEncodedBytes = try Deflate.encodeHuffmanBlock(bldCodes)
         return Data(bytes: huffmanEncodedBytes)
     }
 
@@ -270,7 +275,7 @@ public final class Deflate: DecompressionAlgorithm {
         return out
     }
 
-    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> [UInt8] {
+    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
         let bitWriter = BitToByteWriter(bitOrder: .reversed)
 
         // Write block header.
@@ -295,25 +300,30 @@ public final class Deflate: DecompressionAlgorithm {
         for code in bldCodes {
             switch code {
             case .byte(let byte):
-                // TODO: Add check for empty returned array.
-                bitWriter.write(bits: mainLiterals.code(symbol: byte.toInt()))
+                let codeOfByte = mainLiterals.code(symbol: byte.toInt())
+                guard codeOfByte.count > 0
+                    else { throw DeflateError.SymbolNotFound }
+                bitWriter.write(bits: codeOfByte)
             case .lengthDistance(let length, let distance):
                 let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
                 let lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
                 let extraLengthBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                     0 : (((lengthSymbol - 257) >> 2) - 1)
 
-                // TODO: Add check for empty returned array.
-                bitWriter.write(bits: mainLiterals.code(symbol: lengthSymbol))
+                let codeOfLength = mainLiterals.code(symbol: lengthSymbol)
+                guard codeOfLength.count > 0
+                    else { throw DeflateError.SymbolNotFound }
+                bitWriter.write(bits: codeOfLength)
                 bitWriter.write(number: lengthExtra, bitsCount: extraLengthBitsCount)
 
                 let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
                 let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
                 let extraDistanceBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
 
-
-                // TODO: Add check for empty returned array.
-                bitWriter.write(bits: mainDistances.code(symbol: distanceSymbol))
+                let codeOfDistance = mainDistances.code(symbol: distanceSymbol)
+                guard codeOfDistance.count > 0
+                    else { throw DeflateError.SymbolNotFound }
+                bitWriter.write(bits: codeOfDistance)
                 bitWriter.write(number: distanceExtra, bitsCount: extraDistanceBitsCount)
             }
         }
@@ -339,8 +349,7 @@ public final class Deflate: DecompressionAlgorithm {
         }
     }
 
-    // TODO: Expand dictionary size.
-    private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8]) -> [BLDCode] {
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var buffer: [BLDCode] = []

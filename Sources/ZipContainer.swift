@@ -47,18 +47,22 @@ public enum ZipError: Error {
     case WrongCRC32
 }
 
+/// Represents either a file or directory entry inside ZIP archive.
 public struct ZipEntry {
 
     fileprivate let cdEntry: CentralDirectoryEntry
 
+    /// Name of the file or directory.
     public var fileName: String? {
         return self.cdEntry.fileComment
     }
 
+    /// Comment associated with the entry.
     public var fileComment: String? {
         return self.cdEntry.fileComment
     }
 
+    /// File or directory attributes related to the file system of archive's creator.
     public var fileAttributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
@@ -74,8 +78,28 @@ public class ZipContainer {
 
     private var pointerData: DataWithPointer
 
+    /// All file and directory entries found in ZIP archive (in its Central Directory).
     public private(set) var entries: [ZipEntry]
 
+    /**
+     Tries to open ZIP archive and parse its Central Directory. 
+     If parsing is successful then `entries` property will contain all directory or file entries found in archive.
+     
+     - Important: The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT assume that this is the case.
+
+     - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
+     One can check this by looking at the size of entry's data (it should be 0 for directory) AND
+     the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
+
+     - Note: Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.
+
+     - Parameter containerData: Data of ZIP container.
+
+     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
+     It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.
+    */
     public init(containerData data: Data) throws {
         /// Object with input data which supports convenient work with bit shifts.
         self.pointerData = DataWithPointer(data: data, bitOrder: .reversed)
@@ -107,6 +131,17 @@ public class ZipContainer {
 
     }
 
+    /**
+     Returns data associated with provided ZipEntry.
+     
+     - Note: Returned `Data` object with the size of 0 can either indicate that the entry is an empty file
+     or it is a directory.
+     
+     - Parameter zipEntry: file or directory entry from current container.
+
+     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
+     An error can indicate that the container is damaged.
+    */
     public func data(for zipEntry: ZipEntry) throws -> Data {
         // Now, let's move to the location of local header.
         pointerData.index = Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.offset))
@@ -185,7 +220,7 @@ public class ZipContainer {
      - Parameter containerData: Data of ZIP container.
      
      - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
-     It may indicate that either the container is damaged or it might not be ZIP container or  compressed with Deflate at all.
+     It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.
 
      - Returns: Array of pairs (tuples) where first member is `entryName` and second member is `entryData`.
      */

@@ -28,10 +28,12 @@ Features
 ----------------
 - Containers:
   - ZIP (complying to ISO/IEC 21320 standard)
-- (De)compression algorithms:
+- Decompression algorithms:
   - LZMA/LZMA2
   - Deflate
   - BZip2
+- Compression algorithms:
+  - Deflate
 - Archives:
   - XZ
   - GZip
@@ -162,7 +164,6 @@ To sum up, it is __highly recommended__ to build SWCompression with 'Release' co
 Future plans
 -------------
 - Tar unarchiving.
-- Deflate compression.
 - BZip2 compression.
 - Something else...
 
