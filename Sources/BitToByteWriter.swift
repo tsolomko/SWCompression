@@ -90,6 +90,18 @@ final class BitToByteWriter {
         }
     }
 
+    func writeReversed(number: Int, bitsCount: Int) {
+        var mask = 1 << bitsCount
+        for _ in 0..<bitsCount {
+            if number & mask > 0 {
+                self.write(bit: 1)
+            } else {
+                self.write(bit: 0)
+            }
+            mask >>= 1
+        }
+    }
+
     func finish() {
         self.buffer.append(self.currentByte)
         self.currentByte = 0
