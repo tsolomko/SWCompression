@@ -1,8 +1,8 @@
 # Changelog
-v2.2.0-test
+v2.2.0
 ----------------
-- Deflate compression (limited).
-- More ZIP public functions (API).
+- Sowmewhat limited support for Deflate compression.
+- API for parsing ZIP entries.
 
 v2.1.0
 ----------------
