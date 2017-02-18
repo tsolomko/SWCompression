@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (93% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -152,7 +152,13 @@
         <section class="section">
           <div class="section-content">
             <h1>ZipEntry</h1>
-            <p>Undocumented</p>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ZipEntry</span></code></pre>
+
+                </div>
+              </div>
+            <p>Represents either a file or directory entry inside ZIP archive.</p>
 
           </div>
         </section>
@@ -174,11 +180,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Name of the file or directory.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L54-L56">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L56-L58">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -196,11 +210,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Comment associated with the entry.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">fileComment</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L58-L60">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L61-L63">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -218,11 +240,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>File or directory attributes related to the file system of archive&rsquo;s creator.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">fileAttributes</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
+
+                        </div>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L62-L64">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.2.0-test/Sources/ZipContainer.swift#L66-L68">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

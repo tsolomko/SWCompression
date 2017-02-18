@@ -225,6 +225,16 @@ public final class Deflate: DecompressionAlgorithm {
         return out
     }
 
+    /**
+     Compresses `data` with DEFLATE algortihm.
+
+     If during compression something goes wrong `DeflateError` will be thrown.
+
+     - Note: Currently, SWCompression creates only one block for all data
+     and the block can either be uncompressed or compressed with static Huffman encoding.
+     Uncompressed block is created if amount of data provided is less than 3 bytes and
+     static Huffman is used in all other cases.
+     */
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)
 
@@ -335,7 +345,7 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     // TODO: Expand dictionary size.
-    private static func lengthEncode(_ rawBytes: [UInt8], _ dictSize: Int = 1 << 12) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8]) -> [BLDCode] {
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var buffer: [BLDCode] = []
