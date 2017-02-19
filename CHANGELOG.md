@@ -1,7 +1,7 @@
 # Changelog
 v2.2.0
 ----------------
-- Sowmewhat limited support for Deflate compression.
+- Somewhat limited support for Deflate compression.
 - API for parsing ZIP entries.
 
 v2.1.0
