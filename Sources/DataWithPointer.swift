@@ -162,10 +162,22 @@ final class DataWithPointer {
     }
 
     func uint64FromAlignedBytes(count: UInt64) -> UInt64 {
+        precondition(count <= 8, "UInt64 cannot store more than 8 bytes of data!")
         self.skipUntilNextByte()
         var result: UInt64 = 0
         for i: UInt64 in 0..<count {
             result |= UInt64(self.bitArray[self.index]) << (8 * i)
+            self.index += 1
+        }
+        return result
+    }
+
+    func uint32FromAlignedBytes(count: UInt32) -> UInt32 {
+        precondition(count <= 4, "UInt32 cannot store more than 4 bytes of data!")
+        self.skipUntilNextByte()
+        var result: UInt32 = 0
+        for i: UInt32 in 0..<count {
+            result |= UInt32(self.bitArray[self.index]) << (8 * i)
             self.index += 1
         }
         return result
