@@ -243,6 +243,42 @@ public final class Deflate: DecompressionAlgorithm {
         }
 
         let bldCodes = Deflate.lengthEncode(bytes)
+
+        // Let's count possible sizes according to statistics.
+
+        // Uncompressed block size calculation is simple:
+        let uncompBlockSize = 1 + 2 + 2 + bytes.count // Header, length, n-length and data.
+
+        // Static Huffman size is more complicated...
+        var bitsCount = 3 // Three bits for block's header.
+        for (symbol, symbolCount) in bldCodes.stats.enumerated() {
+            let codeSize: Int
+            // There are extra bits for some codes.
+            let extraBitsCount: Int
+            switch symbol {
+            case 0...143:
+                codeSize = 8
+                extraBitsCount = 0
+            case 144...255:
+                codeSize = 9
+                extraBitsCount = 0
+            case 256...279:
+                codeSize = 7
+                extraBitsCount = 256 <= symbol && symbol <= 260 ? 0 : (((symbol - 257) >> 2) - 1)
+            case 280...285:
+                codeSize = 8
+                extraBitsCount = symbol == 285 ? 0 : (((symbol - 257) >> 2) - 1)
+            case 286...315:
+                codeSize = 5
+                extraBitsCount = symbol == 286 || symbol == 287 ? 0 : (((symbol - 286) >> 1) - 1)
+            default:
+                throw DeflateError.SymbolNotFound
+            }
+            bitsCount += (symbolCount * (codeSize + extraBitsCount))
+        }
+
+        let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
+
         let huffmanEncodedBytes = try Deflate.encodeHuffmanBlock(bldCodes.codes)
         return Data(bytes: huffmanEncodedBytes)
     }
