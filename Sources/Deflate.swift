@@ -439,7 +439,7 @@ public final class Deflate: DecompressionAlgorithm {
                     let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
                     buffer.append(BLDCode.lengthDistance(matchLength, distance, lengthSymbol, distanceSymbol))
                     stats[lengthSymbol] += 1
-                    stats[285 + distanceSymbol] += 1
+                    stats[286 + distanceSymbol] += 1
                     inputIndex += matchLength
                 } else {
                     buffer.append(BLDCode.byte(byte))
