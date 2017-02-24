@@ -1,7 +1,12 @@
 # Changelog
+v2.2.1
+----------------
+- Now creates uncompressed block instead of huffman if it will provide better results (in terms of "compression").
+- Small internal changes.
+
 v2.2.0
 ----------------
-- Sowmewhat limited support for Deflate compression.
+- Somewhat limited support for Deflate compression.
 - API for parsing ZIP entries.
 
 v2.1.0

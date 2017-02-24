@@ -108,7 +108,7 @@ public class ZipContainer {
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
             // Check signature.
-            if pointerData.uint64FromAlignedBytes(count: 4) == 0x06054b50 {
+            if pointerData.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
                 // We found it!
                 break
             }
@@ -185,14 +185,14 @@ public class ZipContainer {
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
-            let ddSignature = pointerData.uint64FromAlignedBytes(count: 4)
+            let ddSignature = pointerData.uint32FromAlignedBytes(count: 4)
             if ddSignature != 0x08074b50 {
                 pointerData.index -= 4
             }
             // Now, let's update from CD with values from data descriptor.
-            crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
-            compSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
-            uncompSize = Int(UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4)))
+            crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+            compSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
+            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
@@ -251,7 +251,7 @@ struct LocalHeader {
 
     init(_ pointerData: inout DataWithPointer) throws {
         // Check signature.
-        guard pointerData.uint64FromAlignedBytes(count: 4) == 0x04034b50
+        guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
             else { throw ZipError.WrongSignature }
 
         self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
@@ -263,7 +263,7 @@ struct LocalHeader {
         self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
         self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
 
-        self.crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.crc32 = pointerData.uint32FromAlignedBytes(count: 4)
 
         self.compSize = pointerData.uint64FromAlignedBytes(count: 4)
         self.uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
@@ -321,16 +321,16 @@ struct CentralDirectoryEntry {
     let fileName: String?
     let fileComment: String?
 
-    private(set) var diskNumberStart: UInt64
+    private(set) var diskNumberStart: UInt32
 
     let internalFileAttributes: Int
     let externalFileAttributes: UInt32
 
     private(set) var offset: UInt64
 
-    init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt64) throws {
+    init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
-        guard pointerData.uint64FromAlignedBytes(count: 4) == 0x02014b50
+        guard pointerData.uint32FromAlignedBytes(count: 4) == 0x02014b50
             else { throw ZipError.WrongSignature }
 
         self.versionMadeBy = pointerData.intFromAlignedBytes(count: 2)
@@ -343,7 +343,7 @@ struct CentralDirectoryEntry {
         self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
         self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
 
-        self.crc32 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.crc32 = pointerData.uint32FromAlignedBytes(count: 4)
 
         self.compSize = pointerData.uint64FromAlignedBytes(count: 4)
         self.uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
@@ -352,10 +352,10 @@ struct CentralDirectoryEntry {
         let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
         let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
 
-        self.diskNumberStart = pointerData.uint64FromAlignedBytes(count: 2)
+        self.diskNumberStart = pointerData.uint32FromAlignedBytes(count: 2)
 
         self.internalFileAttributes = pointerData.intFromAlignedBytes(count: 2)
-        self.externalFileAttributes = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 4))
+        self.externalFileAttributes = pointerData.uint32FromAlignedBytes(count: 4)
 
         self.offset = pointerData.uint64FromAlignedBytes(count: 4)
 
@@ -381,7 +381,7 @@ struct CentralDirectoryEntry {
                     self.offset = pointerData.uint64FromAlignedBytes(count: 8)
                 }
                 if self.diskNumberStart == 0xFFFF {
-                    self.diskNumberStart = pointerData.uint64FromAlignedBytes(count: 4)
+                    self.diskNumberStart = pointerData.uint32FromAlignedBytes(count: 4)
                 }
             default:
                 pointerData.index += size
@@ -410,8 +410,8 @@ struct CentralDirectoryEntry {
 
 struct EndOfCentralDirectory {
 
-    private(set) var currentDiskNumber: UInt64
-    private(set) var cdDiskNumber: UInt64
+    private(set) var currentDiskNumber: UInt32
+    private(set) var cdDiskNumber: UInt32
     private(set) var cdEntries: UInt64
     private(set) var cdSize: UInt64
     private(set) var cdOffset: UInt64
@@ -421,9 +421,9 @@ struct EndOfCentralDirectory {
         var zip64RecordExists = false
 
         /// Number of current disk.
-        self.currentDiskNumber = pointerData.uint64FromAlignedBytes(count: 2)
+        self.currentDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
         /// Number of the disk with the start of CD.
-        self.cdDiskNumber = pointerData.uint64FromAlignedBytes(count: 2)
+        self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.MultiVolumesNotSupported }
 
@@ -459,10 +459,10 @@ struct EndOfCentralDirectory {
             pointerData.index -= 20
 
             // Check signature.
-            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x07064b50
+            guard pointerData.uint32FromAlignedBytes(count: 4) == 0x07064b50
                 else { throw ZipError.WrongSignature }
 
-            let zip64CDStartDisk = pointerData.uint64FromAlignedBytes(count: 4)
+            let zip64CDStartDisk = pointerData.uint32FromAlignedBytes(count: 4)
             guard self.currentDiskNumber == zip64CDStartDisk
                 else { throw ZipError.MultiVolumesNotSupported }
 
@@ -475,7 +475,7 @@ struct EndOfCentralDirectory {
             pointerData.index = Int(UInt(truncatingBitPattern: zip64CDEndOffset))
 
             // Check signature.
-            guard pointerData.uint64FromAlignedBytes(count: 4) == 0x06064b50
+            guard pointerData.uint32FromAlignedBytes(count: 4) == 0x06064b50
                 else { throw ZipError.WrongSignature }
 
             // Following 8 bytes are size of end of zip64 CD, but we don't need it.
@@ -488,8 +488,8 @@ struct EndOfCentralDirectory {
                 else { throw ZipError.WrongVersion }
 
             // Update values read from basic End of CD with the ones from Zip64 End of CD.
-            self.currentDiskNumber = pointerData.uint64FromAlignedBytes(count: 4)
-            self.cdDiskNumber = pointerData.uint64FromAlignedBytes(count: 4)
+            self.currentDiskNumber = pointerData.uint32FromAlignedBytes(count: 4)
+            self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 4)
             guard currentDiskNumber == cdDiskNumber
                 else { throw ZipError.MultiVolumesNotSupported }
 
