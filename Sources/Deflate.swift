@@ -243,7 +243,7 @@ public final class Deflate: DecompressionAlgorithm {
         }
 
         let bldCodes = Deflate.lengthEncode(bytes)
-        let huffmanEncodedBytes = try Deflate.encodeHuffmanBlock(bldCodes)
+        let huffmanEncodedBytes = try Deflate.encodeHuffmanBlock(bldCodes.codes)
         return Data(bytes: huffmanEncodedBytes)
     }
 
@@ -304,8 +304,7 @@ public final class Deflate: DecompressionAlgorithm {
                 guard codeOfByte.count > 0
                     else { throw DeflateError.SymbolNotFound }
                 bitWriter.write(bits: codeOfByte)
-            case .lengthDistance(let length, let distance):
-                let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
+            case .lengthDistance(let length, let distance, let lengthSymbol, let distanceSymbol):
                 let lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
                 let extraLengthBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                     0 : (((lengthSymbol - 257) >> 2) - 1)
@@ -316,7 +315,6 @@ public final class Deflate: DecompressionAlgorithm {
                 bitWriter.write(bits: codeOfLength)
                 bitWriter.write(number: lengthExtra, bitsCount: extraLengthBitsCount)
 
-                let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
                 let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
                 let extraDistanceBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
 
@@ -337,25 +335,27 @@ public final class Deflate: DecompressionAlgorithm {
 
     private enum BLDCode: CustomStringConvertible {
         case byte(UInt8)
-        case lengthDistance(Int, Int)
+        case lengthDistance(Int, Int, Int, Int)
 
         var description: String {
             switch self {
             case .byte(let byte):
                 return "raw symbol: \(byte)"
-            case .lengthDistance(let length, let distance):
-                return "length: \(length), distance: \(distance)"
+            case .lengthDistance(let length, let distance, let lengthSymbol, let distanceSymbol):
+                return "length: \(length), length symbol: \(lengthSymbol), distance: \(distance), distance symbol: \(distanceSymbol)"
             }
         }
     }
 
-    private static func lengthEncode(_ rawBytes: [UInt8]) -> [BLDCode] {
+    private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
         precondition(rawBytes.count >= 3, "Too small array!")
 
         var buffer: [BLDCode] = []
         var inputIndex = 0
         /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
         var dictionary = [UInt32 : Int]()
+
+        var stats = Array(repeating: 0, count: 315)
 
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
@@ -365,8 +365,10 @@ public final class Deflate: DecompressionAlgorithm {
             // To simplify code we check for this case explicitly.
             if inputIndex >= rawBytes.count - 2 {
                 buffer.append(BLDCode.byte(byte))
+                stats[byte.toInt()] += 1
                 if inputIndex != rawBytes.count - 1 { // For the case of two remaining bytes.
                     buffer.append(BLDCode.byte(rawBytes[inputIndex + 1]))
+                    stats[rawBytes[inputIndex + 1].toInt()] += 1
                 }
                 break
             }
@@ -397,10 +399,15 @@ public final class Deflate: DecompressionAlgorithm {
                             repeatIndex = matchStartIndex + 1
                         }
                     }
-                    buffer.append(BLDCode.lengthDistance(matchLength, distance))
+                    let lengthSymbol = HuffmanTree.Constants.lengthCode[matchLength - 3]
+                    let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
+                    buffer.append(BLDCode.lengthDistance(matchLength, distance, lengthSymbol, distanceSymbol))
+                    stats[lengthSymbol] += 1
+                    stats[285 + distanceSymbol] += 1
                     inputIndex += matchLength
                 } else {
                     buffer.append(BLDCode.byte(byte))
+                    stats[byte.toInt()] += 1
                     inputIndex += 1
                 }
             } else {
@@ -408,12 +415,13 @@ public final class Deflate: DecompressionAlgorithm {
                 dictionary[threeByteCrc] = inputIndex
 
                 buffer.append(BLDCode.byte(byte))
+                stats[byte.toInt()] += 1
                 inputIndex += 1
             }
             // TODO: Add limitation for dictionary size.
         }
-        
-        return buffer
+
+        return (buffer, stats)
     }
 
 }
