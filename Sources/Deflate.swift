@@ -279,7 +279,7 @@ public final class Deflate: DecompressionAlgorithm {
         let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
 
         if uncompBlockSize <= staticHuffmanBlockSize {
-            // In case if according to our calculations static huffman will only make output data then input,
+            // If according to our calculations static huffman will not make output smaller than input,
             // we fallback to creating uncompressed block.
             // In this case dynamic Huffman encoding can be efficient.
             // TODO: Implement dynamic Huffman code!
@@ -346,25 +346,18 @@ public final class Deflate: DecompressionAlgorithm {
                 guard codeOfByte.count > 0
                     else { throw DeflateError.SymbolNotFound }
                 bitWriter.write(bits: codeOfByte)
-            case .lengthDistance(let length, let distance, let lengthSymbol, let distanceSymbol):
-                let lengthExtra = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
-                let extraLengthBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
-                    0 : (((lengthSymbol - 257) >> 2) - 1)
-
-                let codeOfLength = mainLiterals.code(symbol: lengthSymbol)
+            case .lengthDistance(let ld):
+                let codeOfLength = mainLiterals.code(symbol: ld.lengthSymbol)
                 guard codeOfLength.count > 0
                     else { throw DeflateError.SymbolNotFound }
                 bitWriter.write(bits: codeOfLength)
-                bitWriter.write(number: lengthExtra, bitsCount: extraLengthBitsCount)
+                bitWriter.write(number: ld.lengthExtraBits, bitsCount: ld.lengthExtraBitsCount)
 
-                let distanceExtra = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
-                let extraDistanceBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
-
-                let codeOfDistance = mainDistances.code(symbol: distanceSymbol)
+                let codeOfDistance = mainDistances.code(symbol: ld.distanceSymbol)
                 guard codeOfDistance.count > 0
                     else { throw DeflateError.SymbolNotFound }
                 bitWriter.write(bits: codeOfDistance)
-                bitWriter.write(number: distanceExtra, bitsCount: extraDistanceBitsCount)
+                bitWriter.write(number: ld.distanceExtraBits, bitsCount: ld.distanceExtraBitsCount)
             }
         }
 
@@ -375,16 +368,45 @@ public final class Deflate: DecompressionAlgorithm {
         return bitWriter.buffer
     }
 
+    private struct LengthDistance {
+
+        let length: Int
+        let lengthSymbol: Int
+        let lengthExtraBits: Int
+        let lengthExtraBitsCount: Int
+
+        let distance: Int
+        let distanceSymbol: Int
+        let distanceExtraBits: Int
+        let distanceExtraBitsCount: Int
+
+        init(_ length: Int, _ distance: Int) {
+            self.length = length
+            let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
+            self.lengthSymbol = lengthSymbol
+            self.lengthExtraBits = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
+            self.lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
+                0 : (((lengthSymbol - 257) >> 2) - 1)
+
+            self.distance = distance
+            let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
+            self.distanceSymbol = distanceSymbol
+            self.distanceExtraBits = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
+            self.distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
+        }
+
+    }
+
     private enum BLDCode: CustomStringConvertible {
         case byte(UInt8)
-        case lengthDistance(Int, Int, Int, Int)
+        case lengthDistance(LengthDistance)
 
         var description: String {
             switch self {
             case .byte(let byte):
                 return "raw symbol: \(byte)"
-            case .lengthDistance(let length, let distance, let lengthSymbol, let distanceSymbol):
-                return "length: \(length), length symbol: \(lengthSymbol), distance: \(distance), distance symbol: \(distanceSymbol)"
+            case .lengthDistance(let ld):
+                return "length: \(ld.length), length symbol: \(ld.lengthSymbol), distance: \(ld.distance), distance symbol: \(ld.distanceSymbol)"
             }
         }
     }
@@ -441,11 +463,10 @@ public final class Deflate: DecompressionAlgorithm {
                             repeatIndex = matchStartIndex + 1
                         }
                     }
-                    let lengthSymbol = HuffmanTree.Constants.lengthCode[matchLength - 3]
-                    let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
-                    buffer.append(BLDCode.lengthDistance(matchLength, distance, lengthSymbol, distanceSymbol))
-                    stats[lengthSymbol] += 1
-                    stats[286 + distanceSymbol] += 1
+                    let ld = LengthDistance(matchLength, distance)
+                    buffer.append(BLDCode.lengthDistance(ld))
+                    stats[ld.lengthSymbol] += 1
+                    stats[286 + ld.distanceSymbol] += 1
                     inputIndex += matchLength
                 } else {
                     buffer.append(BLDCode.byte(byte))
