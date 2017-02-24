@@ -391,7 +391,7 @@ public final class Deflate: DecompressionAlgorithm {
         /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
         var dictionary = [UInt32 : Int]()
 
-        var stats = Array(repeating: 0, count: 315)
+        var stats = Array(repeating: 0, count: 316)
 
         while inputIndex < rawBytes.count {
             let byte = rawBytes[inputIndex]
@@ -456,6 +456,8 @@ public final class Deflate: DecompressionAlgorithm {
             }
             // TODO: Add limitation for dictionary size.
         }
+
+        stats[256] += 1
 
         return (buffer, stats)
     }
