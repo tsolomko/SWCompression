@@ -276,11 +276,17 @@ public final class Deflate: DecompressionAlgorithm {
             }
             bitsCount += (symbolCount * (codeSize + extraBitsCount))
         }
-
         let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
 
-        let huffmanEncodedBytes = try Deflate.encodeHuffmanBlock(bldCodes.codes)
-        return Data(bytes: huffmanEncodedBytes)
+        if uncompBlockSize <= staticHuffmanBlockSize {
+            // In case if according to our calculations static huffman will only make output data then input,
+            // we fallback to creating uncompressed block.
+            // In this case dynamic Huffman encoding can be efficient.
+            // TODO: Implement dynamic Huffman code!
+            return Data(bytes: Deflate.createUncompressedBlock(bytes))
+        } else {
+            return Data(bytes: try Deflate.encodeHuffmanBlock(bldCodes.codes))
+        }
     }
 
     private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
