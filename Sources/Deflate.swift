@@ -31,6 +31,40 @@ public enum DeflateError: Error {
 /// Provides function to decompress data, which were compressed with DEFLATE.
 public final class Deflate: DecompressionAlgorithm {
 
+    private struct Constants {
+        static let codeLengthOrders: [Int] =
+            [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
+
+        /// - Warning: Substract 257 from index!
+        static let lengthBase: [Int] =
+            [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35,
+             43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
+
+        static let distanceBase: [Int] =
+            [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+             257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
+             8193, 12289, 16385, 24577]
+
+        static let lengthCode: [Int] =
+            [257, 258, 259, 260, 261, 262, 263, 264, 265, 265, 266, 266, 267, 267, 268, 268,
+             269, 269, 269, 269, 270, 270, 270, 270, 271, 271, 271, 271, 272, 272, 272, 272,
+             273, 273, 273, 273, 273, 273, 273, 273, 274, 274, 274, 274, 274, 274, 274, 274,
+             275, 275, 275, 275, 275, 275, 275, 275, 276, 276, 276, 276, 276, 276, 276, 276,
+             277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277,
+             278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278,
+             279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279,
+             280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280,
+             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
+             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
+             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
+             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
+             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
+             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
+             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284,
+             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 285]
+    }
+
+
     /**
         Decompresses `compressedData` with DEFLATE algortihm.
 
@@ -105,7 +139,7 @@ public final class Deflate: DecompressionAlgorithm {
                     // Moreover, they are stored in a very specific order (defined by HuffmanTree.Constants.codeLengthOrders).
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[HuffmanTree.Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
+                        lengthsForOrder[Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
                     let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, &pointerData)
@@ -173,7 +207,7 @@ public final class Deflate: DecompressionAlgorithm {
                         let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
                             0 : (((nextSymbol - 257) >> 2) - 1)
                         // Actually, nextSymbol is not a starting value of length but an index for special array of starting values.
-                        let length = HuffmanTree.Constants.lengthBase[nextSymbol - 257] +
+                        let length = Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
@@ -186,7 +220,7 @@ public final class Deflate: DecompressionAlgorithm {
                         // which we need to combine with distanceCode to get the actual distance.
                         let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                         // And yes, distanceCode is not a first part of distance but rather an index for special array.
-                        let distance = HuffmanTree.Constants.distanceBase[distanceCode] +
+                        let distance = Constants.distanceBase[distanceCode] +
                             pointerData.intFromBits(count: extraDistance)
 
                         // We should repeat last 'distance' amount of data.
@@ -382,16 +416,16 @@ public final class Deflate: DecompressionAlgorithm {
 
         init(_ length: Int, _ distance: Int) {
             self.length = length
-            let lengthSymbol = HuffmanTree.Constants.lengthCode[length - 3]
+            let lengthSymbol = Constants.lengthCode[length - 3]
             self.lengthSymbol = lengthSymbol
-            self.lengthExtraBits = length - HuffmanTree.Constants.lengthBase[lengthSymbol - 257]
+            self.lengthExtraBits = length - Constants.lengthBase[lengthSymbol - 257]
             self.lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                 0 : (((lengthSymbol - 257) >> 2) - 1)
 
             self.distance = distance
-            let distanceSymbol = ((HuffmanTree.Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
+            let distanceSymbol = ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
             self.distanceSymbol = distanceSymbol
-            self.distanceExtraBits = distance - HuffmanTree.Constants.distanceBase[distanceSymbol]
+            self.distanceExtraBits = distance - Constants.distanceBase[distanceSymbol]
             self.distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
         }
 
