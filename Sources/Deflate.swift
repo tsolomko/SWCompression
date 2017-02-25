@@ -64,7 +64,6 @@ public final class Deflate: DecompressionAlgorithm {
              284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 285]
     }
 
-
     /**
         Decompresses `compressedData` with DEFLATE algortihm.
 
@@ -451,7 +450,7 @@ public final class Deflate: DecompressionAlgorithm {
         var buffer: [BLDCode] = []
         var inputIndex = 0
         /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
-        var dictionary = [UInt32 : Int]()
+        var dictionary = [UInt32: Int]()
 
         var stats = Array(repeating: 0, count: 316)
 
