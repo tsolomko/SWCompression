@@ -165,22 +165,62 @@ class HuffmanTree {
 
     func code(symbol: Int) -> [UInt8] {
         guard self.coding else { return [] }
-        if var symbolIndex = self.tree.index(where: { $0[0] == symbol }) {
-            var bits: [UInt8] = Array(repeating: 0, count: self.tree[symbolIndex][1])
-            var i = bits.count - 1
-            while symbolIndex > 0 {
-                if symbolIndex % 2 == 0 {
-                    bits[i] = 1
-                    symbolIndex /= 2
-                    symbolIndex -= 1
+
+        var index = 0
+        var bits = [UInt8]()
+        while true {
+            switch self.newTree[index] {
+            case .leaf(let foundSymbol):
+                if foundSymbol == symbol {
+                    return bits
                 } else {
-                    symbolIndex /= 2
+                    return []
                 }
-                i -= 1
+            case .branch(_):
+                let leftChildIndex = 2 * index + 1
+                if leftChildIndex < self.leafCount {
+                    switch self.newTree[leftChildIndex] {
+                    case .leaf(let foundLeftSymbol):
+                        if foundLeftSymbol == symbol {
+                            index = leftChildIndex
+                            bits.append(0)
+                            continue
+                        } else {
+                            break
+                        }
+                    case .branch(let leftArray):
+                        if leftArray.contains(symbol) {
+                            index = leftChildIndex
+                            bits.append(0)
+                            continue
+                        } else {
+                            break
+                        }
+                    }
+                }
+
+                let rightChildIndex = 2 * index + 2
+                if rightChildIndex < self.leafCount {
+                    switch self.newTree[rightChildIndex] {
+                    case .leaf(let foundRightSymbol):
+                        if foundRightSymbol == symbol {
+                            index = rightChildIndex
+                            bits.append(1)
+                            continue
+                        } else {
+                            return []
+                        }
+                    case .branch(let rightArray):
+                        if rightArray.contains(symbol) {
+                            index = rightChildIndex
+                            bits.append(1)
+                            continue
+                        } else {
+                            return []
+                        }
+                    }
+                }
             }
-            return bits
-        } else {
-            return []
         }
     }
 
