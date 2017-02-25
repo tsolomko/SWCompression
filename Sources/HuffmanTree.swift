@@ -99,7 +99,42 @@ class HuffmanTree {
         }
 
         if coding {
-            // TODO: Replace remaining .leaf(-1) with branches
+            for treeIndex in stride(from: self.leafCount - 1, through: 0, by: -1) {
+                switch self.newTree[treeIndex] {
+                case .leaf(let symbol):
+                    if symbol == -1 {
+                        var replacementArray = [Int]()
+
+                        let leftChildIndex = 2 * treeIndex + 1
+                        if leftChildIndex < self.leafCount {
+                            switch self.newTree[leftChildIndex] {
+                            case .leaf(let leftSymbol):
+                                replacementArray.append(leftSymbol)
+                            case .branch(let leftArray):
+                                for leftChild in leftArray {
+                                    replacementArray.append(leftChild)
+                                }
+                            }
+                        }
+
+                        let rightChildIndex = 2 * treeIndex + 2
+                        if rightChildIndex < self.leafCount {
+                            switch self.newTree[rightChildIndex] {
+                            case .leaf(let rightSymbol):
+                                replacementArray.append(rightSymbol)
+                            case .branch(let rightArray):
+                                for rightChild in rightArray {
+                                    replacementArray.append(rightChild)
+                                }
+                            }
+                        }
+
+                        self.newTree[treeIndex] = .branch(replacementArray)
+                    }
+                default:
+                    continue
+                }
+            }
         }
     }
 
