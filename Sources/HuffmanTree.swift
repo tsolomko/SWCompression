@@ -10,11 +10,18 @@ import Foundation
 
 class HuffmanTree {
 
+    private enum HTNode {
+        case leaf(Int)
+        case branch([Int])
+    }
+
     private var pointerData: DataWithPointer
 
     /// Array of [code, bitsCount] arrays.
     private var tree: [[Int]]
     private let leafCount: Int
+
+    private var newTree: [HTNode]
 
     private let coding: Bool
 
@@ -65,6 +72,8 @@ class HuffmanTree {
         // Create a tree (array, actually) with all leaves equal nil.
         self.tree = Array(repeating: [-1, -1], count: leafCount)
 
+        self.newTree = Array(repeating: .leaf(-1), count: leafCount)
+
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
         var symbol = -1
@@ -86,6 +95,11 @@ class HuffmanTree {
                 treeCode >>= 1
             }
             self.tree[index] = length
+            self.newTree[index] = .leaf(length[0])
+        }
+
+        if coding {
+            // TODO: Replace remaining .leaf(-1) with branches
         }
     }
 
