@@ -17,11 +17,8 @@ class HuffmanTree {
 
     private var pointerData: DataWithPointer
 
-    /// Array of [code, bitsCount] arrays.
-    private var tree: [[Int]]
+    private var tree: [HTNode]
     private let leafCount: Int
-
-    private var newTree: [HTNode]
 
     private let coding: Bool
 
@@ -69,10 +66,7 @@ class HuffmanTree {
 
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = 1 << (lengths.last![1] + 1)
-        // Create a tree (array, actually) with all leaves equal nil.
-        self.tree = Array(repeating: [-1, -1], count: leafCount)
-
-        self.newTree = Array(repeating: .leaf(-1), count: leafCount)
+        self.tree = Array(repeating: .leaf(-1), count: leafCount)
 
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
@@ -94,20 +88,19 @@ class HuffmanTree {
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = length
-            self.newTree[index] = .leaf(length[0])
+            self.tree[index] = .leaf(length[0])
         }
 
         if coding {
             for treeIndex in stride(from: self.leafCount - 1, through: 0, by: -1) {
-                switch self.newTree[treeIndex] {
+                switch self.tree[treeIndex] {
                 case .leaf(let symbol):
                     if symbol == -1 {
                         var replacementArray = [Int]()
 
                         let leftChildIndex = 2 * treeIndex + 1
                         if leftChildIndex < self.leafCount {
-                            switch self.newTree[leftChildIndex] {
+                            switch self.tree[leftChildIndex] {
                             case .leaf(let leftSymbol):
                                 replacementArray.append(leftSymbol)
                             case .branch(let leftArray):
@@ -119,7 +112,7 @@ class HuffmanTree {
 
                         let rightChildIndex = 2 * treeIndex + 2
                         if rightChildIndex < self.leafCount {
-                            switch self.newTree[rightChildIndex] {
+                            switch self.tree[rightChildIndex] {
                             case .leaf(let rightSymbol):
                                 replacementArray.append(rightSymbol)
                             case .branch(let rightArray):
@@ -129,7 +122,7 @@ class HuffmanTree {
                             }
                         }
 
-                        self.newTree[treeIndex] = .branch(replacementArray)
+                        self.tree[treeIndex] = .branch(replacementArray)
                     }
                 default:
                     continue
@@ -152,7 +145,7 @@ class HuffmanTree {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else { return -1 }
-            switch self.newTree[index] {
+            switch self.tree[index] {
             case .leaf(let symbol):
                 if symbol > -1 {
                     return symbol
@@ -169,7 +162,7 @@ class HuffmanTree {
         var index = 0
         var bits = [UInt8]()
         while true {
-            switch self.newTree[index] {
+            switch self.tree[index] {
             case .leaf(let foundSymbol):
                 if foundSymbol == symbol {
                     return bits
@@ -179,7 +172,7 @@ class HuffmanTree {
             case .branch(_):
                 let leftChildIndex = 2 * index + 1
                 if leftChildIndex < self.leafCount {
-                    switch self.newTree[leftChildIndex] {
+                    switch self.tree[leftChildIndex] {
                     case .leaf(let foundLeftSymbol):
                         if foundLeftSymbol == symbol {
                             index = leftChildIndex
@@ -201,7 +194,7 @@ class HuffmanTree {
 
                 let rightChildIndex = 2 * index + 2
                 if rightChildIndex < self.leafCount {
-                    switch self.newTree[rightChildIndex] {
+                    switch self.tree[rightChildIndex] {
                     case .leaf(let foundRightSymbol):
                         if foundRightSymbol == symbol {
                             index = rightChildIndex
