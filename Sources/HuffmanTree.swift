@@ -16,7 +16,10 @@ class HuffmanTree {
     private var tree: [[Int]]
     private let leafCount: Int
 
-    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer) {
+    private let coding: Bool
+
+    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer, _ coding: Bool = false) {
+        self.coding = coding
         self.pointerData = pointerData
 
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
@@ -107,6 +110,7 @@ class HuffmanTree {
     }
 
     func code(symbol: Int) -> [UInt8] {
+        guard self.coding else { return [] }
         if var symbolIndex = self.tree.index(where: { $0[0] == symbol }) {
             var bits: [UInt8] = Array(repeating: 0, count: self.tree[symbolIndex][1])
             var i = bits.count - 1

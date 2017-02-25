@@ -368,9 +368,9 @@ public final class Deflate: DecompressionAlgorithm {
         let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
         let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
         /// Huffman tree for literal and length symbols/codes.
-        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData)
+        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData, true)
         /// Huffman tree for backward distance symbols/codes.
-        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData)
+        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData, true)
 
         for code in bldCodes {
             switch code {
