@@ -1,4 +1,8 @@
 # Changelog
+v2.2.2
+----------------
+- Fixed problem with zero-length uncompressed blocks.
+
 v2.2.1
 ----------------
 - Now creates uncompressed block instead of huffman if it will provide better results (in terms of "compression").

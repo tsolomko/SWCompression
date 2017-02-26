@@ -9,9 +9,9 @@
 import Foundation
 
 /**
- Error happened during deflate decompression. 
+ Error happened during deflate decompression.
  It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
- 
+
  - `WrongUncompressedBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
  - `WrongBlockType`: unsupported block type (not 0, 1 or 2).
  - `WrongSymbol`: unsupported Huffman tree's symbol.
@@ -70,8 +70,8 @@ public final class Deflate: DecompressionAlgorithm {
         If data passed is not actually compressed with DEFLATE, `DeflateError` will be thrown.
 
      - Parameter compressedData: Data compressed with DEFLATE.
-     
-     - Throws: `DeflateError` if unexpected byte (bit) sequence was encountered in `compressedData`. 
+
+     - Throws: `DeflateError` if unexpected byte (bit) sequence was encountered in `compressedData`.
         It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
 
      - Returns: Decompressed data.
@@ -311,7 +311,11 @@ public final class Deflate: DecompressionAlgorithm {
         }
         let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
 
-        if uncompBlockSize <= staticHuffmanBlockSize {
+        // Since `length` of uncompressed block is 16-bit integer,
+        // there is a limitation on size of uncompressed block.
+        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
+        // TODO: Implement spliting uncompressed block into smaller blocks.
+        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
             // If according to our calculations static huffman will not make output smaller than input,
             // we fallback to creating uncompressed block.
             // In this case dynamic Huffman encoding can be efficient.
