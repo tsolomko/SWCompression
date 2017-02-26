@@ -278,7 +278,11 @@ public final class Deflate: DecompressionAlgorithm {
         }
         let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
 
-        if uncompBlockSize <= staticHuffmanBlockSize {
+        // Since `length` of uncompressed block is 16-bit integer,
+        // there is a limitation on size of uncompressed block.
+        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
+        // TODO: Implement spliting uncompressed block into smaller blocks.
+        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
             // In case if according to our calculations static huffman will only make output data then input,
             // we fallback to creating uncompressed block.
             // In this case dynamic Huffman encoding can be efficient.
