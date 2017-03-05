@@ -355,7 +355,7 @@ public final class Deflate: DecompressionAlgorithm {
     }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
-        let bitWriter = BitToByteWriter(bitOrder: .reversed)
+        var bitWriter = BitToByteWriter(bitOrder: .reversed)
 
         // Write block header.
         // Note: For now it is only static huffman blocks.
@@ -379,27 +379,18 @@ public final class Deflate: DecompressionAlgorithm {
         for code in bldCodes {
             switch code {
             case .byte(let byte):
-                let codeOfByte = mainLiterals.code(symbol: byte.toInt())
-                guard codeOfByte.count > 0
-                    else { throw DeflateError.SymbolNotFound }
-                bitWriter.write(bits: codeOfByte)
+                mainLiterals.code(symbol: byte.toInt(), &bitWriter)
             case .lengthDistance(let ld):
-                let codeOfLength = mainLiterals.code(symbol: ld.lengthSymbol)
-                guard codeOfLength.count > 0
-                    else { throw DeflateError.SymbolNotFound }
-                bitWriter.write(bits: codeOfLength)
+                mainLiterals.code(symbol: ld.lengthSymbol, &bitWriter)
                 bitWriter.write(number: ld.lengthExtraBits, bitsCount: ld.lengthExtraBitsCount)
 
-                let codeOfDistance = mainDistances.code(symbol: ld.distanceSymbol)
-                guard codeOfDistance.count > 0
-                    else { throw DeflateError.SymbolNotFound }
-                bitWriter.write(bits: codeOfDistance)
+                mainDistances.code(symbol: ld.distanceSymbol, &bitWriter)
                 bitWriter.write(number: ld.distanceExtraBits, bitsCount: ld.distanceExtraBitsCount)
             }
         }
 
         // End data symbol.
-        bitWriter.write(bits: mainLiterals.code(symbol: 256))
+        mainLiterals.code(symbol: 256, &bitWriter)
         bitWriter.finish()
 
         return bitWriter.buffer

@@ -156,18 +156,17 @@ class HuffmanTree {
         }
     }
 
-    func code(symbol: Int) -> [UInt8] {
-        guard self.coding else { return [] }
+    func code(symbol: Int, _ bitWriter: inout BitToByteWriter) {
+        guard self.coding else { fatalError("Tree is not coding, this error should be replaced with Error.") }
 
         var index = 0
-        var bits = [UInt8]()
         while true {
             switch self.tree[index] {
             case .leaf(let foundSymbol):
                 if foundSymbol == symbol {
-                    return bits
+                    return
                 } else {
-                    return []
+                    fatalError("Symbol not found, this error should be replaced with Error.")
                 }
             case .branch(_):
                 let leftChildIndex = 2 * index + 1
@@ -176,7 +175,7 @@ class HuffmanTree {
                     case .leaf(let foundLeftSymbol):
                         if foundLeftSymbol == symbol {
                             index = leftChildIndex
-                            bits.append(0)
+                            bitWriter.write(bit: 0)
                             continue
                         } else {
                             break
@@ -184,7 +183,7 @@ class HuffmanTree {
                     case .branch(let leftArray):
                         if leftArray.contains(symbol) {
                             index = leftChildIndex
-                            bits.append(0)
+                            bitWriter.write(bit: 0)
                             continue
                         } else {
                             break
@@ -198,18 +197,18 @@ class HuffmanTree {
                     case .leaf(let foundRightSymbol):
                         if foundRightSymbol == symbol {
                             index = rightChildIndex
-                            bits.append(1)
+                            bitWriter.write(bit: 1)
                             continue
                         } else {
-                            return []
+                            fatalError("Symbol not found, this error should be replaced with Error.")
                         }
                     case .branch(let rightArray):
                         if rightArray.contains(symbol) {
                             index = rightChildIndex
-                            bits.append(1)
+                            bitWriter.write(bit: 1)
                             continue
                         } else {
-                            return []
+                            fatalError("Symbol not found, this error should be replaced with Error.")
                         }
                     }
                 }
