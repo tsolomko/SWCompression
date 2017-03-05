@@ -12,7 +12,7 @@ class HuffmanTree {
 
     private enum HTNode {
         case leaf(Int)
-        case branch([Int])
+        case branch(Set<Int>)
     }
 
     private var pointerData: DataWithPointer
@@ -96,16 +96,17 @@ class HuffmanTree {
                 switch self.tree[treeIndex] {
                 case .leaf(let symbol):
                     if symbol == -1 {
-                        var replacementArray = [Int]()
+                        var replacementArray = Set<Int>()
+
 
                         let leftChildIndex = 2 * treeIndex + 1
                         if leftChildIndex < self.leafCount {
                             switch self.tree[leftChildIndex] {
                             case .leaf(let leftSymbol):
-                                replacementArray.append(leftSymbol)
+                                replacementArray.insert(leftSymbol)
                             case .branch(let leftArray):
                                 for leftChild in leftArray {
-                                    replacementArray.append(leftChild)
+                                    replacementArray.insert(leftChild)
                                 }
                             }
                         }
@@ -114,10 +115,10 @@ class HuffmanTree {
                         if rightChildIndex < self.leafCount {
                             switch self.tree[rightChildIndex] {
                             case .leaf(let rightSymbol):
-                                replacementArray.append(rightSymbol)
+                                replacementArray.insert(rightSymbol)
                             case .branch(let rightArray):
                                 for rightChild in rightArray {
-                                    replacementArray.append(rightChild)
+                                    replacementArray.insert(rightChild)
                                 }
                             }
                         }
