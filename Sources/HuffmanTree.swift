@@ -98,7 +98,6 @@ class HuffmanTree {
                     if symbol == -1 {
                         var replacementArray = Set<Int>()
 
-
                         let leftChildIndex = 2 * treeIndex + 1
                         if leftChildIndex < self.leafCount {
                             switch self.tree[leftChildIndex] {
