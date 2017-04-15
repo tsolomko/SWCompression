@@ -148,7 +148,7 @@ which uses SWCompression for unarchiving several types of archives.
 Why is it so slow?
 ------------------
 Version 2.0 came with a great performance improvement.
-Just look at the test results at 'Tests/Test Result'.
+Just look at the test results in 'Tests/Test Result'.
 So if it's slow the first thing you should do is to make sure you are using version >= 2.0.
 
 Is it still slow?

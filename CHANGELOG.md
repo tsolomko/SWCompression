@@ -1,4 +1,10 @@
 # Changelog
+v2.3.0
+----------------
+- Improved Deflate compression performance.
+- Added GZip archiving function.
+- Fixed a problem when Deflate uncompressed blocks were created with one extra byte.
+
 v2.2.2
 ----------------
 - Fixed problem with zero-length uncompressed blocks.
