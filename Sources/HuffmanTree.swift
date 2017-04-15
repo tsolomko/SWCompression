@@ -10,46 +10,20 @@ import Foundation
 
 class HuffmanTree {
 
-    struct Constants {
-        static let codeLengthOrders: [Int] =
-            [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
-
-        /// - Warning: Substract 257 from index!
-        static let lengthBase: [Int] =
-            [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35,
-             43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
-
-        static let distanceBase: [Int] =
-            [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
-             257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
-             8193, 12289, 16385, 24577]
-
-        static let lengthCode: [Int] =
-            [257, 258, 259, 260, 261, 262, 263, 264, 265, 265, 266, 266, 267, 267, 268, 268,
-             269, 269, 269, 269, 270, 270, 270, 270, 271, 271, 271, 271, 272, 272, 272, 272,
-             273, 273, 273, 273, 273, 273, 273, 273, 274, 274, 274, 274, 274, 274, 274, 274,
-             275, 275, 275, 275, 275, 275, 275, 275, 276, 276, 276, 276, 276, 276, 276, 276,
-             277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277,
-             278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278,
-             279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279,
-             280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280,
-             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
-             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
-             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
-             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
-             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
-             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
-             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284,
-             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 285]
+    private enum HTNode {
+        case leaf(Int)
+        case branch(Set<Int>)
     }
 
     private var pointerData: DataWithPointer
 
-    /// Array of [code, bitsCount] arrays.
-    private var tree: [[Int]]
+    private var tree: [HTNode]
     private let leafCount: Int
 
-    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer) {
+    private let coding: Bool
+
+    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer, _ coding: Bool = false) {
+        self.coding = coding
         self.pointerData = pointerData
 
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
@@ -92,8 +66,7 @@ class HuffmanTree {
 
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = 1 << (lengths.last![1] + 1)
-        // Create a tree (array, actually) with all leaves equal nil.
-        self.tree = Array(repeating: [-1, -1], count: leafCount)
+        self.tree = Array(repeating: .leaf(-1), count: leafCount)
 
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
@@ -115,7 +88,46 @@ class HuffmanTree {
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = length
+            self.tree[index] = .leaf(length[0])
+        }
+
+        if coding {
+            for treeIndex in stride(from: self.leafCount - 1, through: 0, by: -1) {
+                switch self.tree[treeIndex] {
+                case .leaf(let symbol):
+                    if symbol == -1 {
+                        var replacementArray = Set<Int>()
+
+                        let leftChildIndex = 2 * treeIndex + 1
+                        if leftChildIndex < self.leafCount {
+                            switch self.tree[leftChildIndex] {
+                            case .leaf(let leftSymbol):
+                                replacementArray.insert(leftSymbol)
+                            case .branch(let leftArray):
+                                for leftChild in leftArray {
+                                    replacementArray.insert(leftChild)
+                                }
+                            }
+                        }
+
+                        let rightChildIndex = 2 * treeIndex + 2
+                        if rightChildIndex < self.leafCount {
+                            switch self.tree[rightChildIndex] {
+                            case .leaf(let rightSymbol):
+                                replacementArray.insert(rightSymbol)
+                            case .branch(let rightArray):
+                                for rightChild in rightArray {
+                                    replacementArray.insert(rightChild)
+                                }
+                            }
+                        }
+
+                        self.tree[treeIndex] = .branch(replacementArray)
+                    }
+                default:
+                    continue
+                }
+            }
         }
     }
 
@@ -133,29 +145,74 @@ class HuffmanTree {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else { return -1 }
-            if self.tree[index][0] > -1 {
-                return self.tree[index][0]
+            switch self.tree[index] {
+            case .leaf(let symbol):
+                if symbol > -1 {
+                    return symbol
+                }
+            default:
+                continue
             }
         }
     }
 
-    func code(symbol: Int) -> [UInt8] {
-        if var symbolIndex = self.tree.index(where: { $0[0] == symbol }) {
-            var bits: [UInt8] = Array(repeating: 0, count: self.tree[symbolIndex][1])
-            var i = bits.count - 1
-            while symbolIndex > 0 {
-                if symbolIndex % 2 == 0 {
-                    bits[i] = 1
-                    symbolIndex /= 2
-                    symbolIndex -= 1
+    func code(symbol: Int, _ bitWriter: inout BitToByteWriter) {
+        guard self.coding else { fatalError("Tree is not coding, this error should be replaced with Error.") }
+
+        var index = 0
+        while true {
+            switch self.tree[index] {
+            case .leaf(let foundSymbol):
+                if foundSymbol == symbol {
+                    return
                 } else {
-                    symbolIndex /= 2
+                    fatalError("Symbol not found, this error should be replaced with Error.")
                 }
-                i -= 1
+            case .branch(_):
+                let leftChildIndex = 2 * index + 1
+                if leftChildIndex < self.leafCount {
+                    switch self.tree[leftChildIndex] {
+                    case .leaf(let foundLeftSymbol):
+                        if foundLeftSymbol == symbol {
+                            index = leftChildIndex
+                            bitWriter.write(bit: 0)
+                            continue
+                        } else {
+                            break
+                        }
+                    case .branch(let leftArray):
+                        if leftArray.contains(symbol) {
+                            index = leftChildIndex
+                            bitWriter.write(bit: 0)
+                            continue
+                        } else {
+                            break
+                        }
+                    }
+                }
+
+                let rightChildIndex = 2 * index + 2
+                if rightChildIndex < self.leafCount {
+                    switch self.tree[rightChildIndex] {
+                    case .leaf(let foundRightSymbol):
+                        if foundRightSymbol == symbol {
+                            index = rightChildIndex
+                            bitWriter.write(bit: 1)
+                            continue
+                        } else {
+                            fatalError("Symbol not found, this error should be replaced with Error.")
+                        }
+                    case .branch(let rightArray):
+                        if rightArray.contains(symbol) {
+                            index = rightChildIndex
+                            bitWriter.write(bit: 1)
+                            continue
+                        } else {
+                            fatalError("Symbol not found, this error should be replaced with Error.")
+                        }
+                    }
+                }
             }
-            return bits
-        } else {
-            return []
         }
     }
 

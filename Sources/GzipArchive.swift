@@ -72,6 +72,7 @@ public struct GzipHeader {
 
     /// Compression method of archive. Always equals to `.deflate`.
     public let compressionMethod: CompressionMethod
+    // TODO: Make it optional.
     /// The most recent modification time of the original file.
     public let modificationTime: Date
     /// Type of file system on which compression took place.
@@ -118,6 +119,7 @@ public struct GzipHeader {
         for i in 0..<4 {
             headerBytes.append(((mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
         }
+        // TODO: Should be nil in case of mtime == 0.
         self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
 
         let extraFlags = pointerData.alignedByte()
@@ -216,6 +218,51 @@ public final class GzipArchive: Archive {
         }
 
         return Data(bytes: out)
+    }
+
+    /**
+     Archives `data` into GZip archive. Data will be also compressed with DEFLTATE algorithm.
+     Fields in the header of the resulting archive will be set to default values 
+     (i.e. no mtime, no flags, no file name, unknown OS type). 
+     It will be also specified that the compressor used slowest DEFLATE algorithm.
+     
+     If during compression something goes wrong `DeflateError` will be thrown.
+
+     - Note: This function is specification compliant.
+
+     - Parameter data: Data to compress and archive.
+
+     - Throws: `DeflateError` if an error was encountered during compression.
+
+     - Returns: Data object with resulting archive.
+     */
+    public static func archive(data: Data) throws -> Data {
+        let out: [UInt8] = [
+            0x1f, 0x8b, // 'magic' bytes.
+            8, // Compression method (DEFLATE).
+            0, // Flags; currently no flags are set.
+            0, 0, 0, 0, // Mtime; currently timestamp is not set.
+            2, // Extra flags; 2 means that DEFLATE used slowest algorithm.
+            255, // OS Type; set to default value (unknown).
+        ]
+        var outData = Data(bytes: out)
+        outData.append(try Deflate.compress(data: data))
+
+        let crc32 = CheckSums.crc32(data.toArray(type: UInt8.self))
+        var crcBytes = [UInt8]()
+        for i: UInt32 in 0..<4 {
+            crcBytes.append(UInt8((crc32 & (0xFF << (i * 8))) >> (i * 8)))
+        }
+        outData.append(Data(bytes: crcBytes))
+
+        let isize = UInt64(data.count) % UInt64(1) << 32
+        var isizeBytes = [UInt8]()
+        for i: UInt64 in 0..<4 {
+            isizeBytes.append(UInt8((isize & (0xFF << (i * 8))) >> (i * 8)))
+        }
+        outData.append(Data(bytes: isizeBytes))
+
+        return outData
     }
 
 }
