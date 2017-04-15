@@ -97,4 +97,52 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
+    func perform(createTest testName: String) {
+        guard let testData = try? Data(contentsOf: Constants.url(forAnswer: testName),
+                                       options: .mappedIfSafe) else {
+                                        XCTFail("Failed to load test data.")
+                                        return
+        }
+
+        guard let archiveData = try? GzipArchive.archive(data: testData) else {
+            XCTFail("Unable to create archive.")
+            return
+        }
+
+        guard let reextractedData = try? GzipArchive.unarchive(archiveData: archiveData) else {
+            XCTFail("Unable to re-extract created archive.")
+            return
+        }
+
+        XCTAssertEqual(testData, reextractedData, "Re-extracted data is not equal to initial data.")
+    }
+
+    func testCreateGzip1() {
+        self.perform(createTest: "test1")
+    }
+
+    func testCreateGzip2() {
+        self.perform(createTest: "test2")
+    }
+
+    func testCreateGzip3() {
+        self.perform(createTest: "test3")
+    }
+
+    func testCreateGzip4() {
+        self.perform(createTest: "test4")
+    }
+
+    func testCreateGzip5() {
+        self.perform(createTest: "test5")
+    }
+
+    func testCreateGzip6() {
+        self.perform(createTest: "test6")
+    }
+
+//    func testCreateGzip7() {
+//        self.perform(createTest: "test7")
+//    }
+
 }
