@@ -342,8 +342,6 @@ public final class Deflate: DecompressionAlgorithm {
         // Write data's n-length.
         bitWriter.write(number: bytes.count ^ (1 << 16 - 1), bitsCount: 16)
 
-        // Finishing block header.
-        bitWriter.finish()
         var out = bitWriter.buffer
 
         // Write actual data.
