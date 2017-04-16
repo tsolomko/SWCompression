@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift}'
+    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift,BitToByteWriter.swift}'
   end
 
   s.subspec 'LZMA' do |sp|
