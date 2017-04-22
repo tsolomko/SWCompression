@@ -54,4 +54,24 @@ class ZlibTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
     }
 
+    func testCreateZlib() {
+        guard let testData = try? Data(contentsOf: Constants.url(forAnswer: "random_file"),
+                                       options: .mappedIfSafe) else {
+                                        XCTFail("Failed to load test data.")
+                                        return
+        }
+
+        guard let archiveData = try? ZlibArchive.archive(data: testData) else {
+            XCTFail("Unable to create archive.")
+            return
+        }
+
+        guard let reextractedData = try? ZlibArchive.unarchive(archiveData: archiveData) else {
+            XCTFail("Unable to re-extract created archive.")
+            return
+        }
+
+        XCTAssertEqual(testData, reextractedData, "Re-extracted data is not equal to initial data.")
+    }
+
 }
