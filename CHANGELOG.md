@@ -1,4 +1,9 @@
 # Changelog
+v2.4.0
+----------------
+- Reduced memory usage in some cases.
+- Added Zlib archiving function.
+
 v2.3.0
 ----------------
 - Improved Deflate compression performance.

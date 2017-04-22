@@ -17,7 +17,7 @@ final class DataWithPointer {
 
     let bitOrder: BitOrder
     let size: Int
-    private var bitArray: [UInt8]
+    private let data: Data
     var index: Int = 0
     private(set) var bitMask: UInt8
 
@@ -26,14 +26,17 @@ final class DataWithPointer {
     }
 
     var prevAlignedByte: UInt8 {
-        return self.bitArray[self.index - 1]
+        return self.data[self.index - 1]
     }
 
-    init(array: inout [UInt8], bitOrder: BitOrder) {
-        self.bitOrder = bitOrder
-        self.bitArray = array
-        self.size = self.bitArray.count
+    convenience init(array: inout [UInt8], bitOrder: BitOrder) {
+        self.init(data: Data(bytes: array), bitOrder: bitOrder)
+    }
 
+    init(data: Data, bitOrder: BitOrder) {
+        self.bitOrder = bitOrder
+        self.size = data.count
+        self.data = data
         switch self.bitOrder {
         case .reversed:
             self.bitMask = 1
@@ -42,17 +45,12 @@ final class DataWithPointer {
         }
     }
 
-    convenience init(data: Data, bitOrder: BitOrder) {
-        var array = data.toArray(type: UInt8.self)
-        self.init(array: &array, bitOrder: bitOrder)
-    }
-
     func bits(count: Int) -> [UInt8] {
         guard count > 0 else { return [] }
 
         var array: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
-            array[i] = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+            array[i] = self.data[self.index] & self.bitMask > 0 ? 1 : 0
 
             switch self.bitOrder {
             case .reversed:
@@ -88,7 +86,7 @@ final class DataWithPointer {
                 power = i
             }
 
-            let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+            let bit = self.data[self.index] & self.bitMask > 0 ? 1 : 0
             result += (1 << power) * bit
 
             switch self.bitOrder {
@@ -113,7 +111,7 @@ final class DataWithPointer {
     }
 
     func bit() -> Int {
-        let bit = self.bitArray[self.index] & self.bitMask > 0 ? 1 : 0
+        let bit = self.data[self.index] & self.bitMask > 0 ? 1 : 0
 
         switch self.bitOrder {
         case .reversed:
@@ -138,14 +136,14 @@ final class DataWithPointer {
     func alignedByte() -> UInt8 {
         self.skipUntilNextByte()
         self.index += 1
-        return self.bitArray[self.index - 1]
+        return self.data[self.index - 1]
     }
 
     func alignedBytes(count: Int) -> [UInt8] {
         self.skipUntilNextByte()
         var result: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
-            result[i] = self.bitArray[self.index]
+            result[i] = self.data[self.index]
             self.index += 1
         }
         return result
@@ -155,7 +153,7 @@ final class DataWithPointer {
         self.skipUntilNextByte()
         var result = 0
         for i in 0..<count {
-            result |= self.bitArray[self.index].toInt() << (8 * i)
+            result |= self.data[self.index].toInt() << (8 * i)
             self.index += 1
         }
         return result
@@ -166,7 +164,7 @@ final class DataWithPointer {
         self.skipUntilNextByte()
         var result: UInt64 = 0
         for i: UInt64 in 0..<count {
-            result |= UInt64(self.bitArray[self.index]) << (8 * i)
+            result |= UInt64(self.data[self.index]) << (8 * i)
             self.index += 1
         }
         return result
@@ -177,7 +175,7 @@ final class DataWithPointer {
         self.skipUntilNextByte()
         var result: UInt32 = 0
         for i: UInt32 in 0..<count {
-            result |= UInt32(self.bitArray[self.index]) << (8 * i)
+            result |= UInt32(self.data[self.index]) << (8 * i)
             self.index += 1
         }
         return result

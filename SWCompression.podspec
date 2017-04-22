@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "2.3.0"
+  s.version      = "2.4.0"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift}'
+    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift,BitToByteWriter.swift}'
   end
 
   s.subspec 'LZMA' do |sp|

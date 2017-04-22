@@ -154,4 +154,36 @@ public final class ZlibArchive: Archive {
         return Data(bytes: out)
     }
 
+    /**
+     Archives `data` into Zlib archive. Data will be also compressed with DEFLTATE algorithm.
+     It will be specified in archive's header that the compressor used slowest DEFLATE algorithm.
+
+     If during compression something goes wrong `DeflateError` will be thrown.
+
+     - Note: This function is specification compliant.
+
+     - Parameter data: Data to compress and archive.
+
+     - Throws: `DeflateError` if an error was encountered during compression.
+
+     - Returns: Data object with resulting archive.
+     */
+    public static func archive(data: Data) throws -> Data {
+        let out: [UInt8] = [
+            120, // CM (Compression Method) = 8 (DEFLATE), CINFO (Compression Info) = 7 (32K window size).
+            218, // Flags: slowest algorithm, no preset dictionary.
+        ]
+        var outData = Data(bytes: out)
+        outData.append(try Deflate.compress(data: data))
+
+        let adler32 = CheckSums.adler32(data)
+        var adlerBytes = [UInt8]()
+        for i in 0..<4 {
+            adlerBytes.append(UInt8((adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
+        }
+        outData.append(Data(bytes: adlerBytes))
+
+        return outData
+    }
+
 }

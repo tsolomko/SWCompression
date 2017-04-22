@@ -21,6 +21,15 @@ struct CheckSums {
         return ~crc
     }
 
+    static func crc32(_ data: Data) -> UInt32 {
+        var crc: UInt32 = ~0
+        for i in 0..<data.count {
+            let index = (crc & 0xFF) ^ (UInt32(data[i]))
+            crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
+        }
+        return ~crc
+    }
+
     static func crc64(_ array: [UInt8]) -> UInt64 {
         var crc: UInt64 = ~0
         for i in 0..<array.count {
@@ -36,6 +45,17 @@ struct CheckSums {
         var s2 = 0
         for i in 0..<array.count {
             s1 = (s1 + array[i].toInt()) % base
+            s2 = (s2 + s1) % base
+        }
+        return (s2 << 16) + s1
+    }
+
+    static func adler32(_ data: Data) -> Int {
+        let base = 65521
+        var s1 = 1
+        var s2 = 0
+        for i in 0..<data.count {
+            s1 = (s1 + data[i].toInt()) % base
             s2 = (s2 + s1) % base
         }
         return (s2 << 16) + s1
