@@ -248,7 +248,7 @@ public final class GzipArchive: Archive {
         var outData = Data(bytes: out)
         outData.append(try Deflate.compress(data: data))
 
-        let crc32 = CheckSums.crc32(data.toArray(type: UInt8.self))
+        let crc32 = CheckSums.crc32(data)
         var crcBytes = [UInt8]()
         for i: UInt32 in 0..<4 {
             crcBytes.append(UInt8((crc32 & (0xFF << (i * 8))) >> (i * 8)))
