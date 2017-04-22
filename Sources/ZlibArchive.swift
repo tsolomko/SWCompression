@@ -182,7 +182,7 @@ public final class ZlibArchive: Archive {
             adlerBytes.append(UInt8((adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
         }
         outData.append(Data(bytes: adlerBytes))
-        
+
         return outData
     }
 
