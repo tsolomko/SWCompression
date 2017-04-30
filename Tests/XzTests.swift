@@ -70,4 +70,11 @@ class XZTests: XCTestCase {
         self.perform(test: "test7")
     }
 
+    func testXz8() {
+        self.perform(test: "test8")
+    }
+
+    func testXz9() {
+        self.perform(test: "test9")
+    }
 }

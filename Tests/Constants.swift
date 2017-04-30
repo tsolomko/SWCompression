@@ -19,7 +19,7 @@ struct Constants {
      - test6: file with size of 5MB containing nulls from /dev/null.
      - test7: file with size of 5MB containing random bytes from /dev/urandom.
      - test8: text file from lzma_specification.
-     - random_file: file with size of 10KB containing random bytes from /dev/urandom.
+     - test9: file with size of 10KB containing random bytes from /dev/urandom.
     */
 
     static func url(forTest name: String, withType ext: String) -> URL {
