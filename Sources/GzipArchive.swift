@@ -72,9 +72,8 @@ public struct GzipHeader {
 
     /// Compression method of archive. Always equals to `.deflate`.
     public let compressionMethod: CompressionMethod
-    // TODO: Make it optional.
-    /// The most recent modification time of the original file.
-    public let modificationTime: Date
+    /// The most recent modification time of the original file. If set to 0 (default value == unset), then nil.
+    public let modificationTime: Date?
     /// Type of file system on which compression took place.
     public let osType: FileSystemType
     /// Name of the original file.
@@ -119,8 +118,7 @@ public struct GzipHeader {
         for i in 0..<4 {
             headerBytes.append(((mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
         }
-        // TODO: Should be nil in case of mtime == 0.
-        self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+        self.modificationTime = mtime == 0 ? nil : Date(timeIntervalSince1970: TimeInterval(mtime))
 
         let extraFlags = pointerData.alignedByte()
         headerBytes.append(extraFlags)

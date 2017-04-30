@@ -85,7 +85,6 @@ public final class BZip2: DecompressionAlgorithm {
 
         while true {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
-            // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
             let blockCRC32 = UInt32(truncatingBitPattern: pointerData.intFromBits(count: 32))
 
