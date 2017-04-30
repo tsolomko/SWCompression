@@ -41,6 +41,11 @@ public enum BZip2Error: Error {
     case WrongHuffmanLengthCode
     /// Symbol was not found in Huffman tree.
     case SymbolNotFound
+    /**
+     Computed CRC of uncompressed data didn't match the value stored in the archive.
+     Associated value contains already decompressed data.
+     */
+    case WrongCRC(Data)
 }
 
 /// Provides function to decompress data, which were compressed using BZip2.
@@ -60,7 +65,7 @@ public final class BZip2: DecompressionAlgorithm {
      */
     public static func decompress(compressedData data: Data) throws -> Data {
         /// An array for storing output data
-        var out: [UInt8] = []
+        var out = Data()
 
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .straight)
@@ -82,18 +87,21 @@ public final class BZip2: DecompressionAlgorithm {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
             // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
-            _ = pointerData.intFromBits(count: 32)
+            let blockCRC32 = UInt32(truncatingBitPattern: pointerData.intFromBits(count: 32))
 
             if blockType == 0x314159265359 {
-                try out.append(contentsOf: decode(data: &pointerData))
+                let blockData = Data(bytes: try decode(data: &pointerData))
+                guard CheckSums.bzip2CRC32(blockData) == blockCRC32 else { throw BZip2Error.WrongCRC(out) }
+                out.append(blockData)
             } else if blockType == 0x177245385090 {
+                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.WrongCRC(out) }
                 break
             } else {
                 throw BZip2Error.WrongBlockType
             }
         }
 
-        return Data(bytes: out)
+        return out
     }
 
     private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
