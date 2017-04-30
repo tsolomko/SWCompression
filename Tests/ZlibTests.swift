@@ -46,7 +46,7 @@ class ZlibTests: XCTestCase {
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "random_file")) else {
+        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test9")) else {
             XCTFail("Failed to get the answer")
             return
         }
@@ -55,7 +55,7 @@ class ZlibTests: XCTestCase {
     }
 
     func testCreateZlib() {
-        guard let testData = try? Data(contentsOf: Constants.url(forAnswer: "random_file"),
+        guard let testData = try? Data(contentsOf: Constants.url(forAnswer: "test9"),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test data.")
                                         return
