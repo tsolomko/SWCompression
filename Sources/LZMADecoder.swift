@@ -192,8 +192,7 @@ final class LZMADecoder {
         self.rangeDecoder = rD
 
         /// An array for storing output data
-        var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
-        var outIndex = uncompressedSize == -1 ? -1 : 0
+        var out: [UInt8] = []
 
         // Main decoding cycle.
         while true {
@@ -241,7 +240,7 @@ final class LZMADecoder {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
                 let byte = (symbol - 0x100).toUInt8()
-                self.put(byte, &out, &outIndex, &uncompressedSize)
+                self.put(byte, &out, &uncompressedSize)
                 // END.
 
                 // Finally, we need to update `state`.
@@ -267,7 +266,7 @@ final class LZMADecoder {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
                         let byte = self.byte(at: rep0 + 1)
-                        self.put(byte, &out, &outIndex, &uncompressedSize)
+                        self.put(byte, &out, &uncompressedSize)
                         continue
                     }
                 } else { // REP MATCH CASE
@@ -320,9 +319,9 @@ final class LZMADecoder {
                         // ...(separate trees for different `posSlot` values)...
                         // ...and 'Reverse' scheme to get distance value.
                         dist += LZMABitTreeDecoder.bitTreeReverseDecode(probs: &posDecoders,
-                                                                    startIndex: dist - posSlot,
-                                                                    bits: numDirectBits,
-                                                                    rangeDecoder: &rangeDecoder)
+                                                                        startIndex: dist - posSlot,
+                                                                        bits: numDirectBits,
+                                                                        rangeDecoder: &rangeDecoder)
                     } else {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
                         dist += rangeDecoder.decode(directBits: (numDirectBits - LZMAConstants.numAlignBits))
@@ -348,7 +347,7 @@ final class LZMADecoder {
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
-            self.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
+            self.copyMatch(at: rep0 + 1, length: len, &out, &uncompressedSize)
         }
 
         return out
@@ -361,11 +360,11 @@ final class LZMADecoder {
 
     private(set) var totalPosition: Int = 0
 
-    var isEmpty: Bool {
+    private var isEmpty: Bool {
         return self.position == 0 && !self.isFull
     }
 
-    func put(_ byte: UInt8) {
+    private func put(_ byte: UInt8) {
         self.totalPosition += 1
         self.byteBuffer[position] = byte
         self.position += 1
@@ -375,33 +374,25 @@ final class LZMADecoder {
         }
     }
 
-    func put(_ byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
-             _ uncompressedSize: inout Int) {
+    private func put(_ byte: UInt8, _ out: inout [UInt8], _ uncompressedSize: inout Int) {
         self.put(byte)
-
-        if uncompressedSize > 0 {
-            out[outIndex] = byte
-            outIndex += 1
-        } else {
-            out.append(byte)
-        }
+        out.append(byte)
         uncompressedSize -= 1
     }
 
-    func byte(at distance: Int) -> UInt8 {
+    private func byte(at distance: Int) -> UInt8 {
         return self.byteBuffer[distance <= self.position ? self.position - distance :
             self.dictionarySize - distance + self.position]
     }
 
-    func copyMatch(at distance: Int, length: Int, _ out: inout [UInt8], _ outIndex: inout Int,
-                   _ uncompressedSize: inout Int) {
+    private func copyMatch(at distance: Int, length: Int, _ out: inout [UInt8], _ uncompressedSize: inout Int) {
         for _ in 0..<length {
-            self.put(self.byte(at: distance), &out, &outIndex, &uncompressedSize)
+            self.put(self.byte(at: distance), &out, &uncompressedSize)
         }
     }
-
+    
     func check(distance: Int) -> Bool {
         return distance <= self.position || self.isFull
     }
-
+    
 }
