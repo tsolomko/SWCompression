@@ -58,10 +58,6 @@
 		069D0FE71E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FE51E0D6C6400D8AA87 /* LZMADecoder.swift */; };
 		069D0FE81E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FE51E0D6C6400D8AA87 /* LZMADecoder.swift */; };
 		069D0FE91E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FE51E0D6C6400D8AA87 /* LZMADecoder.swift */; };
-		069D0FEB1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */; };
-		069D0FEC1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */; };
-		069D0FED1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */; };
-		069D0FEE1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */; };
 		069D0FF01E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */; };
 		069D0FF11E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */; };
 		069D0FF21E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */; };
@@ -178,7 +174,6 @@
 		069AC2111E02DDAF0041AC13 /* LzmaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LzmaTests.swift; sourceTree = "<group>"; };
 		069AC2171E02DE490041AC13 /* test8.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.lzma; sourceTree = "<group>"; };
 		069D0FE51E0D6C6400D8AA87 /* LZMADecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMADecoder.swift; sourceTree = "<group>"; };
-		069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAOutWindow.swift; sourceTree = "<group>"; };
 		069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMARangeDecoder.swift; sourceTree = "<group>"; };
 		069D0FF41E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMABitTreeDecoder.swift; sourceTree = "<group>"; };
 		069D0FF91E0D6CE900D8AA87 /* LZMALenDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMALenDecoder.swift; sourceTree = "<group>"; };
@@ -299,7 +294,6 @@
 				069D0FF91E0D6CE900D8AA87 /* LZMALenDecoder.swift */,
 				069D0FF41E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift */,
 				069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */,
-				069D0FEA1E0D6C9F00D8AA87 /* LZMAOutWindow.swift */,
 			);
 			name = LZMA;
 			sourceTree = "<group>";
@@ -752,7 +746,6 @@
 				063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1141DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF11E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
-				069D0FEC1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */,
 				063DF1171DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518371E2A86F700D16354 /* ZipContainer.swift in Sources */,
 				069D0FFB1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
@@ -778,7 +771,6 @@
 				063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */,
 				063DF11C1DE1F2E200F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF21E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
-				069D0FED1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */,
 				063DF11D1DE1F2E200F38082 /* Protocols.swift in Sources */,
 				067518381E2A86F700D16354 /* ZipContainer.swift in Sources */,
 				069D0FFC1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
@@ -804,7 +796,6 @@
 				063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1151DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF31E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
-				069D0FEE1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */,
 				063DF1181DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518391E2A86F700D16354 /* ZipContainer.swift in Sources */,
 				069D0FFD1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
@@ -830,7 +821,6 @@
 				063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1131DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF01E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
-				069D0FEB1E0D6C9F00D8AA87 /* LZMAOutWindow.swift in Sources */,
 				063DF1161DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518361E2A86F700D16354 /* ZipContainer.swift in Sources */,
 				069D0FFA1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
