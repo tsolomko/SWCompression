@@ -1,5 +1,5 @@
 //
-//  XzArchive.swift
+//  XZArchive.swift
 //  SWCompression
 //
 //  Created by Timofey Solomko on 18.12.16.
