@@ -21,6 +21,7 @@ import Foundation
  - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
  - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
  - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
+ - `WrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
  */
 public enum BZip2Error: Error {
     /// Magic number was not 0x425a.
