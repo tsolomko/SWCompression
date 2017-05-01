@@ -177,6 +177,18 @@ public class ZipContainer {
             // Sometimes pointerData stays in not-aligned state after deflate decompression.
             // Following line ensures that this is not the case.
             pointerData.skipUntilNextByte()
+        case 12:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
+                fileBytes = try BZip2.decompress(&pointerData).toArray(type: UInt8.self)
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
+        case 14:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
+                fileBytes = try LZMA.decompress(&pointerData)
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
         default:
             throw ZipError.CompressionNotSupported
         }
@@ -300,8 +312,27 @@ struct LocalHeader {
             else { throw ZipError.EncryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.PatchingNotSupported }
-        guard self.compressionMethod == 8 || self.compressionMethod == 0
-            else { throw ZipError.CompressionNotSupported }
+
+        switch self.compressionMethod {
+        case 0:
+            break
+        case 8:
+            break
+        case 12:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
+                break
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
+        case 14:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
+                break
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
+        default:
+            throw ZipError.CompressionNotSupported
+        }
     }
 
 }
@@ -402,8 +433,27 @@ struct CentralDirectoryEntry {
             else { throw ZipError.EncryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.PatchingNotSupported }
-        guard self.compressionMethod == 8 || self.compressionMethod == 0
-            else { throw ZipError.CompressionNotSupported }
+
+        switch self.compressionMethod {
+        case 0:
+            break
+        case 8:
+            break
+        case 12:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
+                break
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
+        case 14:
+            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
+                break
+            #else
+                throw ZipError.CompressionNotSupported
+            #endif
+        default:
+            throw ZipError.CompressionNotSupported
+        }
     }
 
 }
