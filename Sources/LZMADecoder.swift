@@ -33,7 +33,6 @@ final class LZMADecoder {
     private var pb: UInt8
     private var dictionarySize: Int
 
-    private var outWindow: LZMAOutWindow
     private var rangeDecoder: LZMARangeDecoder
     private var posSlotDecoder: [LZMABitTreeDecoder] = []
     private var alignDecoder: LZMABitTreeDecoder
@@ -80,7 +79,8 @@ final class LZMADecoder {
 
         self.rangeDecoder = LZMARangeDecoder()
 
-        self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
+        self.byteBuffer = Array(repeating: 0, count: dictionarySize)
+        self.size = dictionarySize // TODO: remove self.size
 
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
@@ -115,7 +115,8 @@ final class LZMADecoder {
 
     func resetDictionary(_ dictSize: Int) {
         self.dictionarySize = dictSize
-        self.outWindow = LZMAOutWindow(dictSize: dictSize)
+        self.byteBuffer = Array(repeating: 0, count: dictSize)
+        self.size = dictSize
     }
 
     private func resetState() {
@@ -148,7 +149,7 @@ final class LZMADecoder {
         for i in 0..<dataSize {
             let byte = pointerData.alignedByte()
             out[i] = byte
-            self.outWindow.put(byte)
+            self.put(byte)
         }
         return out
     }
@@ -205,13 +206,13 @@ final class LZMADecoder {
                 }
             }
 
-            let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
+            let posState = self.totalPosition & ((1 << pb.toInt()) - 1)
             if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
-                let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
+                let prevByte = self.isEmpty ? 0 : self.byte(at: 1)
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
@@ -220,14 +221,14 @@ final class LZMADecoder {
                     If there were none, i.e. it is the first literal, then this part is skipped.
                  - `lp` low bits from current position in output.
                  */
-                let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
+                let litState = ((self.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
                 // If state is greater than 7 we need to do additional decoding with 'matchByte'.
                 if state >= 7 {
                     /**
                      Byte in output at position that is the `distance` bytes before current position,
                      where the `distance` is the distance from the latest decoded match.
                      */
-                    var matchByte = outWindow.byte(at: rep0 + 1)
+                    var matchByte = self.byte(at: rep0 + 1)
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
@@ -242,7 +243,7 @@ final class LZMADecoder {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
                 let byte = (symbol - 0x100).toUInt8()
-                outWindow.put(byte, &out, &outIndex, &uncompressedSize)
+                self.put(byte, &out, &outIndex, &uncompressedSize)
                 // END.
 
                 // Finally, we need to update `state`.
@@ -261,14 +262,14 @@ final class LZMADecoder {
             if rangeDecoder.decode(bitWithProb: &probabilities[193 + state]) != 0 {
                 // REP MATCH CASE
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if outWindow.isEmpty { throw LZMAError.WindowIsEmpty }
+                if self.isEmpty { throw LZMAError.WindowIsEmpty }
                 if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
                     if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
-                        let byte = outWindow.byte(at: rep0 + 1)
-                        outWindow.put(byte, &out, &outIndex, &uncompressedSize)
+                        let byte = self.byte(at: rep0 + 1)
+                        self.put(byte, &out, &outIndex, &uncompressedSize)
                         continue
                     }
                 } else { // REP MATCH CASE
@@ -344,15 +345,66 @@ final class LZMADecoder {
                 }
 
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if rep0 >= dictionarySize || !outWindow.check(distance: rep0) { throw LZMAError.NotEnoughToRepeat }
+                if rep0 >= dictionarySize || !self.check(distance: rep0) { throw LZMAError.NotEnoughToRepeat }
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
-            outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
+            self.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
         }
 
         return out
+    }
+
+    // MARK: LZMAOutWindow
+    private var byteBuffer: [UInt8]
+    private var position: Int = 0
+    private var size: Int
+    private var isFull: Bool = false
+
+    private(set) var totalPosition: Int = 0
+
+    var isEmpty: Bool {
+        return self.position == 0 && !self.isFull
+    }
+
+    func put(_ byte: UInt8) {
+        self.totalPosition += 1
+        self.byteBuffer[position] = byte
+        self.position += 1
+        if self.position == self.size {
+            self.position = 0
+            self.isFull = true
+        }
+    }
+
+    func put(_ byte: UInt8, _ out: inout [UInt8], _ outIndex: inout Int,
+             _ uncompressedSize: inout Int) {
+        self.put(byte)
+
+        if uncompressedSize > 0 {
+            out[outIndex] = byte
+            outIndex += 1
+        } else {
+            out.append(byte)
+        }
+        uncompressedSize -= 1
+    }
+
+    func byte(at distance: Int) -> UInt8 {
+        return self.byteBuffer[distance <= self.position ? self.position - distance :
+            self.size - distance + self.position]
+    }
+
+    func copyMatch(at distance: Int, length: Int, _ out: inout [UInt8], _ outIndex: inout Int,
+                   _ uncompressedSize: inout Int) {
+        for _ in 0..<length {
+            self.put(self.byte(at: distance), &out, &outIndex, &uncompressedSize)
+        }
+    }
+
+    func check(distance: Int) -> Bool {
+        return distance <= self.position || self.isFull
     }
 
 }
