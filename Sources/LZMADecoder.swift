@@ -80,7 +80,6 @@ final class LZMADecoder {
         self.rangeDecoder = LZMARangeDecoder()
 
         self.byteBuffer = Array(repeating: 0, count: dictionarySize)
-        self.size = dictionarySize // TODO: remove self.size
 
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
@@ -116,7 +115,6 @@ final class LZMADecoder {
     func resetDictionary(_ dictSize: Int) {
         self.dictionarySize = dictSize
         self.byteBuffer = Array(repeating: 0, count: dictSize)
-        self.size = dictSize
     }
 
     private func resetState() {
@@ -359,7 +357,6 @@ final class LZMADecoder {
     // MARK: LZMAOutWindow
     private var byteBuffer: [UInt8]
     private var position: Int = 0
-    private var size: Int
     private var isFull: Bool = false
 
     private(set) var totalPosition: Int = 0
@@ -372,7 +369,7 @@ final class LZMADecoder {
         self.totalPosition += 1
         self.byteBuffer[position] = byte
         self.position += 1
-        if self.position == self.size {
+        if self.position == self.dictionarySize {
             self.position = 0
             self.isFull = true
         }
@@ -393,7 +390,7 @@ final class LZMADecoder {
 
     func byte(at distance: Int) -> UInt8 {
         return self.byteBuffer[distance <= self.position ? self.position - distance :
-            self.size - distance + self.position]
+            self.dictionarySize - distance + self.position]
     }
 
     func copyMatch(at distance: Int, length: Int, _ out: inout [UInt8], _ outIndex: inout Int,
