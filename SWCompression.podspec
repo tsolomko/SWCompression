@@ -52,11 +52,13 @@ Pod::Spec.new do |s|
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift,BitToByteWriter.swift}'
+    sp.compiler_flags = '-DSWCOMP_ZIP_POD_BZ2'
   end
 
   s.subspec 'LZMA' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.source_files = 'Sources/LZMA*.swift'
+    sp.compiler_flags = '-DSWCOMP_ZIP_POD_LZMA'
   end
 
   s.subspec 'XZ' do |sp|
@@ -69,6 +71,7 @@ Pod::Spec.new do |s|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
     sp.source_files = 'Sources/ZipContainer.swift'
+    sp.compiler_flags = '-DSWCOMP_ZIP_POD_BUILD'
   end
 
 end
