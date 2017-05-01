@@ -103,6 +103,8 @@ final class LZMADecoder {
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
     }
 
+    // MARK: LZMA2 related functions.
+
     private func resetProperties() throws {
         var properties = pointerData.alignedByte()
         if properties >= (9 * 5 * 5) {
@@ -189,6 +191,8 @@ final class LZMADecoder {
             else { throw LZMA2Error.WrongSizes }
     }
 
+    // MARK: Main LZMA decoder function.
+
     func decodeLZMA(_ uncompressedSize: inout Int) throws {
         // First, we need to initialize Rande Decoder.
         guard let rD = LZMARangeDecoder(&self.pointerData) else {
@@ -211,7 +215,7 @@ final class LZMADecoder {
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
-                let prevByte = dictEnd == 0 ? 0 : out[1 <= dictEnd ? dictEnd - 1 : dictionarySize - 1 + dictEnd]
+                let prevByte = dictEnd == 0 ? 0 : self.byte(at: 1)
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
@@ -242,13 +246,8 @@ final class LZMADecoder {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
                 let byte = (symbol - 0x100).toUInt8()
-
-                out.append(byte)
                 uncompressedSize -= 1
-                dictEnd += 1
-                if dictEnd - dictStart == dictionarySize {
-                    dictStart += 1
-                }
+                self.put(byte)
                 // END.
 
                 // Finally, we need to update `state`.
@@ -273,13 +272,9 @@ final class LZMADecoder {
                     if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
-                        let byte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
-                        out.append(byte)
+                        let byte = self.byte(at: rep0 + 1)
                         uncompressedSize -= 1
-                        dictEnd += 1
-                        if dictEnd - dictStart == dictionarySize {
-                            dictStart += 1
-                        }
+                        self.put(byte)
                         continue
                     }
                 } else { // REP MATCH CASE
@@ -361,15 +356,25 @@ final class LZMADecoder {
             len += LZMAConstants.matchMinLen
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
             for _ in 0..<len {
-                let byte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
-                out.append(byte)
+                let byte = self.byte(at: rep0 + 1)
                 uncompressedSize -= 1
-                dictEnd += 1
-                if dictEnd - dictStart == dictionarySize {
-                    dictStart += 1
-                }
+                self.put(byte)
             }
         }
     }
-    
+
+    // MARK: Dictionary (out window) related functions.
+
+    private func put(_ byte: UInt8) {
+        out.append(byte)
+        dictEnd += 1
+        if dictEnd - dictStart == dictionarySize {
+            dictStart += 1
+        }
+    }
+
+    private func byte(at distance: Int) -> UInt8 {
+        return out[distance <= dictEnd ? dictEnd - distance : dictionarySize - distance + dictEnd]
+    }
+
 }
