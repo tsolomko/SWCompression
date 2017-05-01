@@ -62,8 +62,6 @@ public final class LZMA2: DecompressionAlgorithm {
         // At this point lzmaDecoder will be in a VERY bad state.
         let lzmaDecoder = try LZMADecoder(&pointerData, 0, 0, 0, 0)
 
-        var out: [UInt8] = []
-
         mainLoop: while true {
             let controlByte = pointerData.alignedByte()
             switch controlByte {
@@ -71,19 +69,19 @@ public final class LZMA2: DecompressionAlgorithm {
                 break mainLoop
             case 1:
                 lzmaDecoder.resetDictionary(dictionarySize)
-                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
+                lzmaDecoder.decodeUncompressed()
             case 2:
-                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
+                lzmaDecoder.decodeUncompressed()
             case 3...0x7F:
                 throw LZMA2Error.WrongControlByte
             case 0x80...0xFF:
-                out.append(contentsOf: try lzmaDecoder.decodeLZMA2(controlByte, dictionarySize))
+                try lzmaDecoder.decodeLZMA2(controlByte, dictionarySize)
             default:
                 throw LZMA2Error.WrongControlByte
             }
         }
 
-        return out
+        return lzmaDecoder.out
     }
 
     static func dictionarySize(_ byte: UInt8) throws -> Int {

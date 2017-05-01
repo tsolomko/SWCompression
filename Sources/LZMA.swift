@@ -84,7 +84,8 @@ public final class LZMA: DecompressionAlgorithm {
 
         let lzmaDecoder = try LZMADecoder(&pointerData, lc, pb, lp, dictionarySize)
 
-        return try lzmaDecoder.decodeLZMA(&uncompressedSize)
+        try lzmaDecoder.decodeLZMA(&uncompressedSize)
+        return lzmaDecoder.out
     }
 
 }

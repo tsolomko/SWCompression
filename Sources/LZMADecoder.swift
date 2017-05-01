@@ -33,7 +33,6 @@ final class LZMADecoder {
     private var pb: UInt8
     private var dictionarySize: Int
 
-    private var outWindow: LZMAOutWindow
     private var rangeDecoder: LZMARangeDecoder
     private var posSlotDecoder: [LZMABitTreeDecoder] = []
     private var alignDecoder: LZMABitTreeDecoder
@@ -48,14 +47,14 @@ final class LZMADecoder {
 
     /**
      Array with all probabilities:
-     
+
      - 0..<192: isMatch
      - 193..<205: isRep
      - 205..<217: isRepG0
      - 217..<229: isRepG1
      - 229..<241: isRepG2
      - 241..<433: isRep0Long
-    */
+     */
     private var probabilities: [Int] = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
 
     private var posDecoders: [Int]
@@ -69,6 +68,13 @@ final class LZMADecoder {
     /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state: Int = 0
 
+    /// An array for storing output data
+    var out: [UInt8] = []
+    // This array will also serve as dictionary and out window.
+    private var dictStart = 0
+    private var dictEnd = 0
+
+
     init(_ pointerData: inout DataWithPointer, _ lc: UInt8, _ pb: UInt8, _ lp: UInt8,
          _ dictionarySize: Int) throws {
         self.pointerData = pointerData
@@ -80,8 +86,6 @@ final class LZMADecoder {
 
         self.rangeDecoder = LZMARangeDecoder()
 
-        self.outWindow = LZMAOutWindow(dictSize: self.dictionarySize)
-
         self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
                                                    count: 0x300),
                                   count: 1 << (lc + lp).toInt())
@@ -92,7 +96,7 @@ final class LZMADecoder {
         }
         self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits, &self.pointerData)
         self.posDecoders = Array(repeating: LZMAConstants.probInitValue,
-                                count: 1 + LZMAConstants.numFullDistances - LZMAConstants.endPosModelIndex)
+                                 count: 1 + LZMAConstants.numFullDistances - LZMAConstants.endPosModelIndex)
 
         // There are two types of matches so we need two decoders for them.
         self.lenDecoder = LZMALenDecoder(&self.pointerData)
@@ -115,7 +119,7 @@ final class LZMADecoder {
 
     func resetDictionary(_ dictSize: Int) {
         self.dictionarySize = dictSize
-        self.outWindow = LZMAOutWindow(dictSize: dictSize)
+        self.dictStart = self.dictEnd
     }
 
     private func resetState() {
@@ -142,25 +146,25 @@ final class LZMADecoder {
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
     }
 
-    func decodeUncompressed() -> [UInt8] {
+    func decodeUncompressed() {
         let dataSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
-        var out: [UInt8] = Array(repeating: 0, count: dataSize)
-        for i in 0..<dataSize {
+        for _ in 0..<dataSize {
             let byte = pointerData.alignedByte()
-            out[i] = byte
-            self.outWindow.put(byte)
+            out.append(byte)
+            dictEnd += 1
+            if dictEnd - dictStart == dictionarySize {
+                dictStart += 1
+            }
         }
-        return out
     }
 
-    func decodeLZMA2(_ controlByte: UInt8, _ dictSize: Int) throws -> [UInt8] {
+    func decodeLZMA2(_ controlByte: UInt8, _ dictSize: Int) throws {
         let uncompressedSizeBits = controlByte & 0x1F
         let reset = (controlByte & 0x60) >> 5
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
             self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
         let compressedSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
         var dataStartIndex = pointerData.index
-        let out: [UInt8]
         switch reset {
         case 0:
             break
@@ -179,22 +183,18 @@ final class LZMADecoder {
             throw LZMA2Error.WrongReset
         }
         var uncompressedSize = unpackSize
-        out = try decodeLZMA(&uncompressedSize)
-        guard unpackSize == out.count && pointerData.index - dataStartIndex == compressedSize
+        let startCount = out.count
+        try decodeLZMA(&uncompressedSize)
+        guard unpackSize == out.count - startCount && pointerData.index - dataStartIndex == compressedSize
             else { throw LZMA2Error.WrongSizes }
-        return out
     }
 
-    func decodeLZMA(_ uncompressedSize: inout Int) throws -> [UInt8] {
+    func decodeLZMA(_ uncompressedSize: inout Int) throws {
         // First, we need to initialize Rande Decoder.
         guard let rD = LZMARangeDecoder(&self.pointerData) else {
             throw LZMAError.RangeDecoderInitError
         }
         self.rangeDecoder = rD
-
-        /// An array for storing output data
-        var out: [UInt8] = uncompressedSize == -1 ? [] : Array(repeating: 0, count: uncompressedSize)
-        var outIndex = uncompressedSize == -1 ? -1 : 0
 
         // Main decoding cycle.
         while true {
@@ -205,29 +205,29 @@ final class LZMADecoder {
                 }
             }
 
-            let posState = outWindow.totalPosition & ((1 << pb.toInt()) - 1)
+            let posState = out.count & ((1 << pb.toInt()) - 1)
             if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
-                let prevByte = outWindow.isEmpty ? 0 : outWindow.byte(at: 1)
+                let prevByte = dictEnd == 0 ? 0 : out[1 <= dictEnd ? dictEnd - 1 : dictionarySize - 1 + dictEnd]
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
                  Index of table with literal probabilities. It is based on the context which consists of:
-                 - `lc` high bits of from previous literal. 
-                    If there were none, i.e. it is the first literal, then this part is skipped.
+                 - `lc` high bits of from previous literal.
+                 If there were none, i.e. it is the first literal, then this part is skipped.
                  - `lp` low bits from current position in output.
                  */
-                let litState = ((outWindow.totalPosition & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
+                let litState = ((out.count & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
                 // If state is greater than 7 we need to do additional decoding with 'matchByte'.
                 if state >= 7 {
                     /**
                      Byte in output at position that is the `distance` bytes before current position,
                      where the `distance` is the distance from the latest decoded match.
                      */
-                    var matchByte = outWindow.byte(at: rep0 + 1)
+                    var matchByte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
@@ -242,7 +242,13 @@ final class LZMADecoder {
                     symbol = (symbol << 1) | rangeDecoder.decode(bitWithProb: &literalProbs[litState][symbol])
                 }
                 let byte = (symbol - 0x100).toUInt8()
-                outWindow.put(byte, &out, &outIndex, &uncompressedSize)
+
+                out.append(byte)
+                uncompressedSize -= 1
+                dictEnd += 1
+                if dictEnd - dictStart == dictionarySize {
+                    dictStart += 1
+                }
                 // END.
 
                 // Finally, we need to update `state`.
@@ -261,14 +267,19 @@ final class LZMADecoder {
             if rangeDecoder.decode(bitWithProb: &probabilities[193 + state]) != 0 {
                 // REP MATCH CASE
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if outWindow.isEmpty { throw LZMAError.WindowIsEmpty }
+                if dictEnd == 0 { throw LZMAError.WindowIsEmpty }
                 if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
                     if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
-                        let byte = outWindow.byte(at: rep0 + 1)
-                        outWindow.put(byte, &out, &outIndex, &uncompressedSize)
+                        let byte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
+                        out.append(byte)
+                        uncompressedSize -= 1
+                        dictEnd += 1
+                        if dictEnd - dictStart == dictionarySize {
+                            dictStart += 1
+                        }
                         continue
                     }
                 } else { // REP MATCH CASE
@@ -321,9 +332,9 @@ final class LZMADecoder {
                         // ...(separate trees for different `posSlot` values)...
                         // ...and 'Reverse' scheme to get distance value.
                         dist += LZMABitTreeDecoder.bitTreeReverseDecode(probs: &posDecoders,
-                                                                    startIndex: dist - posSlot,
-                                                                    bits: numDirectBits,
-                                                                    rangeDecoder: &rangeDecoder)
+                                                                        startIndex: dist - posSlot,
+                                                                        bits: numDirectBits,
+                                                                        rangeDecoder: &rangeDecoder)
                     } else {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
                         dist += rangeDecoder.decode(directBits: (numDirectBits - LZMAConstants.numAlignBits))
@@ -344,15 +355,21 @@ final class LZMADecoder {
                 }
 
                 if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if rep0 >= dictionarySize || !outWindow.check(distance: rep0) { throw LZMAError.NotEnoughToRepeat }
+                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) { throw LZMAError.NotEnoughToRepeat }
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
-            outWindow.copyMatch(at: rep0 + 1, length: len, &out, &outIndex, &uncompressedSize)
+            for _ in 0..<len {
+                let byte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
+                out.append(byte)
+                uncompressedSize -= 1
+                dictEnd += 1
+                if dictEnd - dictStart == dictionarySize {
+                    dictStart += 1
+                }
+            }
         }
-
-        return out
     }
-
+    
 }
