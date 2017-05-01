@@ -65,11 +65,14 @@ public final class BZip2: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(compressedData data: Data) throws -> Data {
-        /// An array for storing output data
-        var out = Data()
-
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .straight)
+        return try decompress(&pointerData)
+    }
+
+    static func decompress(_ pointerData: inout DataWithPointer) throws -> Data {
+        /// An array for storing output data
+        var out = Data()
 
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.WrongMagic }
@@ -100,7 +103,7 @@ public final class BZip2: DecompressionAlgorithm {
                 throw BZip2Error.WrongBlockType
             }
         }
-
+        
         return out
     }
 
