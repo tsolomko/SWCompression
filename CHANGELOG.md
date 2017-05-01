@@ -1,4 +1,13 @@
 # Changelog
+v3.0.0
+----------------
+#### test1
+- BZip2 decompression now checks CRC32.
+- GZipHeader.modificationTime is now Optional.
+- Enabled support for bzip2 and lzma compressed files in zip containers.
+  - In CocoaPods configurations availability of such support depends on
+    the presence of corresponding podspecs.
+
 v2.4.0
 ----------------
 - Reduced memory usage in some cases.
