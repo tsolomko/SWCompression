@@ -157,7 +157,7 @@ class HuffmanTree {
     }
 
     func code(symbol: Int, _ bitWriter: inout BitToByteWriter) {
-        guard self.coding else { fatalError("Tree is not coding, this error should be replaced with Error.") }
+        precondition(self.coding, "Tree is not initalized for coding!")
 
         var index = 0
         while true {
