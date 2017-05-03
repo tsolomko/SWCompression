@@ -68,7 +68,7 @@ final class LZMADecoder {
     /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state: Int = 0
 
-    /// An array for storing output data
+    /// An array for storing output data.
     var out: [UInt8] = []
     // This array will also serve as dictionary and out window.
     private var dictStart = 0
@@ -231,7 +231,7 @@ final class LZMADecoder {
                      Byte in output at position that is the `distance` bytes before current position,
                      where the `distance` is the distance from the latest decoded match.
                      */
-                    var matchByte = out[rep0 + 1 <= dictEnd ? dictEnd - rep0 - 1 : dictionarySize - rep0 - 1 + dictEnd]
+                    var matchByte = self.byte(at: rep0 + 1)
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
