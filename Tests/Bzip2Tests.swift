@@ -76,5 +76,4 @@ class Bzip2Tests: XCTestCase {
         self.perform(test: "test9")
     }
 
-
 }

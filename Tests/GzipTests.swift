@@ -110,5 +110,4 @@ class GzipTests: XCTestCase {
         self.unarchive(test: "test9")
     }
 
-
 }

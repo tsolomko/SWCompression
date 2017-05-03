@@ -74,7 +74,6 @@ final class LZMADecoder {
     private var dictStart = 0
     private var dictEnd = 0
 
-
     init(_ pointerData: inout DataWithPointer, _ lc: UInt8, _ pb: UInt8, _ lp: UInt8,
          _ dictionarySize: Int) throws {
         self.pointerData = pointerData

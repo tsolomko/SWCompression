@@ -103,7 +103,7 @@ public final class BZip2: DecompressionAlgorithm {
                 throw BZip2Error.WrongBlockType
             }
         }
-        
+
         return out
     }
 
