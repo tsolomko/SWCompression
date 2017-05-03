@@ -30,10 +30,10 @@ struct CheckSums {
         return ~crc
     }
 
-    static func bzip2CRC32(_ data: Data) -> UInt32 {
+    static func bzip2CRC32(_ array: [UInt8]) -> UInt32 {
         var crc: UInt32 = 0xFFFFFFFF
-        for i in 0..<data.count {
-            let index = UInt32(data[i])
+        for i in 0..<array.count {
+            let index = UInt32(array[i])
             crc = (crc << 8) ^ CheckSums.bzip2CRC32table[Int((crc >> 24) ^ index)]
         }
         return ~crc

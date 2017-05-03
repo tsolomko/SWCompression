@@ -67,12 +67,12 @@ public final class BZip2: DecompressionAlgorithm {
     public static func decompress(compressedData data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .straight)
-        return try decompress(&pointerData)
+        return Data(bytes: try decompress(&pointerData))
     }
 
-    static func decompress(_ pointerData: inout DataWithPointer) throws -> Data {
+    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
         /// An array for storing output data
-        var out = Data()
+        var out = [UInt8]()
 
         let magic = pointerData.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.WrongMagic }
@@ -93,11 +93,13 @@ public final class BZip2: DecompressionAlgorithm {
             let blockCRC32 = UInt32(truncatingBitPattern: pointerData.intFromBits(count: 32))
 
             if blockType == 0x314159265359 {
-                let blockData = Data(bytes: try decode(data: &pointerData))
-                guard CheckSums.bzip2CRC32(blockData) == blockCRC32 else { throw BZip2Error.WrongCRC(out) }
-                out.append(blockData)
+                let blockBytes = try decode(data: &pointerData)
+                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32 else { throw BZip2Error.WrongCRC(Data(bytes: out)) }
+                for byte in blockBytes {
+                    out.append(byte)
+                }
             } else if blockType == 0x177245385090 {
-                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.WrongCRC(out) }
+                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.WrongCRC(Data(bytes: out)) }
                 break
             } else {
                 throw BZip2Error.WrongBlockType

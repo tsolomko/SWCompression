@@ -179,7 +179,7 @@ public class ZipContainer {
             pointerData.skipUntilNextByte()
         case 12:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
-                fileBytes = try BZip2.decompress(&pointerData).toArray(type: UInt8.self)
+                fileBytes = try BZip2.decompress(&pointerData)
             #else
                 throw ZipError.CompressionNotSupported
             #endif
