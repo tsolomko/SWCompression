@@ -1,7 +1,6 @@
 output: docs/
 clean: true
 exclude: Tests/
-swift_version: 3.1
 author: Timofey Solomko
 module: SWCompression
 module_version: 2.4.0
