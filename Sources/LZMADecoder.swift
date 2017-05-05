@@ -118,7 +118,7 @@ final class LZMADecoder {
         self.lp = properties % 5
     }
 
-    func resetDictionary(_ dictSize: Int) {
+    private func resetDictionary(_ dictSize: Int) {
         self.dictionarySize = dictSize
         self.dictStart = self.dictEnd
     }
@@ -147,7 +147,7 @@ final class LZMADecoder {
         self.repLenDecoder = LZMALenDecoder(&self.pointerData)
     }
 
-    func decodeUncompressed() {
+    private func decodeUncompressed() {
         let dataSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
         for _ in 0..<dataSize {
             let byte = pointerData.alignedByte()
@@ -159,7 +159,8 @@ final class LZMADecoder {
         }
     }
 
-    func decodeLZMA2(_ controlByte: UInt8, _ dictSize: Int) throws {
+    /// Function which dispatches decoding LZMA2 based on controlByte.
+    private func dispatch(_ controlByte: UInt8, _ dictSize: Int) throws {
         let uncompressedSizeBits = controlByte & 0x1F
         let reset = (controlByte & 0x60) >> 5
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
@@ -188,6 +189,29 @@ final class LZMADecoder {
         try decodeLZMA(&uncompressedSize)
         guard unpackSize == out.count - startCount && pointerData.index - dataStartIndex == compressedSize
             else { throw LZMA2Error.WrongSizes }
+    }
+
+    // MARK: Main LZMA 2 decoder function.
+    
+    func decodeLZMA2(_ lzma2DictionarySize: Int) throws {
+        mainLoop: while true {
+            let controlByte = pointerData.alignedByte()
+            switch controlByte {
+            case 0:
+                break mainLoop
+            case 1:
+                self.resetDictionary(lzma2DictionarySize)
+                self.decodeUncompressed()
+            case 2:
+                self.decodeUncompressed()
+            case 3...0x7F:
+                throw LZMA2Error.WrongControlByte
+            case 0x80...0xFF:
+                try self.dispatch(controlByte, lzma2DictionarySize)
+            default:
+                throw LZMA2Error.WrongControlByte
+            }
+        }
     }
 
     // MARK: Main LZMA decoder function.

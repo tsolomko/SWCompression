@@ -61,26 +61,7 @@ public final class LZMA2: DecompressionAlgorithm {
     static func decompress(_ dictionarySize: Int, _ pointerData: inout DataWithPointer) throws -> [UInt8] {
         // At this point lzmaDecoder will be in a VERY bad state.
         let lzmaDecoder = try LZMADecoder(&pointerData, 0, 0, 0, 0)
-
-        mainLoop: while true {
-            let controlByte = pointerData.alignedByte()
-            switch controlByte {
-            case 0:
-                break mainLoop
-            case 1:
-                lzmaDecoder.resetDictionary(dictionarySize)
-                lzmaDecoder.decodeUncompressed()
-            case 2:
-                lzmaDecoder.decodeUncompressed()
-            case 3...0x7F:
-                throw LZMA2Error.WrongControlByte
-            case 0x80...0xFF:
-                try lzmaDecoder.decodeLZMA2(controlByte, dictionarySize)
-            default:
-                throw LZMA2Error.WrongControlByte
-            }
-        }
-
+        try lzmaDecoder.decodeLZMA2(dictionarySize)
         return lzmaDecoder.out
     }
 
