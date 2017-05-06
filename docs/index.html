@@ -151,9 +151,11 @@
         <section class="section">
           <div class="section-content">
             
-            <a href='#swcompression' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='swcompression'>SWCompression</h1>
+            <h1 id='swcompression' class='heading'>SWCompression</h1>
 
-<p><a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a> <a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a> <a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.0.2-lightgrey.svg" alt="Swift 3"></a>
+<p><a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a>
+<a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a>
+<a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg" alt="Swift 3"></a>
 <a href="https://travis-ci.org/tsolomko/SWCompression"><img src="https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop" alt="Build Status"></a> <a href="https://codecov.io/gh/tsolomko/SWCompression"><img src="https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg" alt="codecov"></a></p>
 
 <p><a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/v/SWCompression.svg" alt="CocoaPods"></a>
@@ -162,7 +164,7 @@
 <p>A framework which contains implementations of (de)compression algorithms.</p>
 
 <p><strong>Developed with Swift.</strong></p>
-<a href='#why-have-you-made-this-framework' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='why-have-you-made-this-framework'>Why have you made this framework?</h2>
+<h2 id='why-have-you-made-this-framework' class='heading'>Why have you made this framework?</h2>
 
 <p>There are a couple of reasons for this.</p>
 
@@ -176,7 +178,7 @@ that framework has a bit complicated API and somewhat questionable choice of sup
 And yes, it is also in Objective-C.</p>
 
 <p>And here comes SWCompression: no Objective-C, pure Swift.</p>
-<a href='#features' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='features'>Features</h2>
+<h2 id='features' class='heading'>Features</h2>
 
 <ul>
 <li>Containers:
@@ -208,10 +210,10 @@ And yes, it is also in Objective-C.</p>
 </ul>
 
 <p>By the way, it seems like GZip, Deflate and Zlib implementations are <strong>specification compliant</strong>.</p>
-<a href='#installation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='installation'>Installation</h2>
+<h2 id='installation' class='heading'>Installation</h2>
 
 <p>SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.</p>
-<a href='#cocoapods' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h5 id='cocoapods'>CocoaPods</h5>
+<h5 id='cocoapods' class='heading'>CocoaPods</h5>
 
 <p>Add to your Podfile <code>pod &#39;SWCompression&#39;</code>.</p>
 
@@ -234,14 +236,14 @@ Available subspecs:</p>
 <p>To complete installation, run <code>pod install</code>.</p>
 
 <p><em>Note:</em> Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. It is included in every other subspec and should not be specified directly in Podfile.</p>
-<a href='#carthage' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h5 id='carthage'>Carthage</h5>
+<h5 id='carthage' class='heading'>Carthage</h5>
 
 <p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
 
 <p>Then run <code>carthage update</code>.</p>
 
 <p>Finally, drag and drop <code>SWCompression.framework</code> from <code>Carthage/Build</code> folder into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> tab.</p>
-<a href='#swift-package-manager' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h5 id='swift-package-manager'>Swift Package Manager</h5>
+<h5 id='swift-package-manager' class='heading'>Swift Package Manager</h5>
 
 <p>Add to you package dependecies <code>.Package(url: &quot;https://github.com/tsolomko/SWCompression.git&quot;)</code>, for example like this:</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">PackageDescription</span>
@@ -255,8 +257,8 @@ Available subspecs:</p>
 </code></pre>
 
 <p>More info about SPM you can find at <a href="https://github.com/apple/swift-package-manager/tree/master/Documentation">Swift Package Manager&rsquo;s Documentation</a>.</p>
-<a href='#usage' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='usage'>Usage</h2>
-<a href='#basics' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='basics'>Basics</h4>
+<h2 id='usage' class='heading'>Usage</h2>
+<h4 id='basics' class='heading'>Basics</h4>
 
 <p>If you&rsquo;d like to decompress <q>deflated</q> data just use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
@@ -275,11 +277,11 @@ So, in case of GZip archive you should use:</p>
 
 <p>One final note: every unarchive/decompress function can throw an error and
 you are responsible for handling them.</p>
-<a href='#documentation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='documentation'>Documentation</h4>
+<h4 id='documentation' class='heading'>Documentation</h4>
 
 <p>Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own <a href="http://tsolomko.github.io/SWCompression">website</a>.</p>
-<a href='#handling-errors' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='handling-errors'>Handling Errors</h4>
+<h4 id='handling-errors' class='heading'>Handling Errors</h4>
 
 <p>If you look at list of available error types and their cases,
 you may be frightened by their number.
@@ -297,11 +299,11 @@ For example:</p>
   <span class="o">&lt;</span><span class="n">handle</span> <span class="n">all</span> <span class="n">other</span> <span class="n">errors</span> <span class="n">here</span><span class="o">&gt;</span>
 <span class="p">}</span>
 </code></pre>
-<a href='#sophisticated-example' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='sophisticated-example'>Sophisticated example</h4>
+<h4 id='sophisticated-example' class='heading'>Sophisticated example</h4>
 
 <p>There is a small program, <a href="https://github.com/tsolomko/swcomp">swcomp</a>,
 which uses SWCompression for unarchiving several types of archives.</p>
-<a href='#why-is-it-so-slow' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='why-is-it-so-slow'>Why is it so slow?</h2>
+<h2 id='why-is-it-so-slow' class='heading'>Why is it so slow?</h2>
 
 <p>Version 2.0 came with a great performance improvement.
 Just look at the test results in &lsquo;Tests/Test Result&rsquo;.
@@ -316,14 +318,14 @@ You can once again check test results if you want to convince yourself that this
 so some difference in speed is expected.</p>
 
 <p>To sum up, it is <strong>highly recommended</strong> to build SWCompression with &lsquo;Release&rsquo; configuration and use the latest version (at least 2.0).</p>
-<a href='#future-plans' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='future-plans'>Future plans</h2>
+<h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>
 <li>Tar unarchiving.</li>
 <li>BZip2 compression.</li>
 <li>Something else&hellip;</li>
 </ul>
-<a href='#references' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='references'>References</h2>
+<h2 id='references' class='heading'>References</h2>
 
 <ul>
 <li><a href="http://www.paul.sladen.org/projects/pyflate/">pyflate</a></li>
@@ -346,7 +348,7 @@ so some difference in speed is expected.</p>
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
