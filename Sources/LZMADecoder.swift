@@ -192,7 +192,7 @@ final class LZMADecoder {
     }
 
     // MARK: Main LZMA 2 decoder function.
-    
+
     func decodeLZMA2(_ lzma2DictionarySize: Int) throws {
         mainLoop: while true {
             let controlByte = pointerData.alignedByte()
