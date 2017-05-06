@@ -8,6 +8,10 @@ v3.0.0
   - In CocoaPods configurations availability of such support depends on
     the presence of corresponding podspecs.
 
+v2.4.1
+----------------
+- Lowered deployment targets versions for all (supported) Apple platforms.
+
 v2.4.0
 ----------------
 - Reduced memory usage in some cases.
