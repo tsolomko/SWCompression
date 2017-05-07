@@ -23,3 +23,18 @@ public protocol DecompressionAlgorithm {
     static func decompress(compressedData: Data) throws -> Data
 
 }
+
+public protocol Container {
+
+    static func open(containerData: Data) throws -> [ContainerEntry]
+
+}
+
+
+public protocol ContainerEntry {
+
+    var name: String? { get }
+
+    var data: Data { get }
+
+}
