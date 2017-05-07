@@ -1,4 +1,8 @@
 # Changelog
+v2.4.2
+----------------
+- Fixed a problem, where ZipEntry.fileName was returning fileComment instead.
+
 v2.4.1
 ----------------
 - Lowered deployment targets versions for all (supported) Apple platforms.

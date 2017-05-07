@@ -54,7 +54,7 @@ public struct ZipEntry {
 
     /// Name of the file or directory.
     public var fileName: String? {
-        return self.cdEntry.fileComment
+        return self.cdEntry.fileName
     }
 
     /// Comment associated with the entry.
