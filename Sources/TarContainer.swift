@@ -92,7 +92,7 @@ public class TarContainer {
             }
 
             // Some implementations treat bytes as signed integers, but some don't.
-            // So we check both case, coincedence in one of them will pass the checksum test.
+            // So we check both cases, coincedence in one of them will pass the checksum test.
             let unsignedOurChecksumArray = headerDataForChecksum.map { UInt($0) }
             let signedOurChecksumArray = headerDataForChecksum.map { Int($0) }
 
