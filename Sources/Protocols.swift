@@ -35,6 +35,6 @@ public protocol ContainerEntry {
 
     var name: String? { get }
 
-    var data: Data { get }
+    func data() throws -> Data
 
 }
