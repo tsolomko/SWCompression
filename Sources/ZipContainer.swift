@@ -43,8 +43,11 @@ public enum ZipError: Error {
     case CompressionNotSupported
     /// Wrong local header of an entry.
     case WrongLocalHeader
-    /// Wrong computed CRC32 of an entry.
-    case WrongCRC32
+    /**
+     Computed CRC32 of entry's data didn't match the value stored in the container.
+     Associated value contains extracted data.
+     */
+    case WrongCRC32(Data)
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
@@ -210,8 +213,8 @@ public class ZipContainer {
         guard compSize == realCompSize && uncompSize == fileBytes.count
             else { throw ZipError.WrongSize }
         guard crc32 == UInt32(CheckSums.crc32(fileBytes))
-            else { throw ZipError.WrongCRC32 }
-
+            else { throw ZipError.WrongCRC32(Data(bytes: fileBytes)) }
+        
         return Data(bytes: fileBytes)
     }
 
