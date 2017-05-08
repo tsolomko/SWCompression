@@ -56,17 +56,17 @@ public struct ZipEntry {
     fileprivate let cdEntry: CentralDirectoryEntry
 
     /// Name of the file or directory.
-    public var fileName: String? {
+    public var name: String? {
         return self.cdEntry.fileName
     }
 
     /// Comment associated with the entry.
-    public var fileComment: String? {
+    public var comment: String? {
         return self.cdEntry.fileComment
     }
 
     /// File or directory attributes related to the file system of archive's creator.
-    public var fileAttributes: UInt32 {
+    public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
 
