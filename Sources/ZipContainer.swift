@@ -51,9 +51,10 @@ public enum ZipError: Error {
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
-public struct ZipEntry {
+public class ZipEntry: ContainerEntry {
 
-    fileprivate let cdEntry: CentralDirectoryEntry
+    private let cdEntry: CentralDirectoryEntry
+    private var pointerData: DataWithPointer
 
     /// Name of the file or directory.
     public var name: String? {
@@ -70,105 +71,40 @@ public struct ZipEntry {
         return self.cdEntry.externalFileAttributes
     }
 
-    init(_ cdEntry: CentralDirectoryEntry) {
-        self.cdEntry = cdEntry
-    }
-
-}
-
-/// Provides function to open ZIP archives (containers).
-public class ZipContainer {
-
-    private var pointerData: DataWithPointer
-
-    /// All file and directory entries found in ZIP archive (in its Central Directory).
-    public private(set) var entries: [ZipEntry]
-
     /**
-     Tries to open ZIP archive and parse its Central Directory. 
-     If parsing is successful then `entries` property will contain all directory or file entries found in archive.
-     
-     - Important: The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT assume that this is the case.
+     Returns data associated with this ZipEntry.
 
-     - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-     One can check this by looking at the size of entry's data (it should be 0 for directory) AND
-     the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
-
-     - Note: Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.
-
-     - Parameter containerData: Data of ZIP container.
-
-     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
-     It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.
-    */
-    public init(containerData data: Data) throws {
-        /// Object with input data which supports convenient work with bit shifts.
-        self.pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        self.entries = []
-
-        pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
-        while true {
-            // Check signature.
-            if pointerData.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
-                // We found it!
-                break
-            }
-            if pointerData.index == 0 {
-                throw ZipError.NotFoundCentralDirectoryEnd
-            }
-            pointerData.index -= 5
-        }
-
-        let endOfCD = try EndOfCentralDirectory(&pointerData)
-        let cdEntries = endOfCD.cdEntries
-
-        // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
-
-        for _ in 0..<cdEntries {
-            let cdEntry = try CentralDirectoryEntry(&pointerData, endOfCD.currentDiskNumber)
-            self.entries.append(ZipEntry(cdEntry))
-        }
-
-    }
-
-    /**
-     Returns data associated with provided ZipEntry.
-     
      - Note: Returned `Data` object with the size of 0 can either indicate that the entry is an empty file
      or it is a directory.
-     
-     - Parameter zipEntry: file or directory entry from current container.
 
-     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
+     - Throws: `ZipError` or any other error associated with compression type,
+     depending on the type of inconsistency in data.
      An error can indicate that the container is damaged.
-    */
-    public func data(for zipEntry: ZipEntry) throws -> Data {
+     */
+    public func data() throws -> Data {
         // Now, let's move to the location of local header.
-        pointerData.index = Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.offset))
+        pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
 
         let localHeader = try LocalHeader(&pointerData)
 
         // Check local header for consistency with Central Directory entry.
         guard localHeader.versionNeeded <= 45 &&
-            localHeader.generalPurposeBitFlags == zipEntry.cdEntry.generalPurposeBitFlags &&
-            localHeader.compressionMethod == zipEntry.cdEntry.compressionMethod &&
-            localHeader.lastModFileTime == zipEntry.cdEntry.lastModFileTime &&
-            localHeader.lastModFileDate == zipEntry.cdEntry.lastModFileDate
+            localHeader.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+            localHeader.compressionMethod == cdEntry.compressionMethod &&
+            localHeader.lastModFileTime == cdEntry.lastModFileTime &&
+            localHeader.lastModFileDate == cdEntry.lastModFileDate
             else { throw ZipError.WrongLocalHeader }
         let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
         var uncompSize = hasDataDescriptor ?
-            Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.uncompSize)) :
+            Int(UInt32(truncatingBitPattern: cdEntry.uncompSize)) :
             Int(UInt32(truncatingBitPattern: localHeader.uncompSize))
         var compSize = hasDataDescriptor ?
-            Int(UInt32(truncatingBitPattern: zipEntry.cdEntry.compSize)) :
+            Int(UInt32(truncatingBitPattern: cdEntry.compSize)) :
             Int(UInt32(truncatingBitPattern: localHeader.compSize))
-        var crc32 = hasDataDescriptor ? zipEntry.cdEntry.crc32 : localHeader.crc32
+        var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader.crc32
 
         let fileBytes: [UInt8]
         let fileDataStart = pointerData.index
@@ -218,6 +154,16 @@ public class ZipContainer {
         return Data(bytes: fileBytes)
     }
 
+    init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
+        self.cdEntry = cdEntry
+        self.pointerData = pointerData
+    }
+
+}
+
+/// Provides function to open ZIP archives (containers).
+public class ZipContainer: Container {
+
     /**
      Processes ZIP archive (container) and returns an array of tuples `(String, Data)`.
      First member of a tuple is entry's name, second member is entry's data.
@@ -234,18 +180,43 @@ public class ZipContainer {
     
      - Parameter containerData: Data of ZIP container.
      
-     - Throws: `ZipError` or `DeflateError` depending on the type of inconsistency in data.
-     It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.
+     - Throws: `ZipError` or any other error associated with compression type,
+     depending on the type of inconsistency in data.
+     It may indicate that either the container is damaged or it might not be ZIP container at all.
 
      - Returns: Array of pairs (tuples) where first member is `entryName` and second member is `entryData`.
      */
-    public static func open(containerData data: Data) throws -> [(entryName: String, entryData: Data)] {
-        let zipContainer = try ZipContainer(containerData: data)
-        var result: [(String, Data)] = []
-        for zipEntry in zipContainer.entries {
-            result.append((zipEntry.fileName!, try zipContainer.data(for: zipEntry)))
+    public static func open(containerData: Data) throws -> [ContainerEntry] {
+
+        /// Object with input data which supports convenient work with bit shifts.
+        var pointerData = DataWithPointer(data: containerData, bitOrder: .reversed)
+        var entries = [ZipEntry]()
+
+        pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
+        while true {
+            // Check signature.
+            if pointerData.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
+                // We found it!
+                break
+            }
+            if pointerData.index == 0 {
+                throw ZipError.NotFoundCentralDirectoryEnd
+            }
+            pointerData.index -= 5
         }
-        return result
+
+        let endOfCD = try EndOfCentralDirectory(&pointerData)
+        let cdEntries = endOfCD.cdEntries
+
+        // OK, now we are ready to read Central Directory itself.
+        pointerData.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
+
+        for _ in 0..<cdEntries {
+            let cdEntry = try CentralDirectoryEntry(&pointerData, endOfCD.currentDiskNumber)
+            entries.append(ZipEntry(cdEntry, &pointerData))
+        }
+
+        return entries
     }
 
 }
