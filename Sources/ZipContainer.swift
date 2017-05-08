@@ -72,7 +72,7 @@ public class ZipEntry: ContainerEntry {
     }
 
     /**
-     Returns data associated with this ZipEntry.
+     Returns data associated with this entry.
 
      - Note: Returned `Data` object with the size of 0 can either indicate that the entry is an empty file
      or it is a directory.
@@ -165,7 +165,7 @@ public class ZipEntry: ContainerEntry {
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP archive (container) and returns an array of tuples `(String, Data)`.
+     Processes ZIP archive (container) and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
      First member of a tuple is entry's name, second member is entry's data.
      
      - Important: The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
@@ -175,16 +175,14 @@ public class ZipContainer: Container {
      - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
      One can check this by looking at the size of entry's data (it should be 0 for directory) AND
      the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
-     
-     - Note: Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.
-    
+
      - Parameter containerData: Data of ZIP container.
      
      - Throws: `ZipError` or any other error associated with compression type,
      depending on the type of inconsistency in data.
      It may indicate that either the container is damaged or it might not be ZIP container at all.
 
-     - Returns: Array of pairs (tuples) where first member is `entryName` and second member is `entryData`.
+     - Returns: Array of pairs `ZipEntries` as an array of `ContainerEntries`.
      */
     public static func open(containerData: Data) throws -> [ContainerEntry] {
 
