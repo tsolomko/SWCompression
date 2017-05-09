@@ -161,7 +161,7 @@ public class ZipEntry: ContainerEntry {
 
 }
 
-/// Provides function to open ZIP archives (containers).
+/// Provides function which opens ZIP archives (containers).
 public class ZipContainer: Container {
 
     /**
