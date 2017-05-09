@@ -58,7 +58,7 @@ public class ZipEntry: ContainerEntry {
     private var pointerData: DataWithPointer
 
     /// Name of the file or directory.
-    public var name: String? {
+    public var name: String {
         return self.cdEntry.fileName
     }
 
@@ -70,6 +70,14 @@ public class ZipEntry: ContainerEntry {
     /// File or directory attributes related to the file system of archive's creator.
     public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
+    }
+
+    public var size: Int {
+        return Int(truncatingBitPattern: cdEntry.uncompSize)
+    }
+
+    public var isDirectory: Bool {
+        return false // TODO: Implement.
     }
 
     /**
@@ -396,7 +404,7 @@ struct CentralDirectoryEntry {
             }
         }
 
-        guard let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+        guard let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
                                     encoding: .utf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
