@@ -232,7 +232,7 @@ struct LocalHeader {
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
 
-    let fileName: String?
+    let fileName: String
 
     init(_ pointerData: inout DataWithPointer) throws {
         // Check signature.
@@ -256,8 +256,10 @@ struct LocalHeader {
         let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
         let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
 
-        self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
-                               encoding: .utf8)
+        guard let fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                                    encoding: .utf8)
+            else { throw ZipError.wrongTextField }
+        self.fileName = fileName
 
         let extraFieldStart = pointerData.index
         while pointerData.index - extraFieldStart < extraFieldLength {
@@ -322,7 +324,7 @@ struct CentralDirectoryEntry {
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
 
-    let fileName: String?
+    let fileName: String
     let fileComment: String?
 
     private(set) var diskNumberStart: UInt32
@@ -363,8 +365,10 @@ struct CentralDirectoryEntry {
 
         self.offset = pointerData.uint64FromAlignedBytes(count: 4)
 
-        self.fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
-                              encoding: .utf8)
+        guard let fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                                    encoding: .utf8)
+            else { throw ZipError.wrongTextField }
+        self.fileName = fileName
 
         let extraFieldStart = pointerData.index
         while pointerData.index - extraFieldStart < extraFieldLength {
@@ -392,8 +396,10 @@ struct CentralDirectoryEntry {
             }
         }
 
-        self.fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
-                                 encoding: .utf8)
+        guard let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+                                    encoding: .utf8)
+            else { throw ZipError.wrongTextField }
+        self.fileComment = fileComment
 
         // Let's check entry's values for consistency.
         guard self.versionNeeded <= 45
