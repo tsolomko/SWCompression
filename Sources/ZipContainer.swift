@@ -12,42 +12,42 @@ import Foundation
  Error happened during processing ZIP archive (container).
  It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.
 
- - `NotFoundCentralDirectoryEnd`: end of Central Directoty record wasn't found.
- - `WrongSignature`: unsupported signature of one of ZIP container's structures.
- - `WrongSize`: incorrect compressed or uncompressed size of a ZIP container's entry's data.
- - `WrongVersion`: unsupported number of version needed to extract ZIP container 
+ - `notFoundCentralDirectoryEnd`: end of Central Directoty record wasn't found.
+ - `wrongSignature`: unsupported signature of one of ZIP container's structures.
+ - `wrongSize`: incorrect compressed or uncompressed size of a ZIP container's entry's data.
+ - `wrongVersion`: unsupported number of version needed to extract ZIP container
     (unsupported features are required to open this file).
- - `MultiVolumesNotSupported`: unsupported feature: multi-volumed or spanned container.
- - `EncryptionNotSupported`: unsupported feature: encryption.
- - `PatchingNotSupported`: unsupported feature: patched data.
- - `CompressionNotSupported`: unsupported feature: specified compression method.
- - `WrongLocalHeader`: local header of an entry wasn't consistent with Central Directory record.
- - `WrongCRC32`: computed checksum of entry's data wasn't the same as the one stored in container.
+ - `multiVolumesNotSupported`: unsupported feature: multi-volumed or spanned container.
+ - `encryptionNotSupported`: unsupported feature: encryption.
+ - `patchingNotSupported`: unsupported feature: patched data.
+ - `compressionNotSupported`: unsupported feature: specified compression method.
+ - `wrongLocalHeader`: local header of an entry wasn't consistent with Central Directory record.
+ - `wrongCRC32`: computed checksum of entry's data wasn't the same as the one stored in container.
  */
 public enum ZipError: Error {
     /// End of Central Directoty record was not found.
-    case NotFoundCentralDirectoryEnd
+    case notFoundCentralDirectoryEnd
     /// Wrong signature of one of ZIP container's structures.
-    case WrongSignature
+    case wrongSignature
     /// Wrong either compressed or uncompressed size of a ZIP container's entry.
-    case WrongSize
+    case wrongSize
     /// Wrong number of version needed to extract ZIP container.
-    case WrongVersion
+    case wrongVersion
     /// Archive either spanned or consists of several volumes. This feature is not supported.
-    case MultiVolumesNotSupported
+    case multiVolumesNotSupported
     /// Entry or record is encrypted. This feature is not supported.
-    case EncryptionNotSupported
+    case encryptionNotSupported
     /// Entry contains patched data. This feature is not supported.
-    case PatchingNotSupported
+    case patchingNotSupported
     /// Wrong compression method of an entry.
-    case CompressionNotSupported
+    case compressionNotSupported
     /// Wrong local header of an entry.
-    case WrongLocalHeader
+    case wrongLocalHeader
     /**
      Computed CRC32 of entry's data didn't match the value stored in the container.
      Associated value contains extracted data.
      */
-    case WrongCRC32(Data)
+    case wrongCRC32(Data)
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
@@ -93,7 +93,7 @@ public class ZipEntry: ContainerEntry {
             localHeader.compressionMethod == cdEntry.compressionMethod &&
             localHeader.lastModFileTime == cdEntry.lastModFileTime &&
             localHeader.lastModFileDate == cdEntry.lastModFileDate
-            else { throw ZipError.WrongLocalHeader }
+            else { throw ZipError.wrongLocalHeader }
         let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
@@ -120,16 +120,16 @@ public class ZipEntry: ContainerEntry {
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
                 fileBytes = try BZip2.decompress(&pointerData)
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         case 14:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
                 fileBytes = try LZMA.decompress(&pointerData)
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         default:
-            throw ZipError.CompressionNotSupported
+            throw ZipError.compressionNotSupported
         }
         let realCompSize = pointerData.index - fileDataStart
 
@@ -147,9 +147,9 @@ public class ZipEntry: ContainerEntry {
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
-            else { throw ZipError.WrongSize }
+            else { throw ZipError.wrongSize }
         guard crc32 == UInt32(CheckSums.crc32(fileBytes))
-            else { throw ZipError.WrongCRC32(Data(bytes: fileBytes)) }
+            else { throw ZipError.wrongCRC32(Data(bytes: fileBytes)) }
         
         return Data(bytes: fileBytes)
     }
@@ -198,7 +198,7 @@ public class ZipContainer: Container {
                 break
             }
             if pointerData.index == 0 {
-                throw ZipError.NotFoundCentralDirectoryEnd
+                throw ZipError.notFoundCentralDirectoryEnd
             }
             pointerData.index -= 5
         }
@@ -236,7 +236,7 @@ struct LocalHeader {
     init(_ pointerData: inout DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
-            else { throw ZipError.WrongSignature }
+            else { throw ZipError.wrongSignature }
 
         self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
 
@@ -277,13 +277,13 @@ struct LocalHeader {
 
         // Let's check headers's values for consistency.
         guard self.versionNeeded <= 45
-            else { throw ZipError.WrongVersion }
+            else { throw ZipError.wrongVersion }
         guard self.generalPurposeBitFlags & 0x2000 == 0 ||
             self.generalPurposeBitFlags & 0x40 == 0 ||
             self.generalPurposeBitFlags & 0x01 == 0
-            else { throw ZipError.EncryptionNotSupported }
+            else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
-            else { throw ZipError.PatchingNotSupported }
+            else { throw ZipError.patchingNotSupported }
 
         switch self.compressionMethod {
         case 0:
@@ -294,16 +294,16 @@ struct LocalHeader {
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
                 break
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         case 14:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
                 break
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         default:
-            throw ZipError.CompressionNotSupported
+            throw ZipError.compressionNotSupported
         }
     }
 
@@ -334,7 +334,7 @@ struct CentralDirectoryEntry {
     init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x02014b50
-            else { throw ZipError.WrongSignature }
+            else { throw ZipError.wrongSignature }
 
         self.versionMadeBy = pointerData.intFromAlignedBytes(count: 2)
         self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
@@ -396,15 +396,15 @@ struct CentralDirectoryEntry {
 
         // Let's check entry's values for consistency.
         guard self.versionNeeded <= 45
-            else { throw ZipError.WrongVersion }
+            else { throw ZipError.wrongVersion }
         guard self.diskNumberStart == currentDiskNumber
-            else { throw ZipError.MultiVolumesNotSupported }
+            else { throw ZipError.multiVolumesNotSupported }
         guard self.generalPurposeBitFlags & 0x2000 == 0 ||
             self.generalPurposeBitFlags & 0x40 == 0 ||
             self.generalPurposeBitFlags & 0x01 == 0
-            else { throw ZipError.EncryptionNotSupported }
+            else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
-            else { throw ZipError.PatchingNotSupported }
+            else { throw ZipError.patchingNotSupported }
 
         switch self.compressionMethod {
         case 0:
@@ -415,16 +415,16 @@ struct CentralDirectoryEntry {
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
                 break
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         case 14:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
                 break
             #else
-                throw ZipError.CompressionNotSupported
+                throw ZipError.compressionNotSupported
             #endif
         default:
-            throw ZipError.CompressionNotSupported
+            throw ZipError.compressionNotSupported
         }
     }
 
@@ -447,14 +447,14 @@ struct EndOfCentralDirectory {
         /// Number of the disk with the start of CD.
         self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
         guard self.currentDiskNumber == self.cdDiskNumber
-            else { throw ZipError.MultiVolumesNotSupported }
+            else { throw ZipError.multiVolumesNotSupported }
 
         /// Number of CD entries on the current disk.
         var cdEntriesCurrentDisk = pointerData.uint64FromAlignedBytes(count: 2)
         /// Total number of CD entries.
         self.cdEntries = pointerData.uint64FromAlignedBytes(count: 2)
         guard cdEntries == cdEntriesCurrentDisk
-            else { throw ZipError.MultiVolumesNotSupported }
+            else { throw ZipError.multiVolumesNotSupported }
 
         /// Size of Central Directory.
         self.cdSize = pointerData.uint64FromAlignedBytes(count: 4)
@@ -482,23 +482,23 @@ struct EndOfCentralDirectory {
 
             // Check signature.
             guard pointerData.uint32FromAlignedBytes(count: 4) == 0x07064b50
-                else { throw ZipError.WrongSignature }
+                else { throw ZipError.wrongSignature }
 
             let zip64CDStartDisk = pointerData.uint32FromAlignedBytes(count: 4)
             guard self.currentDiskNumber == zip64CDStartDisk
-                else { throw ZipError.MultiVolumesNotSupported }
+                else { throw ZipError.multiVolumesNotSupported }
 
             let zip64CDEndOffset = pointerData.uint64FromAlignedBytes(count: 8)
             let totalDisks = pointerData.uint64FromAlignedBytes(count: 1)
             guard totalDisks == 1
-                else { throw ZipError.MultiVolumesNotSupported }
+                else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
             pointerData.index = Int(UInt(truncatingBitPattern: zip64CDEndOffset))
 
             // Check signature.
             guard pointerData.uint32FromAlignedBytes(count: 4) == 0x06064b50
-                else { throw ZipError.WrongSignature }
+                else { throw ZipError.wrongSignature }
 
             // Following 8 bytes are size of end of zip64 CD, but we don't need it.
             _ = pointerData.uint64FromAlignedBytes(count: 8)
@@ -507,18 +507,18 @@ struct EndOfCentralDirectory {
             _ = pointerData.uint64FromAlignedBytes(count: 2)
             let versionNeeded = pointerData.uint64FromAlignedBytes(count: 2)
             guard versionNeeded <= 45
-                else { throw ZipError.WrongVersion }
+                else { throw ZipError.wrongVersion }
 
             // Update values read from basic End of CD with the ones from Zip64 End of CD.
             self.currentDiskNumber = pointerData.uint32FromAlignedBytes(count: 4)
             self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 4)
             guard currentDiskNumber == cdDiskNumber
-                else { throw ZipError.MultiVolumesNotSupported }
+                else { throw ZipError.multiVolumesNotSupported }
 
             cdEntriesCurrentDisk = pointerData.uint64FromAlignedBytes(count: 8)
             self.cdEntries = pointerData.uint64FromAlignedBytes(count: 8)
             guard cdEntries == cdEntriesCurrentDisk
-                else { throw ZipError.MultiVolumesNotSupported }
+                else { throw ZipError.multiVolumesNotSupported }
 
             self.cdSize = pointerData.uint64FromAlignedBytes(count: 8)
             self.cdOffset = pointerData.uint64FromAlignedBytes(count: 8)

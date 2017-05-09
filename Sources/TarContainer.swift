@@ -15,10 +15,10 @@ import Foundation
  - `error`: error description.
  */
 public enum TarError: Error {
-    case TooSmallFileIsPassed
-    case FieldIsNotNumber
-    case WrongHeaderChecksum
-    case WrongUstarVersion
+    case tooSmallFileIsPassed
+    case fieldIsNotNumber
+    case wrongHeaderChecksum
+    case wrongUstarVersion
 }
 
 /// Represents either a file or directory entry inside TAR archive.
@@ -67,19 +67,19 @@ public class TarEntry: ContainerEntry {
 
         // File size
         guard let octalFileSize = Int(data.nullSpaceEndedAsciiString(index, 12)!)
-            else { throw TarError.FieldIsNotNumber }
+            else { throw TarError.fieldIsNotNumber }
         size = octalToDecimal(octalFileSize)
         index += 12
 
         // Modification time
         guard let octalMtime = Int(data.nullSpaceEndedAsciiString(index, 12)!)
-            else { throw TarError.FieldIsNotNumber }
+            else { throw TarError.fieldIsNotNumber }
         modificationTime = octalToDecimal(octalMtime)
         index += 12
 
         // Checksum
         guard let octalChecksum = Int(data.nullSpaceEndedAsciiString(index, 8)!)
-            else { throw TarError.FieldIsNotNumber }
+            else { throw TarError.fieldIsNotNumber }
         let checksum = octalToDecimal(octalChecksum)
 
         var headerDataForChecksum = data.subdata(in: blockStartIndex..<blockStartIndex + 512).toArray(type: UInt8.self)
@@ -95,7 +95,7 @@ public class TarEntry: ContainerEntry {
         let unsignedOurChecksum = unsignedOurChecksumArray.reduce(0) { $0 + $1 }
         let signedOurChecksum = signedOurChecksumArray.reduce(0) { $0 + $1 }
         guard unsignedOurChecksum == UInt(checksum) || signedOurChecksum == checksum
-            else { throw TarError.WrongHeaderChecksum }
+            else { throw TarError.wrongHeaderChecksum }
 
         index += 8
 
@@ -112,7 +112,7 @@ public class TarEntry: ContainerEntry {
             index += 6
 
             let ustarVersion = String(data: data.subdata(in: index..<index + 2), encoding: .ascii)
-            guard ustarVersion == "00" else { throw TarError.WrongUstarVersion }
+            guard ustarVersion == "00" else { throw TarError.wrongUstarVersion }
             index += 2
 
             ownerUserName = data.nullEndedAsciiString(index, 32)
@@ -162,7 +162,7 @@ public class TarContainer: Container {
     public static func open(containerData data: Data) throws -> [ContainerEntry] {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.
-        guard data.count >= 512 else { throw TarError.TooSmallFileIsPassed }
+        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
 
         var output = [TarEntry]()
 

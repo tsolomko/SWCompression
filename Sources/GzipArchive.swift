@@ -12,31 +12,31 @@ import Foundation
  Error happened during unarchiving gzip archive.
  It may indicate that either the data is damaged or it might not be gzip archive at all.
 
- - `WrongMagic`: first two bytes of archive were not 31 and 139.
- - `WrongCompressionMethod`: unsupported compression method (not 8 aka Deflate).
- - `WrongFlags`: unsupported flags (reserved flags weren't 0).
- - `WrongHeaderCRC`: computed Cyclic Redundancy Check of archive's header
+ - `wrongMagic`: first two bytes of archive were not 31 and 139.
+ - `wrongCompressionMethod`: unsupported compression method (not 8 aka Deflate).
+ - `wrongFlags`: unsupported flags (reserved flags weren't 0).
+ - `wrongHeaderCRC`: computed Cyclic Redundancy Check of archive's header
         didn't match the archive's value.
- - `WrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
+ - `wrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
     Associated value contains already decompressed data.
- - `WrongISize`: size of uncompressed data modulo 2^32 didn't match the archive's value.
+ - `wrongISize`: size of uncompressed data modulo 2^32 didn't match the archive's value.
  */
 public enum GzipError: Error {
     /// First two bytes of archive were not 31 and 139.
-    case WrongMagic
+    case wrongMagic
     /// Compression method was other than 8 which is the only supported one.
-    case WrongCompressionMethod
+    case wrongCompressionMethod
     /// Reserved flags bits were not equal to 0.
-    case WrongFlags
+    case wrongFlags
     /// Computed CRC of header didn't match the value stored in the archive.
-    case WrongHeaderCRC
+    case wrongHeaderCRC
     /**
      Computed CRC of uncompressed data didn't match the value stored in the archive.
      Associated value contains already decompressed data.
      */
-    case WrongCRC(Data)
+    case wrongCRC(Data)
     /// Computed isize didn't match the value stored in the archive.
-    case WrongISize
+    case wrongISize
 }
 
 /// A structure which provides information about gzip archive.
@@ -100,18 +100,18 @@ public struct GzipHeader {
     init(_ pointerData: DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromAlignedBytes(count: 2)
-        guard magic == 0x8b1f else { throw GzipError.WrongMagic }
+        guard magic == 0x8b1f else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
         let method = pointerData.alignedByte()
-        guard method == 8 else { throw GzipError.WrongCompressionMethod }
+        guard method == 8 else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
 
         self.compressionMethod = .deflate
 
         let flags = pointerData.alignedByte()
-        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.WrongFlags }
+        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.wrongFlags }
         headerBytes.append(flags)
 
         let mtime = pointerData.intFromAlignedBytes(count: 4)
@@ -170,7 +170,7 @@ public struct GzipHeader {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
             let crc16 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 2))
             let ourCRC32 = CheckSums.crc32(headerBytes)
-            guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.WrongHeaderCRC }
+            guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }
 
@@ -207,10 +207,10 @@ public final class GzipArchive: Archive {
             let memberData = try Deflate.decompress(&pointerData)
 
             let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC(Data(bytes: out)) }
+            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(Data(bytes: out)) }
 
             let isize = pointerData.intFromAlignedBytes(count: 4)
-            guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.WrongISize }
+            guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
 
             out.append(contentsOf: memberData)
         }

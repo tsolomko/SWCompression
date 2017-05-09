@@ -12,41 +12,41 @@ import Foundation
  Error happened during bzip2 decompression.
  It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
 
- - `WrongMagic`: unsupported magic number (not 0x425a).
- - `WrongCompressionMethod`: unsupported compression method (not type 'h').
- - `WrongBlockSize`: unsupported block size (not '0' — '9').
- - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
- - `RandomizedBlock`: block is randomized; this is not supported.
- - `WrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
- - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
- - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
- - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
- - `WrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
+ - `wrongMagic`: unsupported magic number (not 0x425a).
+ - `wrongCompressionMethod`: unsupported compression method (not type 'h').
+ - `wrongBlockSize`: unsupported block size (not '0' — '9').
+ - `wrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
+ - `randomizedBlock`: block is randomized; this is not supported.
+ - `wrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
+ - `wrongSelector`: unsupported selector (greater than total number of Huffman groups).
+ - `wrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
+ - `symbolNotFound`: symbol from input data was not found in Huffman tree.
+ - `wrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
  */
 public enum BZip2Error: Error {
     /// Magic number was not 0x425a.
-    case WrongMagic
+    case wrongMagic
     /// Compression method was not type 'h' (not Huffman).
-    case WrongCompressionMethod
+    case wrongCompressionMethod
     /// Unknown block size (not from '0' to '9').
-    case WrongBlockSize
+    case wrongBlockSize
     /// Unknown block type (was neither 'pi' nor 'sqrt(pi)').
-    case WrongBlockType
+    case wrongBlockType
     /// Block is randomized.
-    case RandomizedBlock
+    case randomizedBlock
     /// Wrong number of Huffman tables/groups (should be between 2 and 6).
-    case WrongHuffmanGroups
+    case wrongHuffmanGroups
     /// Selector was greater than total number of Huffman tables/groups.
-    case WrongSelector
+    case wrongSelector
     /// Wrong code of Huffman length (should be between 0 and 20).
-    case WrongHuffmanLengthCode
+    case wrongHuffmanLengthCode
     /// Symbol was not found in Huffman tree.
-    case SymbolNotFound
+    case symbolNotFound
     /**
      Computed CRC of uncompressed data didn't match the value stored in the archive.
      Associated value contains already decompressed data.
      */
-    case WrongCRC(Data)
+    case wrongCRC(Data)
 }
 
 /// Provides function to decompress data, which were compressed using BZip2.
@@ -75,16 +75,16 @@ public final class BZip2: DecompressionAlgorithm {
         var out = [UInt8]()
 
         let magic = pointerData.intFromBits(count: 16)
-        guard magic == 0x425a else { throw BZip2Error.WrongMagic }
+        guard magic == 0x425a else { throw BZip2Error.wrongMagic }
 
         let method = pointerData.intFromBits(count: 8)
-        guard method == 104 else { throw BZip2Error.WrongCompressionMethod }
+        guard method == 104 else { throw BZip2Error.wrongCompressionMethod }
 
         var blockSize = pointerData.intFromBits(count: 8)
         if blockSize >= 49 && blockSize <= 57 {
             blockSize -= 48
         } else {
-            throw BZip2Error.WrongBlockSize
+            throw BZip2Error.wrongBlockSize
         }
 
         while true {
@@ -94,15 +94,15 @@ public final class BZip2: DecompressionAlgorithm {
 
             if blockType == 0x314159265359 {
                 let blockBytes = try decode(data: &pointerData)
-                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32 else { throw BZip2Error.WrongCRC(Data(bytes: out)) }
+                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32 else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 for byte in blockBytes {
                     out.append(byte)
                 }
             } else if blockType == 0x177245385090 {
-                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.WrongCRC(Data(bytes: out)) }
+                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 break
             } else {
-                throw BZip2Error.WrongBlockType
+                throw BZip2Error.wrongBlockType
             }
         }
 
@@ -111,7 +111,7 @@ public final class BZip2: DecompressionAlgorithm {
 
     private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
-        guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
+        guard isRandomized != 1 else { throw BZip2Error.randomizedBlock }
 
         var pointer = data.intFromBits(count: 24)
 
@@ -140,7 +140,7 @@ public final class BZip2: DecompressionAlgorithm {
         let used = computeUsed()
 
         let huffmanGroups = data.intFromBits(count: 3)
-        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.WrongHuffmanGroups }
+        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.wrongHuffmanGroups }
 
         func computeSelectorsList() throws -> [Int] {
             let selectorsUsed = data.intFromBits(count: 15)
@@ -152,7 +152,7 @@ public final class BZip2: DecompressionAlgorithm {
                 var c = 0
                 while data.bit() > 0 {
                     c += 1
-                    guard c < huffmanGroups else { throw BZip2Error.WrongSelector }
+                    guard c < huffmanGroups else { throw BZip2Error.wrongSelector }
                 }
                 if c >= 0 {
                     let el = mtf.remove(at: c)
@@ -173,7 +173,7 @@ public final class BZip2: DecompressionAlgorithm {
                 var length = data.intFromBits(count: 5)
                 var lengths: [Int] = []
                 for _ in 0..<symbolsInUse {
-                    guard length >= 0 && length <= 20 else { throw BZip2Error.WrongHuffmanLengthCode }
+                    guard length >= 0 && length <= 20 else { throw BZip2Error.wrongHuffmanLengthCode }
                     while data.bit() > 0 {
                         length -= (Int(data.bit() * 2) - 1)
                     }
@@ -215,7 +215,7 @@ public final class BZip2: DecompressionAlgorithm {
             }
 
             let symbol = t?.findNextSymbol()
-            guard symbol != nil && symbol != -1 else { throw BZip2Error.SymbolNotFound }
+            guard symbol != nil && symbol != -1 else { throw BZip2Error.symbolNotFound }
 
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {

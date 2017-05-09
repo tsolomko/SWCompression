@@ -12,20 +12,20 @@ import Foundation
  Error happened during deflate decompression.
  It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
 
- - `WrongUncompressedBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
- - `WrongBlockType`: unsupported block type (not 0, 1 or 2).
- - `WrongSymbol`: unsupported Huffman tree's symbol.
- - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
+ - `wrongUncompressedBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
+ - `wrongBlockType`: unsupported block type (not 0, 1 or 2).
+ - `wrongSymbol`: unsupported Huffman tree's symbol.
+ - `symbolNotFound`: symbol from input data was not found in Huffman tree.
  */
 public enum DeflateError: Error {
     /// Uncompressed block' `length` and `nlength` bytes were not compatible.
-    case WrongUncompressedBlockLengths
+    case wrongUncompressedBlockLengths
     /// Unknown block type (not from 0 to 2).
-    case WrongBlockType
+    case wrongBlockType
     /// Decoded symbol was found in Huffman tree but is unknown.
-    case WrongSymbol
+    case wrongSymbol
     /// Symbol was not found in Huffman tree.
-    case SymbolNotFound
+    case symbolNotFound
 }
 
 /// Provides function to decompress data, which were compressed with DEFLATE.
@@ -99,7 +99,7 @@ public final class Deflate: DecompressionAlgorithm {
                 /// 1-complement of the length.
                 let nlength = pointerData.intFromBits(count: 16)
                 // Check if lengths are OK (nlength should be a 1-complement of length).
-                guard length & nlength == 0 else { throw DeflateError.WrongUncompressedBlockLengths }
+                guard length & nlength == 0 else { throw DeflateError.wrongUncompressedBlockLengths }
                 // Process uncompressed data into the output
                 for _ in 0..<length {
                     out.append(pointerData.alignedByte())
@@ -149,7 +149,7 @@ public final class Deflate: DecompressionAlgorithm {
                     while n < (literals + distances) {
                         // Finding next Huffman tree's symbol in data.
                         let symbol = dynamicCodes.findNextSymbol()
-                        guard symbol != -1 else { throw DeflateError.SymbolNotFound }
+                        guard symbol != -1 else { throw DeflateError.symbolNotFound }
 
                         let count: Int
                         let what: Int
@@ -173,7 +173,7 @@ public final class Deflate: DecompressionAlgorithm {
                             count = pointerData.intFromBits(count: 7) + 11
                             what = 0
                         } else {
-                            throw DeflateError.WrongSymbol
+                            throw DeflateError.wrongSymbol
                         }
                         for _ in 0..<count {
                             codeLengths.append(what)
@@ -191,7 +191,7 @@ public final class Deflate: DecompressionAlgorithm {
                     // Read next symbol from data.
                     // It will be either literal symbol or a length of (previous) data we will need to copy.
                     let nextSymbol = mainLiterals.findNextSymbol()
-                    guard nextSymbol != -1 else { throw DeflateError.SymbolNotFound }
+                    guard nextSymbol != -1 else { throw DeflateError.symbolNotFound }
 
                     if nextSymbol >= 0 && nextSymbol <= 255 {
                         // It is a literal symbol so we add it straight to the output data.
@@ -211,9 +211,9 @@ public final class Deflate: DecompressionAlgorithm {
 
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
-                        guard distanceCode != -1 else { throw DeflateError.SymbolNotFound }
+                        guard distanceCode != -1 else { throw DeflateError.symbolNotFound }
                         guard distanceCode >= 0 && distanceCode <= 29
-                            else { throw DeflateError.WrongSymbol }
+                            else { throw DeflateError.wrongSymbol }
 
                         // Again, depending on the distanceCode's value there might be additional bits in data,
                         // which we need to combine with distanceCode to get the actual distance.
@@ -243,12 +243,12 @@ public final class Deflate: DecompressionAlgorithm {
                             }
                         }
                     } else {
-                        throw DeflateError.WrongSymbol
+                        throw DeflateError.wrongSymbol
                     }
                 }
 
             } else {
-                throw DeflateError.WrongBlockType
+                throw DeflateError.wrongBlockType
             }
 
             // End the cycle if it was the last block.
@@ -305,7 +305,7 @@ public final class Deflate: DecompressionAlgorithm {
                 codeSize = 5
                 extraBitsCount = symbol == 286 || symbol == 287 ? 0 : (((symbol - 286) >> 1) - 1)
             default:
-                throw DeflateError.SymbolNotFound
+                throw DeflateError.symbolNotFound
             }
             bitsCount += (symbolCount * (codeSize + extraBitsCount))
         }
