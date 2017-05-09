@@ -48,6 +48,7 @@ public enum ZipError: Error {
      Associated value contains extracted data.
      */
     case wrongCRC32(Data)
+    case wrongTextField
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
