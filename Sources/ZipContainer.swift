@@ -150,7 +150,7 @@ public class ZipEntry: ContainerEntry {
             else { throw ZipError.wrongSize }
         guard crc32 == UInt32(CheckSums.crc32(fileBytes))
             else { throw ZipError.wrongCRC32(Data(bytes: fileBytes)) }
-        
+
         return Data(bytes: fileBytes)
     }
 

@@ -27,7 +27,8 @@ class GzipTests: XCTestCase {
         }
 
         XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method")
-        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)), "Incorrect mtime")
+        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)),
+                       "Incorrect mtime")
         XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect os type")
         XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name")
         XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment")

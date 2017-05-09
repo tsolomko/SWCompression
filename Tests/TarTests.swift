@@ -14,7 +14,8 @@ class TarTests: XCTestCase {
     static let testType: String = "tar"
 
     func test() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "test", withType: TarTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "test",
+                                                                 withType: TarTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return

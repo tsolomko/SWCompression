@@ -14,7 +14,8 @@ class ZipTests: XCTestCase {
     static let testType: String = "zip"
 
     func test() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "SWCompressionSourceCode",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
@@ -32,7 +33,8 @@ class ZipTests: XCTestCase {
     }
 
     func testZip64() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
@@ -50,7 +52,8 @@ class ZipTests: XCTestCase {
     }
 
     func testDataDescriptor() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
