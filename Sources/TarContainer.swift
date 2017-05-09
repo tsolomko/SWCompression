@@ -26,7 +26,7 @@ public class TarEntry: ContainerEntry {
 
     /// Name of the file or directory.
     public var name: String? {
-        return ""
+        return (self.fileNamePrefix ?? "") + (self.fileName ?? "")
     }
 
     public let mode: Int?
