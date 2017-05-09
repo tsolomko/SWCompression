@@ -20,7 +20,7 @@ class TarTests: XCTestCase {
                                         return
         }
 
-        _ = try? TarContainer.files(from: testData)
+        _ = try? TarContainer.open(containerData: testData)
     }
 
 }
