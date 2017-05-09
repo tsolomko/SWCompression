@@ -25,8 +25,12 @@ public enum TarError: Error {
 public class TarEntry: ContainerEntry {
 
     /// Name of the file or directory.
-    public var name: String? {
+    public var name: String {
         return (self.fileNamePrefix ?? "") + (self.fileName ?? "")
+    }
+
+    public var isDirectory: Bool {
+        return false // TODO: Implement.
     }
 
     public let mode: Int?

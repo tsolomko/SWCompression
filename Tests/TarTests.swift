@@ -27,13 +27,11 @@ class TarTests: XCTestCase {
             return
         }
 
-        guard let entry = result[0] as? TarEntry else {
-            XCTFail("Unable to convert to TarEntry.")
-            return
-        }
-
-        XCTAssertEqual(entry.name, "test5.answer")
-        XCTAssertEqual(entry.data(), Data())
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].name, "test5.answer")
+        XCTAssertEqual(result[0].size, 0)
+        XCTAssertEqual(result[0].isDirectory, false)
+        XCTAssertEqual(try? result[0].data(), Data())
     }
 
 }

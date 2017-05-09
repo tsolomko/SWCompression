@@ -32,7 +32,9 @@ public protocol Container {
 
 public protocol ContainerEntry {
 
-    var name: String? { get }
+    var name: String { get }
+    var size: Int { get }
+    var isDirectory: Bool { get }
 
     func data() throws -> Data
 
