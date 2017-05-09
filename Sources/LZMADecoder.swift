@@ -107,7 +107,7 @@ final class LZMADecoder {
     private func resetProperties() throws {
         var properties = pointerData.alignedByte()
         if properties >= (9 * 5 * 5) {
-            throw LZMAError.WrongProperties
+            throw LZMAError.wrongProperties
         }
         /// The number of literal context bits
         self.lc = properties % 9
@@ -182,13 +182,13 @@ final class LZMADecoder {
             dataStartIndex += 1
             self.resetDictionary(dictSize)
         default:
-            throw LZMA2Error.WrongReset
+            throw LZMA2Error.wrongReset
         }
         var uncompressedSize = unpackSize
         let startCount = out.count
         try decodeLZMA(&uncompressedSize)
         guard unpackSize == out.count - startCount && pointerData.index - dataStartIndex == compressedSize
-            else { throw LZMA2Error.WrongSizes }
+            else { throw LZMA2Error.wrongSizes }
     }
 
     // MARK: Main LZMA 2 decoder function.
@@ -205,11 +205,11 @@ final class LZMADecoder {
             case 2:
                 self.decodeUncompressed()
             case 3...0x7F:
-                throw LZMA2Error.WrongControlByte
+                throw LZMA2Error.wrongControlByte
             case 0x80...0xFF:
                 try self.dispatch(controlByte, lzma2DictionarySize)
             default:
-                throw LZMA2Error.WrongControlByte
+                throw LZMA2Error.wrongControlByte
             }
         }
     }
@@ -219,7 +219,7 @@ final class LZMADecoder {
     func decodeLZMA(_ uncompressedSize: inout Int) throws {
         // First, we need to initialize Rande Decoder.
         guard let rD = LZMARangeDecoder(&self.pointerData) else {
-            throw LZMAError.RangeDecoderInitError
+            throw LZMAError.rangeDecoderInitError
         }
         self.rangeDecoder = rD
 
@@ -234,7 +234,7 @@ final class LZMADecoder {
 
             let posState = out.count & ((1 << pb.toInt()) - 1)
             if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
-                if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
+                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
@@ -288,8 +288,8 @@ final class LZMADecoder {
             var len: Int
             if rangeDecoder.decode(bitWithProb: &probabilities[193 + state]) != 0 {
                 // REP MATCH CASE
-                if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if dictEnd == 0 { throw LZMAError.WindowIsEmpty }
+                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
+                if dictEnd == 0 { throw LZMAError.windowIsEmpty }
                 if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
                     if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
@@ -368,16 +368,16 @@ final class LZMADecoder {
                 // Check if finish marker is encountered.
                 // Distance value of 2^32 is used to indicate 'End of Stream' marker.
                 if UInt32(rep0) == 0xFFFFFFFF {
-                    guard rangeDecoder.isFinishedOK else { throw LZMAError.RangeDecoderFinishError }
+                    guard rangeDecoder.isFinishedOK else { throw LZMAError.rangeDecoderFinishError }
                     break
                 }
 
-                if uncompressedSize == 0 { throw LZMAError.ExceededUncompressedSize }
-                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) { throw LZMAError.NotEnoughToRepeat }
+                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
+                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) { throw LZMAError.notEnoughToRepeat }
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
-            if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.RepeatWillExceed }
+            if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.repeatWillExceed }
             for _ in 0..<len {
                 let byte = self.byte(at: rep0 + 1)
                 uncompressedSize -= 1
