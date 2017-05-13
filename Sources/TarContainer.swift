@@ -24,6 +24,20 @@ public enum TarError: Error {
 /// Represents either a file or directory entry inside TAR archive.
 public class TarEntry: ContainerEntry {
 
+    public enum EntryType: String {
+        case normal = "0"
+        case hardLink = "1"
+        case symbolicLink = "2"
+        case characterSpecial = "3"
+        case blockSpecial = "4"
+        case directory = "5"
+        case fifo = "6"
+        case contiguous = "7"
+        case globalExtendedHeader = "g"
+        case localExtendedHeader = "x"
+        case vendorUnknownOrReserved
+    }
+
     /// Name of the file or directory.
     public var name: String {
         return (self.fileNamePrefix ?? "") + (self.fileName ?? "")
@@ -38,7 +52,7 @@ public class TarEntry: ContainerEntry {
     public let groupID: Int?
     public let size: Int
     public let modificationTime: Date
-    private let type: String? // TODO: Make enum and public.
+    public let type: EntryType
 
     public let ownerUserName: String?
     public let ownerGroupName: String?
@@ -104,7 +118,7 @@ public class TarEntry: ContainerEntry {
         index += 8
 
         // File type
-        type = String(bytes: [data[index]], encoding: .ascii)
+        type = EntryType(rawValue: String(bytes: [data[index]], encoding: .ascii)!) ?? .vendorUnknownOrReserved
         index += 1
 
         // Linked file name
