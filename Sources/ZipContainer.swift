@@ -76,6 +76,10 @@ public class ZipEntry: ContainerEntry {
         return Int(truncatingBitPattern: cdEntry.uncompSize)
     }
 
+    /**
+     True, if an entry is likely to be a directory.
+     Particularly, it is true if size of data is 0 and last character of entry's name is '/'.
+    */
     public var isDirectory: Bool {
         return self.size == 0 && self.name.characters.last == "/"
     }
