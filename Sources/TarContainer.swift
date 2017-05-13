@@ -37,7 +37,7 @@ public class TarEntry: ContainerEntry {
     public let ownerID: Int?
     public let groupID: Int?
     public let size: Int
-    public let modificationTime: Int
+    public let modificationTime: Date
     private let type: String? // TODO: Make enum and public.
 
     public let ownerUserName: String?
@@ -78,7 +78,7 @@ public class TarEntry: ContainerEntry {
         // Modification time
         guard let octalMtime = Int(data.nullSpaceEndedAsciiString(index, 12)!)
             else { throw TarError.fieldIsNotNumber }
-        modificationTime = octalToDecimal(octalMtime)
+        modificationTime = Date(timeIntervalSince1970: TimeInterval(octalToDecimal(octalMtime)))
         index += 12
 
         // Checksum
