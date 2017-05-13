@@ -77,7 +77,7 @@ public class ZipEntry: ContainerEntry {
     }
 
     public var isDirectory: Bool {
-        return false // TODO: Implement.
+        return self.size == 0 && self.name.characters.last == "/"
     }
 
     /**
