@@ -182,3 +182,6 @@ References
 - [.ZIP Application Note](http://www.pkware.com/appnote)
 - [ISO/IEC 21320-1](http://www.iso.org/iso/catalogue_detail.htm?csnumber=60101)
 - [List of defined ZIP extra fields](https://opensource.apple.com/source/zip/zip-6/unzip/unzip/proginfo/extra.fld)
+- [Wikipedia article about TAR](https://en.wikipedia.org/wiki/Tar_(computing))
+- [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
+- [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
