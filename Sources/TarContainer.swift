@@ -48,14 +48,14 @@ public class TarEntry: ContainerEntry {
     }
 
     public let mode: Int?
-    public let ownerID: Int?
-    public let groupID: Int?
-    public let size: Int
-    public let modificationTime: Date
+    public private(set) var ownerID: Int?
+    public private(set) var groupID: Int?
+    public private(set) var size: Int
+    public private(set) var modificationTime: Date
     public let type: EntryType
 
-    public let ownerUserName: String?
-    public let ownerGroupName: String?
+    public private(set) var ownerUserName: String?
+    public private(set) var ownerGroupName: String?
     private let deviceMajorNumber: String?
     private let deviceMinorNumber: String?
 
@@ -65,7 +65,14 @@ public class TarEntry: ContainerEntry {
 
     private let dataObject: Data
 
-    fileprivate init(_ data: Data, _ index: inout Int) throws {
+    public private(set) var accessTime: Date?
+    public private(set) var charset: String?
+    public private(set) var comment: String?
+    public private(set) var linkPath: String?
+    private var paxPath: String?
+
+    fileprivate init(_ data: Data, _ index: inout Int,
+                     _ globalExtendedHeader: TarEntry?, _ localExtendedHeader: TarEntry?) throws {
         let blockStartIndex = index
         // File name
         fileName = data.nullEndedAsciiString(index, 100)
@@ -155,6 +162,104 @@ public class TarEntry: ContainerEntry {
             fileNamePrefix = nil
         }
 
+        if let globalExtendedHeader = globalExtendedHeader {
+            if let headerString = String(data: globalExtendedHeader.data(), encoding: .utf8) {
+                let headerEntries = headerString.components(separatedBy: "\n")
+                for headerEntry in headerEntries {
+                    let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 2,
+                                                                        omittingEmptySubsequences: false)
+                    if let octalLength = Int(String(headerEntrySplit[0])) {
+                        let length = octalToDecimal(octalLength) - 2 // `length` also counts "\n" separator as 2 symbols.
+                        let keyword = String(headerEntrySplit[1])[0..<headerEntrySplit[1].count - length - 1]
+                        let value = String(headerEntrySplit[1])[headerEntrySplit[1].count - length..<headerEntrySplit[1].count]
+                        switch keyword {
+                        case "atime":
+                            if let interval = Double(value) {
+                                self.accessTime = Date(timeIntervalSince1970: interval)
+                            }
+                        case "charset":
+                            self.charset = value
+                        case "mtime":
+                            if let interval = Double(value) {
+                                self.modificationTime = Date(timeIntervalSince1970: interval)
+                            }
+                        case "comment":
+                            self.comment = value
+                        case "gid":
+                            self.groupID = Int(value)
+                        case "gname":
+                            self.ownerGroupName = value
+                        case "hdrcharset":
+                            break
+                        case "linkpath":
+                            self.linkPath = value
+                        case "path":
+                            self.paxPath = value
+                        case "size":
+                            if let intValue = Int(value) {
+                                self.size = intValue
+                            }
+                        case "uid":
+                            self.ownerID = Int(value)
+                        case "uname":
+                            self.ownerUserName = value
+                        default:
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        if let localExtendedHeader = localExtendedHeader {
+            if let headerString = String(data: localExtendedHeader.data(), encoding: .utf8) {
+                let headerEntries = headerString.components(separatedBy: "\n")
+                for headerEntry in headerEntries {
+                    let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 2,
+                                                                        omittingEmptySubsequences: false)
+                    if let octalLength = Int(String(headerEntrySplit[0])) {
+                        let length = octalToDecimal(octalLength) - 2 // `length` also counts "\n" separator as 2 symbols.
+                        let keyword = String(headerEntrySplit[1])[0..<headerEntrySplit[1].count - length - 1]
+                        let value = String(headerEntrySplit[1])[headerEntrySplit[1].count - length..<headerEntrySplit[1].count]
+                        switch keyword {
+                        case "atime":
+                            if let interval = Double(value) {
+                                self.accessTime = Date(timeIntervalSince1970: interval)
+                            }
+                        case "charset":
+                            self.charset = value
+                        case "mtime":
+                            if let interval = Double(value) {
+                                self.modificationTime = Date(timeIntervalSince1970: interval)
+                            }
+                        case "comment":
+                            self.comment = value
+                        case "gid":
+                            self.groupID = Int(value)
+                        case "gname":
+                            self.ownerGroupName = value
+                        case "hdrcharset":
+                            break
+                        case "linkpath":
+                            self.linkPath = value
+                        case "path":
+                            self.paxPath = value
+                        case "size":
+                            if let intValue = Int(value) {
+                                self.size = intValue
+                            }
+                        case "uid":
+                            self.ownerID = Int(value)
+                        case "uname":
+                            self.ownerUserName = value
+                        default:
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
         // File data
         index = blockStartIndex + 512
         self.dataObject = data.subdata(in: index..<index + size)
@@ -185,12 +290,25 @@ public class TarContainer: Container {
         var output = [TarEntry]()
 
         var index = 0
+
+        var lastGlobalExtendedHeader: TarEntry?
+        var lastLocalExtendedHeader: TarEntry?
+
         while true {
             // Container ends with two zero-filled records.
             if data.subdata(in: index..<index + 1024) == Data(bytes: Array(repeating: 0, count: 1024)) {
                 break
             }
-            output.append(try TarEntry(data, &index))
+            let entry = try TarEntry(data, &index, lastGlobalExtendedHeader, lastLocalExtendedHeader)
+            switch entry.type {
+            case .globalExtendedHeader:
+                lastGlobalExtendedHeader = entry
+            case .localExtendedHeader:
+                lastLocalExtendedHeader = entry
+            default:
+                output.append(entry)
+                lastLocalExtendedHeader = nil
+            }
         }
 
         return output
