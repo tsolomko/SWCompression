@@ -40,7 +40,7 @@ public class TarEntry: ContainerEntry {
 
     /// Name of the file or directory.
     public var name: String {
-        return (self.fileNamePrefix ?? "") + (self.fileName ?? "")
+        return paxPath ?? ((self.fileNamePrefix ?? "") + (self.fileName ?? ""))
     }
 
     public var isDirectory: Bool {
