@@ -49,7 +49,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result.count, 9)
         for entry in result {
             let tarEntry = entry as! TarEntry
-            let name = tarEntry.name
+            let name = tarEntry.name.components(separatedBy: ".")[0]
             guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: name)) else {
                 XCTFail("Failed to get the answer")
                 return
