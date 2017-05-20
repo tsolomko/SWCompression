@@ -13,7 +13,6 @@ class TarTests: XCTestCase {
 
     static let testType: String = "tar"
 
-    /// Tests container with test5.answer file.
     func test() {
         guard let testData = try? Data(contentsOf: Constants.url(forTest: "test",
                                                                  withType: TarTests.testType),
@@ -34,4 +33,32 @@ class TarTests: XCTestCase {
         XCTAssertEqual(try? result[0].data(), Data())
     }
 
+    func testPax() {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "full_test",
+                                                                 withType: TarTests.testType),
+                                       options: .mappedIfSafe) else {
+                                        XCTFail("Failed to load test archive")
+                                        return
+        }
+
+        guard let result = try? TarContainer.open(containerData: testData) else {
+            XCTFail("Unable to parse TAR container.")
+            return
+        }
+
+        XCTAssertEqual(result.count, 9)
+        for entry in result {
+            let tarEntry = entry as! TarEntry
+            let name = tarEntry.name
+            guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: name)) else {
+                XCTFail("Failed to get the answer")
+                return
+            }
+            XCTAssertEqual(tarEntry.data(), answerData)
+            XCTAssertEqual(tarEntry.isDirectory, false)
+            XCTAssert(tarEntry.accessTime != nil)
+        }
+    }
+
+    
 }
