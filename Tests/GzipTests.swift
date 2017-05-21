@@ -27,7 +27,8 @@ class GzipTests: XCTestCase {
         }
 
         XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method")
-        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)), "Incorrect mtime")
+        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)),
+                       "Incorrect mtime")
         XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect os type")
         XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name")
         XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment")
@@ -60,7 +61,7 @@ class GzipTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for gz.\(testName)")
             self.measure {
-                _ = try? Deflate.decompress(compressedData: testData)
+                _ = try? GzipArchive.unarchive(archiveData: archiveData)
             }
         #endif
     }
@@ -109,6 +110,5 @@ class GzipTests: XCTestCase {
         self.header(test: "test9", mtime: 1483040005)
         self.unarchive(test: "test9")
     }
-
 
 }

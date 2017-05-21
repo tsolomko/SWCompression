@@ -14,7 +14,8 @@ class LzmaTests: XCTestCase {
     static let testType: String = "lzma"
 
     func perform(test testName: String) {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: LzmaTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
+                                                                 withType: LzmaTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return

@@ -22,7 +22,11 @@ class DeflateTests: XCTestCase {
             return
         }
 
-        let reUncompData = try! Deflate.decompress(compressedData: deflatedData)
+        guard let reUncompData = try? Deflate.decompress(compressedData: deflatedData) else {
+            XCTFail("Unable to re-decompress data.")
+            return
+        }
+
         XCTAssertEqual(answerData, reUncompData,
                        "Data before compression and after decompression of compressed data aren't equal")
 

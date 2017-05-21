@@ -12,26 +12,26 @@ import Foundation
  Error happened during LZMA2 decompression.
  It may indicate that either the data is damaged or it might not be compressed with LZMA2 at all.
 
- - `WrongProperties`: reserved bits of LZMA2 properties byte weren't zero.
- - `WrongDictionarySize`: dictionary size was greater than 2^32.
- - `WrongControlByte`: unsupported value of LZMA2 packet's control byte.
- - `WrongReset`: unsupported 'reset' value of LZMA2 packet's.
- - `WrongSizes`: size of compressed or decompressed data wasn't the same as specified in LZMA2 packet.
+ - `wrongProperties`: reserved bits of LZMA2 properties byte weren't zero.
+ - `wrongDictionarySize`: dictionary size was greater than 2^32.
+ - `wrongControlByte`: unsupported value of LZMA2 packet's control byte.
+ - `wrongReset`: unsupported 'reset' value of LZMA2 packet's.
+ - `wrongSizes`: size of compressed or decompressed data wasn't the same as specified in LZMA2 packet.
  */
 public enum LZMA2Error: Error {
     /// Reserved bits of LZMA2 properties byte were not equal to zero.
-    case WrongProperties
+    case wrongProperties
     /// Dictionary size was too big.
-    case WrongDictionarySize
+    case wrongDictionarySize
     /// Unknown conrol byte value of LZMA2 packet.
-    case WrongControlByte
+    case wrongControlByte
     /// Unknown reset instruction encounetered in LZMA2 packet.
-    case WrongReset
+    case wrongReset
     /**
      Either size of decompressed data was not equal to specified one in LZMA2 packet or
      amount of compressed data read was different from the one stored in LZMA2 packet.
      */
-    case WrongSizes
+    case wrongSizes
 }
 
 /// Provides function to decompress data, which were compressed with LZMA2
@@ -61,37 +61,16 @@ public final class LZMA2: DecompressionAlgorithm {
     static func decompress(_ dictionarySize: Int, _ pointerData: inout DataWithPointer) throws -> [UInt8] {
         // At this point lzmaDecoder will be in a VERY bad state.
         let lzmaDecoder = try LZMADecoder(&pointerData, 0, 0, 0, 0)
-
-        var out: [UInt8] = []
-
-        mainLoop: while true {
-            let controlByte = pointerData.alignedByte()
-            switch controlByte {
-            case 0:
-                break mainLoop
-            case 1:
-                lzmaDecoder.resetDictionary(dictionarySize)
-                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
-            case 2:
-                out.append(contentsOf: lzmaDecoder.decodeUncompressed())
-            case 3...0x7F:
-                throw LZMA2Error.WrongControlByte
-            case 0x80...0xFF:
-                out.append(contentsOf: try lzmaDecoder.decodeLZMA2(controlByte, dictionarySize))
-            default:
-                throw LZMA2Error.WrongControlByte
-            }
-        }
-
-        return out
+        try lzmaDecoder.decodeLZMA2(dictionarySize)
+        return lzmaDecoder.out
     }
 
     static func dictionarySize(_ byte: UInt8) throws -> Int {
         let bits = byte & 0x3F
         guard byte & 0xC0 == 0
-            else { throw LZMA2Error.WrongProperties }
+            else { throw LZMA2Error.wrongProperties }
         guard bits < 40
-            else { throw LZMA2Error.WrongDictionarySize }
+            else { throw LZMA2Error.wrongDictionarySize }
 
         var dictSize: UInt32 = 0
         if bits == 40 {

@@ -1,6 +1,9 @@
 # SWCompression
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE) [![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression) [![Swift 3](https://img.shields.io/badge/Swift-3.1-lightgrey.svg)](https://developer.apple.com/swift/)
-[![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression) [![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
+[![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
+[![Swift 3](https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg)](https://developer.apple.com/swift/)
+[![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression)
+[![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
@@ -148,7 +151,7 @@ which uses SWCompression for unarchiving several types of archives.
 Why is it so slow?
 ------------------
 Version 2.0 came with a great performance improvement.
-Just look at the test results in 'Tests/Test Result'.
+Just look at the [Tests Results](Tests/Results.md).
 So if it's slow the first thing you should do is to make sure you are using version >= 2.0.
 
 Is it still slow?
@@ -179,3 +182,6 @@ References
 - [.ZIP Application Note](http://www.pkware.com/appnote)
 - [ISO/IEC 21320-1](http://www.iso.org/iso/catalogue_detail.htm?csnumber=60101)
 - [List of defined ZIP extra fields](https://opensource.apple.com/source/zip/zip-6/unzip/unzip/proginfo/extra.fld)
+- [Wikipedia article about TAR](https://en.wikipedia.org/wiki/Tar_(computing))
+- [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
+- [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)

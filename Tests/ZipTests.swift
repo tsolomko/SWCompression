@@ -14,7 +14,8 @@ class ZipTests: XCTestCase {
     static let testType: String = "zip"
 
     func test() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "SWCompressionSourceCode",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
@@ -32,39 +33,46 @@ class ZipTests: XCTestCase {
     }
 
     func testZip64() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
         }
 
-        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
 
-        guard zipDict.count == 6 else {
+        guard entries.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
         }
     }
 
     func testDataDescriptor() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor", withType: ZipTests.testType),
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor",
+                                                                 withType: ZipTests.testType),
                                        options: .mappedIfSafe) else {
                                         XCTFail("Failed to load test archive")
                                         return
         }
 
-        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
 
-        // This archive has a lot of macOS service files inside.
-        guard zipDict.count == 6 else {
+        guard entries.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
+        }
+
+        for entry in entries {
+            if !entry.isDirectory {
+                XCTAssertNotNil(try? entry.data())
+            }
         }
     }
 

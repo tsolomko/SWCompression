@@ -12,32 +12,32 @@ import Foundation
  Error happened during LZMA decompression.
  It may indicate that either the data is damaged or it might not be compressed with LZMA at all.
 
- - `WrongProperties`: unsupported LZMA properties (greater than 225).
- - `RangeDecoderInitError`: unable to initialize RangedDecoder.
- - `ExceededUncompressedSize`: the number of uncompressed bytes reached amount specified by archive
+ - `wrongProperties`: unsupported LZMA properties (greater than 225).
+ - `rangeDecoderInitError`: unable to initialize RangedDecoder.
+ - `exceededUncompressedSize`: the number of uncompressed bytes reached amount specified by archive
     while decoding wasn't finished.
- - `WindowIsEmpty`: unable to repeat bytes because there is nothing to repeat.
- - `RangeDecoderFinishError`: range decoder was in a bad state when finish marker was reached.
- - `RepeatWillExceed`: unable to repeat bytes because the number of bytes to repeat is greater 
+ - `windowIsEmpty`: unable to repeat bytes because there is nothing to repeat.
+ - `rangeDecoderFinishError`: range decoder was in a bad state when finish marker was reached.
+ - `repeatWillExceed`: unable to repeat bytes because the number of bytes to repeat is greater
     than the amount bytes that is left to decode.
- - `NotEnoughToRepeat`: unable to repeat bytes because the amount of already decoded bytes is smaller
+ - `notEnoughToRepeat`: unable to repeat bytes because the amount of already decoded bytes is smaller
     than the repeat length.
  */
 public enum LZMAError: Error {
     /// Properties byte was greater than 225.
-    case WrongProperties
+    case wrongProperties
     /// Unable to initialize RanderDecorer.
-    case RangeDecoderInitError
+    case rangeDecoderInitError
     /// The number of uncompressed bytes hit limit in the middle of decoding.
-    case ExceededUncompressedSize
+    case exceededUncompressedSize
     /// Unable to perfrom repeat-distance decoding because there is nothing to repeat.
-    case WindowIsEmpty
+    case windowIsEmpty
     /// End of stream marker is reached, but range decoder is in incorrect state.
-    case RangeDecoderFinishError
+    case rangeDecoderFinishError
     /// The number of bytes to repeat is greater than the amount bytes that is left to decode.
-    case RepeatWillExceed
+    case repeatWillExceed
     /// The amount of already decoded bytes is smaller than repeat length.
-    case NotEnoughToRepeat
+    case notEnoughToRepeat
 }
 
 /// Provides function to decompress data, which were compressed with LZMA
@@ -66,7 +66,7 @@ public final class LZMA: DecompressionAlgorithm {
         // Firstly, we need to parse LZMA properties.
         var properties = pointerData.alignedByte()
         if properties >= (9 * 5 * 5) {
-            throw LZMAError.WrongProperties
+            throw LZMAError.wrongProperties
         }
         /// The number of literal context bits
         let lc = properties % 9
@@ -84,7 +84,8 @@ public final class LZMA: DecompressionAlgorithm {
 
         let lzmaDecoder = try LZMADecoder(&pointerData, lc, pb, lp, dictionarySize)
 
-        return try lzmaDecoder.decodeLZMA(&uncompressedSize)
+        try lzmaDecoder.decodeLZMA(&uncompressedSize)
+        return lzmaDecoder.out
     }
 
 }
