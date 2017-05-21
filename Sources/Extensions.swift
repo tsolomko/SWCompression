@@ -46,19 +46,3 @@ extension Int {
     }
 
 }
-
-extension String {
-
-    subscript (index: Int) -> Character {
-        let charIndex = self.index(self.startIndex, offsetBy: index)
-        return self[charIndex]
-    }
-
-    subscript (range: Range<Int>) -> String {
-        let startIndex = self.index(self.startIndex, offsetBy: range.lowerBound)
-        let endIndex = self.index(startIndex, offsetBy: range.count)
-
-        return self[startIndex..<endIndex]
-    }
-
-}
