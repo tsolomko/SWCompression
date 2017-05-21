@@ -157,6 +157,7 @@ public class ZipEntry: ContainerEntry {
             crc32 = pointerData.uint32FromAlignedBytes(count: 4)
             compSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
             uncompSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
+            // TODO: It may be ZIP64 Data Descriptor.
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count

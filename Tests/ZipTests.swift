@@ -40,12 +40,12 @@ class ZipTests: XCTestCase {
                                         return
         }
 
-        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
 
-        guard zipDict.count == 6 else {
+        guard entries.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
         }
@@ -59,15 +59,20 @@ class ZipTests: XCTestCase {
                                         return
         }
 
-        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(containerData: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
 
-        // This archive has a lot of macOS service files inside.
-        guard zipDict.count == 6 else {
+        guard entries.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
+        }
+
+        for entry in entries {
+            if !entry.isDirectory {
+                XCTAssertNotNil(try? entry.data())
+            }
         }
     }
 
