@@ -1,6 +1,292 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 27,
+      "symbol": "Container",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 29,
+      "symbol": "Container.open(containerData:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 33,
+      "symbol": "ContainerEntry",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 35,
+      "symbol": "ContainerEntry.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 36,
+      "symbol": "ContainerEntry.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 37,
+      "symbol": "ContainerEntry.isDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/Protocols.swift",
+      "line": 39,
+      "symbol": "ContainerEntry.data()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 18,
+      "symbol": "TarError.tooSmallFileIsPassed",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 19,
+      "symbol": "TarError.fieldIsNotNumber",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 20,
+      "symbol": "TarError.wrongHeaderChecksum",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 21,
+      "symbol": "TarError.wrongUstarVersion",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 22,
+      "symbol": "TarError.wrongPaxHeaderEntry",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 28,
+      "symbol": "TarEntry.EntryType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 29,
+      "symbol": "TarEntry.EntryType.normal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 30,
+      "symbol": "TarEntry.EntryType.hardLink",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 31,
+      "symbol": "TarEntry.EntryType.symbolicLink",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 32,
+      "symbol": "TarEntry.EntryType.characterSpecial",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 33,
+      "symbol": "TarEntry.EntryType.blockSpecial",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 34,
+      "symbol": "TarEntry.EntryType.directory",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 35,
+      "symbol": "TarEntry.EntryType.fifo",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 36,
+      "symbol": "TarEntry.EntryType.contiguous",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 37,
+      "symbol": "TarEntry.EntryType.globalExtendedHeader",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 38,
+      "symbol": "TarEntry.EntryType.localExtendedHeader",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 39,
+      "symbol": "TarEntry.EntryType.vendorUnknownOrReserved",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 47,
+      "symbol": "TarEntry.isDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 51,
+      "symbol": "TarEntry.mode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 52,
+      "symbol": "TarEntry.ownerID",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 53,
+      "symbol": "TarEntry.groupID",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 54,
+      "symbol": "TarEntry.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 55,
+      "symbol": "TarEntry.modificationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 56,
+      "symbol": "TarEntry.type",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 58,
+      "symbol": "TarEntry.ownerUserName",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 59,
+      "symbol": "TarEntry.ownerGroupName",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 69,
+      "symbol": "TarEntry.accessTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 70,
+      "symbol": "TarEntry.charset",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 71,
+      "symbol": "TarEntry.comment",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 72,
+      "symbol": "TarEntry.linkPath",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 73,
+      "symbol": "TarEntry.unknownExtendedHeaderEntries",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/TarContainer.swift",
+      "line": 293,
+      "symbol": "TarContainer.open(containerData:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 51,
+      "symbol": "ZipError.wrongTextField",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/SWCompression/Sources/ZipContainer.swift",
+      "line": 75,
+      "symbol": "ZipEntry.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/timofeysolomko/Developer/SWCompression"
 }

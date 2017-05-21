@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -68,10 +68,22 @@
                 <a class="nav-group-task-link" href="Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZlibArchive.html">ZlibArchive</a>
@@ -97,6 +109,9 @@
                 <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -114,6 +129,12 @@
                 <a class="nav-group-task-link" href="Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -129,9 +150,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader.html">ZlibHeader</a>
@@ -153,8 +171,11 @@
             
             <h1 id='swcompression' class='heading'>SWCompression</h1>
 
-<p><a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a> <a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a> <a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.1-lightgrey.svg" alt="Swift 3"></a>
-<a href="https://travis-ci.org/tsolomko/SWCompression"><img src="https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop" alt="Build Status"></a> <a href="https://codecov.io/gh/tsolomko/SWCompression"><img src="https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg" alt="codecov"></a></p>
+<p><a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a>
+<a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a>
+<a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg" alt="Swift 3"></a>
+<a href="https://travis-ci.org/tsolomko/SWCompression"><img src="https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop" alt="Build Status"></a>
+<a href="https://codecov.io/gh/tsolomko/SWCompression"><img src="https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg" alt="codecov"></a></p>
 
 <p><a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/v/SWCompression.svg" alt="CocoaPods"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
@@ -304,7 +325,7 @@ which uses SWCompression for unarchiving several types of archives.</p>
 <h2 id='why-is-it-so-slow' class='heading'>Why is it so slow?</h2>
 
 <p>Version 2.0 came with a great performance improvement.
-Just look at the test results in &lsquo;Tests/Test Result&rsquo;.
+Just look at the <a href="Tests/Results.md">Tests Results</a>.
 So if it&rsquo;s slow the first thing you should do is to make sure you are using version &gt;= 2.0.</p>
 
 <p>Is it still slow?
@@ -336,6 +357,9 @@ so some difference in speed is expected.</p>
 <li><a href="http://www.pkware.com/appnote">.ZIP Application Note</a></li>
 <li><a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=60101">ISO/IEC 21320-1</a></li>
 <li><a href="https://opensource.apple.com/source/zip/zip-6/unzip/unzip/proginfo/extra.fld">List of defined ZIP extra fields</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tar_(computing)">Wikipedia article about TAR</a></li>
+<li><a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html">Pax specification</a></li>
+<li><a href="https://www.gnu.org/software/tar/manual/html_node/Standard.html">Basic TAR specification</a></li>
 </ul>
 
           </div>
@@ -346,7 +370,7 @@ so some difference in speed is expected.</p>
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

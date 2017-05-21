@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -68,10 +68,22 @@
                 <a class="nav-group-task-link" href="Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZlibArchive.html">ZlibArchive</a>
@@ -97,6 +109,9 @@
                 <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -114,6 +129,12 @@
                 <a class="nav-group-task-link" href="Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -129,9 +150,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader.html">ZlibHeader</a>
@@ -177,11 +195,11 @@
 It may indicate that either the data is damaged or it might not be compressed with LZMA2 at all.</p>
 
 <ul>
-<li><code>WrongProperties</code>: reserved bits of LZMA2 properties byte weren&rsquo;t zero.</li>
-<li><code>WrongDictionarySize</code>: dictionary size was greater than 2^32.</li>
-<li><code>WrongControlByte</code>: unsupported value of LZMA2 packet&rsquo;s control byte.</li>
-<li><code>WrongReset</code>: unsupported &lsquo;reset&rsquo; value of LZMA2 packet&rsquo;s.</li>
-<li><code>WrongSizes</code>: size of compressed or decompressed data wasn&rsquo;t the same as specified in LZMA2 packet.</li>
+<li><code>wrongProperties</code>: reserved bits of LZMA2 properties byte weren&rsquo;t zero.</li>
+<li><code>wrongDictionarySize</code>: dictionary size was greater than 2^32.</li>
+<li><code>wrongControlByte</code>: unsupported value of LZMA2 packet&rsquo;s control byte.</li>
+<li><code>wrongReset</code>: unsupported &lsquo;reset&rsquo; value of LZMA2 packet&rsquo;s.</li>
+<li><code>wrongSizes</code>: size of compressed or decompressed data wasn&rsquo;t the same as specified in LZMA2 packet.</li>
 </ul>
 
                         <a href="Enums/LZMA2Error.html" class="slightly-smaller">See more</a>
@@ -195,7 +213,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA2.swift#L21-L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA2.swift#L21-L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -221,14 +239,14 @@ It may indicate that either the data is damaged or it might not be compressed wi
 It may indicate that either the data is damaged or it might not be gzip archive at all.</p>
 
 <ul>
-<li><code>WrongMagic</code>: first two bytes of archive were not 31 and 139.</li>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not 8 aka Deflate).</li>
-<li><code>WrongFlags</code>: unsupported flags (reserved flags weren&rsquo;t 0).</li>
-<li><code>WrongHeaderCRC</code>: computed Cyclic Redundancy Check of archive&rsquo;s header
+<li><code>wrongMagic</code>: first two bytes of archive were not 31 and 139.</li>
+<li><code>wrongCompressionMethod</code>: unsupported compression method (not 8 aka Deflate).</li>
+<li><code>wrongFlags</code>: unsupported flags (reserved flags weren&rsquo;t 0).</li>
+<li><code>wrongHeaderCRC</code>: computed Cyclic Redundancy Check of archive&rsquo;s header
    didn&rsquo;t match the archive&rsquo;s value.</li>
-<li><code>WrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
+<li><code>wrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
 Associated value contains already decompressed data.</li>
-<li><code>WrongISize</code>: size of uncompressed data modulo 2^32 didn&rsquo;t match the archive&rsquo;s value.</li>
+<li><code>wrongISize</code>: size of uncompressed data modulo 2^32 didn&rsquo;t match the archive&rsquo;s value.</li>
 </ul>
 
                         <a href="Enums/GzipError.html" class="slightly-smaller">See more</a>
@@ -242,7 +260,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L24-L40">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L24-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -268,17 +286,17 @@ Associated value contains already decompressed data.</li>
 It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.</p>
 
 <ul>
-<li><code>NotFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
-<li><code>WrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
-<li><code>WrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
-<li><code>WrongVersion</code>: unsupported number of version needed to extract ZIP container 
+<li><code>notFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
+<li><code>wrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
+<li><code>wrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
+<li><code>wrongVersion</code>: unsupported number of version needed to extract ZIP container
 (unsupported features are required to open this file).</li>
-<li><code>MultiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
-<li><code>EncryptionNotSupported</code>: unsupported feature: encryption.</li>
-<li><code>PatchingNotSupported</code>: unsupported feature: patched data.</li>
-<li><code>CompressionNotSupported</code>: unsupported feature: specified compression method.</li>
-<li><code>WrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
-<li><code>WrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
+<li><code>multiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
+<li><code>encryptionNotSupported</code>: unsupported feature: encryption.</li>
+<li><code>patchingNotSupported</code>: unsupported feature: patched data.</li>
+<li><code>compressionNotSupported</code>: unsupported feature: specified compression method.</li>
+<li><code>wrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
+<li><code>wrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
 </ul>
 
                         <a href="Enums/ZipError.html" class="slightly-smaller">See more</a>
@@ -292,7 +310,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L27-L48">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L27-L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -318,15 +336,15 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
 It may indicate that either the data is damaged or it might not be compressed with LZMA at all.</p>
 
 <ul>
-<li><code>WrongProperties</code>: unsupported LZMA properties (greater than 225).</li>
-<li><code>RangeDecoderInitError</code>: unable to initialize RangedDecoder.</li>
-<li><code>ExceededUncompressedSize</code>: the number of uncompressed bytes reached amount specified by archive
+<li><code>wrongProperties</code>: unsupported LZMA properties (greater than 225).</li>
+<li><code>rangeDecoderInitError</code>: unable to initialize RangedDecoder.</li>
+<li><code>exceededUncompressedSize</code>: the number of uncompressed bytes reached amount specified by archive
 while decoding wasn&rsquo;t finished.</li>
-<li><code>WindowIsEmpty</code>: unable to repeat bytes because there is nothing to repeat.</li>
-<li><code>RangeDecoderFinishError</code>: range decoder was in a bad state when finish marker was reached.</li>
-<li><code>RepeatWillExceed</code>: unable to repeat bytes because the number of bytes to repeat is greater 
+<li><code>windowIsEmpty</code>: unable to repeat bytes because there is nothing to repeat.</li>
+<li><code>rangeDecoderFinishError</code>: range decoder was in a bad state when finish marker was reached.</li>
+<li><code>repeatWillExceed</code>: unable to repeat bytes because the number of bytes to repeat is greater
 than the amount bytes that is left to decode.</li>
-<li><code>NotEnoughToRepeat</code>: unable to repeat bytes because the amount of already decoded bytes is smaller
+<li><code>notEnoughToRepeat</code>: unable to repeat bytes because the amount of already decoded bytes is smaller
 than the repeat length.</li>
 </ul>
 
@@ -341,7 +359,7 @@ than the repeat length.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L26-L41">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L26-L41">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -367,10 +385,10 @@ than the repeat length.</li>
 It may indicate that either the data is damaged or it might not be Zlib archive at all.</p>
 
 <ul>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not 8).</li>
-<li><code>WrongCompressionInfo</code>: unsupported compression info (greater than 7).</li>
-<li><code>WrongFcheck</code>: first two bytes were inconsistent with each other.</li>
-<li><code>WrongCompressionLevel</code>: unsupported compression level (not 0, 1, 2 or 3).</li>
+<li><code>wrongCompressionMethod</code>: unsupported compression method (not 8).</li>
+<li><code>wrongCompressionInfo</code>: unsupported compression info (greater than 7).</li>
+<li><code>wrongFcheck</code>: first two bytes were inconsistent with each other.</li>
+<li><code>wrongCompressionLevel</code>: unsupported compression level (not 0, 1, 2 or 3).</li>
 <li><code>WrongAdler32</code>: computed Adler-32 checksum of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
 Associated value contains already decompressed data.</li>
 </ul>
@@ -386,7 +404,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZlibArchive.swift#L22-L36">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZlibArchive.swift#L22-L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -412,10 +430,10 @@ Associated value contains already decompressed data.</li>
 It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.</p>
 
 <ul>
-<li><code>WrongUncompressedBlockLengths</code>: <code>length</code> and <code>nlength</code> bytes of uncompressed block were not compatible.</li>
-<li><code>WrongBlockType</code>: unsupported block type (not 0, 1 or 2).</li>
-<li><code>WrongSymbol</code>: unsupported Huffman tree&rsquo;s symbol.</li>
-<li><code>SymbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
+<li><code>wrongUncompressedBlockLengths</code>: <code>length</code> and <code>nlength</code> bytes of uncompressed block were not compatible.</li>
+<li><code>wrongBlockType</code>: unsupported block type (not 0, 1 or 2).</li>
+<li><code>wrongSymbol</code>: unsupported Huffman tree&rsquo;s symbol.</li>
+<li><code>symbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
 </ul>
 
                         <a href="Enums/DeflateError.html" class="slightly-smaller">See more</a>
@@ -429,7 +447,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/Deflate.swift#L20-L29">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/Deflate.swift#L20-L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -455,15 +473,16 @@ It may indicate that either the data is damaged or it might not be compressed wi
 It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.</p>
 
 <ul>
-<li><code>WrongMagic</code>: unsupported magic number (not 0x425a).</li>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not type &lsquo;h&rsquo;).</li>
-<li><code>WrongBlockSize</code>: unsupported block size (not &lsquo;0&rsquo; — &lsquo;9&rsquo;).</li>
-<li><code>WrongBlockType</code>: unsupported block type (not &lsquo;pi&rsquo; or &lsquo;sqrt(pi)&rsquo;).</li>
-<li><code>RandomizedBlock</code>: block is randomized; this is not supported.</li>
-<li><code>WrongHuffmanGroups</code>: unsupported number of Huffman tables/groups (not between 2 and 6).</li>
-<li><code>WrongSelector</code>: unsupported selector (greater than total number of Huffman groups).</li>
-<li><code>WrongHuffmanLengthCode</code>: unsupported code for Huffman length (not between 0 and 20).</li>
-<li><code>SymbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
+<li><code>wrongMagic</code>: unsupported magic number (not 0x425a).</li>
+<li><code>wrongCompressionMethod</code>: unsupported compression method (not type &lsquo;h&rsquo;).</li>
+<li><code>wrongBlockSize</code>: unsupported block size (not &lsquo;0&rsquo; — &lsquo;9&rsquo;).</li>
+<li><code>wrongBlockType</code>: unsupported block type (not &lsquo;pi&rsquo; or &lsquo;sqrt(pi)&rsquo;).</li>
+<li><code>randomizedBlock</code>: block is randomized; this is not supported.</li>
+<li><code>wrongHuffmanGroups</code>: unsupported number of Huffman tables/groups (not between 2 and 6).</li>
+<li><code>wrongSelector</code>: unsupported selector (greater than total number of Huffman groups).</li>
+<li><code>wrongHuffmanLengthCode</code>: unsupported code for Huffman length (not between 0 and 20).</li>
+<li><code>symbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
+<li><code>wrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.</li>
 </ul>
 
                         <a href="Enums/BZip2Error.html" class="slightly-smaller">See more</a>
@@ -477,7 +496,47 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L25-L44">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L26-L50">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:O13SWCompression8TarError"></a>
+                    <a name="//apple_ref/swift/Enum/TarError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:O13SWCompression8TarError">TarError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Error happened during processing TAR archive (container).
+It may indicate that either the data is damaged or it might not be TAR archive (container) at all.</p>
+
+<ul>
+<li><code>error</code>: error description.</li>
+</ul>
+
+                        <a href="Enums/TarError.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">TarError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/TarContainer.swift#L17-L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -503,18 +562,18 @@ It may indicate that either the data is damaged or it might not be compressed wi
 It may indicate that either the data is damaged or it might not be XZ archive at all.</p>
 
 <ul>
-<li><code>WrongMagic</code>: &lsquo;magic&rsquo; bytes in archive&rsquo;s header or footer weren&rsquo;t equal to predefined value.</li>
-<li><code>WrongArchiveInfo</code>: incorrect value of one of archive&rsquo;s special field (in block, index, header or footer).</li>
-<li><code>FieldReservedValue</code>: value of one of archive&rsquo;s special field 
+<li><code>wrongMagic</code>: &lsquo;magic&rsquo; bytes in archive&rsquo;s header or footer weren&rsquo;t equal to predefined value.</li>
+<li><code>wrongArchiveInfo</code>: incorrect value of one of archive&rsquo;s special field (in block, index, header or footer).</li>
+<li><code>fieldReservedValue</code>: value of one of archive&rsquo;s special field
 (in block, index, header or footer) had reserved value.</li>
-<li><code>WrongInfoCRC</code>: incorrect value of one of archive&rsquo;s special field (in block, index, header or footer).</li>
-<li><code>WrongFilterID</code>: unsupported value of filter ID (not LZMA2&rsquo;s 0x21).</li>
-<li><code>CheckTypeSHA256</code>: checksum&rsquo;s type was SHA-256.</li>
-<li><code>WrongDataSize</code>: size of compressed or decompressed data wasn&rsquo;t the same as specified in block.</li>
-<li><code>WrongCheck</code>: computed checksum of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
+<li><code>wrongInfoCRC</code>: incorrect value of one of archive&rsquo;s special field (in block, index, header or footer).</li>
+<li><code>wrongFilterID</code>: unsupported value of filter ID (not LZMA2&rsquo;s 0x21).</li>
+<li><code>checkTypeSHA256</code>: checksum&rsquo;s type was SHA-256.</li>
+<li><code>wrongDataSize</code>: size of compressed or decompressed data wasn&rsquo;t the same as specified in block.</li>
+<li><code>wrongCheck</code>: computed checksum of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
 Associated value contains already decompressed data.</li>
-<li><code>WrongPadding</code>: unsupported padding of one of structures in the archive.</li>
-<li><code>MultiByteIntegerError</code>: error happened during reading of one of so called &lsquo;multi-byte&rsquo; numbers.</li>
+<li><code>wrongPadding</code>: unsupported padding of one of structures in the archive.</li>
+<li><code>multiByteIntegerError</code>: error happened during reading of one of so called &lsquo;multi-byte&rsquo; numbers.</li>
 </ul>
 
                         <a href="Enums/XZError.html" class="slightly-smaller">See more</a>
@@ -528,7 +587,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/XZArchive.swift#L28-L55">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/XZArchive.swift#L28-L55">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -542,7 +601,7 @@ Associated value contains already decompressed data.</li>
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
