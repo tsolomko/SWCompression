@@ -46,7 +46,7 @@ class TarTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(result.count, 9)
+        XCTAssertEqual(result.count, 5)
         for entry in result {
             let tarEntry = entry as! TarEntry
             let name = tarEntry.name.components(separatedBy: ".")[0]
