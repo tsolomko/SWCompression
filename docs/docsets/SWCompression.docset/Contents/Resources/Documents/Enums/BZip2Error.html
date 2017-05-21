@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -162,15 +180,16 @@
 It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.</p>
 
 <ul>
-<li><code>WrongMagic</code>: unsupported magic number (not 0x425a).</li>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not type &lsquo;h&rsquo;).</li>
-<li><code>WrongBlockSize</code>: unsupported block size (not &lsquo;0&rsquo; — &lsquo;9&rsquo;).</li>
-<li><code>WrongBlockType</code>: unsupported block type (not &lsquo;pi&rsquo; or &lsquo;sqrt(pi)&rsquo;).</li>
-<li><code>RandomizedBlock</code>: block is randomized; this is not supported.</li>
-<li><code>WrongHuffmanGroups</code>: unsupported number of Huffman tables/groups (not between 2 and 6).</li>
-<li><code>WrongSelector</code>: unsupported selector (greater than total number of Huffman groups).</li>
-<li><code>WrongHuffmanLengthCode</code>: unsupported code for Huffman length (not between 0 and 20).</li>
-<li><code>SymbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
+<li><code>wrongMagic</code>: unsupported magic number (not 0x425a).</li>
+<li><code>wrongCompressionMethod</code>: unsupported compression method (not type &lsquo;h&rsquo;).</li>
+<li><code>wrongBlockSize</code>: unsupported block size (not &lsquo;0&rsquo; — &lsquo;9&rsquo;).</li>
+<li><code>wrongBlockType</code>: unsupported block type (not &lsquo;pi&rsquo; or &lsquo;sqrt(pi)&rsquo;).</li>
+<li><code>randomizedBlock</code>: block is randomized; this is not supported.</li>
+<li><code>wrongHuffmanGroups</code>: unsupported number of Huffman tables/groups (not between 2 and 6).</li>
+<li><code>wrongSelector</code>: unsupported selector (greater than total number of Huffman groups).</li>
+<li><code>wrongHuffmanLengthCode</code>: unsupported code for Huffman length (not between 0 and 20).</li>
+<li><code>symbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
+<li><code>wrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.</li>
 </ul>
 
           </div>
@@ -183,9 +202,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error10WrongMagicFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongMagic" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error10WrongMagicFMS0_S0_">WrongMagic</a>
+                    <a name="/s:FO13SWCompression10BZip2Error10wrongMagicFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongMagic" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error10wrongMagicFMS0_S0_">wrongMagic</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -200,12 +219,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongMagic</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongMagic</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L27">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -217,9 +236,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error22WrongCompressionMethodFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCompressionMethod" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error22WrongCompressionMethodFMS0_S0_">WrongCompressionMethod</a>
+                    <a name="/s:FO13SWCompression10BZip2Error22wrongCompressionMethodFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCompressionMethod" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error22wrongCompressionMethodFMS0_S0_">wrongCompressionMethod</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -234,12 +253,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCompressionMethod</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongCompressionMethod</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L29">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -251,9 +270,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error14WrongBlockSizeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongBlockSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14WrongBlockSizeFMS0_S0_">WrongBlockSize</a>
+                    <a name="/s:FO13SWCompression10BZip2Error14wrongBlockSizeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongBlockSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14wrongBlockSizeFMS0_S0_">wrongBlockSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -268,12 +287,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongBlockSize</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongBlockSize</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L31">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -285,9 +304,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error14WrongBlockTypeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongBlockType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14WrongBlockTypeFMS0_S0_">WrongBlockType</a>
+                    <a name="/s:FO13SWCompression10BZip2Error14wrongBlockTypeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongBlockType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14wrongBlockTypeFMS0_S0_">wrongBlockType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -302,12 +321,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongBlockType</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongBlockType</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L33">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L34">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -319,9 +338,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error15RandomizedBlockFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RandomizedBlock" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error15RandomizedBlockFMS0_S0_">RandomizedBlock</a>
+                    <a name="/s:FO13SWCompression10BZip2Error15randomizedBlockFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/randomizedBlock" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error15randomizedBlockFMS0_S0_">randomizedBlock</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -336,12 +355,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RandomizedBlock</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">randomizedBlock</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -353,9 +372,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error18WrongHuffmanGroupsFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongHuffmanGroups" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error18WrongHuffmanGroupsFMS0_S0_">WrongHuffmanGroups</a>
+                    <a name="/s:FO13SWCompression10BZip2Error18wrongHuffmanGroupsFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongHuffmanGroups" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error18wrongHuffmanGroupsFMS0_S0_">wrongHuffmanGroups</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -370,12 +389,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongHuffmanGroups</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongHuffmanGroups</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -387,9 +406,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error13WrongSelectorFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongSelector" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error13WrongSelectorFMS0_S0_">WrongSelector</a>
+                    <a name="/s:FO13SWCompression10BZip2Error13wrongSelectorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongSelector" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error13wrongSelectorFMS0_S0_">wrongSelector</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -404,12 +423,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSelector</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongSelector</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -421,9 +440,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error22WrongHuffmanLengthCodeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongHuffmanLengthCode" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error22WrongHuffmanLengthCodeFMS0_S0_">WrongHuffmanLengthCode</a>
+                    <a name="/s:FO13SWCompression10BZip2Error22wrongHuffmanLengthCodeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongHuffmanLengthCode" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error22wrongHuffmanLengthCodeFMS0_S0_">wrongHuffmanLengthCode</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -438,12 +457,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongHuffmanLengthCode</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongHuffmanLengthCode</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L41">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L42">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -455,9 +474,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression10BZip2Error14SymbolNotFoundFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/SymbolNotFound" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14SymbolNotFoundFMS0_S0_">SymbolNotFound</a>
+                    <a name="/s:FO13SWCompression10BZip2Error14symbolNotFoundFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/symbolNotFound" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error14symbolNotFoundFMS0_S0_">symbolNotFound</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -472,12 +491,47 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">SymbolNotFound</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">symbolNotFound</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/BZip2.swift#L43">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L44">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression10BZip2Error8wrongCRCFMS0_FV10Foundation4DataS0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCRC" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression10BZip2Error8wrongCRCFMS0_FV10Foundation4DataS0_">wrongCRC</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Computed CRC of uncompressed data didn&rsquo;t match the value stored in the archive.
+Associated value contains already decompressed data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">wrongCRC</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L49">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -491,7 +545,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

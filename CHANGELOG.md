@@ -1,6 +1,18 @@
 # Changelog
 v3.0.0
 ----------------
+#### test2
+- Added support for TAR containers.
+  - Various standards are supported (pre-POSIX, POSIX-1988, pax).
+  - Added subspec for TAR features.
+- Added Container protocol.
+  - Reworked ZipContainer to conform to new protocol.
+- All Errors cases renamed to conform Swift naming convetions (lowerCamelCase).
+- Removed LZMAOutWindow.
+- Test results combined into single document.
+- Reduced tests sizes.
+- Included 2.4.1 and 2.4.2 changes.
+
 #### test1
 - BZip2 decompression now checks CRC32.
 - GZipHeader.modificationTime is now Optional.

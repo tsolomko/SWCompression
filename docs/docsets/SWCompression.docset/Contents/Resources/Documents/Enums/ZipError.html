@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -162,17 +180,17 @@
 It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.</p>
 
 <ul>
-<li><code>NotFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
-<li><code>WrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
-<li><code>WrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
-<li><code>WrongVersion</code>: unsupported number of version needed to extract ZIP container 
+<li><code>notFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
+<li><code>wrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
+<li><code>wrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
+<li><code>wrongVersion</code>: unsupported number of version needed to extract ZIP container
 (unsupported features are required to open this file).</li>
-<li><code>MultiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
-<li><code>EncryptionNotSupported</code>: unsupported feature: encryption.</li>
-<li><code>PatchingNotSupported</code>: unsupported feature: patched data.</li>
-<li><code>CompressionNotSupported</code>: unsupported feature: specified compression method.</li>
-<li><code>WrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
-<li><code>WrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
+<li><code>multiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
+<li><code>encryptionNotSupported</code>: unsupported feature: encryption.</li>
+<li><code>patchingNotSupported</code>: unsupported feature: patched data.</li>
+<li><code>compressionNotSupported</code>: unsupported feature: specified compression method.</li>
+<li><code>wrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
+<li><code>wrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
 </ul>
 
           </div>
@@ -185,9 +203,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError27NotFoundCentralDirectoryEndFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/NotFoundCentralDirectoryEnd" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError27NotFoundCentralDirectoryEndFMS0_S0_">NotFoundCentralDirectoryEnd</a>
+                    <a name="/s:FO13SWCompression8ZipError27notFoundCentralDirectoryEndFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/notFoundCentralDirectoryEnd" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError27notFoundCentralDirectoryEndFMS0_S0_">notFoundCentralDirectoryEnd</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -202,12 +220,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NotFoundCentralDirectoryEnd</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">notFoundCentralDirectoryEnd</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L29">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -219,9 +237,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError14WrongSignatureFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongSignature" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError14WrongSignatureFMS0_S0_">WrongSignature</a>
+                    <a name="/s:FO13SWCompression8ZipError14wrongSignatureFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongSignature" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError14wrongSignatureFMS0_S0_">wrongSignature</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -236,12 +254,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSignature</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongSignature</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L31">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -253,9 +271,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError9WrongSizeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError9WrongSizeFMS0_S0_">WrongSize</a>
+                    <a name="/s:FO13SWCompression8ZipError9wrongSizeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError9wrongSizeFMS0_S0_">wrongSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -270,12 +288,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSize</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongSize</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L33">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -287,9 +305,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError12WrongVersionFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongVersion" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError12WrongVersionFMS0_S0_">WrongVersion</a>
+                    <a name="/s:FO13SWCompression8ZipError12wrongVersionFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongVersion" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError12wrongVersionFMS0_S0_">wrongVersion</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -304,12 +322,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongVersion</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongVersion</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -321,9 +339,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError24MultiVolumesNotSupportedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/MultiVolumesNotSupported" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError24MultiVolumesNotSupportedFMS0_S0_">MultiVolumesNotSupported</a>
+                    <a name="/s:FO13SWCompression8ZipError24multiVolumesNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/multiVolumesNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError24multiVolumesNotSupportedFMS0_S0_">multiVolumesNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -338,12 +356,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">MultiVolumesNotSupported</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">multiVolumesNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -355,9 +373,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError22EncryptionNotSupportedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/EncryptionNotSupported" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError22EncryptionNotSupportedFMS0_S0_">EncryptionNotSupported</a>
+                    <a name="/s:FO13SWCompression8ZipError22encryptionNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/encryptionNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError22encryptionNotSupportedFMS0_S0_">encryptionNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -372,12 +390,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">EncryptionNotSupported</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">encryptionNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -389,9 +407,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError20PatchingNotSupportedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/PatchingNotSupported" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError20PatchingNotSupportedFMS0_S0_">PatchingNotSupported</a>
+                    <a name="/s:FO13SWCompression8ZipError20patchingNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/patchingNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError20patchingNotSupportedFMS0_S0_">patchingNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -406,12 +424,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">PatchingNotSupported</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">patchingNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L41">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L41">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -423,9 +441,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError23CompressionNotSupportedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/CompressionNotSupported" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError23CompressionNotSupportedFMS0_S0_">CompressionNotSupported</a>
+                    <a name="/s:FO13SWCompression8ZipError23compressionNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/compressionNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError23compressionNotSupportedFMS0_S0_">compressionNotSupported</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -440,12 +458,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">CompressionNotSupported</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">compressionNotSupported</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L43">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L43">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -457,9 +475,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError16WrongLocalHeaderFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongLocalHeader" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError16WrongLocalHeaderFMS0_S0_">WrongLocalHeader</a>
+                    <a name="/s:FO13SWCompression8ZipError16wrongLocalHeaderFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongLocalHeader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError16wrongLocalHeaderFMS0_S0_">wrongLocalHeader</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -474,12 +492,12 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongLocalHeader</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongLocalHeader</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L45">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L45">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -491,9 +509,9 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression8ZipError10WrongCRC32FMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCRC32" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression8ZipError10WrongCRC32FMS0_S0_">WrongCRC32</a>
+                    <a name="/s:FO13SWCompression8ZipError10wrongCRC32FMS0_FV10Foundation4DataS0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCRC32" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError10wrongCRC32FMS0_FV10Foundation4DataS0_">wrongCRC32</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -501,19 +519,54 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong computed CRC32 of an entry.</p>
+                        <p>Computed CRC32 of entry&rsquo;s data didn&rsquo;t match the value stored in the container.
+Associated value contains extracted data.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCRC32</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">wrongCRC32</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/ZipContainer.swift#L47">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L50">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression8ZipError14wrongTextFieldFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongTextField" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression8ZipError14wrongTextFieldFMS0_S0_">wrongTextField</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ZipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -527,7 +580,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

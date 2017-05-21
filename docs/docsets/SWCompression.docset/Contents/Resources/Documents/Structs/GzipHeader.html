@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -193,7 +211,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L54-L57">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L54-L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -224,7 +242,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L60-L71">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L60-L71">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -254,28 +272,17 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L74">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L74">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/TODO:%20Make%20it%20optional."></a>
-                <a name="//apple_ref/swift/Section/TODO: Make it optional." class="dashAnchor"></a>
-                <a href="#/TODO:%20Make%20it%20optional.">
-                  <h3 class="section-name">TODO: Make it optional.</h3>
-                </a>
-              </div>
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vV13SWCompression10GzipHeader16modificationTimeV10Foundation4Date"></a>
+                    <a name="/s:vV13SWCompression10GzipHeader16modificationTimeGSqV10Foundation4Date_"></a>
                     <a name="//apple_ref/swift/Property/modificationTime" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vV13SWCompression10GzipHeader16modificationTimeV10Foundation4Date">modificationTime</a>
+                    <a class="token" href="#/s:vV13SWCompression10GzipHeader16modificationTimeGSqV10Foundation4Date_">modificationTime</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -283,19 +290,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The most recent modification time of the original file.</p>
+                        <p>The most recent modification time of the original file. If set to 0 (default value == unset), then nil.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modificationTime</span><span class="p">:</span> <span class="kt">Date</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modificationTime</span><span class="p">:</span> <span class="kt">Date</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L77">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L76">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -325,7 +332,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L79">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -355,7 +362,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L81">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L80">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -385,7 +392,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L83">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L82">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -435,7 +442,6 @@ it might not be compressed with gzip at all.</p>
                               <td>
                                 <div>
                                   <p>Data compressed with gzip.</p>
-
                                 </div>
                               </td>
                             </tr>
@@ -443,7 +449,7 @@ it might not be compressed with gzip at all.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/GzipArchive.swift#L96-L99">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L95-L98">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -457,7 +463,7 @@ it might not be compressed with gzip at all.</p>
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

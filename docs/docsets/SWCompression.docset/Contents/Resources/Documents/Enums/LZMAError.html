@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (75% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -162,15 +180,15 @@
 It may indicate that either the data is damaged or it might not be compressed with LZMA at all.</p>
 
 <ul>
-<li><code>WrongProperties</code>: unsupported LZMA properties (greater than 225).</li>
-<li><code>RangeDecoderInitError</code>: unable to initialize RangedDecoder.</li>
-<li><code>ExceededUncompressedSize</code>: the number of uncompressed bytes reached amount specified by archive
+<li><code>wrongProperties</code>: unsupported LZMA properties (greater than 225).</li>
+<li><code>rangeDecoderInitError</code>: unable to initialize RangedDecoder.</li>
+<li><code>exceededUncompressedSize</code>: the number of uncompressed bytes reached amount specified by archive
 while decoding wasn&rsquo;t finished.</li>
-<li><code>WindowIsEmpty</code>: unable to repeat bytes because there is nothing to repeat.</li>
-<li><code>RangeDecoderFinishError</code>: range decoder was in a bad state when finish marker was reached.</li>
-<li><code>RepeatWillExceed</code>: unable to repeat bytes because the number of bytes to repeat is greater 
+<li><code>windowIsEmpty</code>: unable to repeat bytes because there is nothing to repeat.</li>
+<li><code>rangeDecoderFinishError</code>: range decoder was in a bad state when finish marker was reached.</li>
+<li><code>repeatWillExceed</code>: unable to repeat bytes because the number of bytes to repeat is greater
 than the amount bytes that is left to decode.</li>
-<li><code>NotEnoughToRepeat</code>: unable to repeat bytes because the amount of already decoded bytes is smaller
+<li><code>notEnoughToRepeat</code>: unable to repeat bytes because the amount of already decoded bytes is smaller
 than the repeat length.</li>
 </ul>
 
@@ -184,9 +202,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError15WrongPropertiesFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongProperties" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError15WrongPropertiesFMS0_S0_">WrongProperties</a>
+                    <a name="/s:FO13SWCompression9LZMAError15wrongPropertiesFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongProperties" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError15wrongPropertiesFMS0_S0_">wrongProperties</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -201,12 +219,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongProperties</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongProperties</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -218,9 +236,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError21RangeDecoderInitErrorFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RangeDecoderInitError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError21RangeDecoderInitErrorFMS0_S0_">RangeDecoderInitError</a>
+                    <a name="/s:FO13SWCompression9LZMAError21rangeDecoderInitErrorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/rangeDecoderInitError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError21rangeDecoderInitErrorFMS0_S0_">rangeDecoderInitError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -235,12 +253,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RangeDecoderInitError</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">rangeDecoderInitError</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -252,9 +270,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError24ExceededUncompressedSizeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/ExceededUncompressedSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError24ExceededUncompressedSizeFMS0_S0_">ExceededUncompressedSize</a>
+                    <a name="/s:FO13SWCompression9LZMAError24exceededUncompressedSizeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/exceededUncompressedSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError24exceededUncompressedSizeFMS0_S0_">exceededUncompressedSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -269,12 +287,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">ExceededUncompressedSize</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">exceededUncompressedSize</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -286,9 +304,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError13WindowIsEmptyFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WindowIsEmpty" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError13WindowIsEmptyFMS0_S0_">WindowIsEmpty</a>
+                    <a name="/s:FO13SWCompression9LZMAError13windowIsEmptyFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/windowIsEmpty" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError13windowIsEmptyFMS0_S0_">windowIsEmpty</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -303,12 +321,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WindowIsEmpty</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">windowIsEmpty</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L34">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L34">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -320,9 +338,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError23RangeDecoderFinishErrorFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RangeDecoderFinishError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError23RangeDecoderFinishErrorFMS0_S0_">RangeDecoderFinishError</a>
+                    <a name="/s:FO13SWCompression9LZMAError23rangeDecoderFinishErrorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/rangeDecoderFinishError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError23rangeDecoderFinishErrorFMS0_S0_">rangeDecoderFinishError</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -337,12 +355,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RangeDecoderFinishError</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">rangeDecoderFinishError</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L36">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -354,9 +372,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError16RepeatWillExceedFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/RepeatWillExceed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError16RepeatWillExceedFMS0_S0_">RepeatWillExceed</a>
+                    <a name="/s:FO13SWCompression9LZMAError16repeatWillExceedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/repeatWillExceed" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError16repeatWillExceedFMS0_S0_">repeatWillExceed</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -371,12 +389,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">RepeatWillExceed</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">repeatWillExceed</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -388,9 +406,9 @@ than the repeat length.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9LZMAError17NotEnoughToRepeatFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/NotEnoughToRepeat" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9LZMAError17NotEnoughToRepeatFMS0_S0_">NotEnoughToRepeat</a>
+                    <a name="/s:FO13SWCompression9LZMAError17notEnoughToRepeatFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/notEnoughToRepeat" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9LZMAError17notEnoughToRepeatFMS0_S0_">notEnoughToRepeat</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -405,12 +423,12 @@ than the repeat length.</li>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">NotEnoughToRepeat</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">notEnoughToRepeat</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.0/Sources/LZMA.swift#L40">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/LZMA.swift#L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -424,7 +442,7 @@ than the repeat length.</li>
     </div>
     <section class="footer">
       <p>© 2017 Timofey Solomko</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
