@@ -151,11 +151,7 @@ final class LZMADecoder {
         let dataSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
         for _ in 0..<dataSize {
             let byte = pointerData.alignedByte()
-            out.append(byte)
-            dictEnd += 1
-            if dictEnd - dictStart == dictionarySize {
-                dictStart += 1
-            }
+            self.put(byte)
         }
     }
 
@@ -296,8 +292,8 @@ final class LZMADecoder {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
                         let byte = self.byte(at: rep0 + 1)
-                        uncompressedSize -= 1
                         self.put(byte)
+                        uncompressedSize -= 1
                         continue
                     }
                 } else { // REP MATCH CASE
@@ -380,8 +376,8 @@ final class LZMADecoder {
             if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.repeatWillExceed }
             for _ in 0..<len {
                 let byte = self.byte(at: rep0 + 1)
-                uncompressedSize -= 1
                 self.put(byte)
+                uncompressedSize -= 1
             }
         }
     }
