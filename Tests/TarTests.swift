@@ -56,7 +56,7 @@ class TarTests: XCTestCase {
             }
             XCTAssertEqual(tarEntry.data(), answerData)
             XCTAssertEqual(tarEntry.isDirectory, false)
-            XCTAssert(tarEntry.accessTime != nil)
+            XCTAssertNotNil(tarEntry.accessTime)
         }
     }
 

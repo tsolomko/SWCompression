@@ -164,107 +164,65 @@ public class TarEntry: ContainerEntry {
             fileNamePrefix = nil
         }
 
-        if let headerString = globalExtendedHeader {
-            let headerEntries = headerString.components(separatedBy: "\n")
-            for headerEntry in headerEntries {
-                if headerEntry == "" {
-                    continue
-                }
-                let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
-                                                                    omittingEmptySubsequences: false)
-                guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
-                    else { throw TarError.wrongPaxHeaderEntry }
-                let keywordValue = String(headerEntrySplit[1])
-                let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
-                                                                      omittingEmptySubsequences: false)
-                let keyword = String(keywordValueSplit[0])
-                let value = String(keywordValueSplit[1])
-                switch keyword {
-                case "atime":
-                    if let interval = Double(value) {
-                        self.accessTime = Date(timeIntervalSince1970: interval)
+        func parseHeader(_ header: String?, _ fieldsDict: inout [String : String]) throws {
+            if let headerString = header {
+                let headerEntries = headerString.components(separatedBy: "\n")
+                for headerEntry in headerEntries {
+                    if headerEntry == "" {
+                        continue
                     }
-                case "charset":
-                    self.charset = value
-                case "mtime":
-                    if let interval = Double(value) {
-                        self.modificationTime = Date(timeIntervalSince1970: interval)
-                    }
-                case "comment":
-                    self.comment = value
-                case "gid":
-                    self.groupID = Int(value)
-                case "gname":
-                    self.ownerGroupName = value
-                case "hdrcharset":
-                    break
-                case "linkpath":
-                    self.linkPath = value
-                case "path":
-                    self.paxPath = value
-                case "size":
-                    if let intValue = Int(value) {
-                        self.size = intValue
-                    }
-                case "uid":
-                    self.ownerID = Int(value)
-                case "uname":
-                    self.ownerUserName = value
-                default:
-                    self.unknownExtendedHeaderEntries[keyword] = value
+                    let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
+                                                                        omittingEmptySubsequences: false)
+                    guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
+                        else { throw TarError.wrongPaxHeaderEntry }
+                    let keywordValue = String(headerEntrySplit[1])
+                    let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
+                                                                          omittingEmptySubsequences: false)
+                    let keyword = String(keywordValueSplit[0])
+                    let value = String(keywordValueSplit[1])
+                    fieldsDict[keyword] = value
                 }
             }
         }
 
-        if let headerString = localExtendedHeader {
-            let headerEntries = headerString.components(separatedBy: "\n")
-            for headerEntry in headerEntries {
-                if headerEntry == "" {
-                    continue
+        var fieldsDict = [String : String]()
+        try parseHeader(globalExtendedHeader, &fieldsDict)
+        try parseHeader(localExtendedHeader, &fieldsDict)
+
+        for (keyword, value) in fieldsDict {
+            switch keyword {
+            case "atime":
+                if let interval = Double(value) {
+                    self.accessTime = Date(timeIntervalSince1970: interval)
                 }
-                let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
-                                                                    omittingEmptySubsequences: false)
-                guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
-                    else { throw TarError.wrongPaxHeaderEntry }
-                let keywordValue = String(headerEntrySplit[1])
-                let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
-                                                                      omittingEmptySubsequences: false)
-                let keyword = String(keywordValueSplit[0])
-                let value = String(keywordValueSplit[1])
-                switch keyword {
-                case "atime":
-                    if let interval = Double(value) {
-                        self.accessTime = Date(timeIntervalSince1970: interval)
-                    }
-                case "charset":
-                    self.charset = value
-                case "mtime":
-                    if let interval = Double(value) {
-                        self.modificationTime = Date(timeIntervalSince1970: interval)
-                    }
-                case "comment":
-                    self.comment = value
-                case "gid":
-                    self.groupID = Int(value)
-                case "gname":
-                    self.ownerGroupName = value
-                case "hdrcharset":
-                    break
-                case "linkpath":
-                    self.linkPath = value
-                case "path":
-                    self.paxPath = value
-                case "size":
-                    if let intValue = Int(value) {
-                        self.size = intValue
-                    }
-                case "uid":
-                    self.ownerID = Int(value)
-                case "uname":
-                    self.ownerUserName = value
-                default:
-                    self.unknownExtendedHeaderEntries[keyword] = value
+            case "charset":
+                self.charset = value
+            case "mtime":
+                if let interval = Double(value) {
+                    self.modificationTime = Date(timeIntervalSince1970: interval)
                 }
+            case "comment":
+                self.comment = value
+            case "gid":
+                self.groupID = Int(value)
+            case "gname":
+                self.ownerGroupName = value
+            case "hdrcharset":
+                break
+            case "linkpath":
+                self.linkPath = value
+            case "path":
+                self.paxPath = value
+            case "size":
+                if let intValue = Int(value) {
+                    self.size = intValue
+                }
+            case "uid":
+                self.ownerID = Int(value)
+            case "uname":
+                self.ownerUserName = value
+            default:
+                self.unknownExtendedHeaderEntries[keyword] = value
             }
         }
 
