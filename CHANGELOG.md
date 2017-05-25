@@ -1,4 +1,8 @@
 # Changelog
+v2.4.3
+----------------
+- Fixed incorrect calculation of header's checksum for GZip archives.
+
 v2.4.2
 ----------------
 - Fixed a problem, where ZipEntry.fileName was returning fileComment instead.
