@@ -37,6 +37,8 @@ public enum GzipError: Error {
     case wrongCRC(Data)
     /// Computed isize didn't match the value stored in the archive.
     case wrongISize
+
+    case cannotEncodeISOLatin1
 }
 
 /// A structure which provides information about gzip archive.
@@ -234,16 +236,75 @@ public final class GzipArchive: Archive {
 
      - Returns: Data object with resulting archive.
      */
-    public static func archive(data: Data) throws -> Data {
-        let out: [UInt8] = [
+    public static func archive(data: Data, options: [ArchiveOption]) throws -> Data {
+        var flags: UInt8 = 0
+
+        var commentData = Data()
+        var fileNameData = Data()
+        var fhcrc = false
+        var mtimeBytes: [UInt8] = [0, 0, 0, 0]
+        var os: UInt8 = 255
+
+        for option in options {
+            switch option {
+            case .comment(var comment):
+                flags += 16
+                if comment.characters.last != "\u{00}" {
+                    comment.append("\u{00}")
+                }
+                if let data = comment.data(using: .isoLatin1) {
+                    commentData = data
+                } else {
+                    throw GzipError.cannotEncodeISOLatin1
+                }
+            case .fileName(var fileName):
+                flags += 8
+                if fileName.characters.last != "\u{00}" {
+                    fileName.append("\u{00}")
+                }
+                if let data = fileName.data(using: .isoLatin1) {
+                    fileNameData = data
+                } else {
+                    throw GzipError.cannotEncodeISOLatin1
+                }
+            case .gzipHeaderCRC:
+                flags += 2
+                fhcrc = true
+            case .isTextFile:
+                flags += 1
+            case .gzipOS(let osType):
+                os = UInt8(truncatingBitPattern: GzipHeader.FileSystemType(rawValue: osType)?.rawValue ?? 255)
+            case .mtime(let modificationTime):
+                let timeInterval = Int(modificationTime.timeIntervalSince1970)
+                for i in 0..<4 {
+                    mtimeBytes[i] = UInt8(truncatingBitPattern: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
+                }
+            }
+        }
+
+        var headerBytes: [UInt8] = [
             0x1f, 0x8b, // 'magic' bytes.
             8, // Compression method (DEFLATE).
-            0, // Flags; currently no flags are set.
-            0, 0, 0, 0, // Mtime; currently timestamp is not set.
-            2, // Extra flags; 2 means that DEFLATE used slowest algorithm.
-            255, // OS Type; set to default value (unknown).
+            flags, // Flags; currently no flags are set.
         ]
-        var outData = Data(bytes: out)
+        for i in 0..<4 {
+            headerBytes.append(mtimeBytes[i])
+        }
+        headerBytes.append(2) // Extra flags; 2 means that DEFLATE used slowest algorithm.
+        headerBytes.append(os)
+
+        var outData = Data(bytes: headerBytes)
+
+        outData.append(fileNameData)
+        outData.append(commentData)
+
+        if fhcrc {
+            let headerCRC = CheckSums.crc32(outData)
+            for i: UInt32 in 0..<2 {
+                outData.append(UInt8((headerCRC & (0xFF << (i * 8))) >> (i * 8)))
+            }
+        }
+
         outData.append(try Deflate.compress(data: data))
 
         let crc32 = CheckSums.crc32(data)
