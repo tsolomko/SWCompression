@@ -68,7 +68,7 @@ public struct GzipHeader {
         case ntfs = 11
         /// File system was unknown to the archiver.
         case unknown = 255
-        /// File system was one of the rare systems..
+        /// File system was one of the rare systems.
         case other = 256
     }
 
@@ -82,6 +82,8 @@ public struct GzipHeader {
     public let originalFileName: String?
     /// Comment inside the archive.
     public let comment: String?
+
+    public let isTextFile: Bool
 
     /**
         Initializes the structure with the values of first 'member' in gzip archive presented in `archiveData`.
@@ -127,6 +129,8 @@ public struct GzipHeader {
 
         self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .other
         headerBytes.append(self.osType.rawValue.toUInt8())
+
+        self.isTextFile = flags & Flags.ftext != 0
 
         // Some archives may contain extra fields
         if flags & Flags.fextra != 0 {
