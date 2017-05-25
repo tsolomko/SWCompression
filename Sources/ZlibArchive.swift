@@ -168,7 +168,7 @@ public final class ZlibArchive: Archive {
 
      - Returns: Data object with resulting archive.
      */
-    public static func archive(data: Data) throws -> Data {
+    public static func archive(data: Data, options: [ArchiveOption]) throws -> Data {
         let out: [UInt8] = [
             120, // CM (Compression Method) = 8 (DEFLATE), CINFO (Compression Info) = 7 (32K window size).
             218, // Flags: slowest algorithm, no preset dictionary.
