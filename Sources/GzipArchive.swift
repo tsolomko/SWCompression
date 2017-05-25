@@ -95,7 +95,6 @@ public struct GzipHeader {
         - Throws: `GzipError`. It may indicate that either the data is damaged or
         it might not be compressed with gzip at all.
     */
-
     public init(archiveData: Data) throws {
         let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
         try self.init(pointerData)
@@ -148,9 +147,9 @@ public struct GzipHeader {
             var fnameBytes: [UInt8] = []
             while true {
                 let byte = pointerData.alignedByte()
+                headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
-                headerBytes.append(byte)
             }
             self.originalFileName = String(data: Data(fnameBytes), encoding: .utf8)
         } else {
@@ -162,9 +161,9 @@ public struct GzipHeader {
             var fcommentBytes: [UInt8] = []
             while true {
                 let byte = pointerData.alignedByte()
+                headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fcommentBytes.append(byte)
-                headerBytes.append(byte)
             }
             self.comment = String(data: Data(fcommentBytes), encoding: .utf8)
         } else {
