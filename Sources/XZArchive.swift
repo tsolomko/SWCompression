@@ -78,6 +78,8 @@ public final class XZArchive: Archive {
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var out: [UInt8] = []
 
+        // TODO: Should first check footer magic bytes.
+
         streamLoop: while !pointerData.isAtTheEnd {
             // STREAM HEADER
             let streamHeader = try processStreamHeader(&pointerData)
@@ -146,6 +148,8 @@ public final class XZArchive: Archive {
         // Check magic number.
         guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.wrongMagic }
+
+        // TODO: CRC32 check should be changed places with reserved bits checks to distinguish between corruption and new version.
 
         // First byte of flags must be equal to zero.
         guard pointerData.alignedByte() == 0
