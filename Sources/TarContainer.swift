@@ -185,7 +185,7 @@ public class TarEntry: ContainerEntry {
             }
         }
 
-        var fieldsDict = [String : String]()
+        var fieldsDict = [String: String]()
         try parseHeader(globalExtendedHeader, &fieldsDict)
         try parseHeader(localExtendedHeader, &fieldsDict)
 

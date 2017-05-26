@@ -251,7 +251,7 @@ public final class GzipArchive: Archive {
         for option in options {
             switch option {
             case .comment(var comment):
-                flags |= 1 << 4;
+                flags |= 1 << 4
                 if comment.characters.last != "\u{00}" {
                     comment.append("\u{00}")
                 }
@@ -261,7 +261,7 @@ public final class GzipArchive: Archive {
                     throw GzipError.cannotEncodeISOLatin1
                 }
             case .fileName(var fileName):
-                flags |= 1 << 3;
+                flags |= 1 << 3
                 if fileName.characters.last != "\u{00}" {
                     fileName.append("\u{00}")
                 }
@@ -271,10 +271,10 @@ public final class GzipArchive: Archive {
                     throw GzipError.cannotEncodeISOLatin1
                 }
             case .gzipHeaderCRC:
-                flags |= 1 << 1;
+                flags |= 1 << 1
                 fhcrc = true
             case .isTextFile:
-                flags |= 1 << 0;
+                flags |= 1 << 0
             case .gzipOS(let osType):
                 os = UInt8(truncatingBitPattern: GzipHeader.FileSystemType(rawValue: osType)?.rawValue ?? 255)
             case .mtime(let modificationTime):
@@ -288,7 +288,7 @@ public final class GzipArchive: Archive {
         var headerBytes: [UInt8] = [
             0x1f, 0x8b, // 'magic' bytes.
             8, // Compression method (DEFLATE).
-            flags, // Flags; currently no flags are set.
+            flags // Flags; currently no flags are set.
         ]
         for i in 0..<4 {
             headerBytes.append(mtimeBytes[i])
