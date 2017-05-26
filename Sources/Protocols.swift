@@ -14,9 +14,6 @@ public protocol Archive {
     /// Abstract unarchive function.
     static func unarchive(archiveData: Data) throws -> Data
 
-    /// Abstract archive function.
-    static func archive(data: Data, options: [ArchiveOption]) throws -> Data
-
 }
 
 /// Abstract decompression algorithm class which supports decompression.
