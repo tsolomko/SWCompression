@@ -74,12 +74,9 @@ class GzipTests: XCTestCase {
         // Options for archiving.
         let mtimeDate = Date(timeIntervalSinceNow: 0.0)
         let mtime = Double(Int(mtimeDate.timeIntervalSince1970))
-        let options: [ArchiveOption] = [.mtime(mtimeDate), .isTextFile,
-                                        .comment("some file comment"), .fileName(testName + ".answer"),
-                                        .gzipOS(7), .gzipHeaderCRC]
 
         // Test GZip archiving.
-        guard let archiveData = try? GzipArchive.archive(data: answerData, options: options) else {
+        guard let archiveData = try? GzipArchive.archive(data: answerData, comment: "some file comment", fileName: testName + ".answer", writeHeaderCRC: true, isTextFile: true, osType: .macintosh, modificationTime: mtimeDate) else {
             XCTFail("Failed to create archive.")
             return
         }

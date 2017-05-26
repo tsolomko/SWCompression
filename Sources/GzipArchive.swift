@@ -239,49 +239,56 @@ public final class GzipArchive: Archive {
 
      - Returns: Data object with resulting archive.
      */
-    public static func archive(data: Data, options: [ArchiveOption]) throws -> Data {
+    public static func archive(data: Data, comment: String? = nil, fileName: String? = nil,
+                               writeHeaderCRC: Bool = false, isTextFile: Bool = false,
+                               osType: GzipHeader.FileSystemType? = nil, modificationTime: Date? = nil) throws -> Data {
         var flags: UInt8 = 0
 
         var commentData = Data()
         var fileNameData = Data()
-        var fhcrc = false
         var mtimeBytes: [UInt8] = [0, 0, 0, 0]
         var os: UInt8 = 255
 
-        for option in options {
-            switch option {
-            case .comment(var comment):
-                flags |= 1 << 4
-                if comment.characters.last != "\u{00}" {
-                    comment.append("\u{00}")
-                }
-                if let data = comment.data(using: .isoLatin1) {
-                    commentData = data
-                } else {
-                    throw GzipError.cannotEncodeISOLatin1
-                }
-            case .fileName(var fileName):
-                flags |= 1 << 3
-                if fileName.characters.last != "\u{00}" {
-                    fileName.append("\u{00}")
-                }
-                if let data = fileName.data(using: .isoLatin1) {
-                    fileNameData = data
-                } else {
-                    throw GzipError.cannotEncodeISOLatin1
-                }
-            case .gzipHeaderCRC:
-                flags |= 1 << 1
-                fhcrc = true
-            case .isTextFile:
-                flags |= 1 << 0
-            case .gzipOS(let osType):
-                os = UInt8(truncatingBitPattern: GzipHeader.FileSystemType(rawValue: osType)?.rawValue ?? 255)
-            case .mtime(let modificationTime):
-                let timeInterval = Int(modificationTime.timeIntervalSince1970)
-                for i in 0..<4 {
-                    mtimeBytes[i] = UInt8(truncatingBitPattern: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
-                }
+        if var comment = comment {
+            flags |= 1 << 4
+            if comment.characters.last != "\u{00}" {
+                comment.append("\u{00}")
+            }
+            if let data = comment.data(using: .isoLatin1) {
+                commentData = data
+            } else {
+                throw GzipError.cannotEncodeISOLatin1
+            }
+        }
+
+        if var fileName = fileName {
+            flags |= 1 << 3
+            if fileName.characters.last != "\u{00}" {
+                fileName.append("\u{00}")
+            }
+            if let data = fileName.data(using: .isoLatin1) {
+                fileNameData = data
+            } else {
+                throw GzipError.cannotEncodeISOLatin1
+            }
+        }
+
+        if writeHeaderCRC {
+            flags |= 1 << 1
+        }
+
+        if isTextFile {
+            flags |= 1 << 0
+        }
+
+        if let osType = osType {
+            os = (osType == .other ? 255 : osType.rawValue).toUInt8()
+        }
+
+        if let modificationTime = modificationTime {
+            let timeInterval = Int(modificationTime.timeIntervalSince1970)
+            for i in 0..<4 {
+                mtimeBytes[i] = UInt8(truncatingBitPattern: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
             }
         }
 
@@ -301,7 +308,7 @@ public final class GzipArchive: Archive {
         outData.append(fileNameData)
         outData.append(commentData)
 
-        if fhcrc {
+        if writeHeaderCRC {
             let headerCRC = CheckSums.crc32(outData)
             for i: UInt32 in 0..<2 {
                 outData.append(UInt8((headerCRC & (0xFF << (i * 8))) >> (i * 8)))
