@@ -61,7 +61,7 @@ class ZlibTests: XCTestCase {
                                         return
         }
 
-        guard let archiveData = try? ZlibArchive.archive(data: testData, options: []) else {
+        guard let archiveData = try? ZlibArchive.archive(data: testData) else {
             XCTFail("Unable to create archive.")
             return
         }

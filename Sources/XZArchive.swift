@@ -347,11 +347,6 @@ public final class XZArchive: Archive {
             else { throw XZError.wrongMagic }
     }
 
-    /// Abstract archive function.
-    public static func archive(data: Data, options: [ArchiveOption]) throws -> Data {
-        return Data()
-    }
-
 }
 
 extension DataWithPointer {
