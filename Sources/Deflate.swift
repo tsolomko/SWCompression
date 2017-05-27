@@ -381,18 +381,18 @@ public class Deflate: DecompressionAlgorithm {
         for code in bldCodes {
             switch code {
             case .byte(let byte):
-                mainLiterals.code(symbol: byte.toInt(), &bitWriter)
+                try mainLiterals.code(symbol: byte.toInt(), &bitWriter, DeflateError.symbolNotFound)
             case .lengthDistance(let ld):
-                mainLiterals.code(symbol: ld.lengthSymbol, &bitWriter)
+                try mainLiterals.code(symbol: ld.lengthSymbol, &bitWriter, DeflateError.symbolNotFound)
                 bitWriter.write(number: ld.lengthExtraBits, bitsCount: ld.lengthExtraBitsCount)
 
-                mainDistances.code(symbol: ld.distanceSymbol, &bitWriter)
+                try mainDistances.code(symbol: ld.distanceSymbol, &bitWriter, DeflateError.symbolNotFound)
                 bitWriter.write(number: ld.distanceExtraBits, bitsCount: ld.distanceExtraBitsCount)
             }
         }
 
         // End data symbol.
-        mainLiterals.code(symbol: 256, &bitWriter)
+        try mainLiterals.code(symbol: 256, &bitWriter, DeflateError.symbolNotFound)
         bitWriter.finish()
 
         return bitWriter.buffer
