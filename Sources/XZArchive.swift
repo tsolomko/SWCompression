@@ -129,11 +129,18 @@ public class XZArchive: Archive {
             var paddingBytes = 0
             while true {
                 let byte = pointerData.alignedByte()
-                if byte != 0 || pointerData.isAtTheEnd {
+                if byte != 0 {
                     if paddingBytes % 4 != 0 {
                         throw XZError.wrongPadding
                     } else {
                         break
+                    }
+                }
+                if pointerData.isAtTheEnd {
+                    if byte != 0 || paddingBytes % 4 != 3 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break streamLoop
                     }
                 }
                 paddingBytes += 1
