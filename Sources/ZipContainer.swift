@@ -168,7 +168,7 @@ public class ZipEntry: ContainerEntry {
         return Data(bytes: fileBytes)
     }
 
-    init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
+    fileprivate init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
         self.cdEntry = cdEntry
         self.pointerData = pointerData
     }
@@ -186,9 +186,10 @@ public class ZipContainer: Container {
      It is likely that directories will be encountered earlier than files stored in those directories,
      but one SHOULD NOT assume that this is the case.
      
-     - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-     One can check this by looking at the size of entry's data (it should be 0 for directory) AND
-     the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
+     - Note: Currently, there is no universal (platform and file system independent) method to determine,
+     if entry is a directory. One can check this by looking at the size of entry's data 
+     (it should be 0 for directory) AND the last character of entry's name (it should be '/'). 
+     If all of these is true then entry is likely to be a directory.
 
      - Parameter containerData: Data of ZIP container.
      

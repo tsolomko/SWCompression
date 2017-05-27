@@ -177,7 +177,7 @@ public class XZArchive: Archive {
     }
 
     private static func processBlock(_ blockHeaderSize: UInt8,
-                                     _ pointerData: inout DataWithPointer)  throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
+                                     _ pointerData: inout DataWithPointer) throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
         var blockBytes: [UInt8] = []
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)

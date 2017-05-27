@@ -235,7 +235,8 @@ class LZMADecoder {
             }
 
             let posState = out.count & ((1 << pb.toInt()) - 1)
-            if rangeDecoder.decode(bitWithProb: &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
+            if rangeDecoder.decode(bitWithProb:
+                &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
 
                 // DECODE LITERAL:
@@ -260,7 +261,8 @@ class LZMADecoder {
                     repeat {
                         let matchBit = ((matchByte >> 7) & 1).toInt()
                         matchByte <<= 1
-                        let bit = rangeDecoder.decode(bitWithProb: &literalProbs[litState][((1 + matchBit) << 8) + symbol])
+                        let bit = rangeDecoder.decode(bitWithProb:
+                            &literalProbs[litState][((1 + matchBit) << 8) + symbol])
                         symbol = (symbol << 1) | bit
                         if matchBit != bit {
                             break
@@ -294,7 +296,8 @@ class LZMADecoder {
                 if dictEnd == 0 { throw LZMAError.windowIsEmpty }
                 if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
-                    if rangeDecoder.decode(bitWithProb: &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
+                    if rangeDecoder.decode(bitWithProb:
+                        &probabilities[241 + (state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                         // SHORT REP MATCH CASE
                         state = state < 7 ? 9 : 11
                         let byte = self.byte(at: rep0 + 1)
@@ -375,7 +378,9 @@ class LZMADecoder {
                 }
 
                 if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
-                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) { throw LZMAError.notEnoughToRepeat }
+                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) {
+                    throw LZMAError.notEnoughToRepeat
+                }
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen

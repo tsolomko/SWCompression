@@ -135,7 +135,8 @@ public class Deflate: DecompressionAlgorithm {
                     let codeLengthsLength = pointerData.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
-                    // Moreover, they are stored in a very specific order (defined by HuffmanTree.Constants.codeLengthOrders).
+                    // Moreover, they are stored in a very specific order, 
+                    //  defined by HuffmanTree.Constants.codeLengthOrders.
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
                         lengthsForOrder[Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
@@ -182,8 +183,10 @@ public class Deflate: DecompressionAlgorithm {
                     }
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
-                    mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]), &pointerData)
-                    mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]), &pointerData)
+                    mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]),
+                                               &pointerData)
+                    mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]),
+                                                &pointerData)
                 }
 
                 // Main loop of data decompression.
@@ -205,7 +208,8 @@ public class Deflate: DecompressionAlgorithm {
                         // which we need to add to nextSymbol to get the full length.
                         let extraLength = (257 <= nextSymbol && nextSymbol <= 260) || nextSymbol == 285 ?
                             0 : (((nextSymbol - 257) >> 2) - 1)
-                        // Actually, nextSymbol is not a starting value of length but an index for special array of starting values.
+                        // Actually, nextSymbol is not a starting value of length,
+                        //  but an index for special array of starting values.
                         let length = Constants.lengthBase[nextSymbol - 257] +
                             pointerData.intFromBits(count: extraLength)
 
@@ -432,7 +436,8 @@ public class Deflate: DecompressionAlgorithm {
             case .byte(let byte):
                 return "raw symbol: \(byte)"
             case .lengthDistance(let ld):
-                return "length: \(ld.length), length symbol: \(ld.lengthSymbol), distance: \(ld.distance), distance symbol: \(ld.distanceSymbol)"
+                return "length: \(ld.length), length symbol: \(ld.lengthSymbol), " +
+                    "distance: \(ld.distance), distance symbol: \(ld.distanceSymbol)"
             }
         }
     }

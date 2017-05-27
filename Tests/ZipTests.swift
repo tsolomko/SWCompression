@@ -69,10 +69,8 @@ class ZipTests: XCTestCase {
             return
         }
 
-        for entry in entries {
-            if !entry.isDirectory {
-                XCTAssertNotNil(try? entry.data())
-            }
+        for entry in entries where !entry.isDirectory {
+            XCTAssertNotNil(try? entry.data())
         }
     }
 
