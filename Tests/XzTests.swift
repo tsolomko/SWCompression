@@ -56,6 +56,7 @@ class XZTests: XCTestCase {
     }
 
     func testXz4() {
+        // This test contains padding!
         self.perform(test: "test4")
     }
 
