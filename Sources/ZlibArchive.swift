@@ -122,7 +122,7 @@ public struct ZlibHeader {
 }
 
 /// Provides unarchive function for Zlib archives.
-public final class ZlibArchive: Archive {
+public class ZlibArchive: Archive {
 
     /**
      Unarchives Zlib archive stored in `archiveData`.

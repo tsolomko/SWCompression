@@ -182,7 +182,7 @@ public struct GzipHeader {
 }
 
 /// Provides unarchive function for GZip archives.
-public final class GzipArchive: Archive {
+public class GzipArchive: Archive {
 
     /**
      Unarchives gzip archive stored in `archiveData`.

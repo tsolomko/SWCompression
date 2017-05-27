@@ -43,7 +43,7 @@ public enum LZMAError: Error {
 }
 
 /// Provides function to decompress data, which were compressed with LZMA
-public final class LZMA: DecompressionAlgorithm {
+public class LZMA: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with LZMA algortihm.

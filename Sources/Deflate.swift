@@ -29,7 +29,7 @@ public enum DeflateError: Error {
 }
 
 /// Provides function to decompress data, which were compressed with DEFLATE.
-public final class Deflate: DecompressionAlgorithm {
+public class Deflate: DecompressionAlgorithm {
 
     private struct Constants {
         static let codeLengthOrders: [Int] =

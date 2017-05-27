@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class LZMARangeDecoder {
+class LZMARangeDecoder {
 
     private var pointerData: DataWithPointer
 

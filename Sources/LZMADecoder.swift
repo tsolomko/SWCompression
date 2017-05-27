@@ -24,7 +24,7 @@ struct LZMAConstants {
     // LZMAConstants.numStates << LZMAConstants.numPosBitsMax = 192
 }
 
-final class LZMADecoder {
+class LZMADecoder {
 
     private var pointerData: DataWithPointer
 

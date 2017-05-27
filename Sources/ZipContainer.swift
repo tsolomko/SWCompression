@@ -52,7 +52,7 @@ public enum ZipError: Error {
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
-public final class ZipEntry: ContainerEntry {
+public class ZipEntry: ContainerEntry {
 
     private let cdEntry: CentralDirectoryEntry
     private var pointerData: DataWithPointer
@@ -176,7 +176,7 @@ public final class ZipEntry: ContainerEntry {
 }
 
 /// Provides function which opens ZIP archives (containers).
-public final class ZipContainer: Container {
+public class ZipContainer: Container {
 
     /**
      Processes ZIP archive (container) and returns an array of `ContainerEntries` (which are actually `ZipEntries`).

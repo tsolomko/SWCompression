@@ -35,7 +35,7 @@ public enum LZMA2Error: Error {
 }
 
 /// Provides function to decompress data, which were compressed with LZMA2
-public final class LZMA2: DecompressionAlgorithm {
+public class LZMA2: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with LZMA2 algortihm. LZMA2 is a modification of LZMA.
