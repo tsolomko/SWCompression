@@ -91,6 +91,7 @@
 		069DCEA21EB64D0300ADC374 /* test7.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE991EB64D0300ADC374 /* test7.answer */; };
 		069DCEA31EB64D0300ADC374 /* test8.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9A1EB64D0300ADC374 /* test8.answer */; };
 		069DCEA41EB64D0300ADC374 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9B1EB64D0300ADC374 /* test9.answer */; };
+		069F27701EDA0D5E00736269 /* TestUnicode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069F276F1EDA0D5E00736269 /* TestUnicode.zip */; };
 		06A393391DE0709300182E12 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
 		06A3933B1DE0709300182E12 /* Deflate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE251DBCC4BE0052F7BE /* Deflate.swift */; };
@@ -205,6 +206,7 @@
 		069DCE991EB64D0300ADC374 /* test7.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.answer; sourceTree = "<group>"; };
 		069DCE9A1EB64D0300ADC374 /* test8.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.answer; sourceTree = "<group>"; };
 		069DCE9B1EB64D0300ADC374 /* test9.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.answer; sourceTree = "<group>"; };
+		069F276F1EDA0D5E00736269 /* TestUnicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = TestUnicode.zip; sourceTree = "<group>"; };
 		06A3933E1DE070B500182E12 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		06A3933F1DE070B500182E12 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 		06BD0D1F1E3D0C630054AA5C /* ZIP */ = {
 			isa = PBXGroup;
 			children = (
+				069F276F1EDA0D5E00736269 /* TestUnicode.zip */,
 				06BD0D201E3D0C630054AA5C /* SWCompressionSourceCode.zip */,
 				06BD0D211E3D0C630054AA5C /* TestDataDescriptor.zip */,
 				06BD0D221E3D0C630054AA5C /* TestZip64.zip */,
@@ -748,6 +751,7 @@
 				06CC187D1DE35269003532F5 /* test.zlib in Resources */,
 				06D07A9B1EB64E7A00BC8C65 /* test3.bz2 in Resources */,
 				069DCE9C1EB64D0300ADC374 /* test1.answer in Resources */,
+				069F27701EDA0D5E00736269 /* TestUnicode.zip in Resources */,
 				069AC2181E02DE490041AC13 /* test8.lzma in Resources */,
 				068B36791ED0AC050016269E /* full_test.tar in Resources */,
 				069DCE8F1EB64B1500ADC374 /* test7.gz in Resources */,
