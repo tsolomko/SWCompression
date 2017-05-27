@@ -144,34 +144,31 @@ public class XZArchive: Archive {
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: UInt32) {
+    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: UInt8, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.wrongMagic }
 
-        // TODO: CRC32 check should be changed places with reserved bits checks to distinguish between corruption and new version.
+        let flagsBytes = pointerData.alignedBytes(count: 2)
 
-        // First byte of flags must be equal to zero.
-        guard pointerData.alignedByte() == 0
+        // First, we need to check for corruption in flags,
+        //  so we compare CRC32 of flags to the value stored in archive.
+        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
+        guard CheckSums.crc32(flagsBytes) == flagsCRC
+            else { throw XZError.wrongInfoCRC }
+
+        // If data is not corrupted, then some bits must be equal to zero.
+        guard flagsBytes[0] == 0 && flagsBytes[1] & 0xF0 == 0
             else { throw XZError.fieldReservedValue }
 
-        // Next four bits indicate type of redundancy check.
-        let checkType = pointerData.intFromBits(count: 4)
+        // Four bits of second flags byte indicate type of redundancy check.
+        let checkType = flagsBytes[1] & 0x0F
         switch checkType {
         case 0x00, 0x01, 0x04, 0x0A:
             break
         default:
             throw XZError.fieldReservedValue
         }
-
-        // Final four bits must be equal to zero.
-        guard pointerData.intFromBits(count: 4) == 0
-            else { throw XZError.fieldReservedValue }
-
-        // CRC-32 of flags must be equal to the value in archive.
-        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
-        guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
-            else { throw XZError.wrongInfoCRC }
 
         return (checkType, flagsCRC)
     }
@@ -315,7 +312,7 @@ public class XZArchive: Archive {
         return indexBytes.count + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: UInt32),
+    private static func processFooter(_ streamHeader: (checkType: UInt8, flagsCRC: UInt32),
                                       _ indexSize: Int,
                                       _ pointerData: inout DataWithPointer) throws {
         let footerCRC = pointerData.uint32FromAlignedBytes(count: 4)
@@ -337,7 +334,7 @@ public class XZArchive: Archive {
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
             else { throw XZError.fieldReservedValue }
-        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType.toUInt8()
+        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType
             else { throw XZError.wrongArchiveInfo }
         guard footerStreamFlags[1] & 0xF0 == 0
             else { throw XZError.fieldReservedValue }
