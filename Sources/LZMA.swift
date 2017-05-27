@@ -38,6 +38,8 @@ public enum LZMAError: Error {
     case repeatWillExceed
     /// The amount of already decoded bytes is smaller than repeat length.
     case notEnoughToRepeat
+
+    case decoderIsNotInitialised
 }
 
 /// Provides function to decompress data, which were compressed with LZMA
