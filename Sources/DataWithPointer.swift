@@ -159,6 +159,8 @@ final class DataWithPointer {
         return result
     }
 
+    // TODO: Why count is UInt64/UInt32?
+
     func uint64FromAlignedBytes(count: UInt64) -> UInt64 {
         precondition(count <= 8, "UInt64 cannot store more than 8 bytes of data!")
         self.skipUntilNextByte()

@@ -155,9 +155,9 @@ public class ZipEntry: ContainerEntry {
             }
             // Now, let's update from CD with values from data descriptor.
             crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            compSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
-            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
-            // TODO: It may be ZIP64 Data Descriptor.
+            let sizeOfSizeField: UInt32 = localHeader.zip64FieldsArePresent ? 8 : 4
+            compSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
+            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
@@ -245,6 +245,8 @@ struct LocalHeader {
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
 
+    private(set) var zip64FieldsArePresent: Bool = false
+
     let fileName: String
 
     init(_ pointerData: inout DataWithPointer) throws {
@@ -286,6 +288,8 @@ struct LocalHeader {
                 // In local header both uncompressed size and compressed size fields are required.
                 self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
                 self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
+
+                self.zip64FieldsArePresent = true
             default:
                 pointerData.index += size
             }
