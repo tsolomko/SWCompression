@@ -78,7 +78,29 @@ public class XZArchive: Archive {
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var out: [UInt8] = []
 
-        // TODO: Should first check footer magic bytes.
+        // First, we should check footer magic bytes.
+        // If they are wrong, then file cannot be 'undamaged'.
+        // But the file may end with padding, so we need to account for this.
+        pointerData.index = pointerData.size - 1
+        var paddingBytes = 0
+        while true {
+            let byte = pointerData.alignedByte()
+            if byte != 0 {
+                if paddingBytes % 4 != 0 {
+                    throw XZError.wrongPadding
+                } else {
+                    break
+                }
+            }
+            paddingBytes += 1
+            pointerData.index -= 2
+        }
+        pointerData.index -= 2
+        guard pointerData.alignedBytes(count: 2) == [0x59, 0x5A]
+            else { throw XZError.wrongMagic }
+
+        // Let's now go to the start of the file.
+        pointerData.index = 0
 
         streamLoop: while !pointerData.isAtTheEnd {
             // STREAM HEADER
@@ -126,7 +148,7 @@ public class XZArchive: Archive {
             guard !pointerData.isAtTheEnd else { break streamLoop }
 
             // STREAM PADDING
-            var paddingBytes = 0
+            paddingBytes = 0
             while true {
                 let byte = pointerData.alignedByte()
                 if byte != 0 {
