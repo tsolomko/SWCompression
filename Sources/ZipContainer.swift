@@ -52,7 +52,7 @@ public enum ZipError: Error {
 }
 
 /// Represents either a file or directory entry inside ZIP archive.
-public class ZipEntry: ContainerEntry {
+public final class ZipEntry: ContainerEntry {
 
     private let cdEntry: CentralDirectoryEntry
     private var pointerData: DataWithPointer
@@ -176,7 +176,7 @@ public class ZipEntry: ContainerEntry {
 }
 
 /// Provides function which opens ZIP archives (containers).
-public class ZipContainer: Container {
+public final class ZipContainer: Container {
 
     /**
      Processes ZIP archive (container) and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
@@ -456,7 +456,10 @@ struct CentralDirectoryEntry {
 
 struct EndOfCentralDirectory {
 
+    /// Number of the current disk.
     private(set) var currentDiskNumber: UInt32
+
+    /// Number of the disk with the start of CD.
     private(set) var cdDiskNumber: UInt32
     private(set) var cdEntries: UInt64
     private(set) var cdSize: UInt64
@@ -466,9 +469,7 @@ struct EndOfCentralDirectory {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
-        /// Number of current disk.
         self.currentDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
-        /// Number of the disk with the start of CD.
         self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }

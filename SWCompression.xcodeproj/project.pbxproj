@@ -433,10 +433,10 @@
 				06CC187E1DE35607003532F5 /* DeflateTests.swift */,
 				0680E1B21DDA3D0A005C05EB /* GzipTests.swift */,
 				0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */,
-				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
 				0675183C1E2A883600D16354 /* ZipTests.swift */,
-				06BE1AD81DB410F100EE0F59 /* Info.plist */,
 				0696E5C51ED0B22F00921D4D /* TarTests.swift */,
+				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
+				06BE1AD81DB410F100EE0F59 /* Info.plist */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
