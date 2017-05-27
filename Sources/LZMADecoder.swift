@@ -28,10 +28,10 @@ final class LZMADecoder {
 
     private var pointerData: DataWithPointer
 
-    private var lc: UInt8
-    private var lp: UInt8
-    private var pb: UInt8
-    private var dictionarySize: Int
+    private var lc: UInt8 = 0
+    private var lp: UInt8 = 0
+    private var pb: UInt8 = 0
+    private var dictionarySize: Int = 0
 
     private var rangeDecoder: LZMARangeDecoder
     private var posSlotDecoder: [LZMABitTreeDecoder] = []
@@ -74,14 +74,8 @@ final class LZMADecoder {
     private var dictStart = 0
     private var dictEnd = 0
 
-    init(_ pointerData: inout DataWithPointer, _ lc: UInt8, _ pb: UInt8, _ lp: UInt8,
-         _ dictionarySize: Int) throws {
+    init(_ pointerData: inout DataWithPointer) throws {
         self.pointerData = pointerData
-
-        self.lc = lc
-        self.lp = lp
-        self.pb = pb
-        self.dictionarySize = dictionarySize
 
         self.rangeDecoder = LZMARangeDecoder()
 
@@ -104,6 +98,11 @@ final class LZMADecoder {
 
     // MARK: LZMA2 related functions.
 
+    private func resetDictionary(_ dictSize: Int) {
+        self.dictionarySize = dictSize
+        self.dictStart = self.dictEnd
+    }
+
     private func resetProperties() throws {
         var properties = pointerData.alignedByte()
         if properties >= (9 * 5 * 5) {
@@ -116,11 +115,9 @@ final class LZMADecoder {
         self.pb = properties / 5
         /// The number of literal pos bits
         self.lp = properties % 5
-    }
 
-    private func resetDictionary(_ dictSize: Int) {
-        self.dictionarySize = dictSize
-        self.dictStart = self.dictEnd
+        // We need to 'reset state' because several properties of Decoder depend on the values of lc, lp, pb.
+        self.resetState()
     }
 
     private func resetState() {
@@ -170,11 +167,9 @@ final class LZMADecoder {
             self.resetState()
         case 2:
             try self.resetProperties()
-            self.resetState()
             dataStartIndex += 1
         case 3:
             try self.resetProperties()
-            self.resetState()
             dataStartIndex += 1
             self.resetDictionary(dictSize)
         default:
@@ -182,12 +177,12 @@ final class LZMADecoder {
         }
         var uncompressedSize = unpackSize
         let startCount = out.count
-        try decodeLZMA(&uncompressedSize)
+        try decode(&uncompressedSize)
         guard unpackSize == out.count - startCount && pointerData.index - dataStartIndex == compressedSize
             else { throw LZMA2Error.wrongSizes }
     }
 
-    // MARK: Main LZMA 2 decoder function.
+    // MARK: Main LZMA 2 (format) decoder function.
 
     func decodeLZMA2(_ lzma2DictionarySize: Int) throws {
         mainLoop: while true {
@@ -210,9 +205,24 @@ final class LZMADecoder {
         }
     }
 
-    // MARK: Main LZMA decoder function.
+    // MARK: Main LZMA (format) decoder function.
 
-    func decodeLZMA(_ uncompressedSize: inout Int) throws {
+    func decodeLZMA() throws {
+        // Firstly, we need to parse LZMA properties.
+        try self.resetProperties()
+        let dictSize = pointerData.intFromAlignedBytes(count: 4)
+        dictionarySize = dictSize < (1 << 12) ? 1 << 12 : dictSize
+
+        /// Size of uncompressed data. -1 means it is unknown/undefined.
+        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
+        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
+
+        try decode(&uncompressedSize)
+    }
+
+    // MARK: Main LZMA (algorithm) decoder function.
+
+    private func decode(_ uncompressedSize: inout Int) throws {
         // First, we need to initialize Rande Decoder.
         guard let rD = LZMARangeDecoder(&self.pointerData) else {
             throw LZMAError.rangeDecoderInitError

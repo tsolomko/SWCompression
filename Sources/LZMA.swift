@@ -63,28 +63,8 @@ public final class LZMA: DecompressionAlgorithm {
     }
 
     static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
-        // Firstly, we need to parse LZMA properties.
-        var properties = pointerData.alignedByte()
-        if properties >= (9 * 5 * 5) {
-            throw LZMAError.wrongProperties
-        }
-        /// The number of literal context bits
-        let lc = properties % 9
-        properties /= 9
-        /// The number of pos bits
-        let pb = properties / 5
-        /// The number of literal pos bits
-        let lp = properties % 5
-        var dictionarySize = pointerData.intFromAlignedBytes(count: 4)
-        dictionarySize = dictionarySize < (1 << 12) ? 1 << 12 : dictionarySize
-
-        /// Size of uncompressed data. -1 means it is unknown/undefined.
-        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
-        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
-
-        let lzmaDecoder = try LZMADecoder(&pointerData, lc, pb, lp, dictionarySize)
-
-        try lzmaDecoder.decodeLZMA(&uncompressedSize)
+        let lzmaDecoder = try LZMADecoder(&pointerData)
+        try lzmaDecoder.decodeLZMA()
         return lzmaDecoder.out
     }
 
