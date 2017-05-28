@@ -204,23 +204,31 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        var out: [UInt8] = []
+        var out = Data()
 
         while !pointerData.isAtTheEnd {
-            _ = try GzipHeader(pointerData)
-
-            let memberData = try Deflate.decompress(&pointerData)
-
-            let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(Data(bytes: out)) }
-
-            let isize = pointerData.intFromAlignedBytes(count: 4)
-            guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
-
-            out.append(contentsOf: memberData)
+            if let memberData = try processMember(&pointerData) {
+                out.append(memberData)
+            } else {
+                throw GzipError.wrongCRC(out)
+            }
         }
 
-        return Data(bytes: out)
+        return out
+    }
+
+    private static func processMember(_ pointerData: inout DataWithPointer) throws -> Data? {
+        _ = try GzipHeader(pointerData)
+
+        let memberData = try Deflate.decompress(&pointerData)
+
+        let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+        guard CheckSums.crc32(memberData) == crc32 else { return nil }
+
+        let isize = pointerData.intFromAlignedBytes(count: 4)
+        guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
+
+        return Data(bytes: memberData)
     }
 
     /**
