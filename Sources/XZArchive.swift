@@ -102,73 +102,73 @@ public class XZArchive: Archive {
         // Let's now go to the start of the file.
         pointerData.index = 0
 
-        streamLoop: while !pointerData.isAtTheEnd {
-            // STREAM HEADER
-            let streamHeader = try processStreamHeader(&pointerData)
+//        streamLoop: while !pointerData.isAtTheEnd {
+        // STREAM HEADER
+        let streamHeader = try processStreamHeader(&pointerData)
 
-            // BLOCKS AND INDEX
-            /// Zero value of blockHeaderSize means that we encountered INDEX.
-            var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
-            var indexSize = -1
-            while true {
-                let blockHeaderSize = pointerData.alignedByte()
-                if blockHeaderSize == 0 {
-                    indexSize = try processIndex(blockInfos, &pointerData)
+        // BLOCKS AND INDEX
+        /// Zero value of blockHeaderSize means that we encountered INDEX.
+        var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
+        var indexSize = -1
+        while true {
+            let blockHeaderSize = pointerData.alignedByte()
+            if blockHeaderSize == 0 {
+                indexSize = try processIndex(blockInfos, &pointerData)
+                break
+            } else {
+                let blockInfo = try processBlock(blockHeaderSize, &pointerData)
+                out.append(contentsOf: blockInfo.blockData)
+                let checkSize: Int
+                switch streamHeader.checkType {
+                case 0x00:
+                    checkSize = 0
                     break
-                } else {
-                    let blockInfo = try processBlock(blockHeaderSize, &pointerData)
-                    out.append(contentsOf: blockInfo.blockData)
-                    let checkSize: Int
-                    switch streamHeader.checkType {
-                    case 0x00:
-                        checkSize = 0
-                        break
-                    case 0x01:
-                        checkSize = 4
-                        let check = pointerData.uint32FromAlignedBytes(count: 4)
-                        guard CheckSums.crc32(blockInfo.blockData) == check
-                            else { throw XZError.wrongCheck(Data(bytes: out)) }
-                    case 0x04:
-                        checkSize = 8
-                        let check = pointerData.uint64FromAlignedBytes(count: 8)
-                        guard CheckSums.crc64(blockInfo.blockData) == check
-                            else { throw XZError.wrongCheck(Data(bytes: out)) }
-                    case 0x0A:
-                        throw XZError.checkTypeSHA256
-                    default:
-                        throw XZError.fieldReservedValue
-                    }
-                    blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+                case 0x01:
+                    checkSize = 4
+                    let check = pointerData.uint32FromAlignedBytes(count: 4)
+                    guard CheckSums.crc32(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x04:
+                    checkSize = 8
+                    let check = pointerData.uint64FromAlignedBytes(count: 8)
+                    guard CheckSums.crc64(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x0A:
+                    throw XZError.checkTypeSHA256
+                default:
+                    throw XZError.fieldReservedValue
                 }
+                blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
             }
-
-            // STREAM FOOTER
-            try processFooter(streamHeader, indexSize, &pointerData)
-
-            guard !pointerData.isAtTheEnd else { break streamLoop }
-
-            // STREAM PADDING
-            paddingBytes = 0
-            while true {
-                let byte = pointerData.alignedByte()
-                if byte != 0 {
-                    if paddingBytes % 4 != 0 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break
-                    }
-                }
-                if pointerData.isAtTheEnd {
-                    if byte != 0 || paddingBytes % 4 != 3 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break streamLoop
-                    }
-                }
-                paddingBytes += 1
-            }
-            pointerData.index -= 1
         }
+
+        // STREAM FOOTER
+        try processFooter(streamHeader, indexSize, &pointerData)
+
+//            guard !pointerData.isAtTheEnd else { break streamLoop }
+//
+//            // STREAM PADDING
+//            paddingBytes = 0
+//            while true {
+//                let byte = pointerData.alignedByte()
+//                if byte != 0 {
+//                    if paddingBytes % 4 != 0 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break
+//                    }
+//                }
+//                if pointerData.isAtTheEnd {
+//                    if byte != 0 || paddingBytes % 4 != 3 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break streamLoop
+//                    }
+//                }
+//                paddingBytes += 1
+//            }
+//            pointerData.index -= 1
+//        }
 
         return Data(bytes: out)
     }
