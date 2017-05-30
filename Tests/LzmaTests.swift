@@ -14,24 +14,32 @@ class LzmaTests: XCTestCase {
     static let testType: String = "lzma"
 
     func perform(test testName: String) {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
-                                                                 withType: LzmaTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: testName, withType: LzmaTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let decompressedData = try? LZMA.decompress(compressedData: testData) else {
-            XCTFail("Failed to decompress")
+            XCTFail("Unable to decompress.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test8")) else {
-            XCTFail("Failed to get the answer")
+        guard let answerURL = Constants.url(forAnswer: "test8") else {
+            XCTFail("Unable to get answer's URL.")
             return
         }
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test answer.")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 
     func testLzma8() {

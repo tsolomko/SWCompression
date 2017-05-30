@@ -12,8 +12,13 @@ import SWCompression
 class DeflateTests: XCTestCase {
 
     func perform(compressionTest testName: String) {
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
+        guard let answerURL = Constants.url(forAnswer: testName) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
             return
         }
 
@@ -28,7 +33,7 @@ class DeflateTests: XCTestCase {
         }
 
         XCTAssertEqual(answerData, reUncompData,
-                       "Data before compression and after decompression of compressed data aren't equal")
+                       "Data before compression and after decompression of compressed data aren't equal.")
 
         #if PERF_TESTS
             print("Performing performance tests for deflate.\(testName)")

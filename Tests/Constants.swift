@@ -22,14 +22,14 @@ struct Constants {
      - test9: file with size of 10KB containing random bytes from /dev/urandom.
     */
 
-    static func url(forTest name: String, withType ext: String) -> URL {
-        return testBundle.url(forResource: name, withExtension: ext)!
+    static func url(forTest name: String, withType ext: String) -> URL? {
+        return testBundle.url(forResource: name, withExtension: ext)
     }
 
-    static func url(forAnswer name: String) -> URL {
-        return testBundle.url(forResource: name, withExtension: "answer")!
+    static func url(forAnswer name: String) -> URL? {
+        return testBundle.url(forResource: name, withExtension: "answer")
     }
 
-    static let testBundle = Bundle(for: DeflateTests.self)
+    static let testBundle: Bundle = Bundle(for: DeflateTests.self)
 
 }

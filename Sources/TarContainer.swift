@@ -20,6 +20,7 @@ public enum TarError: Error {
     case wrongHeaderChecksum
     case wrongUstarVersion
     case wrongPaxHeaderEntry
+    case notAsciiString
 }
 
 /// Represents either a file or directory entry inside TAR archive.
@@ -77,35 +78,35 @@ public class TarEntry: ContainerEntry {
                      _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
         let blockStartIndex = index
         // File name
-        fileName = data.nullEndedAsciiString(index, 100)
+        fileName = try data.nullEndedAsciiString(index, 100)
         index += 100
 
         // File mode
-        mode = Int(data.nullSpaceEndedAsciiString(index, 8)!)
+        mode = Int(try data.nullSpaceEndedAsciiString(index, 8))
         index += 8
 
         // Owner's user ID
-        ownerID = Int(data.nullSpaceEndedAsciiString(index, 8)!)
+        ownerID = Int(try data.nullSpaceEndedAsciiString(index, 8))
         index += 8
 
         // Group's user ID
-        groupID = Int(data.nullSpaceEndedAsciiString(index, 8)!)
+        groupID = Int(try data.nullSpaceEndedAsciiString(index, 8))
         index += 8
 
         // File size
-        guard let octalFileSize = Int(data.nullSpaceEndedAsciiString(index, 12)!)
+        guard let octalFileSize = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
         size = octalToDecimal(octalFileSize)
         index += 12
 
         // Modification time
-        guard let octalMtime = Int(data.nullSpaceEndedAsciiString(index, 12)!)
+        guard let octalMtime = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
         modificationTime = Date(timeIntervalSince1970: TimeInterval(octalToDecimal(octalMtime)))
         index += 12
 
         // Checksum
-        guard let octalChecksum = Int(data.nullSpaceEndedAsciiString(index, 8)!)
+        guard let octalChecksum = Int(try data.nullSpaceEndedAsciiString(index, 8))
             else { throw TarError.fieldIsNotNumber }
         let checksum = octalToDecimal(octalChecksum)
 
@@ -127,11 +128,11 @@ public class TarEntry: ContainerEntry {
         index += 8
 
         // File type
-        type = EntryType(rawValue: String(bytes: [data[index]], encoding: .ascii)!) ?? .vendorUnknownOrReserved
+        type = EntryType(rawValue: String(Character(UnicodeScalar(data[index])))) ?? .vendorUnknownOrReserved
         index += 1
 
         // Linked file name
-        linkedFileName = data.nullEndedAsciiString(index, 100)
+        linkedFileName = try data.nullEndedAsciiString(index, 100)
         index += 100
 
         let posixIndicator = String(data: data.subdata(in: 257..<263), encoding: .ascii)
@@ -142,19 +143,19 @@ public class TarEntry: ContainerEntry {
             guard ustarVersion == "00" else { throw TarError.wrongUstarVersion }
             index += 2
 
-            ownerUserName = data.nullEndedAsciiString(index, 32)
+            ownerUserName = try data.nullEndedAsciiString(index, 32)
             index += 32
 
-            ownerGroupName = data.nullEndedAsciiString(index, 32)
+            ownerGroupName = try data.nullEndedAsciiString(index, 32)
             index += 32
 
-            deviceMajorNumber = data.nullSpaceEndedAsciiString(index, 8)
+            deviceMajorNumber = try data.nullSpaceEndedAsciiString(index, 8)
             index += 8
 
-            deviceMinorNumber = data.nullSpaceEndedAsciiString(index, 8)
+            deviceMinorNumber = try data.nullSpaceEndedAsciiString(index, 8)
             index += 8
 
-            fileNamePrefix = data.nullEndedAsciiString(index, 155)
+            fileNamePrefix = try data.nullEndedAsciiString(index, 155)
             index += 155
         } else {
             ownerUserName = nil
@@ -297,8 +298,12 @@ fileprivate extension Data {
         return buffer
     }
 
-    fileprivate func nullEndedAsciiString(_ startIndex: Int, _ cutoff: Int) -> String? {
-        return String(bytes: self.nullEndedBuffer(startIndex, cutoff), encoding: .ascii)
+    fileprivate func nullEndedAsciiString(_ startIndex: Int, _ cutoff: Int) throws -> String {
+        if let string = String(bytes: self.nullEndedBuffer(startIndex, cutoff), encoding: .ascii) {
+            return string
+        } else {
+            throw TarError.notAsciiString
+        }
     }
 
     fileprivate func nullSpaceEndedBuffer(_ startIndex: Int, _ cutoff: Int) -> [UInt8] {
@@ -314,8 +319,12 @@ fileprivate extension Data {
         return buffer
     }
 
-    fileprivate func nullSpaceEndedAsciiString(_ startIndex: Int, _ cutoff: Int) -> String? {
-        return String(bytes: self.nullSpaceEndedBuffer(startIndex, cutoff), encoding: .ascii)
+    fileprivate func nullSpaceEndedAsciiString(_ startIndex: Int, _ cutoff: Int) throws -> String {
+        if let string = String(bytes: self.nullSpaceEndedBuffer(startIndex, cutoff), encoding: .ascii) {
+            return string
+        } else {
+            throw TarError.notAsciiString
+        }
     }
 
 }

@@ -217,14 +217,14 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            let symbol = t?.findNextSymbol()
-            guard symbol != nil && symbol != -1 else { throw BZip2Error.symbolNotFound }
+            guard let symbol = t?.findNextSymbol() else { throw BZip2Error.symbolNotFound }
+            guard symbol != -1 else { throw BZip2Error.symbolNotFound }
 
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1
                 }
-                repeat_ += repeatPower << symbol!
+                repeat_ += repeatPower << symbol
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
@@ -236,8 +236,8 @@ public class BZip2: DecompressionAlgorithm {
             if symbol == symbolsInUse - 1 {
                 break
             } else {
-                let o = favourites[symbol! - 1]
-                let el = favourites.remove(at: symbol! - 1)
+                let o = favourites[symbol - 1]
+                let el = favourites.remove(at: symbol - 1)
                 favourites.insert(el, at: 0)
                 buffer.append(o)
             }

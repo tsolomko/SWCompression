@@ -14,11 +14,14 @@ class TarTests: XCTestCase {
     static let testType: String = "tar"
 
     func test() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "test",
-                                                                 withType: TarTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "test", withType: TarTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let result = try? TarContainer.open(containerData: testData) else {
@@ -34,11 +37,14 @@ class TarTests: XCTestCase {
     }
 
     func testPax() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "full_test",
-                                                                 withType: TarTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "full_test", withType: TarTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let result = try? TarContainer.open(containerData: testData) else {
@@ -53,8 +59,13 @@ class TarTests: XCTestCase {
                 return
             }
             let name = tarEntry.name.components(separatedBy: ".")[0]
-            guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: name)) else {
-                XCTFail("Failed to get the answer")
+            guard let answerURL = Constants.url(forAnswer: name) else {
+                XCTFail("Unable to get answer's URL.")
+                return
+            }
+
+            guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+                XCTFail("Unable to load answer.")
                 return
             }
             XCTAssertEqual(tarEntry.data(), answerData)

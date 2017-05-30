@@ -71,8 +71,8 @@ class LZMADecoder {
     /// An array for storing output data.
     var out: [UInt8] = []
     // This array will also serve as dictionary and out window.
-    private var dictStart = 0
-    private var dictEnd = 0
+    private var dictStart: Int = 0
+    private var dictEnd: Int = 0
 
     /// For proper processing of LZMA data `resetState` and `resetProperties` functions should be called at least once.
     /// If that has happened, then stateReset is true.

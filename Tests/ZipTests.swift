@@ -14,11 +14,14 @@ class ZipTests: XCTestCase {
     static let testType: String = "zip"
 
     func test() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "SWCompressionSourceCode",
-                                                                 withType: ZipTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let zipDict = try? ZipContainer.open(containerData: testData) else {
@@ -33,11 +36,14 @@ class ZipTests: XCTestCase {
     }
 
     func testZip64() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestZip64",
-                                                                 withType: ZipTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "TestZip64", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let entries = try? ZipContainer.open(containerData: testData) else {
@@ -52,11 +58,14 @@ class ZipTests: XCTestCase {
     }
 
     func testDataDescriptor() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestDataDescriptor",
-                                                                 withType: ZipTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "TestDataDescriptor", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let entries = try? ZipContainer.open(containerData: testData) else {
@@ -75,11 +84,14 @@ class ZipTests: XCTestCase {
     }
 
     func testUnicode() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestUnicode",
-                                                                 withType: ZipTests.testType),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: "TestUnicode", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let entries = try? ZipContainer.open(containerData: testData) else {
