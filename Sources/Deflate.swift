@@ -318,7 +318,6 @@ public class Deflate: DecompressionAlgorithm {
         // Since `length` of uncompressed block is 16-bit integer,
         // there is a limitation on size of uncompressed block.
         // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
-        // TODO: Implement spliting uncompressed block into smaller blocks.
         if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
             // If according to our calculations static huffman will not make output smaller than input,
             // we fallback to creating uncompressed block.
