@@ -81,7 +81,14 @@ public class ZipEntry: ContainerEntry {
      Particularly, it is true if size of data is 0 and last character of entry's name is '/'.
     */
     public var isDirectory: Bool {
-        return self.size == 0 && self.name.characters.last == "/"
+        let hostSystem = (cdEntry.versionMadeBy & 0xFF00) >> 8
+        if hostSystem == 0 || hostSystem == 3 { // MS-DOS or UNIX case.
+            // In both of this cases external file attributes indicate if this is a directory.
+            // This is indicated by a special bit in the lowest byte of attributes.
+            return cdEntry.externalFileAttributes & 0x10 != 0
+        } else {
+            return size == 0 && name.characters.last == "/"
+        }
     }
 
     /**
@@ -155,9 +162,9 @@ public class ZipEntry: ContainerEntry {
             }
             // Now, let's update from CD with values from data descriptor.
             crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            compSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
-            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: 4))
-            // TODO: It may be ZIP64 Data Descriptor.
+            let sizeOfSizeField: UInt32 = localHeader.zip64FieldsArePresent ? 8 : 4
+            compSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
+            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
@@ -168,7 +175,7 @@ public class ZipEntry: ContainerEntry {
         return Data(bytes: fileBytes)
     }
 
-    init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
+    fileprivate init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
         self.cdEntry = cdEntry
         self.pointerData = pointerData
     }
@@ -186,9 +193,10 @@ public class ZipContainer: Container {
      It is likely that directories will be encountered earlier than files stored in those directories,
      but one SHOULD NOT assume that this is the case.
      
-     - Note: Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-     One can check this by looking at the size of entry's data (it should be 0 for directory) AND
-     the last character of entry's name (it should be '/'). If all of these is true then entry is likely to be a directory.
+     - Note: Currently, there is no universal (platform and file system independent) method to determine,
+     if entry is a directory. One can check this by looking at the size of entry's data 
+     (it should be 0 for directory) AND the last character of entry's name (it should be '/'). 
+     If all of these is true then entry is likely to be a directory.
 
      - Parameter containerData: Data of ZIP container.
      
@@ -245,6 +253,8 @@ struct LocalHeader {
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
 
+    private(set) var zip64FieldsArePresent: Bool = false
+
     let fileName: String
 
     init(_ pointerData: inout DataWithPointer) throws {
@@ -286,6 +296,8 @@ struct LocalHeader {
                 // In local header both uncompressed size and compressed size fields are required.
                 self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
                 self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
+
+                self.zip64FieldsArePresent = true
             default:
                 pointerData.index += size
             }
@@ -452,7 +464,10 @@ struct CentralDirectoryEntry {
 
 struct EndOfCentralDirectory {
 
+    /// Number of the current disk.
     private(set) var currentDiskNumber: UInt32
+
+    /// Number of the disk with the start of CD.
     private(set) var cdDiskNumber: UInt32
     private(set) var cdEntries: UInt64
     private(set) var cdSize: UInt64
@@ -462,9 +477,7 @@ struct EndOfCentralDirectory {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
-        /// Number of current disk.
         self.currentDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
-        /// Number of the disk with the start of CD.
         self.cdDiskNumber = pointerData.uint32FromAlignedBytes(count: 2)
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }

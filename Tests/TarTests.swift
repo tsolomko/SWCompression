@@ -48,7 +48,10 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(result.count, 5)
         for entry in result {
-            let tarEntry = entry as! TarEntry
+            guard let tarEntry = entry as? TarEntry else {
+                XCTFail("Unable to convert entry to TarEntry.")
+                return
+            }
             let name = tarEntry.name.components(separatedBy: ".")[0]
             guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: name)) else {
                 XCTFail("Failed to get the answer")
@@ -56,7 +59,7 @@ class TarTests: XCTestCase {
             }
             XCTAssertEqual(tarEntry.data(), answerData)
             XCTAssertEqual(tarEntry.isDirectory, false)
-            XCTAssert(tarEntry.accessTime != nil)
+            XCTAssertNotNil(tarEntry.accessTime)
         }
     }
 

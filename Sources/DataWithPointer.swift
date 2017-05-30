@@ -13,7 +13,7 @@ enum BitOrder {
     case reversed
 }
 
-final class DataWithPointer {
+class DataWithPointer {
 
     let bitOrder: BitOrder
     let size: Int

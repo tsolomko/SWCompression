@@ -69,11 +69,31 @@ class ZipTests: XCTestCase {
             return
         }
 
-        for entry in entries {
-            if !entry.isDirectory {
-                XCTAssertNotNil(try? entry.data())
-            }
+        for entry in entries where !entry.isDirectory {
+            XCTAssertNotNil(try? entry.data())
         }
+    }
+
+    func testUnicode() {
+        guard let testData = try? Data(contentsOf: Constants.url(forTest: "TestUnicode",
+                                                                 withType: ZipTests.testType),
+                                       options: .mappedIfSafe) else {
+                                        XCTFail("Failed to load test archive")
+                                        return
+        }
+
+        guard let entries = try? ZipContainer.open(containerData: testData) else {
+            XCTFail("Unable to open ZIP archive.")
+            return
+        }
+
+        guard entries.count == 1 else {
+            XCTFail("Incorrect number of entries.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].name, "текстовый файл")
+        XCTAssertEqual(entries[0].isDirectory, false)
     }
 
 }

@@ -35,7 +35,7 @@ public enum LZMA2Error: Error {
 }
 
 /// Provides function to decompress data, which were compressed with LZMA2
-public final class LZMA2: DecompressionAlgorithm {
+public class LZMA2: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with LZMA2 algortihm. LZMA2 is a modification of LZMA.
@@ -60,7 +60,7 @@ public final class LZMA2: DecompressionAlgorithm {
 
     static func decompress(_ dictionarySize: Int, _ pointerData: inout DataWithPointer) throws -> [UInt8] {
         // At this point lzmaDecoder will be in a VERY bad state.
-        let lzmaDecoder = try LZMADecoder(&pointerData, 0, 0, 0, 0)
+        let lzmaDecoder = try LZMADecoder(&pointerData)
         try lzmaDecoder.decodeLZMA2(dictionarySize)
         return lzmaDecoder.out
     }

@@ -50,7 +50,7 @@ public enum BZip2Error: Error {
 }
 
 /// Provides function to decompress data, which were compressed using BZip2.
-public final class BZip2: DecompressionAlgorithm {
+public class BZip2: DecompressionAlgorithm {
 
     /**
      Decompresses `compressedData` with BZip2 algortihm.
@@ -94,12 +94,14 @@ public final class BZip2: DecompressionAlgorithm {
 
             if blockType == 0x314159265359 {
                 let blockBytes = try decode(data: &pointerData)
-                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32 else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
+                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32
+                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 for byte in blockBytes {
                     out.append(byte)
                 }
             } else if blockType == 0x177245385090 {
-                guard CheckSums.bzip2CRC32(out) == blockCRC32 else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
+                guard CheckSums.bzip2CRC32(out) == blockCRC32
+                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 break
             } else {
                 throw BZip2Error.wrongBlockType
@@ -187,7 +189,8 @@ public final class BZip2: DecompressionAlgorithm {
         }
 
         let tables = try computeTables()
-        var favourites = try used.enumerated().reduce([]) { (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
+        var favourites = try used.enumerated().reduce([]) {
+            (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
             if next.element {
                 var newResult = partialResult
                 newResult.append(next.offset.toUInt8())

@@ -156,8 +156,8 @@ class HuffmanTree {
         }
     }
 
-    func code(symbol: Int, _ bitWriter: inout BitToByteWriter) {
-        precondition(self.coding, "Tree is not initalized for coding!")
+    func code(symbol: Int, _ bitWriter: inout BitToByteWriter, _ symbolNotFoundError: Error) throws {
+        precondition(self.coding, "HuffmanTree is not initalized for coding!")
 
         var index = 0
         while true {
@@ -166,9 +166,9 @@ class HuffmanTree {
                 if foundSymbol == symbol {
                     return
                 } else {
-                    fatalError("Symbol not found, this error should be replaced with Error.")
+                    throw symbolNotFoundError
                 }
-            case .branch(_):
+            case .branch:
                 let leftChildIndex = 2 * index + 1
                 if leftChildIndex < self.leafCount {
                     switch self.tree[leftChildIndex] {
@@ -200,7 +200,7 @@ class HuffmanTree {
                             bitWriter.write(bit: 1)
                             continue
                         } else {
-                            fatalError("Symbol not found, this error should be replaced with Error.")
+                            throw symbolNotFoundError
                         }
                     case .branch(let rightArray):
                         if rightArray.contains(symbol) {
@@ -208,7 +208,7 @@ class HuffmanTree {
                             bitWriter.write(bit: 1)
                             continue
                         } else {
-                            fatalError("Symbol not found, this error should be replaced with Error.")
+                            throw symbolNotFoundError
                         }
                     }
                 }

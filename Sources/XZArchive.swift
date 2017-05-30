@@ -55,7 +55,7 @@ public enum XZError: Error {
 }
 
 /// Provides unarchive function for XZ archives.
-public final class XZArchive: Archive {
+public class XZArchive: Archive {
 
     /**
      Unarchives xz archive stored in `archiveData`.
@@ -78,81 +78,120 @@ public final class XZArchive: Archive {
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var out: [UInt8] = []
 
-        streamLoop: while !pointerData.isAtTheEnd {
-            // STREAM HEADER
-            let streamHeader = try processStreamHeader(&pointerData)
-
-            // BLOCKS AND INDEX
-            /// Zero value of blockHeaderSize means that we encountered INDEX.
-            var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
-            var indexSize = -1
-            while true {
-                let blockHeaderSize = pointerData.alignedByte()
-                if blockHeaderSize == 0 {
-                    indexSize = try processIndex(blockInfos, &pointerData)
-                    break
+        // First, we should check footer magic bytes.
+        // If they are wrong, then file cannot be 'undamaged'.
+        // But the file may end with padding, so we need to account for this.
+        pointerData.index = pointerData.size - 1
+        var paddingBytes = 0
+        while true {
+            let byte = pointerData.alignedByte()
+            if byte != 0 {
+                if paddingBytes % 4 != 0 {
+                    throw XZError.wrongPadding
                 } else {
-                    let blockInfo = try processBlock(blockHeaderSize, &pointerData)
-                    out.append(contentsOf: blockInfo.blockData)
-                    let checkSize: Int
-                    switch streamHeader.checkType {
-                    case 0x00:
-                        checkSize = 0
-                        break
-                    case 0x01:
-                        checkSize = 4
-                        let check = pointerData.uint32FromAlignedBytes(count: 4)
-                        guard CheckSums.crc32(blockInfo.blockData) == check
-                            else { throw XZError.wrongCheck(Data(bytes: out)) }
-                    case 0x04:
-                        checkSize = 8
-                        let check = pointerData.uint64FromAlignedBytes(count: 8)
-                        guard CheckSums.crc64(blockInfo.blockData) == check
-                            else { throw XZError.wrongCheck(Data(bytes: out)) }
-                    case 0x0A:
-                        throw XZError.checkTypeSHA256
-                    default:
-                        throw XZError.fieldReservedValue
-                    }
-                    blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+                    break
                 }
             }
-
-            // STREAM FOOTER
-            try processFooter(streamHeader, indexSize, &pointerData)
-
-            guard !pointerData.isAtTheEnd else { break streamLoop }
-
-            // STREAM PADDING
-            var paddingBytes = 0
-            while true {
-                let byte = pointerData.alignedByte()
-                if byte != 0 {
-                    if paddingBytes % 4 != 0 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break
-                    }
-                }
-                paddingBytes += 1
-            }
-            pointerData.index -= 1
+            paddingBytes += 1
+            pointerData.index -= 2
         }
+        pointerData.index -= 2
+        guard pointerData.alignedBytes(count: 2) == [0x59, 0x5A]
+            else { throw XZError.wrongMagic }
+
+        // Let's now go to the start of the file.
+        pointerData.index = 0
+
+//        streamLoop: while !pointerData.isAtTheEnd {
+        // STREAM HEADER
+        let streamHeader = try processStreamHeader(&pointerData)
+
+        // BLOCKS AND INDEX
+        /// Zero value of blockHeaderSize means that we encountered INDEX.
+        var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
+        var indexSize = -1
+        while true {
+            let blockHeaderSize = pointerData.alignedByte()
+            if blockHeaderSize == 0 {
+                indexSize = try processIndex(blockInfos, &pointerData)
+                break
+            } else {
+                let blockInfo = try processBlock(blockHeaderSize, &pointerData)
+                out.append(contentsOf: blockInfo.blockData)
+                let checkSize: Int
+                switch streamHeader.checkType {
+                case 0x00:
+                    checkSize = 0
+                    break
+                case 0x01:
+                    checkSize = 4
+                    let check = pointerData.uint32FromAlignedBytes(count: 4)
+                    guard CheckSums.crc32(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x04:
+                    checkSize = 8
+                    let check = pointerData.uint64FromAlignedBytes(count: 8)
+                    guard CheckSums.crc64(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x0A:
+                    throw XZError.checkTypeSHA256
+                default:
+                    throw XZError.fieldReservedValue
+                }
+                blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+            }
+        }
+
+        // STREAM FOOTER
+        try processFooter(streamHeader, indexSize, &pointerData)
+
+//            guard !pointerData.isAtTheEnd else { break streamLoop }
+//
+//            // STREAM PADDING
+//            paddingBytes = 0
+//            while true {
+//                let byte = pointerData.alignedByte()
+//                if byte != 0 {
+//                    if paddingBytes % 4 != 0 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break
+//                    }
+//                }
+//                if pointerData.isAtTheEnd {
+//                    if byte != 0 || paddingBytes % 4 != 3 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break streamLoop
+//                    }
+//                }
+//                paddingBytes += 1
+//            }
+//            pointerData.index -= 1
+//        }
 
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: UInt32) {
+    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: UInt8, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
             else { throw XZError.wrongMagic }
 
-        // First byte of flags must be equal to zero.
-        guard pointerData.alignedByte() == 0
+        let flagsBytes = pointerData.alignedBytes(count: 2)
+
+        // First, we need to check for corruption in flags,
+        //  so we compare CRC32 of flags to the value stored in archive.
+        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
+        guard CheckSums.crc32(flagsBytes) == flagsCRC
+            else { throw XZError.wrongInfoCRC }
+
+        // If data is not corrupted, then some bits must be equal to zero.
+        guard flagsBytes[0] == 0 && flagsBytes[1] & 0xF0 == 0
             else { throw XZError.fieldReservedValue }
 
-        // Next four bits indicate type of redundancy check.
-        let checkType = pointerData.intFromBits(count: 4)
+        // Four bits of second flags byte indicate type of redundancy check.
+        let checkType = flagsBytes[1] & 0x0F
         switch checkType {
         case 0x00, 0x01, 0x04, 0x0A:
             break
@@ -160,20 +199,11 @@ public final class XZArchive: Archive {
             throw XZError.fieldReservedValue
         }
 
-        // Final four bits must be equal to zero.
-        guard pointerData.intFromBits(count: 4) == 0
-            else { throw XZError.fieldReservedValue }
-
-        // CRC-32 of flags must be equal to the value in archive.
-        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
-        guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
-            else { throw XZError.wrongInfoCRC }
-
         return (checkType, flagsCRC)
     }
 
     private static func processBlock(_ blockHeaderSize: UInt8,
-                                     _ pointerData: inout DataWithPointer)  throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
+                                     _ pointerData: inout DataWithPointer) throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
         var blockBytes: [UInt8] = []
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
@@ -311,7 +341,7 @@ public final class XZArchive: Archive {
         return indexBytes.count + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: UInt32),
+    private static func processFooter(_ streamHeader: (checkType: UInt8, flagsCRC: UInt32),
                                       _ indexSize: Int,
                                       _ pointerData: inout DataWithPointer) throws {
         let footerCRC = pointerData.uint32FromAlignedBytes(count: 4)
@@ -333,7 +363,7 @@ public final class XZArchive: Archive {
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
             else { throw XZError.fieldReservedValue }
-        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType.toUInt8()
+        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType
             else { throw XZError.wrongArchiveInfo }
         guard footerStreamFlags[1] & 0xF0 == 0
             else { throw XZError.fieldReservedValue }

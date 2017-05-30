@@ -122,7 +122,7 @@ public struct ZlibHeader {
 }
 
 /// Provides unarchive function for Zlib archives.
-public final class ZlibArchive: Archive {
+public class ZlibArchive: Archive {
 
     /**
      Unarchives Zlib archive stored in `archiveData`.
@@ -171,7 +171,7 @@ public final class ZlibArchive: Archive {
     public static func archive(data: Data) throws -> Data {
         let out: [UInt8] = [
             120, // CM (Compression Method) = 8 (DEFLATE), CINFO (Compression Info) = 7 (32K window size).
-            218, // Flags: slowest algorithm, no preset dictionary.
+            218 // Flags: slowest algorithm, no preset dictionary.
         ]
         var outData = Data(bytes: out)
         outData.append(try Deflate.compress(data: data))
