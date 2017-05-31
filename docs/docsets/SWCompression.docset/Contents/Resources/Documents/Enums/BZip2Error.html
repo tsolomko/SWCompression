@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -176,21 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during bzip2 decompression.
-It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.</p>
-
-<ul>
-<li><code>wrongMagic</code>: unsupported magic number (not 0x425a).</li>
-<li><code>wrongCompressionMethod</code>: unsupported compression method (not type &lsquo;h&rsquo;).</li>
-<li><code>wrongBlockSize</code>: unsupported block size (not &lsquo;0&rsquo; — &lsquo;9&rsquo;).</li>
-<li><code>wrongBlockType</code>: unsupported block type (not &lsquo;pi&rsquo; or &lsquo;sqrt(pi)&rsquo;).</li>
-<li><code>randomizedBlock</code>: block is randomized; this is not supported.</li>
-<li><code>wrongHuffmanGroups</code>: unsupported number of Huffman tables/groups (not between 2 and 6).</li>
-<li><code>wrongSelector</code>: unsupported selector (greater than total number of Huffman groups).</li>
-<li><code>wrongHuffmanLengthCode</code>: unsupported code for Huffman length (not between 0 and 20).</li>
-<li><code>symbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
-<li><code>wrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.</li>
-</ul>
+            <p>Represents an error, which happened during BZip2 decompression.
+It may indicate that either data is damaged or it might not be compressed with BZip2 at all.</p>
 
           </div>
         </section>
@@ -212,7 +199,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Magic number was not 0x425a.</p>
+                        <p>&lsquo;Magic&rsquo; number is not 0x425a.</p>
 
                       </div>
                       <div class="declaration">
@@ -224,7 +211,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -246,7 +233,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression method was not type &lsquo;h&rsquo; (not Huffman).</p>
+                        <p>Compression method is not type &lsquo;h&rsquo; (not Huffman).</p>
 
                       </div>
                       <div class="declaration">
@@ -258,7 +245,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -280,7 +267,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Unknown block size (not from &lsquo;0&rsquo; to &lsquo;9&rsquo;).</p>
+                        <p>Unsupported block size (not from &lsquo;0&rsquo; to &lsquo;9&rsquo;).</p>
 
                       </div>
                       <div class="declaration">
@@ -292,7 +279,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -314,7 +301,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Unknown block type (was neither &lsquo;pi&rsquo; nor &lsquo;sqrt(pi)&rsquo;).</p>
+                        <p>Unsupported block type (is neither &lsquo;pi&rsquo; nor &lsquo;sqrt(pi)&rsquo;).</p>
 
                       </div>
                       <div class="declaration">
@@ -326,7 +313,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L34">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -360,7 +347,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L36">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L25">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -394,7 +381,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L27">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -416,7 +403,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Selector was greater than total number of Huffman tables/groups.</p>
+                        <p>Selector is greater than the total number of Huffman tables/groups.</p>
 
                       </div>
                       <div class="declaration">
@@ -428,7 +415,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L40">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -462,7 +449,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L42">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -484,7 +471,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Symbol was not found in Huffman tree.</p>
+                        <p>Symbol wasn&rsquo;t found in Huffman tree.</p>
 
                       </div>
                       <div class="declaration">
@@ -496,7 +483,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L44">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -518,8 +505,8 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC of uncompressed data didn&rsquo;t match the value stored in the archive.
-Associated value contains already decompressed data.</p>
+                        <p>Computed checksum of uncompressed data doesn&rsquo;t match the value stored in archive.
+Associated value of the error contains already decompressed data.</p>
 
                       </div>
                       <div class="declaration">
@@ -531,7 +518,7 @@ Associated value contains already decompressed data.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/BZip2.swift#L49">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

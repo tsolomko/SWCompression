@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -180,7 +180,7 @@
 <p><a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/v/SWCompression.svg" alt="CocoaPods"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
 
-<p>A framework which contains implementations of (de)compression algorithms.</p>
+<p>A framework which contains implementations of (de)compression algorithms and functions which parse various archives and containers.</p>
 
 <p><strong>Developed with Swift.</strong></p>
 <h2 id='why-have-you-made-this-framework' class='heading'>Why have you made this framework?</h2>
@@ -203,7 +203,8 @@ And yes, it is also in Objective-C.</p>
 <li>Containers:
 
 <ul>
-<li>ZIP (complying to ISO/IEC 21320 standard)</li>
+<li>ZIP</li>
+<li>TAR</li>
 </ul></li>
 <li>Decompression algorithms:
 
@@ -225,7 +226,7 @@ And yes, it is also in Objective-C.</p>
 <li>Zlib</li>
 </ul></li>
 <li>Platform independent.</li>
-<li><em>Swift only.</em></li>
+<li><em>Written with Swift only.</em></li>
 </ul>
 
 <p>By the way, it seems like GZip, Deflate and Zlib implementations are <strong>specification compliant</strong>.</p>
@@ -246,6 +247,8 @@ Available subspecs:</p>
 <li>SWCompression/Gzip</li>
 <li>SWCompression/Zlib</li>
 <li>SWCompression/BZip2</li>
+<li>SWCompression/ZIP</li>
+<li>SWCompression/TAR</li>
 </ul>
 
 <p>You can add some or all of them instead of <code>pod &#39;SWCompression&#39;</code></p>
@@ -254,7 +257,8 @@ Available subspecs:</p>
 
 <p>To complete installation, run <code>pod install</code>.</p>
 
-<p><em>Note:</em> Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. It is included in every other subspec and should not be specified directly in Podfile.</p>
+<p><em>Note:</em> Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions.
+It is included in every other subspec and should not be specified directly in Podfile.</p>
 <h5 id='carthage' class='heading'>Carthage</h5>
 
 <p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
@@ -270,31 +274,41 @@ Available subspecs:</p>
 <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
     <span class="nv">name</span><span class="p">:</span> <span class="s">"PackageName"</span><span class="p">,</span>
     <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-        <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/tsolomko/SWCompression.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/tsolomko/SWCompression.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
     <span class="p">]</span>
 <span class="p">)</span>
 </code></pre>
 
 <p>More info about SPM you can find at <a href="https://github.com/apple/swift-package-manager/tree/master/Documentation">Swift Package Manager&rsquo;s Documentation</a>.</p>
+<h2 id='swcompression-zip-and-compression-methods' class='heading'>SWCompression/ZIP and compression methods</h2>
+
+<p>Deflate is a default compression method of ZIP containers.</p>
+
+<p>This means, that if you use CocoaPods, when installing SWCompression/ZIP it will install SWCompression/Deflate as a dependency.</p>
+
+<p>However, ZIP containers can also support LZMA and BZip2.
+So if you want to enable them in your Pods configuration you need to include SWCompression/LZMA and/or SWCompression/Deflate.</p>
+
+<p>If you use Carthage or Swift Package Manager you always have the full package,
+and ZIP will be built with both BZip2 and LZMA support.</p>
 <h2 id='usage' class='heading'>Usage</h2>
 <h4 id='basics' class='heading'>Basics</h4>
 
 <p>If you&rsquo;d like to decompress <q>deflated</q> data just use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
                      <span class="nv">options</span><span class="p">:</span> <span class="o">.</span><span class="n">mappedIfSafe</span><span class="p">)</span>
-<span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">Deflate</span><span class="o">.</span><span class="nf">decompress</span><span class="p">(</span><span class="nv">compressedData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">Deflate</span><span class="o">.</span><span class="nf">decompress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 </code></pre>
 
 <p><em>Note:</em> It is <strong>highly recommended</strong> to specify <code>Data.ReadingOptions.mappedIfSafe</code>,
-especially if you are working with large files,
-so you don&rsquo;t run out of system memory.</p>
+especially if you are working with large files, so you don&rsquo;t run out of system memory.</p>
 
 <p>However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">GzipArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archiveData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 </code></pre>
 
-<p>One final note: every unarchive/decompress function can throw an error and
+<p>One final note: every SWCompression function can throw an error and
 you are responsible for handling them.</p>
 <h4 id='documentation' class='heading'>Documentation</h4>
 
@@ -302,8 +316,7 @@ you are responsible for handling them.</p>
 This documentation can be found at its own <a href="http://tsolomko.github.io/SWCompression">website</a>.</p>
 <h4 id='handling-errors' class='heading'>Handling Errors</h4>
 
-<p>If you look at list of available error types and their cases,
-you may be frightened by their number.
+<p>If you look at list of available error types and their cases, you may be frightened by their number.
 However, most of these cases (such as <code>XZError.WrongMagic</code>) exist for diagnostic purposes.</p>
 
 <p>Thus, you only need to handle the most common type of error for your archive/algorithm.
@@ -311,7 +324,7 @@ For example:</p>
 <pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
   <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
                       <span class="nv">options</span><span class="p">:</span> <span class="o">.</span><span class="n">mappedIfSafe</span><span class="p">)</span>
-  <span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="kt">XZArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archiveData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+  <span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="kt">XZArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archive</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">XZError</span> <span class="p">{</span>
   <span class="o">&lt;</span><span class="n">handle</span> <span class="kt">XZ</span> <span class="n">related</span> <span class="n">error</span> <span class="n">here</span><span class="o">&gt;</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
@@ -340,7 +353,9 @@ so some difference in speed is expected.</p>
 <h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>
-<li>Tar unarchiving.</li>
+<li>Better Deflate compression.</li>
+<li>Support for additional attributes in containers.</li>
+<li>7zip containers.</li>
 <li>BZip2 compression.</li>
 <li>Something else&hellip;</li>
 </ul>

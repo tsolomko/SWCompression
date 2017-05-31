@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -176,7 +176,7 @@
 
                 </div>
               </div>
-            <p>Provides function which opens TAR archives (containers).</p>
+            <p>Provides open function for TAR containers.</p>
 
           </div>
         </section>
@@ -188,9 +188,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC13SWCompression12TarContainer4openFzT13containerDataV10Foundation4Data_GSaPS_14ContainerEntry__"></a>
-                    <a name="//apple_ref/swift/Method/open(containerData:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC13SWCompression12TarContainer4openFzT13containerDataV10Foundation4Data_GSaPS_14ContainerEntry__">open(containerData:)</a>
+                    <a name="/s:ZFC13SWCompression12TarContainer4openFzT9containerV10Foundation4Data_GSaPS_14ContainerEntry__"></a>
+                    <a name="//apple_ref/swift/Method/open(container:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC13SWCompression12TarContainer4openFzT9containerV10Foundation4Data_GSaPS_14ContainerEntry__">open(container:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,19 +198,55 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Processes TAR container and returns an array of <code>ContainerEntries</code> (which are actually <code>TarEntries</code>).</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    <p>The order of entries is defined by TAR container and,
+particularly, by a creator of a given TAR container.
+It is likely that directories will be encountered earlier than files stored in those directories,
+but one SHOULD NOT rely on any particular order.</p>
+
+</div>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <p><code><a href="../Enums/TarError.html">TarError</a></code>, which may indicate that either container is damaged or it might not be TAR container at all.</p>
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TarContainer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Container.html">Container</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">container</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>container</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>TAR container&rsquo;s data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Array of <code><a href="../Classes/TarEntry.html">TarEntry</a></code> as an array of <code><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></code>.</p>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/TarContainer.swift#L293-L323">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/TarContainer.swift#L302-L332">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -176,22 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during processing ZIP archive (container).
-It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.</p>
-
-<ul>
-<li><code>notFoundCentralDirectoryEnd</code>: end of Central Directoty record wasn&rsquo;t found.</li>
-<li><code>wrongSignature</code>: unsupported signature of one of ZIP container&rsquo;s structures.</li>
-<li><code>wrongSize</code>: incorrect compressed or uncompressed size of a ZIP container&rsquo;s entry&rsquo;s data.</li>
-<li><code>wrongVersion</code>: unsupported number of version needed to extract ZIP container
-(unsupported features are required to open this file).</li>
-<li><code>multiVolumesNotSupported</code>: unsupported feature: multi-volumed or spanned container.</li>
-<li><code>encryptionNotSupported</code>: unsupported feature: encryption.</li>
-<li><code>patchingNotSupported</code>: unsupported feature: patched data.</li>
-<li><code>compressionNotSupported</code>: unsupported feature: specified compression method.</li>
-<li><code>wrongLocalHeader</code>: local header of an entry wasn&rsquo;t consistent with Central Directory record.</li>
-<li><code>wrongCRC32</code>: computed checksum of entry&rsquo;s data wasn&rsquo;t the same as the one stored in container.</li>
-</ul>
+            <p>Represents an error, which happened during processing ZIP container.
+It may indicate that either container is damaged or it might not be ZIP container at all.</p>
 
           </div>
         </section>
@@ -213,7 +199,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>End of Central Directoty record was not found.</p>
+                        <p>End of Central Directoty record wasn&rsquo;t found.</p>
 
                       </div>
                       <div class="declaration">
@@ -225,7 +211,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L29">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -247,7 +233,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong signature of one of ZIP container&rsquo;s structures.</p>
+                        <p>Wrong signature of one of container&rsquo;s structures.</p>
 
                       </div>
                       <div class="declaration">
@@ -259,7 +245,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L31">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -281,7 +267,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong either compressed or uncompressed size of a ZIP container&rsquo;s entry.</p>
+                        <p>Wrong either compressed or uncompressed size of a container&rsquo;s entry.</p>
 
                       </div>
                       <div class="declaration">
@@ -293,7 +279,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L33">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -315,7 +301,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong number of version needed to extract ZIP container.</p>
+                        <p>Version needed to process container is unsupported.</p>
 
                       </div>
                       <div class="declaration">
@@ -327,7 +313,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -349,7 +335,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Archive either spanned or consists of several volumes. This feature is not supported.</p>
+                        <p>Container is either spanned or consists of several volumes. These features aren&rsquo;t supported.</p>
 
                       </div>
                       <div class="declaration">
@@ -361,7 +347,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L25">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -383,7 +369,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Entry or record is encrypted. This feature is not supported.</p>
+                        <p>Entry or record is encrypted. This feature isn&rsquo;t supported.</p>
 
                       </div>
                       <div class="declaration">
@@ -395,7 +381,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L27">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -417,7 +403,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Entry contains patched data. This feature is not supported.</p>
+                        <p>Entry contains patched data. This feature isn&rsquo;t supported.</p>
 
                       </div>
                       <div class="declaration">
@@ -429,7 +415,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L41">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -451,7 +437,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong compression method of an entry.</p>
+                        <p>Entry is compressed using unsupported compression method.</p>
 
                       </div>
                       <div class="declaration">
@@ -463,7 +449,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L43">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -485,7 +471,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Wrong local header of an entry.</p>
+                        <p>Local header of an entry is inconsistent with Central Directory.</p>
 
                       </div>
                       <div class="declaration">
@@ -497,7 +483,7 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L45">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -519,8 +505,8 @@ It may indicate that either the data is damaged or it might not be ZIP archive (
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC32 of entry&rsquo;s data didn&rsquo;t match the value stored in the container.
-Associated value contains extracted data.</p>
+                        <p>Computed checksum of entry&rsquo;s data doesn&rsquo;t match the value stored in container.
+Associated value of the error contains entry&rsquo;s data.</p>
 
                       </div>
                       <div class="declaration">
@@ -532,7 +518,7 @@ Associated value contains extracted data.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L50">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -554,19 +540,19 @@ Associated value contains extracted data.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Either entry&rsquo;s comment or file name cannot be processed using UTF-8 encoding.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ZipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongTextField</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
