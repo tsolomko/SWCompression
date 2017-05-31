@@ -15,50 +15,67 @@ class ZlibTests: XCTestCase {
 
     func testZlib() {
         let testName = "test"
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName,
-                                                                 withType: ZlibTests.testType),
-                                       options: .mappedIfSafe) else {
-            XCTFail("Failed to load test archive")
+
+        guard let testURL = Constants.url(forTest: testName, withType: ZlibTests.testType) else {
+            XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let testZlibHeader = try? ZlibHeader(archiveData: testData) else {
-            XCTFail("Failed to get archive header")
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
             return
         }
 
-        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate, "Incorrect compression method")
-        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm, "Incorrect compression level")
-        XCTAssertEqual(testZlibHeader.windowSize, 32768, "Incorrect window size")
+        guard let testZlibHeader = try? ZlibHeader(archive: testData) else {
+            XCTFail("Unable to get archive header.")
+            return
+        }
+
+        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate, "Incorrect compression method.")
+        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm, "Incorrect compression level.")
+        XCTAssertEqual(testZlibHeader.windowSize, 32768, "Incorrect window size.")
     }
 
     func testZlibFull() {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: "random_file",
-                                                                 withType: ZlibTests.testType)) else {
-            XCTFail("Failed to load test archive")
+        guard let testURL = Constants.url(forTest: "random_file", withType: ZlibTests.testType) else {
+            XCTFail("Unable to get test's URL.")
             return
         }
 
-        let decompressedData = try? ZlibArchive.unarchive(archiveData: testData)
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        let decompressedData = try? ZlibArchive.unarchive(archive: testData)
 
         guard decompressedData != nil  else {
-            XCTFail("Failed to decompress")
+            XCTFail("Unable to decompress.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: "test9")) else {
-            XCTFail("Failed to get the answer")
+        guard let answerURL = Constants.url(forAnswer: "test9") else {
+            XCTFail("Unable to get answer's URL.")
             return
         }
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Unarchiving was incorrect")
     }
 
     func testCreateZlib() {
-        guard let testData = try? Data(contentsOf: Constants.url(forAnswer: "test9"),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test data.")
-                                        return
+        guard let testURL = Constants.url(forAnswer: "test9") else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         guard let archiveData = try? ZlibArchive.archive(data: testData) else {
@@ -66,7 +83,7 @@ class ZlibTests: XCTestCase {
             return
         }
 
-        guard let reextractedData = try? ZlibArchive.unarchive(archiveData: archiveData) else {
+        guard let reextractedData = try? ZlibArchive.unarchive(archive: archiveData) else {
             XCTFail("Unable to re-extract created archive.")
             return
         }

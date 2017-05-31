@@ -1,0 +1,17 @@
+disabled_rules:
+  - cyclomatic_complexity
+  - file_length
+  - function_body_length
+  - type_body_length
+opt_in_rules:
+  - conditional_returns_on_newline
+  - explicit_init
+  - explicit_type_interface
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - implicitly_unwrapped_optional
+  - operator_usage_whitespace
+  - redundant_nil_coalescing
+  - switch_case_on_newline

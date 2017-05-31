@@ -1,24 +1,29 @@
 # Changelog
 v3.0.0
 ----------------
-#### test2
-- Added support for TAR containers.
-  - Various standards are supported (pre-POSIX, POSIX-1988, pax).
-  - Added subspec for TAR features.
-- Added Container protocol.
-  - Reworked ZipContainer to conform to new protocol.
-- All Errors cases renamed to conform Swift naming convetions (lowerCamelCase).
-- Removed LZMAOutWindow.
-- Test results combined into single document.
-- Reduced tests sizes.
-- Included 2.4.1 and 2.4.2 changes.
-
-#### test1
-- BZip2 decompression now checks CRC32.
-- GZipHeader.modificationTime is now Optional.
-- Enabled support for bzip2 and lzma compressed files in zip containers.
-  - In CocoaPods configurations availability of such support depends on
-    the presence of corresponding podspecs.
+- All errors have been renamed, so they conform to Swift Naming Conventions (lowerCamelCase).
+- Added `Container` and `ContainerEntry` protocols.
+- Most methods have their arguments' labels renamed to make usage shorter.
+- Most documentation have been edited to improve readability.
+- Multiple files with results of performance tests replaced with consolidated one.
+- Enabled support for LZMA and BZip2 compression algorithms.
+- `ZipEntry` now conforms to `ContainerEntry` protocol.
+- This also means that entry's data is now provided through `ZipEntry.data()` instead of `ZipContainer`'s function.
+- Improved detection of directories if ZIP container was created on MS-DOS or UNIX-like systems.
+- `ZipError.wrongCRC32` now contains entry's data as associated value.
+- Fixed a problem where Zip64 sized fields weren't used during processing of Data Descriptor.
+- Added some measures to prevent crashes when it is impossible to read ZIP text fields (file name or comment) in UTF-8 encoding
+- Added support for TAR containers in various format versions.
+- Now `GzipArchive.unarchive` function unarchives only first 'member' of archive.
+- Added support for GZip archive's option in `archive` function.
+- `GzipHeader.modificationTime` is now Optional.
+- `GzipHeader.originalFileName` renamed to `GzipHeader.fileName`.
+- Added `GzipHeader.isTextFile` property which corresponds to same named flag in archive's header.
+- Now `XZArchive.unarchive` function unarchives only first stream of archive.
+- Check for xz archive's footer's 'magic' bytes is now performed at the beginning of processing.
+- XZ header's checksum is now checked before parsing reserved flags.
+- BZip2 now performs CRC32 check for decompressed data.
+- Removed internal `LZMAOutWindow` auxiliary class.
 
 v2.4.3
 ----------------

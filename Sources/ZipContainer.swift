@@ -9,49 +9,38 @@
 import Foundation
 
 /**
- Error happened during processing ZIP archive (container).
- It may indicate that either the data is damaged or it might not be ZIP archive (container) at all.
-
- - `notFoundCentralDirectoryEnd`: end of Central Directoty record wasn't found.
- - `wrongSignature`: unsupported signature of one of ZIP container's structures.
- - `wrongSize`: incorrect compressed or uncompressed size of a ZIP container's entry's data.
- - `wrongVersion`: unsupported number of version needed to extract ZIP container
-    (unsupported features are required to open this file).
- - `multiVolumesNotSupported`: unsupported feature: multi-volumed or spanned container.
- - `encryptionNotSupported`: unsupported feature: encryption.
- - `patchingNotSupported`: unsupported feature: patched data.
- - `compressionNotSupported`: unsupported feature: specified compression method.
- - `wrongLocalHeader`: local header of an entry wasn't consistent with Central Directory record.
- - `wrongCRC32`: computed checksum of entry's data wasn't the same as the one stored in container.
+ Represents an error, which happened during processing ZIP container.
+ It may indicate that either container is damaged or it might not be ZIP container at all.
  */
 public enum ZipError: Error {
-    /// End of Central Directoty record was not found.
+    /// End of Central Directoty record wasn't found.
     case notFoundCentralDirectoryEnd
-    /// Wrong signature of one of ZIP container's structures.
+    /// Wrong signature of one of container's structures.
     case wrongSignature
-    /// Wrong either compressed or uncompressed size of a ZIP container's entry.
+    /// Wrong either compressed or uncompressed size of a container's entry.
     case wrongSize
-    /// Wrong number of version needed to extract ZIP container.
+    /// Version needed to process container is unsupported.
     case wrongVersion
-    /// Archive either spanned or consists of several volumes. This feature is not supported.
+    /// Container is either spanned or consists of several volumes. These features aren't supported.
     case multiVolumesNotSupported
-    /// Entry or record is encrypted. This feature is not supported.
+    /// Entry or record is encrypted. This feature isn't supported.
     case encryptionNotSupported
-    /// Entry contains patched data. This feature is not supported.
+    /// Entry contains patched data. This feature isn't supported.
     case patchingNotSupported
-    /// Wrong compression method of an entry.
+    /// Entry is compressed using unsupported compression method.
     case compressionNotSupported
-    /// Wrong local header of an entry.
+    /// Local header of an entry is inconsistent with Central Directory.
     case wrongLocalHeader
     /**
-     Computed CRC32 of entry's data didn't match the value stored in the container.
-     Associated value contains extracted data.
+     Computed checksum of entry's data doesn't match the value stored in container.
+     Associated value of the error contains entry's data.
      */
     case wrongCRC32(Data)
+    /// Either entry's comment or file name cannot be processed using UTF-8 encoding.
     case wrongTextField
 }
 
-/// Represents either a file or directory entry inside ZIP archive.
+/// Represents either a file or directory entry in ZIP container.
 public class ZipEntry: ContainerEntry {
 
     private let cdEntry: CentralDirectoryEntry
@@ -67,18 +56,20 @@ public class ZipEntry: ContainerEntry {
         return self.cdEntry.fileComment
     }
 
-    /// File or directory attributes related to the file system of archive's creator.
+    /// File or directory attributes related to the file system of the container's creator.
     public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
 
+    /// Size of the data associated with the entry.
     public var size: Int {
         return Int(truncatingBitPattern: cdEntry.uncompSize)
     }
 
     /**
-     True, if an entry is likely to be a directory.
-     Particularly, it is true if size of data is 0 and last character of entry's name is '/'.
+     True, if an entry is a directory.
+     For MS-DOS and UNIX-like container creator's OS, the result is based on 'external file attributes'.
+     Otherwise, it is true if size of data is 0 AND last character of entry's name is '/'.
     */
     public var isDirectory: Bool {
         let hostSystem = (cdEntry.versionMadeBy & 0xFF00) >> 8
@@ -94,12 +85,8 @@ public class ZipEntry: ContainerEntry {
     /**
      Returns data associated with this entry.
 
-     - Note: Returned `Data` object with the size of 0 can either indicate that the entry is an empty file
-     or it is a directory.
-
      - Throws: `ZipError` or any other error associated with compression type,
-     depending on the type of inconsistency in data.
-     An error can indicate that the container is damaged.
+     depending on the type of the problem. An error can indicate that container is damaged.
      */
     public func data() throws -> Data {
         // Now, let's move to the location of local header.
@@ -182,34 +169,28 @@ public class ZipEntry: ContainerEntry {
 
 }
 
-/// Provides function which opens ZIP archives (containers).
+/// Provides open function for ZIP containers.
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP archive (container) and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
-     First member of a tuple is entry's name, second member is entry's data.
-     
-     - Important: The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT assume that this is the case.
-     
-     - Note: Currently, there is no universal (platform and file system independent) method to determine,
-     if entry is a directory. One can check this by looking at the size of entry's data 
-     (it should be 0 for directory) AND the last character of entry's name (it should be '/'). 
-     If all of these is true then entry is likely to be a directory.
+     Processes ZIP container and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
 
-     - Parameter containerData: Data of ZIP container.
+     - Important: The order of entries is defined by ZIP container and, 
+     particularly, by a creator of a given ZIP container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: ZIP container's data.
      
      - Throws: `ZipError` or any other error associated with compression type,
-     depending on the type of inconsistency in data.
-     It may indicate that either the container is damaged or it might not be ZIP container at all.
+     depending on the type of the problem.
+     It may indicate that either container is damaged or it might not be ZIP container at all.
 
-     - Returns: Array of pairs `ZipEntries` as an array of `ContainerEntries`.
+     - Returns: Array of `ZipEntry` as an array of `ContainerEntry`.
      */
-    public static func open(containerData: Data) throws -> [ContainerEntry] {
-
+    public static func open(container data: Data) throws -> [ContainerEntry] {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: containerData, bitOrder: .reversed)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var entries = [ZipEntry]()
 
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.

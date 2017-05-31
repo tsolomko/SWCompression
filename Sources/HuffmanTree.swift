@@ -144,7 +144,9 @@ class HuffmanTree {
         while true {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-            guard index < self.leafCount else { return -1 }
+            guard index < self.leafCount else {
+                return -1
+            }
             switch self.tree[index] {
             case .leaf(let symbol):
                 if symbol > -1 {

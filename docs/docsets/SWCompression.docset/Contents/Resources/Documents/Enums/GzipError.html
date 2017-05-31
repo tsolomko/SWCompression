@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -176,19 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during unarchiving gzip archive.
-It may indicate that either the data is damaged or it might not be gzip archive at all.</p>
-
-<ul>
-<li><code>wrongMagic</code>: first two bytes of archive were not 31 and 139.</li>
-<li><code>wrongCompressionMethod</code>: unsupported compression method (not 8 aka Deflate).</li>
-<li><code>wrongFlags</code>: unsupported flags (reserved flags weren&rsquo;t 0).</li>
-<li><code>wrongHeaderCRC</code>: computed Cyclic Redundancy Check of archive&rsquo;s header
-   didn&rsquo;t match the archive&rsquo;s value.</li>
-<li><code>wrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
-Associated value contains already decompressed data.</li>
-<li><code>wrongISize</code>: size of uncompressed data modulo 2^32 didn&rsquo;t match the archive&rsquo;s value.</li>
-</ul>
+            <p>Represents an error, which happened during processing GZip archive.
+It may indicate that either archive is damaged or it might not be GZip archive at all.</p>
 
           </div>
         </section>
@@ -210,7 +199,7 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>First two bytes of archive were not 31 and 139.</p>
+                        <p>First two bytes (&lsquo;magic&rsquo; number) of archive isn&rsquo;t 31 and 139.</p>
 
                       </div>
                       <div class="declaration">
@@ -222,7 +211,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L26">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -244,7 +233,7 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression method was other than 8 which is the only supported one.</p>
+                        <p>Compression method used in archive is different from Deflate, which is the only supported one.</p>
 
                       </div>
                       <div class="declaration">
@@ -256,7 +245,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -278,7 +267,8 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reserved flags bits were not equal to 0.</p>
+                        <p>One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
+that archive uses a newer version of GZip format.</p>
 
                       </div>
                       <div class="declaration">
@@ -290,7 +280,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L24">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -312,7 +302,7 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC of header didn&rsquo;t match the value stored in the archive.</p>
+                        <p>Computed CRC of archive&rsquo;s header doesn&rsquo;t match the value stored in archive.</p>
 
                       </div>
                       <div class="declaration">
@@ -324,7 +314,7 @@ Associated value contains already decompressed data.</li>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -346,8 +336,8 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC of uncompressed data didn&rsquo;t match the value stored in the archive.
-Associated value contains already decompressed data.</p>
+                        <p>Computed checksum of uncompressed data doesn&rsquo;t match the value stored in archive.
+Associated value of the error contains already decompressed data.</p>
 
                       </div>
                       <div class="declaration">
@@ -359,7 +349,7 @@ Associated value contains already decompressed data.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -381,7 +371,7 @@ Associated value contains already decompressed data.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed isize didn&rsquo;t match the value stored in the archive.</p>
+                        <p>Computed &lsquo;isize&rsquo; didn&rsquo;t match the value stored in the archive.</p>
 
                       </div>
                       <div class="declaration">
@@ -393,7 +383,41 @@ Associated value contains already decompressed data.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/GzipArchive.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L33">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression9GzipError21cannotEncodeISOLatin1FMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/cannotEncodeISOLatin1" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError21cannotEncodeISOLatin1FMS0_S0_">cannotEncodeISOLatin1</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Either specified file name or comment cannot be encoded using ISO Latin-1 encoding.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">cannotEncodeISOLatin1</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

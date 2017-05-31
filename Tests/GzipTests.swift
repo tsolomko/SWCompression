@@ -11,63 +11,81 @@ import SWCompression
 
 class GzipTests: XCTestCase {
 
+    static let testType: String = "gz"
+
     func header(test testName: String, mtime: Int) {
         // Load archive.
-        guard let archiveData = try? Data(contentsOf: Constants.url(forTest: testName,
-                                                                    withType: "gz"),
-                                          options: .mappedIfSafe) else {
-                                            XCTFail("Failed to load test archive")
-                                            return
-        }
-
-        // Test GZip header parsing
-        guard let testGzipHeader = try? GzipHeader(archiveData: archiveData) else {
-            XCTFail("Failed to get archive header")
+        guard let testURL = Constants.url(forTest: testName, withType: GzipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
             return
         }
 
-        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method")
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        // Test GZip header parsing
+        guard let testGzipHeader = try? GzipHeader(archive: testData) else {
+            XCTFail("Unable to get archive header.")
+            return
+        }
+
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
         XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)),
-                       "Incorrect mtime")
-        XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect os type")
-        XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name")
-        XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment")
+                       "Incorrect mtime.")
+        XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect OS type.")
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
+        XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment.")
     }
 
     func unarchive(test testName: String) {
         // Load archive.
-        guard let archiveData = try? Data(contentsOf: Constants.url(forTest: testName,
-                                                                 withType: "gz"),
-                                       options: .mappedIfSafe) else {
-                                        XCTFail("Failed to load test archive")
-                                        return
+        guard let testURL = Constants.url(forTest: testName, withType: GzipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
         }
 
         // Test GZip unarchiving.
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: archiveData) else {
-            XCTFail("Failed to decompress")
+        guard let decompressedData = try? GzipArchive.unarchive(archive: testData) else {
+            XCTFail("Unable to decompress.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
+        guard let answerURL = Constants.url(forAnswer: testName) else {
+            XCTFail("Unable to get answer's URL.")
             return
         }
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
 
         #if PERF_TESTS
             print("Performing performance tests for gz.\(testName)")
             self.measure {
-                _ = try? GzipArchive.unarchive(archiveData: archiveData)
+                _ = try? GzipArchive.unarchive(archive: testData)
             }
         #endif
     }
 
     func archive(test testName: String) {
         // Load answer data.
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
+        guard let answerURL = Constants.url(forAnswer: testName) else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer archive.")
             return
         }
 
@@ -83,30 +101,30 @@ class GzipTests: XCTestCase {
                                                          isTextFile: true,
                                                          osType: .macintosh,
                                                          modificationTime: mtimeDate) else {
-            XCTFail("Failed to create archive.")
+            XCTFail("Unable to create archive.")
             return
         }
 
         // Test output GZip header.
-        guard let testGzipHeader = try? GzipHeader(archiveData: archiveData) else {
-            XCTFail("Failed to get archive header")
+        guard let testGzipHeader = try? GzipHeader(archive: archiveData) else {
+            XCTFail("Unable to get archive header.")
             return
         }
 
-        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method")
-        XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, mtime, "Incorrect mtime")
-        XCTAssertEqual(testGzipHeader.osType, .macintosh, "Incorrect os type")
-        XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name")
-        XCTAssertEqual(testGzipHeader.comment, "some file comment", "Incorrect comment")
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
+        XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, mtime, "Incorrect mtime.")
+        XCTAssertEqual(testGzipHeader.osType, .macintosh, "Incorrect OS type.")
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
+        XCTAssertEqual(testGzipHeader.comment, "some file comment", "Incorrect comment.")
         XCTAssertTrue(testGzipHeader.isTextFile)
 
         // Test output GZip archive content.
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: archiveData) else {
-            XCTFail("Failed to decompress")
+        guard let decompressedData = try? GzipArchive.unarchive(archive: archiveData) else {
+            XCTFail("Unable to decompress.")
             return
         }
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 
     func testGzip1() {

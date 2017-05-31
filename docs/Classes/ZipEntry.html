@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (75% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -176,7 +176,7 @@
 
                 </div>
               </div>
-            <p>Represents either a file or directory entry inside ZIP archive.</p>
+            <p>Represents either a file or directory entry in ZIP container.</p>
 
           </div>
         </section>
@@ -210,7 +210,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L61-L63">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L50-L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -240,7 +240,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L66-L68">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L55-L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -258,7 +258,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>File or directory attributes related to the file system of archive&rsquo;s creator.</p>
+                        <p>File or directory attributes related to the file system of the container&rsquo;s creator.</p>
 
                       </div>
                       <div class="declaration">
@@ -270,7 +270,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L71-L73">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L60-L62">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -288,19 +288,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Size of the data associated with the entry.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipEntry</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L75-L77">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L65-L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -318,8 +318,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>True, if an entry is likely to be a directory.
-Particularly, it is true if size of data is 0 and last character of entry&rsquo;s name is &lsquo;/&rsquo;.</p>
+                        <p>True, if an entry is a directory.
+For MS-DOS and UNIX-like container creator&rsquo;s OS, the result is based on &lsquo;external file attributes&rsquo;.
+Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s name is &lsquo;/&rsquo;.</p>
 
                       </div>
                       <div class="declaration">
@@ -331,7 +332,7 @@ Particularly, it is true if size of data is 0 and last character of entry&rsquo;
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L83-L85">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L74-L83">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -350,17 +351,10 @@ Particularly, it is true if size of data is 0 and last character of entry&rsquo;
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Returns data associated with this entry.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Returned <code>Data</code> object with the size of 0 can either indicate that the entry is an empty file
-or it is a directory.</p>
-
-</div>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/ZipError.html">ZipError</a></code> or any other error associated with compression type,
-depending on the type of inconsistency in data.
-An error can indicate that the container is damaged.</p>
+    <code><a href="../Enums/ZipError.html">ZipError</a></code> or any other error associated with compression type,
+depending on the type of the problem. An error can indicate that container is damaged.
 
 </div>
 
@@ -374,7 +368,7 @@ An error can indicate that the container is damaged.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0-test2/Sources/ZipContainer.swift#L97-L169">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L91-L163">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
