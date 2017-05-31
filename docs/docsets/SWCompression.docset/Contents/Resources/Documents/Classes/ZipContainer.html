@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -154,11 +172,11 @@
             <h1>ZipContainer</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipContainer</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipContainer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Container.html">Container</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Provides function to open ZIP archives (containers).</p>
+            <p>Provides open function for ZIP containers.</p>
 
           </div>
         </section>
@@ -170,9 +188,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC13SWCompression12ZipContainer7entriesGSaVS_8ZipEntry_"></a>
-                    <a name="//apple_ref/swift/Property/entries" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC13SWCompression12ZipContainer7entriesGSaVS_8ZipEntry_">entries</a>
+                    <a name="/s:ZFC13SWCompression12ZipContainer4openFzT9containerV10Foundation4Data_GSaPS_14ContainerEntry__"></a>
+                    <a name="//apple_ref/swift/Method/open(container:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC13SWCompression12ZipContainer4openFzT9containerV10Foundation4Data_GSaPS_14ContainerEntry__">open(container:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -180,61 +198,20 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>All file and directory entries found in ZIP archive (in its Central Directory).</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">entries</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/ZipEntry.html">ZipEntry</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZipContainer.swift#L82">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FC13SWCompression12ZipContainercFzT13containerDataV10Foundation4Data_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(containerData:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC13SWCompression12ZipContainercFzT13containerDataV10Foundation4Data_S0_">init(containerData:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Tries to open ZIP archive and parse its Central Directory. 
-If parsing is successful then <code><a href="../Classes/ZipContainer.html#/s:vC13SWCompression12ZipContainer7entriesGSaVS_8ZipEntry_">entries</a></code> property will contain all directory or file entries found in archive.</p>
+                        <p>Processes ZIP container and returns an array of <code>ContainerEntries</code> (which are actually <code>ZipEntries</code>).</p>
 <div class="aside aside-important">
     <p class="aside-title">Important</p>
-    <p>The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
+    <p>The order of entries is defined by ZIP container and, 
+particularly, by a creator of a given ZIP container.
 It is likely that directories will be encountered earlier than files stored in those directories,
-but one SHOULD NOT assume that this is the case.</p>
-
-</div>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-One can check this by looking at the size of entry&rsquo;s data (it should be 0 for directory) AND
-the last character of entry&rsquo;s name (it should be &lsquo;/&rsquo;). If all of these is true then entry is likely to be a directory.</p>
-
-</div>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.</p>
+but one SHOULD NOT rely on any particular order.</p>
 
 </div>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/ZipError.html">ZipError</a></code> or <code><a href="../Enums/DeflateError.html">DeflateError</a></code> depending on the type of inconsistency in data.
-It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.</p>
+    <p><code><a href="../Enums/ZipError.html">ZipError</a></code> or any other error associated with compression type,
+depending on the type of the problem.
+It may indicate that either container is damaged or it might not be ZIP container at all.</p>
 
 </div>
 
@@ -243,7 +220,7 @@ It may indicate that either the container is damaged or it might not be ZIP cont
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">containerData</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">container</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -254,148 +231,12 @@ It may indicate that either the container is damaged or it might not be ZIP cont
                             <tr>
                               <td>
                                 <code>
-                                <em>containerData</em>
+                                <em>container</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>Data of ZIP container.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZipContainer.swift#L103-L132">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FC13SWCompression12ZipContainer4dataFzT3forVS_8ZipEntry_V10Foundation4Data"></a>
-                    <a name="//apple_ref/swift/Method/data(for:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FC13SWCompression12ZipContainer4dataFzT3forVS_8ZipEntry_V10Foundation4Data">data(for:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Returns data associated with provided ZipEntry.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Returned <code>Data</code> object with the size of 0 can either indicate that the entry is an empty file
-or it is a directory.</p>
-
-</div>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/ZipError.html">ZipError</a></code> or <code><a href="../Enums/DeflateError.html">DeflateError</a></code> depending on the type of inconsistency in data.
-An error can indicate that the container is damaged.</p>
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">data</span><span class="p">(</span><span class="k">for</span> <span class="nv">zipEntry</span><span class="p">:</span> <span class="kt"><a href="../Structs/ZipEntry.html">ZipEntry</a></span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>zipEntry</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>file or directory entry from current container.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZipContainer.swift#L145-L204">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:ZFC13SWCompression12ZipContainer4openFzT13containerDataV10Foundation4Data_GSaT9entryNameSS9entryDataS2___"></a>
-                    <a name="//apple_ref/swift/Method/open(containerData:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC13SWCompression12ZipContainer4openFzT13containerDataV10Foundation4Data_GSaT9entryNameSS9entryDataS2___">open(containerData:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Processes ZIP archive (container) and returns an array of tuples <code>(String, Data)</code>.
-First member of a tuple is entry&rsquo;s name, second member is entry&rsquo;s data.</p>
-<div class="aside aside-important">
-    <p class="aside-title">Important</p>
-    <p>The order of entries is defined by ZIP archive and, particularly, creator of given ZIP container.
-It is likely that directories will be encountered earlier than files stored in those directories,
-but one SHOULD NOT assume that this is the case.</p>
-
-</div>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Currently, there is no universal (platform and file system independent) method to determine if entry is a directory.
-One can check this by looking at the size of entry&rsquo;s data (it should be 0 for directory) AND
-the last character of entry&rsquo;s name (it should be &lsquo;/&rsquo;). If all of these is true then entry is likely to be a directory.</p>
-
-</div>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Only ZIP containers complying to ISO/IEC 21320-1 standard are supported.</p>
-
-</div>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/ZipError.html">ZipError</a></code> or <code><a href="../Enums/DeflateError.html">DeflateError</a></code> depending on the type of inconsistency in data.
-It may indicate that either the container is damaged or it might not be ZIP container or compressed with Deflate at all.</p>
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">containerData</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[(</span><span class="nv">entryName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">entryData</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>containerData</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Data of ZIP container.</p>
+                                  <p>ZIP container&rsquo;s data.</p>
                                 </div>
                               </td>
                             </tr>
@@ -404,10 +245,10 @@ It may indicate that either the container is damaged or it might not be ZIP cont
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>Array of pairs (tuples) where first member is <code>entryName</code> and second member is <code>entryData</code>.</p>
+                        <p>Array of <code><a href="../Classes/ZipEntry.html">ZipEntry</a></code> as an array of <code><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZipContainer.swift#L227-L234">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L191-L221">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

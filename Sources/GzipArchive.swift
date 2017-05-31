@@ -9,37 +9,33 @@
 import Foundation
 
 /**
- Error happened during unarchiving gzip archive.
- It may indicate that either the data is damaged or it might not be gzip archive at all.
-
- - `WrongMagic`: first two bytes of archive were not 31 and 139.
- - `WrongCompressionMethod`: unsupported compression method (not 8 aka Deflate).
- - `WrongFlags`: unsupported flags (reserved flags weren't 0).
- - `WrongHeaderCRC`: computed Cyclic Redundancy Check of archive's header
-        didn't match the archive's value.
- - `WrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
-    Associated value contains already decompressed data.
- - `WrongISize`: size of uncompressed data modulo 2^32 didn't match the archive's value.
+ Represents an error, which happened during processing GZip archive.
+ It may indicate that either archive is damaged or it might not be GZip archive at all.
  */
 public enum GzipError: Error {
-    /// First two bytes of archive were not 31 and 139.
-    case WrongMagic
-    /// Compression method was other than 8 which is the only supported one.
-    case WrongCompressionMethod
-    /// Reserved flags bits were not equal to 0.
-    case WrongFlags
-    /// Computed CRC of header didn't match the value stored in the archive.
-    case WrongHeaderCRC
+    /// First two bytes ('magic' number) of archive isn't 31 and 139.
+    case wrongMagic
+    /// Compression method used in archive is different from Deflate, which is the only supported one.
+    case wrongCompressionMethod
     /**
-     Computed CRC of uncompressed data didn't match the value stored in the archive.
-     Associated value contains already decompressed data.
+     One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
+     that archive uses a newer version of GZip format.
      */
-    case WrongCRC(Data)
-    /// Computed isize didn't match the value stored in the archive.
-    case WrongISize
+    case wrongFlags
+    /// Computed CRC of archive's header doesn't match the value stored in archive.
+    case wrongHeaderCRC
+    /**
+     Computed checksum of uncompressed data doesn't match the value stored in archive.
+     Associated value of the error contains already decompressed data.
+     */
+    case wrongCRC(Data)
+    /// Computed 'isize' didn't match the value stored in the archive.
+    case wrongISize
+    /// Either specified file name or comment cannot be encoded using ISO Latin-1 encoding.
+    case cannotEncodeISOLatin1
 }
 
-/// A structure which provides information about gzip archive.
+/// Represents a GZip archive's header.
 public struct GzipHeader {
 
     struct Flags {
@@ -50,82 +46,97 @@ public struct GzipHeader {
         static let fcomment: UInt8 = 0x10
     }
 
-    /// Supported compression methods in gzip archive.
+    /// Supported compression methods in GZip archive.
     public enum CompressionMethod: Int {
         /// The only one supported compression method (Deflate).
         case deflate = 8
     }
 
-    /// Type of file system on which gzip archive was created.
+    /// Type of file system on which GZip archive was created.
     public enum FileSystemType: Int {
-        /// One of many Linux systems. (It seems like modern macOS systems also fall into this category).
+        /**
+         One of many UNIX-like systems.
+
+         - Note: It seems like modern macOS systems also fall into this category.
+         */
         case unix = 3
-        /// Older Macintosh (Mac OS, OS X) systems.
+        /// Older Macintosh systems.
         case macintosh = 7
         /// File system used in Microsoft(TM)(R)(C) Windows(TM)(R)(C).
         case ntfs = 11
         /// File system was unknown to the archiver.
         case unknown = 255
-        /// File system was one of the rare systems..
+        /// File system is one of the rare systems.
         case other = 256
     }
 
-    /// Compression method of archive. Always equals to `.deflate`.
+    /// Compression method of archive. Currently, always equals to `.deflate`.
     public let compressionMethod: CompressionMethod
-    // TODO: Make it optional.
-    /// The most recent modification time of the original file.
-    public let modificationTime: Date
-    /// Type of file system on which compression took place.
-    public let osType: FileSystemType
-    /// Name of the original file.
-    public let originalFileName: String?
-    /// Comment inside the archive.
-    public let comment: String?
 
     /**
-        Initializes the structure with the values of first 'member' in gzip archive presented in `archiveData`.
+     The most recent modification time of the original file. 
+     If corresponding archive's field is set to 0, which means that no time was specified,
+     then this property is `nil`.
+     */
+    public let modificationTime: Date?
 
-        If data passed is not actually a gzip archive, `GzipError` will be thrown.
+    /// Type of file system on which archivation took place.
+    public let osType: FileSystemType
 
-        - Parameter archiveData: Data compressed with gzip.
+    /// Name of the original file. If archive doesn't contain file's name, then `nil`.
+    public let fileName: String?
 
-        - Throws: `GzipError`. It may indicate that either the data is damaged or
-        it might not be compressed with gzip at all.
+    /// Comment stored in archive. If archive doesn't contain any comment, then `nil`.
+    public let comment: String?
+
+    /// Check if file is likely to be text file or ASCII-file.
+    public let isTextFile: Bool
+
+    /**
+     Initializes the structure with the values from the first 'member' of GZip `archive`.
+
+     If data passed is not actually a GZip archive, `GzipError` will be thrown.
+
+     - Parameter archive: Data archived with GZip.
+
+     - Throws: `GzipError`. It may indicate that either archive is damaged or
+     it might not be archived with GZip at all.
     */
-    public init(archiveData: Data) throws {
-        let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
+    public init(archive data: Data) throws {
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         try self.init(pointerData)
     }
 
     init(_ pointerData: DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromAlignedBytes(count: 2)
-        guard magic == 0x8b1f else { throw GzipError.WrongMagic }
+        guard magic == 0x8b1f else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
         let method = pointerData.alignedByte()
-        guard method == 8 else { throw GzipError.WrongCompressionMethod }
+        guard method == 8 else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
 
         self.compressionMethod = .deflate
 
         let flags = pointerData.alignedByte()
-        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.WrongFlags }
+        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.wrongFlags }
         headerBytes.append(flags)
 
         let mtime = pointerData.intFromAlignedBytes(count: 4)
         for i in 0..<4 {
             headerBytes.append(((mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
         }
-        // TODO: Should be nil in case of mtime == 0.
-        self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+        self.modificationTime = mtime == 0 ? nil : Date(timeIntervalSince1970: TimeInterval(mtime))
 
         let extraFlags = pointerData.alignedByte()
         headerBytes.append(extraFlags)
 
         self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .other
         headerBytes.append(self.osType.rawValue.toUInt8())
+
+        self.isTextFile = flags & Flags.ftext != 0
 
         // Some archives may contain extra fields
         if flags & Flags.fextra != 0 {
@@ -147,9 +158,9 @@ public struct GzipHeader {
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
             }
-            self.originalFileName = String(data: Data(fnameBytes), encoding: .utf8)
+            self.fileName = String(data: Data(fnameBytes), encoding: .utf8)
         } else {
-            self.originalFileName = nil
+            self.fileName = nil
         }
 
         // Some archives may contain comment (this part also ends with zero)
@@ -171,80 +182,147 @@ public struct GzipHeader {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
             let crc16 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 2))
             let ourCRC32 = CheckSums.crc32(headerBytes)
-            guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.WrongHeaderCRC }
+            guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }
 
 }
 
-/// Provides unarchive function for GZip archives.
-public final class GzipArchive: Archive {
+/// Provides unarchive and archive functions for GZip archives.
+public class GzipArchive: Archive {
 
     /**
-     Unarchives gzip archive stored in `archiveData`.
+     Unarchives GZip archive.
 
-     If data passed is not actually a gzip archive, `GzipError` will be thrown.
+     If data passed is not actually a GZip archive, `GzipError` will be thrown.
 
-     If data inside the archive is not actually compressed with DEFLATE algorithm, `DeflateError` will be thrown.
+     If data in archive is not actually compressed with Deflate algorithm, `DeflateError` will be thrown.
 
      - Note: This function is specification compliant.
 
-     - Parameter archiveData: Data compressed with gzip.
+     - Parameter archive: Data archived with GZip.
 
-     - Throws: `DeflateError` or `GzipError` depending on the type of inconsistency in data.
-     It may indicate that either the data is damaged or it might not be compressed with gzip or DEFLATE at all.
+     - Throws: `DeflateError` or `GzipError` depending on the type of the problem.
+     It may indicate that either archive is damaged or
+     it might not be archived with GZip or compressed with Deflate at all.
 
      - Returns: Unarchived data.
      */
-    public static func unarchive(archiveData data: Data) throws -> Data {
+    public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        var out: [UInt8] = []
+        _ = try GzipHeader(pointerData)
 
-        while !pointerData.isAtTheEnd {
-            _ = try GzipHeader(pointerData)
+        let memberData = Data(bytes: try Deflate.decompress(&pointerData))
 
-            let memberData = try Deflate.decompress(&pointerData)
+        let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+        guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
 
-            let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.WrongCRC(Data(bytes: out)) }
+        let isize = pointerData.intFromAlignedBytes(count: 4)
+        guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
 
-            let isize = pointerData.intFromAlignedBytes(count: 4)
-            guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.WrongISize }
-
-            out.append(contentsOf: memberData)
-        }
-
-        return Data(bytes: out)
+        return memberData
     }
 
     /**
-     Archives `data` into GZip archive. Data will be also compressed with DEFLTATE algorithm.
-     Fields in the header of the resulting archive will be set to default values 
-     (i.e. no mtime, no flags, no file name, unknown OS type). 
-     It will be also specified that the compressor used slowest DEFLATE algorithm.
+     Archives `data` into GZip archive, using various specified options.
+     Data will be also compressed with Deflate algorithm.
+     It will be also specified in archive's header that the compressor used the slowest Deflate algorithm.
      
      If during compression something goes wrong `DeflateError` will be thrown.
+     If either `fileName` or `comment` cannot be encoded with ISO Latin-1 encoding,
+     then `GzipError.cannotEncodeISOLatin1` will be thrown.
 
      - Note: This function is specification compliant.
 
      - Parameter data: Data to compress and archive.
+     - Parameter comment: Additional comment, which will be stored as a separate field in archive.
+     - Parameter fileName: Name of the file which will be archived.
+     - Parameter writeHeaderCRC: Set to true, if you want to store consistency check for archive's header.
+     - Parameter isTextFile: Set to true, if the file which will be archived is text file or ASCII-file.
+     - Parameter osType: Type of the system on which this archive will be created.
+     - Parameter modificationTime: Last time the file was modified.
 
-     - Throws: `DeflateError` if an error was encountered during compression.
+     - Throws: `DeflateError` or `GzipError.cannotEncodeISOLatin1` depending on the type of of the problem.
 
-     - Returns: Data object with resulting archive.
+     - Returns: Resulting archive's data.
      */
-    public static func archive(data: Data) throws -> Data {
-        let out: [UInt8] = [
+    public static func archive(data: Data, comment: String? = nil, fileName: String? = nil,
+                               writeHeaderCRC: Bool = false, isTextFile: Bool = false,
+                               osType: GzipHeader.FileSystemType? = nil, modificationTime: Date? = nil) throws -> Data {
+        var flags: UInt8 = 0
+
+        var commentData = Data()
+        if var comment = comment {
+            flags |= 1 << 4
+            if comment.characters.last != "\u{00}" {
+                comment.append("\u{00}")
+            }
+            if let data = comment.data(using: .isoLatin1) {
+                commentData = data
+            } else {
+                throw GzipError.cannotEncodeISOLatin1
+            }
+        }
+
+        var fileNameData = Data()
+        if var fileName = fileName {
+            flags |= 1 << 3
+            if fileName.characters.last != "\u{00}" {
+                fileName.append("\u{00}")
+            }
+            if let data = fileName.data(using: .isoLatin1) {
+                fileNameData = data
+            } else {
+                throw GzipError.cannotEncodeISOLatin1
+            }
+        }
+
+        if writeHeaderCRC {
+            flags |= 1 << 1
+        }
+
+        if isTextFile {
+            flags |= 1 << 0
+        }
+
+        var os: UInt8 = 255
+        if let osType = osType {
+            os = (osType == .other ? 255 : osType.rawValue).toUInt8()
+        }
+
+        var mtimeBytes: [UInt8] = [0, 0, 0, 0]
+        if let modificationTime = modificationTime {
+            let timeInterval = Int(modificationTime.timeIntervalSince1970)
+            for i in 0..<4 {
+                mtimeBytes[i] = UInt8(truncatingBitPattern: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
+            }
+        }
+
+        var headerBytes: [UInt8] = [
             0x1f, 0x8b, // 'magic' bytes.
             8, // Compression method (DEFLATE).
-            0, // Flags; currently no flags are set.
-            0, 0, 0, 0, // Mtime; currently timestamp is not set.
-            2, // Extra flags; 2 means that DEFLATE used slowest algorithm.
-            255, // OS Type; set to default value (unknown).
+            flags // Flags; currently no flags are set.
         ]
-        var outData = Data(bytes: out)
+        for i in 0..<4 {
+            headerBytes.append(mtimeBytes[i])
+        }
+        headerBytes.append(2) // Extra flags; 2 means that DEFLATE used slowest algorithm.
+        headerBytes.append(os)
+
+        var outData = Data(bytes: headerBytes)
+
+        outData.append(fileNameData)
+        outData.append(commentData)
+
+        if writeHeaderCRC {
+            let headerCRC = CheckSums.crc32(outData)
+            for i: UInt32 in 0..<2 {
+                outData.append(UInt8((headerCRC & (0xFF << (i * 8))) >> (i * 8)))
+            }
+        }
+
         outData.append(try Deflate.compress(data: data))
 
         let crc32 = CheckSums.crc32(data)

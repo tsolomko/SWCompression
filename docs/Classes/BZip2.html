@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -154,11 +172,11 @@
             <h1>BZip2</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">BZip2</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BZip2</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Provides function to decompress data, which were compressed using BZip2.</p>
+            <p>Provides decompression function for BZip2 algorithm.</p>
 
           </div>
         </section>
@@ -170,9 +188,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZFC13SWCompression5BZip210decompressFzT14compressedDataV10Foundation4Data_S2_"></a>
-                    <a name="//apple_ref/swift/Method/decompress(compressedData:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZFC13SWCompression5BZip210decompressFzT14compressedDataV10Foundation4Data_S2_">decompress(compressedData:)</a>
+                    <a name="/s:ZFC13SWCompression5BZip210decompressFzT4dataV10Foundation4Data_S2_"></a>
+                    <a name="//apple_ref/swift/Method/decompress(data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC13SWCompression5BZip210decompressFzT4dataV10Foundation4Data_S2_">decompress(data:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -180,13 +198,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Decompresses <code>compressedData</code> with BZip2 algortihm.</p>
+                        <p>Decompresses <code>data</code> using BZip2 algortihm.</p>
 
-<p>If data passed is not actually compressed with BZip2, <code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> will be thrown.</p>
+<p>If <code>data</code> is not actually compressed with BZip2, <code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> will be thrown.</p>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> if unexpected byte (bit) sequence was encountered in <code>compressedData</code>.
-It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.</p>
+    <p><code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> if unexpected byte (bit) sequence was encountered in <code>data</code>.
+It may indicate that either data is damaged or it might not be compressed with BZip2 at all.</p>
 
 </div>
 
@@ -195,7 +213,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decompress</span><span class="p">(</span><span class="n">compressedData</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decompress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
 
                         </div>
                       </div>
@@ -206,7 +224,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                             <tr>
                               <td>
                                 <code>
-                                <em>compressedData</em>
+                                <em>data</em>
                                 </code>
                               </td>
                               <td>
@@ -223,7 +241,7 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <p>Decompressed data.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/BZip2.swift#L61-L97">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L56-L60">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

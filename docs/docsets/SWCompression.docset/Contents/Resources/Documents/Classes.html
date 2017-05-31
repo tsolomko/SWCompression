@@ -68,10 +68,22 @@
                 <a class="nav-group-task-link" href="Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZlibArchive.html">ZlibArchive</a>
@@ -97,6 +109,9 @@
                 <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -114,6 +129,12 @@
                 <a class="nav-group-task-link" href="Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -129,9 +150,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader.html">ZlibHeader</a>
@@ -173,7 +191,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides function to decompress data, which were compressed with LZMA2</p>
+                        <p>Provides decompression function for LZMA2 algorithm.</p>
 
                         <a href="Classes/LZMA2.html" class="slightly-smaller">See more</a>
                       </div>
@@ -181,12 +199,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">LZMA2</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">LZMA2</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/LZMA2.swift#L38-L106">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/LZMA2.swift#L32-L79">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -208,7 +226,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides unarchive function for GZip archives.</p>
+                        <p>Provides unarchive and archive functions for GZip archives.</p>
 
                         <a href="Classes/GzipArchive.html" class="slightly-smaller">See more</a>
                       </div>
@@ -216,12 +234,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GzipArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">GzipArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L181-L267">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L192-L345">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -230,6 +248,37 @@
             </div>
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C13SWCompression8ZipEntry"></a>
+                    <a name="//apple_ref/swift/Class/ZipEntry" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression8ZipEntry">ZipEntry</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents either a file or directory entry in ZIP container.</p>
+
+                        <a href="Classes/ZipEntry.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipEntry</span><span class="p">:</span> <span class="kt"><a href="Protocols/ContainerEntry.html">ContainerEntry</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L44-L170">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -243,7 +292,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides function to open ZIP archives (containers).</p>
+                        <p>Provides open function for ZIP containers.</p>
 
                         <a href="Classes/ZipContainer.html" class="slightly-smaller">See more</a>
                       </div>
@@ -251,12 +300,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipContainer</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipContainer</span><span class="p">:</span> <span class="kt"><a href="Protocols/Container.html">Container</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZipContainer.swift#L77-L236">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZipContainer.swift#L173-L223">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -278,7 +327,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides function to decompress data, which were compressed with LZMA</p>
+                        <p>Provides decompression function for LZMA algorithm.</p>
 
                         <a href="Classes/LZMA.html" class="slightly-smaller">See more</a>
                       </div>
@@ -286,12 +335,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">LZMA</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">LZMA</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/LZMA.swift#L44-L90">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/LZMA.swift#L35-L62">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -313,7 +362,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides unarchive function for Zlib archives.</p>
+                        <p>Provides unarchive and archive functions for Zlib archives.</p>
 
                         <a href="Classes/ZlibArchive.html" class="slightly-smaller">See more</a>
                       </div>
@@ -321,12 +370,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ZlibArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZlibArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L125-L189">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L120-L186">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -348,7 +397,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides function to decompress data, which were compressed with DEFLATE.</p>
+                        <p>Provides compression and decompression functions for Deflate algorithm.</p>
 
                         <a href="Classes/Deflate.html" class="slightly-smaller">See more</a>
                       </div>
@@ -356,12 +405,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Deflate</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Deflate</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/Deflate.swift#L32-L518">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/Deflate.swift#L27-L522">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -383,7 +432,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Provides function to decompress data, which were compressed using BZip2.</p>
+                        <p>Provides decompression function for BZip2 algorithm.</p>
 
                         <a href="Classes/BZip2.html" class="slightly-smaller">See more</a>
                       </div>
@@ -391,12 +440,78 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">BZip2</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BZip2</span><span class="p">:</span> <span class="kt"><a href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/BZip2.swift#L47-L277">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/BZip2.swift#L42-L285">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C13SWCompression8TarEntry"></a>
+                    <a name="//apple_ref/swift/Class/TarEntry" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression8TarEntry">TarEntry</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents either a file or directory entry in TAR container.</p>
+
+                        <a href="Classes/TarEntry.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TarEntry</span><span class="p">:</span> <span class="kt"><a href="Protocols/ContainerEntry.html">ContainerEntry</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/TarContainer.swift#L31-L283">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C13SWCompression12TarContainer"></a>
+                    <a name="//apple_ref/swift/Class/TarContainer" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression12TarContainer">TarContainer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Provides open function for TAR containers.</p>
+
+                        <a href="Classes/TarContainer.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TarContainer</span><span class="p">:</span> <span class="kt"><a href="Protocols/Container.html">Container</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/TarContainer.swift#L286-L334">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -426,12 +541,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">XZArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">XZArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/XZArchive.swift#L58-L346">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/XZArchive.swift#L48-L367">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

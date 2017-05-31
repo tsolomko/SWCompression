@@ -2,12 +2,13 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Swift 3](https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg)](https://developer.apple.com/swift/)
-[![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression) [![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
+[![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression)
+[![codecov](https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg)](https://codecov.io/gh/tsolomko/SWCompression)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-A framework which contains implementations of (de)compression algorithms.
+A framework which contains implementations of (de)compression algorithms and functions which parse various archives and containers.
 
 __Developed with Swift.__
 
@@ -29,7 +30,8 @@ And here comes SWCompression: no Objective-C, pure Swift.
 Features
 ----------------
 - Containers:
-  - ZIP (complying to ISO/IEC 21320 standard)
+  - ZIP
+  - TAR
 - Decompression algorithms:
   - LZMA/LZMA2
   - Deflate
@@ -41,9 +43,9 @@ Features
   - GZip
   - Zlib
 - Platform independent.
-- _Swift only._
+- _Written with Swift only._
 
-By the way, it seems like GZip, Deflate and Zlib implementations are **specification compliant**.
+By the way, it seems like GZip, Deflate and Zlib implementations are __specification compliant__.
 
 Installation
 ----------------
@@ -62,6 +64,8 @@ Available subspecs:
   - SWCompression/Gzip
   - SWCompression/Zlib
   - SWCompression/BZip2
+  - SWCompression/ZIP
+  - SWCompression/TAR
 
 You can add some or all of them instead of `pod 'SWCompression'`
 
@@ -69,7 +73,8 @@ Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions. It is included in every other subspec and should not be specified directly in Podfile.
+_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions.
+It is included in every other subspec and should not be specified directly in Podfile.
 
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
@@ -87,12 +92,24 @@ import PackageDescription
 let package = Package(
     name: "PackageName",
     dependencies: [
-        .Package(url: "https://github.com/tsolomko/SWCompression.git", majorVersion: 2)
+        .Package(url: "https://github.com/tsolomko/SWCompression.git", majorVersion: 3)
     ]
 )
 ```
 
 More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+
+SWCompression/ZIP and compression methods
+-------
+Deflate is a default compression method of ZIP containers.
+
+This means, that if you use CocoaPods, when installing SWCompression/ZIP it will install SWCompression/Deflate as a dependency.
+
+However, ZIP containers can also support LZMA and BZip2.
+So if you want to enable them in your Pods configuration you need to include SWCompression/LZMA and/or SWCompression/Deflate.
+
+If you use Carthage or Swift Package Manager you always have the full package,
+and ZIP will be built with both BZip2 and LZMA support.
 
 Usage
 -------
@@ -102,12 +119,11 @@ If you'd like to decompress "deflated" data just use:
 ```swift
 let data = try! Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
                      options: .mappedIfSafe)
-let decompressedData = try? Deflate.decompress(compressedData: data)
+let decompressedData = try? Deflate.decompress(data: data)
 ```
 
 _Note:_ It is __highly recommended__ to specify `Data.ReadingOptions.mappedIfSafe`,
-especially if you are working with large files,
-so you don't run out of system memory.
+especially if you are working with large files, so you don't run out of system memory.
 
 However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:
@@ -116,7 +132,7 @@ So, in case of GZip archive you should use:
 let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 ```
 
-One final note: every unarchive/decompress function can throw an error and
+One final note: every SWCompression function can throw an error and
 you are responsible for handling them.
 
 #### Documentation
@@ -124,8 +140,7 @@ Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
 
 #### Handling Errors
-If you look at list of available error types and their cases,
-you may be frightened by their number.
+If you look at list of available error types and their cases, you may be frightened by their number.
 However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic purposes.
 
 Thus, you only need to handle the most common type of error for your archive/algorithm.
@@ -135,7 +150,7 @@ For example:
 do {
   let data = try Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
                       options: .mappedIfSafe)
-  let decompressedData = XZArchive.unarchive(archiveData: data)
+  let decompressedData = XZArchive.unarchive(archive: data)
 } catch let error as XZError {
   <handle XZ related error here>
 } catch let error {
@@ -150,7 +165,7 @@ which uses SWCompression for unarchiving several types of archives.
 Why is it so slow?
 ------------------
 Version 2.0 came with a great performance improvement.
-Just look at the test results in 'Tests/Test Result'.
+Just look at the [Tests Results](Tests/Results.md).
 So if it's slow the first thing you should do is to make sure you are using version >= 2.0.
 
 Is it still slow?
@@ -165,7 +180,9 @@ To sum up, it is __highly recommended__ to build SWCompression with 'Release' co
 
 Future plans
 -------------
-- Tar unarchiving.
+- Better Deflate compression.
+- Support for additional attributes in containers.
+- 7zip containers.
 - BZip2 compression.
 - Something else...
 
@@ -181,3 +198,6 @@ References
 - [.ZIP Application Note](http://www.pkware.com/appnote)
 - [ISO/IEC 21320-1](http://www.iso.org/iso/catalogue_detail.htm?csnumber=60101)
 - [List of defined ZIP extra fields](https://opensource.apple.com/source/zip/zip-6/unzip/unzip/proginfo/extra.fld)
+- [Wikipedia article about TAR](https://en.wikipedia.org/wiki/Tar_(computing))
+- [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
+- [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)

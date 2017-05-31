@@ -1,5 +1,5 @@
 //
-//  XzArchive.swift
+//  XZArchive.swift
 //  SWCompression
 //
 //  Created by Timofey Solomko on 18.12.16.
@@ -9,176 +9,197 @@
 import Foundation
 
 /**
- Error happened during unarchiving XZ archive.
- It may indicate that either the data is damaged or it might not be XZ archive at all.
-
- - `WrongMagic`: 'magic' bytes in archive's header or footer weren't equal to predefined value.
- - `WrongArchiveInfo`: incorrect value of one of archive's special field (in block, index, header or footer).
- - `FieldReservedValue`: value of one of archive's special field 
-    (in block, index, header or footer) had reserved value.
- - `WrongInfoCRC`: incorrect value of one of archive's special field (in block, index, header or footer).
- - `WrongFilterID`: unsupported value of filter ID (not LZMA2's 0x21).
- - `CheckTypeSHA256`: checksum's type was SHA-256.
- - `WrongDataSize`: size of compressed or decompressed data wasn't the same as specified in block.
- - `WrongCheck`: computed checksum of uncompressed data didn't match the archive's value.
-    Associated value contains already decompressed data.
- - `WrongPadding`: unsupported padding of one of structures in the archive.
- - `MultiByteIntegerError`: error happened during reading of one of so called 'multi-byte' numbers.
+ Represents an error, which happened during unarchiving XZ archive.
+ It may indicate that either archive is damaged or it might not be XZ archive at all.
  */
 public enum XZError: Error {
-    /// Either magic number in header or footer was not equal to predefined value.
-    case WrongMagic
-    /// One of special fields of archive had an incorrect value.
-    case WrongArchiveInfo
-    /// One of special fields of archive had a reserved value.
-    case FieldReservedValue
-    /// Checksum of one of special fields of archive was incorrect.
-    case WrongInfoCRC
-    /// ID of filter(s) used in archvie was unsupported.
-    case WrongFilterID
-    /// Type of checksum of archive was SHA-256.
-    case CheckTypeSHA256
+    /// Either 'magic' number in header or footer isn't equal to a predefined value.
+    case wrongMagic
+    /// One of the fields in archive has an incorrect value.
+    case wrongFieldValue
     /**
-     Either size of decompressed data was not equal to specified one in block header or
-     amount of compressed data read was different from the one stored in block header.
-     */
-    case WrongDataSize
+     One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
+     that archive uses a newer version of XZ format.
+    */
+    case fieldReservedValue
+    /// Checksum of one of the fields of archive doesn't match the value stored in archive.
+    case wrongInfoCRC
+    /// Filter used in archvie is unsupported.
+    case wrongFilterID
+    /// Archive uses SHA-256 checksum which is unsupported.
+    case checkTypeSHA256
     /**
-     Computed checksum of uncompressed data didn't match the value stored in the archive.
-     Associated value contains already decompressed data.
+     Either size of decompressed data isn't equal to the one specified in archive or
+     amount of compressed data read is different from the one stored in archive.
      */
-    case WrongCheck(Data)
-    /// Unsupported padding of a structure in the archive.
-    case WrongPadding
+    case wrongDataSize
+    /**
+     Computed checksum of uncompressed data doesn't match the value stored in the archive.
+     Associated value of the error contains already decompressed data.
+     */
+    case wrongCheck(Data)
+    /// Padding (null-bytes appended to an archive's structure) is incorrect.
+    case wrongPadding
     /// Either null byte encountered or exceeded maximum amount bytes during reading multi byte number.
-    case MultiByteIntegerError
+    case multiByteIntegerError
 }
 
 /// Provides unarchive function for XZ archives.
-public final class XZArchive: Archive {
+public class XZArchive: Archive {
 
     /**
-     Unarchives xz archive stored in `archiveData`.
+     Unarchives XZ archive.
 
-     If data passed is not actually a xz archive, `XZError` will be thrown.
-     If filters other than LZMA2 are used in archive then `XZError.WrongFilterID` will be thrown.
+     If data passed is not actually XZ archive, `XZError` will be thrown.
+     Particularly, if filters other than LZMA2 are used in archive,
+     then `XZError.wrongFilter` will be thrown.
 
-     If data inside the archive is not actually compressed with LZMA2,
-     `LZMAError` or `LZMA2Error` will be thrown.
+     If an error happens during LZMA2 decompression,
+     then `LZMAError` or `LZMA2Error` will be thrown.
 
-     - Parameter archiveData: Data compressed with xz.
+     - Parameter archive: Data archived using XZ format.
 
-     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of inconsistency in data.
-     It may indicate that either the data is damaged or it might not be compressed with xz or LZMA(2) at all.
+     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
+     It may indicate that either the archive is damaged or it might not be compressed with XZ or LZMA(2) at all.
 
      - Returns: Unarchived data.
      */
-    public static func unarchive(archiveData data: Data) throws -> Data {
+    public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var out: [UInt8] = []
 
-        streamLoop: while !pointerData.isAtTheEnd {
-            // STREAM HEADER
-            let streamHeader = try processStreamHeader(&pointerData)
-
-            // BLOCKS AND INDEX
-            /// Zero value of blockHeaderSize means that we encountered INDEX.
-            var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
-            var indexSize = -1
-            while true {
-                let blockHeaderSize = pointerData.alignedByte()
-                if blockHeaderSize == 0 {
-                    indexSize = try processIndex(blockInfos, &pointerData)
-                    break
+        // First, we should check footer magic bytes.
+        // If they are wrong, then file cannot be 'undamaged'.
+        // But the file may end with padding, so we need to account for this.
+        pointerData.index = pointerData.size - 1
+        var paddingBytes = 0
+        while true {
+            let byte = pointerData.alignedByte()
+            if byte != 0 {
+                if paddingBytes % 4 != 0 {
+                    throw XZError.wrongPadding
                 } else {
-                    let blockInfo = try processBlock(blockHeaderSize, &pointerData)
-                    out.append(contentsOf: blockInfo.blockData)
-                    let checkSize: Int
-                    switch streamHeader.checkType {
-                    case 0x00:
-                        checkSize = 0
-                        break
-                    case 0x01:
-                        checkSize = 4
-                        let check = pointerData.uint32FromAlignedBytes(count: 4)
-                        guard CheckSums.crc32(blockInfo.blockData) == check
-                            else { throw XZError.WrongCheck(Data(bytes: out)) }
-                    case 0x04:
-                        checkSize = 8
-                        let check = pointerData.uint64FromAlignedBytes(count: 8)
-                        guard CheckSums.crc64(blockInfo.blockData) == check
-                            else { throw XZError.WrongCheck(Data(bytes: out)) }
-                    case 0x0A:
-                        throw XZError.CheckTypeSHA256
-                    default:
-                        throw XZError.FieldReservedValue
-                    }
-                    blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+                    break
                 }
             }
-
-            // STREAM FOOTER
-            try processFooter(streamHeader, indexSize, &pointerData)
-
-            guard !pointerData.isAtTheEnd else { break streamLoop }
-
-            // STREAM PADDING
-            var paddingBytes = 0
-            while true {
-                let byte = pointerData.alignedByte()
-                if byte != 0 {
-                    if paddingBytes % 4 != 0 {
-                        throw XZError.WrongPadding
-                    } else {
-                        break
-                    }
-                }
-                paddingBytes += 1
-            }
-            pointerData.index -= 1
+            paddingBytes += 1
+            pointerData.index -= 2
         }
+        pointerData.index -= 2
+        guard pointerData.alignedBytes(count: 2) == [0x59, 0x5A]
+            else { throw XZError.wrongMagic }
+
+        // Let's now go to the start of the file.
+        pointerData.index = 0
+
+//        streamLoop: while !pointerData.isAtTheEnd {
+        // STREAM HEADER
+        let streamHeader = try processStreamHeader(&pointerData)
+
+        // BLOCKS AND INDEX
+        /// Zero value of blockHeaderSize means that we encountered INDEX.
+        var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
+        var indexSize = -1
+        while true {
+            let blockHeaderSize = pointerData.alignedByte()
+            if blockHeaderSize == 0 {
+                indexSize = try processIndex(blockInfos, &pointerData)
+                break
+            } else {
+                let blockInfo = try processBlock(blockHeaderSize, &pointerData)
+                out.append(contentsOf: blockInfo.blockData)
+                let checkSize: Int
+                switch streamHeader.checkType {
+                case 0x00:
+                    checkSize = 0
+                    break
+                case 0x01:
+                    checkSize = 4
+                    let check = pointerData.uint32FromAlignedBytes(count: 4)
+                    guard CheckSums.crc32(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x04:
+                    checkSize = 8
+                    let check = pointerData.uint64FromAlignedBytes(count: 8)
+                    guard CheckSums.crc64(blockInfo.blockData) == check
+                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                case 0x0A:
+                    throw XZError.checkTypeSHA256
+                default:
+                    throw XZError.fieldReservedValue
+                }
+                blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+            }
+        }
+
+        // STREAM FOOTER
+        try processFooter(streamHeader, indexSize, &pointerData)
+
+//            guard !pointerData.isAtTheEnd else { break streamLoop }
+//
+//            // STREAM PADDING
+//            paddingBytes = 0
+//            while true {
+//                let byte = pointerData.alignedByte()
+//                if byte != 0 {
+//                    if paddingBytes % 4 != 0 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break
+//                    }
+//                }
+//                if pointerData.isAtTheEnd {
+//                    if byte != 0 || paddingBytes % 4 != 3 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break streamLoop
+//                    }
+//                }
+//                paddingBytes += 1
+//            }
+//            pointerData.index -= 1
+//        }
 
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: Int, flagsCRC: UInt32) {
+    private static func processStreamHeader(_ pointerData: inout DataWithPointer) throws -> (checkType: UInt8, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.uint64FromAlignedBytes(count: 6) == 0x005A587A37FD
-            else { throw XZError.WrongMagic }
+            else { throw XZError.wrongMagic }
 
-        // First byte of flags must be equal to zero.
-        guard pointerData.alignedByte() == 0
-            else { throw XZError.FieldReservedValue }
+        let flagsBytes = pointerData.alignedBytes(count: 2)
 
-        // Next four bits indicate type of redundancy check.
-        let checkType = pointerData.intFromBits(count: 4)
+        // First, we need to check for corruption in flags,
+        //  so we compare CRC32 of flags to the value stored in archive.
+        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
+        guard CheckSums.crc32(flagsBytes) == flagsCRC
+            else { throw XZError.wrongInfoCRC }
+
+        // If data is not corrupted, then some bits must be equal to zero.
+        guard flagsBytes[0] == 0 && flagsBytes[1] & 0xF0 == 0
+            else { throw XZError.fieldReservedValue }
+
+        // Four bits of second flags byte indicate type of redundancy check.
+        let checkType = flagsBytes[1] & 0x0F
         switch checkType {
         case 0x00, 0x01, 0x04, 0x0A:
             break
         default:
-            throw XZError.FieldReservedValue
+            throw XZError.fieldReservedValue
         }
-
-        // Final four bits must be equal to zero.
-        guard pointerData.intFromBits(count: 4) == 0
-            else { throw XZError.FieldReservedValue }
-
-        // CRC-32 of flags must be equal to the value in archive.
-        let flagsCRC = pointerData.uint32FromAlignedBytes(count: 4)
-        guard CheckSums.crc32([0, checkType.toUInt8()]) == flagsCRC
-            else { throw XZError.WrongInfoCRC }
 
         return (checkType, flagsCRC)
     }
 
     private static func processBlock(_ blockHeaderSize: UInt8,
-                                     _ pointerData: inout DataWithPointer)  throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
+                                     _ pointerData: inout DataWithPointer) throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
         var blockBytes: [UInt8] = []
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
-            else { throw XZError.WrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
         let realBlockHeaderSize = (blockHeaderSize + 1) * 4
 
         let blockFlags = pointerData.alignedByte()
@@ -189,7 +210,7 @@ public final class XZArchive: Archive {
          */
         let numberOfFilters = blockFlags & 0x03 + 1
         guard blockFlags & 0x3C == 0
-            else { throw XZError.FieldReservedValue }
+            else { throw XZError.fieldReservedValue }
 
         /// Should match size of compressed data.
         var compressedSize = -1
@@ -197,7 +218,7 @@ public final class XZArchive: Archive {
             let compressedSizeDecodeResult = try pointerData.multiByteDecode()
             compressedSize = compressedSizeDecodeResult.multiByteInteger
             guard compressedSize > 0
-                else { throw XZError.WrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             blockBytes.append(contentsOf: compressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -207,7 +228,7 @@ public final class XZArchive: Archive {
             let uncompressedSizeDecodeResult = try pointerData.multiByteDecode()
             uncompressedSize = uncompressedSizeDecodeResult.multiByteInteger
             guard uncompressedSize > 0
-                else { throw XZError.WrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             blockBytes.append(contentsOf: uncompressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -217,7 +238,7 @@ public final class XZArchive: Archive {
             let filterID = filterIDTuple.multiByteInteger
             blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
             guard UInt64(filterID) < 0x4000000000000000
-                else { throw XZError.WrongFilterID }
+                else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
             switch filterID {
             case 0x21: // LZMA2
@@ -231,7 +252,7 @@ public final class XZArchive: Archive {
                 }
                 filters.append(closure)
             default:
-                throw XZError.WrongFilterID
+                throw XZError.wrongFilterID
             }
         }
 
@@ -239,13 +260,13 @@ public final class XZArchive: Archive {
         while pointerData.index - blockHeaderStartIndex < realBlockHeaderSize.toInt() - 4 {
             let byte = pointerData.alignedByte()
             guard byte == 0x00
-                else { throw XZError.WrongPadding }
+                else { throw XZError.wrongPadding }
             blockBytes.append(byte)
         }
 
         let blockHeaderCRC = pointerData.uint32FromAlignedBytes(count: 4)
         guard CheckSums.crc32(blockBytes) == blockHeaderCRC
-            else { throw XZError.WrongInfoCRC }
+            else { throw XZError.wrongInfoCRC }
 
         var intResult = pointerData
         let compressedDataStart = pointerData.index
@@ -254,11 +275,11 @@ public final class XZArchive: Archive {
             intResult = DataWithPointer(array: &arrayResult, bitOrder: intResult.bitOrder)
         }
         guard compressedSize == -1 || compressedSize == pointerData.index - compressedDataStart
-            else { throw XZError.WrongDataSize }
+            else { throw XZError.wrongDataSize }
 
         let out = try filters[numberOfFilters.toInt() - 1](&intResult)
         guard uncompressedSize == -1 || uncompressedSize == out.count
-            else { throw XZError.WrongDataSize }
+            else { throw XZError.wrongDataSize }
 
         let unpaddedSize = pointerData.index - blockHeaderStartIndex
 
@@ -267,7 +288,7 @@ public final class XZArchive: Archive {
             for _ in 0..<paddingSize {
                 let byte = pointerData.alignedByte()
                 guard byte == 0x00
-                    else { throw XZError.WrongPadding }
+                    else { throw XZError.wrongPadding }
             }
         }
 
@@ -281,16 +302,16 @@ public final class XZArchive: Archive {
         indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
         let numberOfRecords = numberOfRecordsTuple.multiByteInteger
         guard numberOfRecords == blockInfos.count
-            else { throw XZError.WrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
         for blockInfo in blockInfos {
             let unpaddedSizeTuple = try pointerData.multiByteDecode()
             guard unpaddedSizeTuple.multiByteInteger == blockInfo.unpaddedSize
-                else { throw XZError.WrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             indexBytes.append(contentsOf: unpaddedSizeTuple.bytesProcessed)
 
             let uncompSizeTuple = try pointerData.multiByteDecode()
             guard uncompSizeTuple.multiByteInteger == blockInfo.uncompSize
-                else { throw XZError.WrongDataSize }
+                else { throw XZError.wrongDataSize }
             indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
         }
 
@@ -299,26 +320,26 @@ public final class XZArchive: Archive {
             for _ in 0..<paddingSize {
                 let byte = pointerData.alignedByte()
                 guard byte == 0x00
-                    else { throw XZError.WrongPadding }
+                    else { throw XZError.wrongPadding }
                 indexBytes.append(byte)
             }
         }
 
         let indexCRC = pointerData.uint32FromAlignedBytes(count: 4)
         guard CheckSums.crc32(indexBytes) == indexCRC
-            else { throw XZError.WrongInfoCRC }
+            else { throw XZError.wrongInfoCRC }
 
         return indexBytes.count + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: UInt32),
+    private static func processFooter(_ streamHeader: (checkType: UInt8, flagsCRC: UInt32),
                                       _ indexSize: Int,
                                       _ pointerData: inout DataWithPointer) throws {
         let footerCRC = pointerData.uint32FromAlignedBytes(count: 4)
         let storedBackwardSize = pointerData.alignedBytes(count: 4)
         let footerStreamFlags = pointerData.alignedBytes(count: 2)
         guard CheckSums.crc32([storedBackwardSize, footerStreamFlags].flatMap { $0 }) == footerCRC
-            else { throw XZError.WrongInfoCRC }
+            else { throw XZError.wrongInfoCRC }
 
         /// Indicates the size of Index field. Should match its real size.
         var realBackwardSize = 0
@@ -328,19 +349,19 @@ public final class XZArchive: Archive {
         realBackwardSize += 1
         realBackwardSize *= 4
         guard realBackwardSize == indexSize
-            else { throw XZError.WrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
 
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
-            else { throw XZError.FieldReservedValue }
-        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType.toUInt8()
-            else { throw XZError.WrongArchiveInfo }
+            else { throw XZError.fieldReservedValue }
+        guard footerStreamFlags[1] & 0x0F == streamHeader.checkType
+            else { throw XZError.wrongFieldValue }
         guard footerStreamFlags[1] & 0xF0 == 0
-            else { throw XZError.FieldReservedValue }
+            else { throw XZError.fieldReservedValue }
 
         // Check footer's magic number
         guard pointerData.intFromAlignedBytes(count: 2) == 0x5A59
-            else { throw XZError.WrongMagic }
+            else { throw XZError.wrongMagic }
     }
 
 }
@@ -357,7 +378,7 @@ extension DataWithPointer {
         while self.prevAlignedByte & 0x80 != 0 {
             let byte = self.alignedByte()
             if i >= 9 || byte == 0x00 {
-                throw XZError.MultiByteIntegerError
+                throw XZError.multiByteIntegerError
             }
             bytes.append(byte)
             result += (byte.toInt() & 0x7F) << (7 * i)

@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -158,15 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during deflate decompression.
-It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.</p>
-
-<ul>
-<li><code>WrongUncompressedBlockLengths</code>: <code>length</code> and <code>nlength</code> bytes of uncompressed block were not compatible.</li>
-<li><code>WrongBlockType</code>: unsupported block type (not 0, 1 or 2).</li>
-<li><code>WrongSymbol</code>: unsupported Huffman tree&rsquo;s symbol.</li>
-<li><code>SymbolNotFound</code>: symbol from input data was not found in Huffman tree.</li>
-</ul>
+            <p>Represents an error, which happened during Deflate compression or decompression.
+It may indicate that either the data is damaged or it might not be compressed with Deflate at all.</p>
 
           </div>
         </section>
@@ -178,9 +189,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression12DeflateError29WrongUncompressedBlockLengthsFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongUncompressedBlockLengths" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression12DeflateError29WrongUncompressedBlockLengthsFMS0_S0_">WrongUncompressedBlockLengths</a>
+                    <a name="/s:FO13SWCompression12DeflateError29wrongUncompressedBlockLengthsFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongUncompressedBlockLengths" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression12DeflateError29wrongUncompressedBlockLengthsFMS0_S0_">wrongUncompressedBlockLengths</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -188,19 +199,19 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Uncompressed block&rsquo; <code>length</code> and <code>nlength</code> bytes were not compatible.</p>
+                        <p>Uncompressed block&rsquo;s <code>length</code> and <code>nlength</code> bytes isn&rsquo;t consistent with each other.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongUncompressedBlockLengths</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongUncompressedBlockLengths</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/Deflate.swift#L22">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/Deflate.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -212,9 +223,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression12DeflateError14WrongBlockTypeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongBlockType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression12DeflateError14WrongBlockTypeFMS0_S0_">WrongBlockType</a>
+                    <a name="/s:FO13SWCompression12DeflateError14wrongBlockTypeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongBlockType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression12DeflateError14wrongBlockTypeFMS0_S0_">wrongBlockType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -222,19 +233,19 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Unknown block type (not from 0 to 2).</p>
+                        <p>Unknown block type (not 0, 1 or 2).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongBlockType</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongBlockType</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/Deflate.swift#L24">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/Deflate.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -246,9 +257,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression12DeflateError11WrongSymbolFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongSymbol" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression12DeflateError11WrongSymbolFMS0_S0_">WrongSymbol</a>
+                    <a name="/s:FO13SWCompression12DeflateError11wrongSymbolFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongSymbol" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression12DeflateError11wrongSymbolFMS0_S0_">wrongSymbol</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -263,12 +274,12 @@ It may indicate that either the data is damaged or it might not be compressed wi
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongSymbol</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongSymbol</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/Deflate.swift#L26">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/Deflate.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -280,9 +291,9 @@ It may indicate that either the data is damaged or it might not be compressed wi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression12DeflateError14SymbolNotFoundFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/SymbolNotFound" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression12DeflateError14SymbolNotFoundFMS0_S0_">SymbolNotFound</a>
+                    <a name="/s:FO13SWCompression12DeflateError14symbolNotFoundFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/symbolNotFound" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression12DeflateError14symbolNotFoundFMS0_S0_">symbolNotFound</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -290,19 +301,19 @@ It may indicate that either the data is damaged or it might not be compressed wi
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Symbol was not found in Huffman tree.</p>
+                        <p>Symbol wasn&rsquo;t found in Huffman tree.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">SymbolNotFound</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">symbolNotFound</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/Deflate.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/Deflate.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

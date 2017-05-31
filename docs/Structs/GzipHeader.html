@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -158,7 +176,7 @@
 
                 </div>
               </div>
-            <p>A structure which provides information about gzip archive.</p>
+            <p>Represents a GZip archive&rsquo;s header.</p>
 
           </div>
         </section>
@@ -180,7 +198,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Supported compression methods in gzip archive.</p>
+                        <p>Supported compression methods in GZip archive.</p>
 
                         <a href="../Structs/GzipHeader/CompressionMethod.html" class="slightly-smaller">See more</a>
                       </div>
@@ -193,7 +211,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L54-L57">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L50-L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -211,7 +229,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type of file system on which gzip archive was created.</p>
+                        <p>Type of file system on which GZip archive was created.</p>
 
                         <a href="../Structs/GzipHeader/FileSystemType.html" class="slightly-smaller">See more</a>
                       </div>
@@ -224,7 +242,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L60-L71">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L56-L71">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -242,7 +260,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression method of archive. Always equals to <code>.deflate</code>.</p>
+                        <p>Compression method of archive. Currently, always equals to <code>.deflate</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -254,28 +272,17 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L74">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L74">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/TODO:%20Make%20it%20optional."></a>
-                <a name="//apple_ref/swift/Section/TODO: Make it optional." class="dashAnchor"></a>
-                <a href="#/TODO:%20Make%20it%20optional.">
-                  <h3 class="section-name">TODO: Make it optional.</h3>
-                </a>
-              </div>
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vV13SWCompression10GzipHeader16modificationTimeV10Foundation4Date"></a>
+                    <a name="/s:vV13SWCompression10GzipHeader16modificationTimeGSqV10Foundation4Date_"></a>
                     <a name="//apple_ref/swift/Property/modificationTime" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vV13SWCompression10GzipHeader16modificationTimeV10Foundation4Date">modificationTime</a>
+                    <a class="token" href="#/s:vV13SWCompression10GzipHeader16modificationTimeGSqV10Foundation4Date_">modificationTime</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -283,19 +290,21 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The most recent modification time of the original file.</p>
+                        <p>The most recent modification time of the original file. 
+If corresponding archive&rsquo;s field is set to 0, which means that no time was specified,
+then this property is <code>nil</code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modificationTime</span><span class="p">:</span> <span class="kt">Date</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modificationTime</span><span class="p">:</span> <span class="kt">Date</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L77">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L81">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -313,7 +322,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type of file system on which compression took place.</p>
+                        <p>Type of file system on which archivation took place.</p>
 
                       </div>
                       <div class="declaration">
@@ -325,7 +334,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L79">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -333,9 +342,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vV13SWCompression10GzipHeader16originalFileNameGSqSS_"></a>
-                    <a name="//apple_ref/swift/Property/originalFileName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vV13SWCompression10GzipHeader16originalFileNameGSqSS_">originalFileName</a>
+                    <a name="/s:vV13SWCompression10GzipHeader8fileNameGSqSS_"></a>
+                    <a name="//apple_ref/swift/Property/fileName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV13SWCompression10GzipHeader8fileNameGSqSS_">fileName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -343,19 +352,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Name of the original file.</p>
+                        <p>Name of the original file. If archive doesn&rsquo;t contain file&rsquo;s name, then <code>nil</code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">originalFileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L81">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L87">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -373,7 +382,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Comment inside the archive.</p>
+                        <p>Comment stored in archive. If archive doesn&rsquo;t contain any comment, then <code>nil</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -385,7 +394,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L83">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L90">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -393,9 +402,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FV13SWCompression10GzipHeadercFzT11archiveDataV10Foundation4Data_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(archiveData:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FV13SWCompression10GzipHeadercFzT11archiveDataV10Foundation4Data_S0_">init(archiveData:)</a>
+                    <a name="/s:vV13SWCompression10GzipHeader10isTextFileSb"></a>
+                    <a name="//apple_ref/swift/Property/isTextFile" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV13SWCompression10GzipHeader10isTextFileSb">isTextFile</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -403,13 +412,43 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initializes the structure with the values of first &lsquo;member&rsquo; in gzip archive presented in <code>archiveData</code>.</p>
+                        <p>Check if file is likely to be text file or ASCII-file.</p>
 
-<p>If data passed is not actually a gzip archive, <code><a href="../Enums/GzipError.html">GzipError</a></code> will be thrown.</p>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isTextFile</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L93">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV13SWCompression10GzipHeadercFzT7archiveV10Foundation4Data_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(archive:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV13SWCompression10GzipHeadercFzT7archiveV10Foundation4Data_S0_">init(archive:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes the structure with the values from the first &lsquo;member&rsquo; of GZip <code>archive</code>.</p>
+
+<p>If data passed is not actually a GZip archive, <code><a href="../Enums/GzipError.html">GzipError</a></code> will be thrown.</p>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/GzipError.html">GzipError</a></code>. It may indicate that either the data is damaged or
-it might not be compressed with gzip at all.</p>
+    <p><code><a href="../Enums/GzipError.html">GzipError</a></code>. It may indicate that either archive is damaged or
+it might not be archived with GZip at all.</p>
 
 </div>
 
@@ -418,7 +457,7 @@ it might not be compressed with gzip at all.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">archiveData</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">archive</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -429,12 +468,12 @@ it might not be compressed with gzip at all.</p>
                             <tr>
                               <td>
                                 <code>
-                                <em>archiveData</em>
+                                <em>archive</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>Data compressed with gzip.</p>
+                                  <p>Data archived with GZip.</p>
                                 </div>
                               </td>
                             </tr>
@@ -442,7 +481,7 @@ it might not be compressed with gzip at all.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L95-L98">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L105-L108">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

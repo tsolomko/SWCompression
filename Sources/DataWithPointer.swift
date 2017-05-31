@@ -13,7 +13,7 @@ enum BitOrder {
     case reversed
 }
 
-final class DataWithPointer {
+class DataWithPointer {
 
     let bitOrder: BitOrder
     let size: Int
@@ -46,7 +46,9 @@ final class DataWithPointer {
     }
 
     func bits(count: Int) -> [UInt8] {
-        guard count > 0 else { return [] }
+        guard count > 0 else {
+            return []
+        }
 
         var array: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
@@ -74,7 +76,9 @@ final class DataWithPointer {
     }
 
     func intFromBits(count: Int) -> Int {
-        guard count > 0 else { return 0 }
+        guard count > 0 else {
+            return 0
+        }
 
         var result = 0
         for i in 0..<count {
@@ -186,10 +190,14 @@ final class DataWithPointer {
     func skipUntilNextByte() {
         switch self.bitOrder {
         case .reversed:
-            guard self.bitMask != 1 else { return }
+            guard self.bitMask != 1 else {
+                return
+            }
             self.bitMask = 1
         case .straight:
-            guard self.bitMask != 128 else { return }
+            guard self.bitMask != 128 else {
+                return
+            }
             self.bitMask = 128
         }
         self.index += 1

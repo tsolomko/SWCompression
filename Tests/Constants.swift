@@ -19,17 +19,17 @@ struct Constants {
      - test6: file with size of 5MB containing nulls from /dev/null.
      - test7: file with size of 5MB containing random bytes from /dev/urandom.
      - test8: text file from lzma_specification.
-     - random_file: file with size of 10KB containing random bytes from /dev/urandom.
+     - test9: file with size of 10KB containing random bytes from /dev/urandom.
     */
 
-    static func url(forTest name: String, withType ext: String) -> URL {
-        return testBundle.url(forResource: name, withExtension: ext)!
+    static func url(forTest name: String, withType ext: String) -> URL? {
+        return testBundle.url(forResource: name, withExtension: ext)
     }
 
-    static func url(forAnswer name: String) -> URL {
-        return testBundle.url(forResource: name, withExtension: "answer")!
+    static func url(forAnswer name: String) -> URL? {
+        return testBundle.url(forResource: name, withExtension: "answer")
     }
 
-    static let testBundle = Bundle(for: DeflateTests.self)
+    static let testBundle: Bundle = Bundle(for: DeflateTests.self)
 
 }

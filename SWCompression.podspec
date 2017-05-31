@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "2.4.3"
+  s.version      = "3.0.0"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
@@ -52,11 +52,13 @@ Pod::Spec.new do |s|
   s.subspec 'BZip2' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift,BitToByteWriter.swift}'
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BZ2' }
   end
 
   s.subspec 'LZMA' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.source_files = 'Sources/LZMA*.swift'
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_LZMA' }
   end
 
   s.subspec 'XZ' do |sp|
@@ -69,6 +71,12 @@ Pod::Spec.new do |s|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
     sp.source_files = 'Sources/ZipContainer.swift'
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BUILD' }
+  end
+
+  s.subspec 'TAR' do |sp|
+    sp.dependency 'SWCompression/Common'
+    sp.source_files = 'Sources/TarContainer.swift'
   end
 
 end

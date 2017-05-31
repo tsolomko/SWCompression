@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -158,19 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during unarchiving gzip archive.
-It may indicate that either the data is damaged or it might not be gzip archive at all.</p>
-
-<ul>
-<li><code>WrongMagic</code>: first two bytes of archive were not 31 and 139.</li>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not 8 aka Deflate).</li>
-<li><code>WrongFlags</code>: unsupported flags (reserved flags weren&rsquo;t 0).</li>
-<li><code>WrongHeaderCRC</code>: computed Cyclic Redundancy Check of archive&rsquo;s header
-   didn&rsquo;t match the archive&rsquo;s value.</li>
-<li><code>WrongCRC</code>: computed Cyclic Redundancy Check of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
-Associated value contains already decompressed data.</li>
-<li><code>WrongISize</code>: size of uncompressed data modulo 2^32 didn&rsquo;t match the archive&rsquo;s value.</li>
-</ul>
+            <p>Represents an error, which happened during processing GZip archive.
+It may indicate that either archive is damaged or it might not be GZip archive at all.</p>
 
           </div>
         </section>
@@ -182,9 +189,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError10WrongMagicFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongMagic" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError10WrongMagicFMS0_S0_">WrongMagic</a>
+                    <a name="/s:FO13SWCompression9GzipError10wrongMagicFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongMagic" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError10wrongMagicFMS0_S0_">wrongMagic</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -192,19 +199,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>First two bytes of archive were not 31 and 139.</p>
+                        <p>First two bytes (&lsquo;magic&rsquo; number) of archive isn&rsquo;t 31 and 139.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongMagic</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongMagic</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L26">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -216,9 +223,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError22WrongCompressionMethodFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCompressionMethod" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError22WrongCompressionMethodFMS0_S0_">WrongCompressionMethod</a>
+                    <a name="/s:FO13SWCompression9GzipError22wrongCompressionMethodFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCompressionMethod" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError22wrongCompressionMethodFMS0_S0_">wrongCompressionMethod</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -226,19 +233,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression method was other than 8 which is the only supported one.</p>
+                        <p>Compression method used in archive is different from Deflate, which is the only supported one.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCompressionMethod</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongCompressionMethod</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -250,9 +257,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError10WrongFlagsFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongFlags" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError10WrongFlagsFMS0_S0_">WrongFlags</a>
+                    <a name="/s:FO13SWCompression9GzipError10wrongFlagsFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongFlags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError10wrongFlagsFMS0_S0_">wrongFlags</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -260,19 +267,20 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reserved flags bits were not equal to 0.</p>
+                        <p>One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
+that archive uses a newer version of GZip format.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongFlags</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongFlags</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L24">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -284,9 +292,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError14WrongHeaderCRCFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongHeaderCRC" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError14WrongHeaderCRCFMS0_S0_">WrongHeaderCRC</a>
+                    <a name="/s:FO13SWCompression9GzipError14wrongHeaderCRCFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongHeaderCRC" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError14wrongHeaderCRCFMS0_S0_">wrongHeaderCRC</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -294,19 +302,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC of header didn&rsquo;t match the value stored in the archive.</p>
+                        <p>Computed CRC of archive&rsquo;s header doesn&rsquo;t match the value stored in archive.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongHeaderCRC</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongHeaderCRC</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -318,9 +326,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError8WrongCRCFMS0_FV10Foundation4DataS0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCRC" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError8WrongCRCFMS0_FV10Foundation4DataS0_">WrongCRC</a>
+                    <a name="/s:FO13SWCompression9GzipError8wrongCRCFMS0_FV10Foundation4DataS0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCRC" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError8wrongCRCFMS0_FV10Foundation4DataS0_">wrongCRC</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -328,20 +336,20 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed CRC of uncompressed data didn&rsquo;t match the value stored in the archive.
-Associated value contains already decompressed data.</p>
+                        <p>Computed checksum of uncompressed data doesn&rsquo;t match the value stored in archive.
+Associated value of the error contains already decompressed data.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCRC</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">wrongCRC</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -353,9 +361,9 @@ Associated value contains already decompressed data.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9GzipError10WrongISizeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongISize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9GzipError10WrongISizeFMS0_S0_">WrongISize</a>
+                    <a name="/s:FO13SWCompression9GzipError10wrongISizeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongISize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError10wrongISizeFMS0_S0_">wrongISize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -363,19 +371,53 @@ Associated value contains already decompressed data.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed isize didn&rsquo;t match the value stored in the archive.</p>
+                        <p>Computed &lsquo;isize&rsquo; didn&rsquo;t match the value stored in the archive.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongISize</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongISize</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/GzipArchive.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L33">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO13SWCompression9GzipError21cannotEncodeISOLatin1FMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/cannotEncodeISOLatin1" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9GzipError21cannotEncodeISOLatin1FMS0_S0_">cannotEncodeISOLatin1</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Either specified file name or comment cannot be encoded using ISO Latin-1 encoding.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">cannotEncodeISOLatin1</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/GzipArchive.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

@@ -14,30 +14,37 @@ class XZTests: XCTestCase {
     static let testType: String = "xz"
 
     func perform(test testName: String) {
-        guard let testData = try? Data(contentsOf: Constants.url(forTest: testName, withType: XZTests.testType),
-                                       options: .mappedIfSafe) else {
-            XCTFail("Failed to load test archive")
+        guard let testURL = Constants.url(forTest: testName, withType: XZTests.testType) else {
+            XCTFail("Unable to get test's URL.")
             return
         }
 
-        let decompressedData = try? XZArchive.unarchive(archiveData: testData)
-
-        guard decompressedData != nil  else {
-            XCTFail("Failed to decompress")
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: Constants.url(forAnswer: testName)) else {
-            XCTFail("Failed to get the answer")
+        guard let decompressedData = try? XZArchive.unarchive(archive: testData) else {
+            XCTFail("Unable to decompress.")
             return
         }
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect")
+        guard let answerURL = Constants.url(forAnswer: testName) else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
 
         #if PERF_TESTS
             print("Performing performance tests for \(XZTests.testType).\(testName)")
             self.measure {
-                _ = try? XZArchive.unarchive(archiveData: testData)
+                _ = try? XZArchive.unarchive(archive: testData)
             }
         #endif
     }
@@ -55,6 +62,7 @@ class XZTests: XCTestCase {
     }
 
     func testXz4() {
+        // This test contains padding!
         self.perform(test: "test4")
     }
 
@@ -70,4 +78,11 @@ class XZTests: XCTestCase {
         self.perform(test: "test7")
     }
 
+    func testXz8() {
+        self.perform(test: "test8")
+    }
+
+    func testXz9() {
+        self.perform(test: "test9")
+    }
 }

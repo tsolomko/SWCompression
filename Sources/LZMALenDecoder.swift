@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class LZMALenDecoder {
+class LZMALenDecoder {
 
     private var pointerData: DataWithPointer
 

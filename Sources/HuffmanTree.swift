@@ -144,7 +144,9 @@ class HuffmanTree {
         while true {
             let bit = pointerData.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-            guard index < self.leafCount else { return -1 }
+            guard index < self.leafCount else {
+                return -1
+            }
             switch self.tree[index] {
             case .leaf(let symbol):
                 if symbol > -1 {
@@ -156,8 +158,8 @@ class HuffmanTree {
         }
     }
 
-    func code(symbol: Int, _ bitWriter: inout BitToByteWriter) {
-        guard self.coding else { fatalError("Tree is not coding, this error should be replaced with Error.") }
+    func code(symbol: Int, _ bitWriter: inout BitToByteWriter, _ symbolNotFoundError: Error) throws {
+        precondition(self.coding, "HuffmanTree is not initalized for coding!")
 
         var index = 0
         while true {
@@ -166,9 +168,9 @@ class HuffmanTree {
                 if foundSymbol == symbol {
                     return
                 } else {
-                    fatalError("Symbol not found, this error should be replaced with Error.")
+                    throw symbolNotFoundError
                 }
-            case .branch(_):
+            case .branch:
                 let leftChildIndex = 2 * index + 1
                 if leftChildIndex < self.leafCount {
                     switch self.tree[leftChildIndex] {
@@ -200,7 +202,7 @@ class HuffmanTree {
                             bitWriter.write(bit: 1)
                             continue
                         } else {
-                            fatalError("Symbol not found, this error should be replaced with Error.")
+                            throw symbolNotFoundError
                         }
                     case .branch(let rightArray):
                         if rightArray.contains(symbol) {
@@ -208,7 +210,7 @@ class HuffmanTree {
                             bitWriter.write(bit: 1)
                             continue
                         } else {
-                            fatalError("Symbol not found, this error should be replaced with Error.")
+                            throw symbolNotFoundError
                         }
                     }
                 }

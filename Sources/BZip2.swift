@@ -9,96 +9,103 @@
 import Foundation
 
 /**
- Error happened during bzip2 decompression.
- It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
-
- - `WrongMagic`: unsupported magic number (not 0x425a).
- - `WrongCompressionMethod`: unsupported compression method (not type 'h').
- - `WrongBlockSize`: unsupported block size (not '0' — '9').
- - `WrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
- - `RandomizedBlock`: block is randomized; this is not supported.
- - `WrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
- - `WrongSelector`: unsupported selector (greater than total number of Huffman groups).
- - `WrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
- - `SymbolNotFound`: symbol from input data was not found in Huffman tree.
+ Represents an error, which happened during BZip2 decompression.
+ It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
  */
 public enum BZip2Error: Error {
-    /// Magic number was not 0x425a.
-    case WrongMagic
-    /// Compression method was not type 'h' (not Huffman).
-    case WrongCompressionMethod
-    /// Unknown block size (not from '0' to '9').
-    case WrongBlockSize
-    /// Unknown block type (was neither 'pi' nor 'sqrt(pi)').
-    case WrongBlockType
+    /// 'Magic' number is not 0x425a.
+    case wrongMagic
+    /// Compression method is not type 'h' (not Huffman).
+    case wrongCompressionMethod
+    /// Unsupported block size (not from '0' to '9').
+    case wrongBlockSize
+    /// Unsupported block type (is neither 'pi' nor 'sqrt(pi)').
+    case wrongBlockType
     /// Block is randomized.
-    case RandomizedBlock
+    case randomizedBlock
     /// Wrong number of Huffman tables/groups (should be between 2 and 6).
-    case WrongHuffmanGroups
-    /// Selector was greater than total number of Huffman tables/groups.
-    case WrongSelector
+    case wrongHuffmanGroups
+    /// Selector is greater than the total number of Huffman tables/groups.
+    case wrongSelector
     /// Wrong code of Huffman length (should be between 0 and 20).
-    case WrongHuffmanLengthCode
-    /// Symbol was not found in Huffman tree.
-    case SymbolNotFound
+    case wrongHuffmanLengthCode
+    /// Symbol wasn't found in Huffman tree.
+    case symbolNotFound
+    /**
+     Computed checksum of uncompressed data doesn't match the value stored in archive.
+     Associated value of the error contains already decompressed data.
+     */
+    case wrongCRC(Data)
 }
 
-/// Provides function to decompress data, which were compressed using BZip2.
-public final class BZip2: DecompressionAlgorithm {
+/// Provides decompression function for BZip2 algorithm.
+public class BZip2: DecompressionAlgorithm {
 
     /**
-     Decompresses `compressedData` with BZip2 algortihm.
+     Decompresses `data` using BZip2 algortihm.
 
-     If data passed is not actually compressed with BZip2, `BZip2Error` will be thrown.
+     If `data` is not actually compressed with BZip2, `BZip2Error` will be thrown.
 
-     - Parameter compressedData: Data compressed with BZip2.
+     - Parameter data: Data compressed with BZip2.
 
-     - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `compressedData`.
-     It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
+     - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `data`.
+     It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
 
      - Returns: Decompressed data.
      */
-    public static func decompress(compressedData data: Data) throws -> Data {
-        /// An array for storing output data
-        var out: [UInt8] = []
-
+    public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .straight)
+        return Data(bytes: try decompress(&pointerData))
+    }
+
+    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
+        /// An array for storing output data
+        var out = [UInt8]()
 
         let magic = pointerData.intFromBits(count: 16)
-        guard magic == 0x425a else { throw BZip2Error.WrongMagic }
+        guard magic == 0x425a else { throw BZip2Error.wrongMagic }
 
         let method = pointerData.intFromBits(count: 8)
-        guard method == 104 else { throw BZip2Error.WrongCompressionMethod }
+        guard method == 104 else { throw BZip2Error.wrongCompressionMethod }
 
         var blockSize = pointerData.intFromBits(count: 8)
         if blockSize >= 49 && blockSize <= 57 {
             blockSize -= 48
         } else {
-            throw BZip2Error.WrongBlockSize
+            throw BZip2Error.wrongBlockSize
         }
 
+        var totalCRC: UInt32 = 0
         while true {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
-            // TODO: Add CRC check.
             // Next 32 bits are crc (which currently is not checked).
-            _ = pointerData.intFromBits(count: 32)
+            let blockCRC32 = UInt32(truncatingBitPattern: pointerData.intFromBits(count: 32))
 
             if blockType == 0x314159265359 {
-                try out.append(contentsOf: decode(data: &pointerData))
+                let blockBytes = try decode(data: &pointerData)
+                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32
+                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
+                for byte in blockBytes {
+                    out.append(byte)
+                }
+                totalCRC = (totalCRC << 1) | (totalCRC >> 31)
+                totalCRC ^= blockCRC32;
             } else if blockType == 0x177245385090 {
+                guard totalCRC == blockCRC32
+                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 break
             } else {
-                throw BZip2Error.WrongBlockType
+                throw BZip2Error.wrongBlockType
             }
         }
 
-        return Data(bytes: out)
+        return out
     }
 
     private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
         let isRandomized = data.bit()
-        guard isRandomized != 1 else { throw BZip2Error.RandomizedBlock }
+        guard isRandomized != 1 else { throw BZip2Error.randomizedBlock }
 
         var pointer = data.intFromBits(count: 24)
 
@@ -127,7 +134,7 @@ public final class BZip2: DecompressionAlgorithm {
         let used = computeUsed()
 
         let huffmanGroups = data.intFromBits(count: 3)
-        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.WrongHuffmanGroups }
+        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.wrongHuffmanGroups }
 
         func computeSelectorsList() throws -> [Int] {
             let selectorsUsed = data.intFromBits(count: 15)
@@ -139,7 +146,7 @@ public final class BZip2: DecompressionAlgorithm {
                 var c = 0
                 while data.bit() > 0 {
                     c += 1
-                    guard c < huffmanGroups else { throw BZip2Error.WrongSelector }
+                    guard c < huffmanGroups else { throw BZip2Error.wrongSelector }
                 }
                 if c >= 0 {
                     let el = mtf.remove(at: c)
@@ -160,7 +167,7 @@ public final class BZip2: DecompressionAlgorithm {
                 var length = data.intFromBits(count: 5)
                 var lengths: [Int] = []
                 for _ in 0..<symbolsInUse {
-                    guard length >= 0 && length <= 20 else { throw BZip2Error.WrongHuffmanLengthCode }
+                    guard length >= 0 && length <= 20 else { throw BZip2Error.wrongHuffmanLengthCode }
                     while data.bit() > 0 {
                         length -= (Int(data.bit() * 2) - 1)
                     }
@@ -174,7 +181,8 @@ public final class BZip2: DecompressionAlgorithm {
         }
 
         let tables = try computeTables()
-        var favourites = try used.enumerated().reduce([]) { (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
+        var favourites = try used.enumerated().reduce([]) {
+            (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
             if next.element {
                 var newResult = partialResult
                 newResult.append(next.offset.toUInt8())
@@ -201,14 +209,14 @@ public final class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            let symbol = t?.findNextSymbol()
-            guard symbol != nil && symbol != -1 else { throw BZip2Error.SymbolNotFound }
+            guard let symbol = t?.findNextSymbol() else { throw BZip2Error.symbolNotFound }
+            guard symbol != -1 else { throw BZip2Error.symbolNotFound }
 
             if symbol == 1 || symbol == 0 {
                 if repeat_ == 0 {
                     repeatPower = 1
                 }
-                repeat_ += repeatPower << symbol!
+                repeat_ += repeatPower << symbol
                 repeatPower <<= 1
                 continue
             } else if repeat_ > 0 {
@@ -220,8 +228,8 @@ public final class BZip2: DecompressionAlgorithm {
             if symbol == symbolsInUse - 1 {
                 break
             } else {
-                let o = favourites[symbol! - 1]
-                let el = favourites.remove(at: symbol! - 1)
+                let o = favourites[symbol - 1]
+                let el = favourites.remove(at: symbol - 1)
                 favourites.insert(el, at: 0)
                 buffer.append(o)
             }

@@ -69,10 +69,22 @@
                 <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
@@ -98,6 +110,9 @@
                 <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
@@ -115,6 +130,12 @@
                 <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
             </ul>
@@ -130,9 +151,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
@@ -158,17 +176,8 @@
 
                 </div>
               </div>
-            <p>Error happened during unarchiving Zlib archive.
-It may indicate that either the data is damaged or it might not be Zlib archive at all.</p>
-
-<ul>
-<li><code>WrongCompressionMethod</code>: unsupported compression method (not 8).</li>
-<li><code>WrongCompressionInfo</code>: unsupported compression info (greater than 7).</li>
-<li><code>WrongFcheck</code>: first two bytes were inconsistent with each other.</li>
-<li><code>WrongCompressionLevel</code>: unsupported compression level (not 0, 1, 2 or 3).</li>
-<li><code>WrongAdler32</code>: computed Adler-32 checksum of uncompressed data didn&rsquo;t match the archive&rsquo;s value.
-Associated value contains already decompressed data.</li>
-</ul>
+            <p>Represents an error, which happened during processing Zlib archive.
+It may indicate that either archive is damaged or it might not be Zlib archive at all.</p>
 
           </div>
         </section>
@@ -180,9 +189,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9ZlibError22WrongCompressionMethodFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCompressionMethod" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9ZlibError22WrongCompressionMethodFMS0_S0_">WrongCompressionMethod</a>
+                    <a name="/s:FO13SWCompression9ZlibError22wrongCompressionMethodFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCompressionMethod" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9ZlibError22wrongCompressionMethodFMS0_S0_">wrongCompressionMethod</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -190,19 +199,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression method was other than 8 which is the only supported one.</p>
+                        <p>Compression method used in archive is different from Deflate, which is the only supported one.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCompressionMethod</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongCompressionMethod</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L24">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -214,9 +223,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9ZlibError20WrongCompressionInfoFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCompressionInfo" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9ZlibError20WrongCompressionInfoFMS0_S0_">WrongCompressionInfo</a>
+                    <a name="/s:FO13SWCompression9ZlibError20wrongCompressionInfoFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCompressionInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9ZlibError20wrongCompressionInfoFMS0_S0_">wrongCompressionInfo</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -224,19 +233,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression info was greater than 7 which is uncompatible number 8 compression method.</p>
+                        <p>Compression info has value incompatible with Deflate compression method.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCompressionInfo</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongCompressionInfo</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L26">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -248,9 +257,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9ZlibError11WrongFcheckFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongFcheck" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9ZlibError11WrongFcheckFMS0_S0_">WrongFcheck</a>
+                    <a name="/s:FO13SWCompression9ZlibError11wrongFcheckFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongFcheck" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9ZlibError11wrongFcheckFMS0_S0_">wrongFcheck</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -258,19 +267,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>First two bytes were inconsistent with each other.</p>
+                        <p>First two bytes of archive&rsquo;s flags are inconsistent with each other.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongFcheck</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongFcheck</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -282,9 +291,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9ZlibError21WrongCompressionLevelFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongCompressionLevel" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9ZlibError21WrongCompressionLevelFMS0_S0_">WrongCompressionLevel</a>
+                    <a name="/s:FO13SWCompression9ZlibError21wrongCompressionLevelFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongCompressionLevel" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9ZlibError21wrongCompressionLevelFMS0_S0_">wrongCompressionLevel</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -292,19 +301,19 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compression level was other than 0, 1, 2, 3.</p>
+                        <p>Compression level has value, which is different from the supported ones.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongCompressionLevel</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">wrongCompressionLevel</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -316,9 +325,9 @@ Associated value contains already decompressed data.</li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO13SWCompression9ZlibError12WrongAdler32FMS0_FV10Foundation4DataS0_"></a>
-                    <a name="//apple_ref/swift/Element/WrongAdler32" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO13SWCompression9ZlibError12WrongAdler32FMS0_FV10Foundation4DataS0_">WrongAdler32</a>
+                    <a name="/s:FO13SWCompression9ZlibError12wrongAdler32FMS0_FV10Foundation4DataS0_"></a>
+                    <a name="//apple_ref/swift/Element/wrongAdler32" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO13SWCompression9ZlibError12wrongAdler32FMS0_FV10Foundation4DataS0_">wrongAdler32</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -326,20 +335,20 @@ Associated value contains already decompressed data.</li>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computed Adler-32 sum of uncompressed data didn&rsquo;t match the value stored in the archive.
-Associated value contains already decompressed data.</p>
+                        <p>Computed checksum of uncompressed data doesn&rsquo;t match the value stored in archive.
+Associated value of the error contains already decompressed data.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="kt">WrongAdler32</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">wrongAdler32</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v2.4.3/Sources/ZlibArchive.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.0.0/Sources/ZlibArchive.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

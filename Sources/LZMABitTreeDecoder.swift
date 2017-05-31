@@ -9,7 +9,7 @@
 import Foundation
 
 /// Used to decode symbols that need several bits for storing.
-final class LZMABitTreeDecoder {
+class LZMABitTreeDecoder {
 
     private var pointerData: DataWithPointer
 
