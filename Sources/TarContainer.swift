@@ -17,9 +17,7 @@ public enum TarError: Error {
     case tooSmallFileIsPassed
     /// Failed to process a field as a number.
     case fieldIsNotNumber
-    /**
-     Computed checksum of a header doesn't match the value stored in container.
-     */
+    /// Computed checksum of a header doesn't match the value stored in container.
     case wrongHeaderChecksum
     /// Unsupported version of USTAR format.
     case wrongUstarVersion
