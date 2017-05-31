@@ -24,7 +24,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard let zipDict = try? ZipContainer.open(containerData: testData) else {
+        guard let zipDict = try? ZipContainer.open(container: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
@@ -46,7 +46,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard let entries = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(container: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
@@ -68,7 +68,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard let entries = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(container: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }
@@ -94,7 +94,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard let entries = try? ZipContainer.open(containerData: testData) else {
+        guard let entries = try? ZipContainer.open(container: testData) else {
             XCTFail("Unable to open ZIP archive.")
             return
         }

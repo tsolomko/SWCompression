@@ -27,7 +27,7 @@ class DeflateTests: XCTestCase {
             return
         }
 
-        guard let reUncompData = try? Deflate.decompress(compressedData: deflatedData) else {
+        guard let reUncompData = try? Deflate.decompress(data: deflatedData) else {
             XCTFail("Unable to re-decompress data.")
             return
         }

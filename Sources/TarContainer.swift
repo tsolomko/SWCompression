@@ -249,7 +249,7 @@ public class TarEntry: ContainerEntry {
 /// Provides function which opens TAR archives (containers).
 public class TarContainer: Container {
 
-    public static func open(containerData data: Data) throws -> [ContainerEntry] {
+    public static func open(container data: Data) throws -> [ContainerEntry] {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }

@@ -12,7 +12,7 @@ import Foundation
 public protocol Archive {
 
     /// Abstract unarchive function.
-    static func unarchive(archiveData: Data) throws -> Data
+    static func unarchive(archive: Data) throws -> Data
 
 }
 
@@ -20,13 +20,13 @@ public protocol Archive {
 public protocol DecompressionAlgorithm {
 
     /// Abstract decompress function.
-    static func decompress(compressedData: Data) throws -> Data
+    static func decompress(data: Data) throws -> Data
 
 }
 
 public protocol Container {
 
-    static func open(containerData: Data) throws -> [ContainerEntry]
+    static func open(container: Data) throws -> [ContainerEntry]
 
 }
 

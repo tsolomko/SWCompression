@@ -57,7 +57,7 @@ public class LZMA: DecompressionAlgorithm {
 
      - Returns: Decompressed data.
      */
-    public static func decompress(compressedData data: Data) throws -> Data {
+    public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 

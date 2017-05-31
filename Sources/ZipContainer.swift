@@ -206,10 +206,10 @@ public class ZipContainer: Container {
 
      - Returns: Array of pairs `ZipEntries` as an array of `ContainerEntries`.
      */
-    public static func open(containerData: Data) throws -> [ContainerEntry] {
+    public static func open(container data: Data) throws -> [ContainerEntry] {
 
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: containerData, bitOrder: .reversed)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var entries = [ZipEntry]()
 
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.

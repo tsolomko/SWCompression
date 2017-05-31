@@ -24,7 +24,7 @@ class TarTests: XCTestCase {
             return
         }
 
-        guard let result = try? TarContainer.open(containerData: testData) else {
+        guard let result = try? TarContainer.open(container: testData) else {
             XCTFail("Unable to parse TAR container.")
             return
         }
@@ -47,7 +47,7 @@ class TarTests: XCTestCase {
             return
         }
 
-        guard let result = try? TarContainer.open(containerData: testData) else {
+        guard let result = try? TarContainer.open(container: testData) else {
             XCTFail("Unable to parse TAR container.")
             return
         }

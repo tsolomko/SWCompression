@@ -52,7 +52,7 @@ class GzipTests: XCTestCase {
         }
 
         // Test GZip unarchiving.
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: testData) else {
+        guard let decompressedData = try? GzipArchive.unarchive(archive: testData) else {
             XCTFail("Unable to decompress.")
             return
         }
@@ -119,7 +119,7 @@ class GzipTests: XCTestCase {
         XCTAssertTrue(testGzipHeader.isTextFile)
 
         // Test output GZip archive content.
-        guard let decompressedData = try? GzipArchive.unarchive(archiveData: archiveData) else {
+        guard let decompressedData = try? GzipArchive.unarchive(archive: archiveData) else {
             XCTFail("Unable to decompress.")
             return
         }

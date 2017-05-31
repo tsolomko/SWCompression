@@ -24,7 +24,7 @@ class XZTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? XZArchive.unarchive(archiveData: testData) else {
+        guard let decompressedData = try? XZArchive.unarchive(archive: testData) else {
             XCTFail("Unable to decompress.")
             return
         }

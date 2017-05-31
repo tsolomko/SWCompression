@@ -47,7 +47,7 @@ class ZlibTests: XCTestCase {
             return
         }
 
-        let decompressedData = try? ZlibArchive.unarchive(archiveData: testData)
+        let decompressedData = try? ZlibArchive.unarchive(archive: testData)
 
         guard decompressedData != nil  else {
             XCTFail("Unable to decompress.")
@@ -83,7 +83,7 @@ class ZlibTests: XCTestCase {
             return
         }
 
-        guard let reextractedData = try? ZlibArchive.unarchive(archiveData: archiveData) else {
+        guard let reextractedData = try? ZlibArchive.unarchive(archive: archiveData) else {
             XCTFail("Unable to re-extract created archive.")
             return
         }

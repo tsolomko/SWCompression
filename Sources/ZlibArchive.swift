@@ -140,7 +140,7 @@ public class ZlibArchive: Archive {
 
      - Returns: Unarchived data.
      */
-    public static func unarchive(archiveData data: Data) throws -> Data {
+    public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 

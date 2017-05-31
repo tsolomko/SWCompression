@@ -24,7 +24,7 @@ class LzmaTests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? LZMA.decompress(compressedData: testData) else {
+        guard let decompressedData = try? LZMA.decompress(data: testData) else {
             XCTFail("Unable to decompress.")
             return
         }

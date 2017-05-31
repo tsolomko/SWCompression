@@ -24,7 +24,7 @@ class Bzip2Tests: XCTestCase {
             return
         }
 
-        guard let decompressedData = try? BZip2.decompress(compressedData: testData) else {
+        guard let decompressedData = try? BZip2.decompress(data: testData) else {
             XCTFail("Unable to decompress.")
             return
         }
