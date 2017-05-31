@@ -26,7 +26,7 @@ class ZlibTests: XCTestCase {
             return
         }
 
-        guard let testZlibHeader = try? ZlibHeader(archiveData: testData) else {
+        guard let testZlibHeader = try? ZlibHeader(archive: testData) else {
             XCTFail("Unable to get archive header.")
             return
         }

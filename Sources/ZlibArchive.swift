@@ -73,8 +73,8 @@ public struct ZlibHeader {
      - Throws: `ZlibError`. It may indicate that either the data is damaged or
      it might not be compressed with zlib at all.
      */
-    public init(archiveData: Data) throws {
-        let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
+    public init(archive data: Data) throws {
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         try self.init(pointerData)
     }
 
