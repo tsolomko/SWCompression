@@ -95,8 +95,8 @@ public struct GzipHeader {
         - Throws: `GzipError`. It may indicate that either the data is damaged or
         it might not be compressed with gzip at all.
     */
-    public init(archiveData: Data) throws {
-        let pointerData = DataWithPointer(data: archiveData, bitOrder: .reversed)
+    public init(archive data: Data) throws {
+        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         try self.init(pointerData)
     }
 

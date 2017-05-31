@@ -26,7 +26,7 @@ class GzipTests: XCTestCase {
         }
 
         // Test GZip header parsing
-        guard let testGzipHeader = try? GzipHeader(archiveData: testData) else {
+        guard let testGzipHeader = try? GzipHeader(archive: testData) else {
             XCTFail("Unable to get archive header.")
             return
         }
@@ -35,7 +35,7 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)),
                        "Incorrect mtime.")
         XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect OS type.")
-        XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name.")
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
         XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment.")
     }
 
@@ -106,7 +106,7 @@ class GzipTests: XCTestCase {
         }
 
         // Test output GZip header.
-        guard let testGzipHeader = try? GzipHeader(archiveData: archiveData) else {
+        guard let testGzipHeader = try? GzipHeader(archive: archiveData) else {
             XCTFail("Unable to get archive header.")
             return
         }
@@ -114,7 +114,7 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
         XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, mtime, "Incorrect mtime.")
         XCTAssertEqual(testGzipHeader.osType, .macintosh, "Incorrect OS type.")
-        XCTAssertEqual(testGzipHeader.originalFileName, "\(testName).answer", "Incorrect original file name.")
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
         XCTAssertEqual(testGzipHeader.comment, "some file comment", "Incorrect comment.")
         XCTAssertTrue(testGzipHeader.isTextFile)
 
