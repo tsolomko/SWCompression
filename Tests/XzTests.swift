@@ -44,7 +44,7 @@ class XZTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for \(XZTests.testType).\(testName)")
             self.measure {
-                _ = try? XZArchive.unarchive(archiveData: testData)
+                _ = try? XZArchive.unarchive(archive: testData)
             }
         #endif
     }
