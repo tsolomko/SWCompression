@@ -9,26 +9,21 @@
 import Foundation
 
 /**
- Error happened during deflate decompression.
- It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
-
- - `wrongUncompressedBlockLengths`: `length` and `nlength` bytes of uncompressed block were not compatible.
- - `wrongBlockType`: unsupported block type (not 0, 1 or 2).
- - `wrongSymbol`: unsupported Huffman tree's symbol.
- - `symbolNotFound`: symbol from input data was not found in Huffman tree.
+ Represents an error, which happened during Deflate compression or decompression.
+ It may indicate that either the data is damaged or it might not be compressed with Deflate at all.
  */
 public enum DeflateError: Error {
-    /// Uncompressed block' `length` and `nlength` bytes were not compatible.
+    /// Uncompressed block's `length` and `nlength` bytes isn't consistent with each other.
     case wrongUncompressedBlockLengths
-    /// Unknown block type (not from 0 to 2).
+    /// Unknown block type (not 0, 1 or 2).
     case wrongBlockType
     /// Decoded symbol was found in Huffman tree but is unknown.
     case wrongSymbol
-    /// Symbol was not found in Huffman tree.
+    /// Symbol wasn't found in Huffman tree.
     case symbolNotFound
 }
 
-/// Provides function to decompress data, which were compressed with DEFLATE.
+/// Provides compression and decompression functions for Deflate algorithm.
 public class Deflate: DecompressionAlgorithm {
 
     private struct Constants {
@@ -65,14 +60,16 @@ public class Deflate: DecompressionAlgorithm {
     }
 
     /**
-        Decompresses `compressedData` with DEFLATE algortihm.
+     Decompresses `data` using Deflate algortihm.
 
-        If data passed is not actually compressed with DEFLATE, `DeflateError` will be thrown.
+     If `data` is not actually compressed with Deflate, `DeflateError` will be thrown.
 
-     - Parameter compressedData: Data compressed with DEFLATE.
+     - Note: This function is specification compliant.
 
-     - Throws: `DeflateError` if unexpected byte (bit) sequence was encountered in `compressedData`.
-        It may indicate that either the data is damaged or it might not be compressed with DEFLATE at all.
+     - Parameter data: Data compressed with Deflate.
+
+     - Throws: `DeflateError` if unexpected byte (bit) sequence was encountered in `data`.
+     It may indicate that either data is damaged or it might not be compressed with Deflate at all.
 
      - Returns: Decompressed data.
      */
@@ -263,14 +260,17 @@ public class Deflate: DecompressionAlgorithm {
     }
 
     /**
-     Compresses `data` with DEFLATE algortihm.
+     Compresses `data` with Deflate algortihm.
 
      If during compression something goes wrong `DeflateError` will be thrown.
 
+     - Parameter data: Data to compress.
+
      - Note: Currently, SWCompression creates only one block for all data
      and the block can either be uncompressed or compressed with static Huffman encoding.
-     Uncompressed block is created if amount of data provided is less than 3 bytes and
-     static Huffman is used in all other cases.
+     Choice of one block type or the other depends on bytes' statistics of data.
+     However, if data size is greater than 65535 (the maximum value stored in 2 bytes),
+     then static Huffman block will be created.
      */
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)

@@ -9,34 +9,52 @@
 import Foundation
 
 /**
- Error happened during processing TAR archive (container).
- It may indicate that either the data is damaged or it might not be TAR archive (container) at all.
-
- - `error`: error description.
+ Represents an error, which happened during processing TAR container.
+ It may indicate that either container is damaged or it might not be TAR container at all.
  */
 public enum TarError: Error {
+    /// Size of data is too small, even to contain only one header.
     case tooSmallFileIsPassed
+    /// Failed to process a field as a number.
     case fieldIsNotNumber
+    /**
+     Computed checksum of a header doesn't match the value stored in container.
+     */
     case wrongHeaderChecksum
+    /// Unsupported version of USTAR format.
     case wrongUstarVersion
+    /// Entry from PAX extended header is in incorrect format.
     case wrongPaxHeaderEntry
+    /// Failed to process a field as an ASCII string.
     case notAsciiString
 }
 
-/// Represents either a file or directory entry inside TAR archive.
+/// Represents either a file or directory entry in TAR container.
 public class TarEntry: ContainerEntry {
 
+    /// Represents a type of an entry.
     public enum EntryType: String {
+        /// Normal file.
         case normal = "0"
+        /// Hard linked entry.
         case hardLink = "1"
+        /// Symbolically linked entry.
         case symbolicLink = "2"
+        /// Character special file.
         case characterSpecial = "3"
+        /// Block special file.
         case blockSpecial = "4"
+        /// Directory.
         case directory = "5"
+        /// FIFO special file.
         case fifo = "6"
+        /// Contiguous file.
         case contiguous = "7"
+        /// PAX global extended header. (Should not be encountered separately).
         case globalExtendedHeader = "g"
+        /// PAX local extended header. (Should not be encountered separately).
         case localExtendedHeader = "x"
+        /// Either unknown type, vendor specific or reserved value.
         case vendorUnknownOrReserved
     }
 
@@ -45,34 +63,59 @@ public class TarEntry: ContainerEntry {
         return paxPath ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
     }
 
+    /// True, if an entry is a directory.
     public var isDirectory: Bool {
         return (type == .directory) || (type == .normal && size == 0 && name.characters.last == "/")
     }
 
-    public let mode: Int?
-    public private(set) var ownerID: Int?
-    public private(set) var groupID: Int?
+    /// Size of the data associated with the entry.
     public private(set) var size: Int
+
+    /// File mode.
+    public let mode: Int?
+
+    /// Owner's ID.
+    public private(set) var ownerID: Int?
+
+    /// Owner's group ID.
+    public private(set) var groupID: Int?
+
+    /// The most recent modification time of the original file or directory.
     public private(set) var modificationTime: Date
+
+    /// Type of entry.
     public let type: EntryType
 
+    /// Owner's user name.
     public private(set) var ownerUserName: String?
+
+    /// Owner's group name.
     public private(set) var ownerGroupName: String?
+
     private let deviceMajorNumber: String?
     private let deviceMinorNumber: String?
 
     private let fileName: String?
     private let fileNamePrefix: String?
     private let linkedFileName: String?
+    private var paxPath: String?
 
     private let dataObject: Data
 
+    /// The most recent access time of the original file or directory (PAX only).
     public private(set) var accessTime: Date?
+
+    /// Name of the character set used to encode entry's data (PAX only).
     public private(set) var charset: String?
+
+    /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
+
+    /// Path to linked entry (PAX only).
     public private(set) var linkPath: String?
+
+    /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
-    private var paxPath: String?
 
     fileprivate init(_ data: Data, _ index: inout Int,
                      _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
@@ -234,21 +277,30 @@ public class TarEntry: ContainerEntry {
         index = roundTo512(value: index)
     }
 
-    /**
-     Returns data associated with this entry.
-
-     - Note: Returned `Data` object with the size of 0 can either indicate that the entry is an empty file
-     or it is a directory.
-     */
+    /// Returns data associated with this entry.
     public func data() -> Data {
         return dataObject
     }
 
 }
 
-/// Provides function which opens TAR archives (containers).
+/// Provides open function for TAR containers.
 public class TarContainer: Container {
 
+    /**
+     Processes TAR container and returns an array of `ContainerEntries` (which are actually `TarEntries`).
+
+     - Important: The order of entries is defined by TAR container and,
+     particularly, by a creator of a given TAR container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: TAR container's data.
+
+     - Throws: `TarError`, which may indicate that either container is damaged or it might not be TAR container at all.
+
+     - Returns: Array of `TarEntry` as an array of `ContainerEntry`.
+     */
     public static func open(container data: Data) throws -> [ContainerEntry] {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.

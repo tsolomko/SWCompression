@@ -9,46 +9,36 @@
 import Foundation
 
 /**
- Error happened during unarchiving XZ archive.
- It may indicate that either the data is damaged or it might not be XZ archive at all.
-
- - `wrongMagic`: 'magic' bytes in archive's header or footer weren't equal to predefined value.
- - `wrongArchiveInfo`: incorrect value of one of archive's special field (in block, index, header or footer).
- - `fieldReservedValue`: value of one of archive's special field
-    (in block, index, header or footer) had reserved value.
- - `wrongInfoCRC`: incorrect value of one of archive's special field (in block, index, header or footer).
- - `wrongFilterID`: unsupported value of filter ID (not LZMA2's 0x21).
- - `checkTypeSHA256`: checksum's type was SHA-256.
- - `wrongDataSize`: size of compressed or decompressed data wasn't the same as specified in block.
- - `wrongCheck`: computed checksum of uncompressed data didn't match the archive's value.
-    Associated value contains already decompressed data.
- - `wrongPadding`: unsupported padding of one of structures in the archive.
- - `multiByteIntegerError`: error happened during reading of one of so called 'multi-byte' numbers.
+ Represents an error, which happened during unarchiving XZ archive.
+ It may indicate that either archive is damaged or it might not be XZ archive at all.
  */
 public enum XZError: Error {
-    /// Either magic number in header or footer was not equal to predefined value.
+    /// Either 'magic' number in header or footer isn't equal to a predefined value.
     case wrongMagic
-    /// One of special fields of archive had an incorrect value.
-    case wrongArchiveInfo
-    /// One of special fields of archive had a reserved value.
+    /// One of the fields in archive has an incorrect value.
+    case wrongFieldValue
+    /**
+     One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
+     that archive uses a newer version of XZ format.
+    */
     case fieldReservedValue
-    /// Checksum of one of special fields of archive was incorrect.
+    /// Checksum of one of the fields of archive doesn't match the value stored in archive.
     case wrongInfoCRC
-    /// ID of filter(s) used in archvie was unsupported.
+    /// Filter used in archvie is unsupported.
     case wrongFilterID
-    /// Type of checksum of archive was SHA-256.
+    /// Archive uses SHA-256 checksum which is unsupported.
     case checkTypeSHA256
     /**
-     Either size of decompressed data was not equal to specified one in block header or
-     amount of compressed data read was different from the one stored in block header.
+     Either size of decompressed data isn't equal to the one specified in archive or
+     amount of compressed data read is different from the one stored in archive.
      */
     case wrongDataSize
     /**
-     Computed checksum of uncompressed data didn't match the value stored in the archive.
-     Associated value contains already decompressed data.
+     Computed checksum of uncompressed data doesn't match the value stored in the archive.
+     Associated value of the error contains already decompressed data.
      */
     case wrongCheck(Data)
-    /// Unsupported padding of a structure in the archive.
+    /// Padding (null-bytes appended to an archive's structure) is incorrect.
     case wrongPadding
     /// Either null byte encountered or exceeded maximum amount bytes during reading multi byte number.
     case multiByteIntegerError
@@ -58,22 +48,23 @@ public enum XZError: Error {
 public class XZArchive: Archive {
 
     /**
-     Unarchives xz archive stored in `archiveData`.
+     Unarchives XZ archive.
 
-     If data passed is not actually a xz archive, `XZError` will be thrown.
-     If filters other than LZMA2 are used in archive then `XZError.wrongFilterID` will be thrown.
+     If data passed is not actually XZ archive, `XZError` will be thrown.
+     Particularly, if filters other than LZMA2 are used in archive,
+     then `XZError.wrongFilter` will be thrown.
 
-     If data inside the archive is not actually compressed with LZMA2,
-     `LZMAError` or `LZMA2Error` will be thrown.
+     If an error happens during LZMA2 decompression,
+     then `LZMAError` or `LZMA2Error` will be thrown.
 
-     - Parameter archiveData: Data compressed with xz.
+     - Parameter archive: Data archived using XZ format.
 
-     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of inconsistency in data.
-     It may indicate that either the data is damaged or it might not be compressed with xz or LZMA(2) at all.
+     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
+     It may indicate that either the archive is damaged or it might not be compressed with XZ or LZMA(2) at all.
 
      - Returns: Unarchived data.
      */
-    public static func unarchive(archiveData data: Data) throws -> Data {
+    public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
         var out: [UInt8] = []
@@ -208,7 +199,7 @@ public class XZArchive: Archive {
         let blockHeaderStartIndex = pointerData.index - 1
         blockBytes.append(blockHeaderSize)
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
-            else { throw XZError.wrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
         let realBlockHeaderSize = (blockHeaderSize + 1) * 4
 
         let blockFlags = pointerData.alignedByte()
@@ -227,7 +218,7 @@ public class XZArchive: Archive {
             let compressedSizeDecodeResult = try pointerData.multiByteDecode()
             compressedSize = compressedSizeDecodeResult.multiByteInteger
             guard compressedSize > 0
-                else { throw XZError.wrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             blockBytes.append(contentsOf: compressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -237,7 +228,7 @@ public class XZArchive: Archive {
             let uncompressedSizeDecodeResult = try pointerData.multiByteDecode()
             uncompressedSize = uncompressedSizeDecodeResult.multiByteInteger
             guard uncompressedSize > 0
-                else { throw XZError.wrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             blockBytes.append(contentsOf: uncompressedSizeDecodeResult.bytesProcessed)
         }
 
@@ -311,11 +302,11 @@ public class XZArchive: Archive {
         indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
         let numberOfRecords = numberOfRecordsTuple.multiByteInteger
         guard numberOfRecords == blockInfos.count
-            else { throw XZError.wrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
         for blockInfo in blockInfos {
             let unpaddedSizeTuple = try pointerData.multiByteDecode()
             guard unpaddedSizeTuple.multiByteInteger == blockInfo.unpaddedSize
-                else { throw XZError.wrongArchiveInfo }
+                else { throw XZError.wrongFieldValue }
             indexBytes.append(contentsOf: unpaddedSizeTuple.bytesProcessed)
 
             let uncompSizeTuple = try pointerData.multiByteDecode()
@@ -358,13 +349,13 @@ public class XZArchive: Archive {
         realBackwardSize += 1
         realBackwardSize *= 4
         guard realBackwardSize == indexSize
-            else { throw XZError.wrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
 
         // Flags in the footer should be the same as in the header.
         guard footerStreamFlags[0] == 0
             else { throw XZError.fieldReservedValue }
         guard footerStreamFlags[1] & 0x0F == streamHeader.checkType
-            else { throw XZError.wrongArchiveInfo }
+            else { throw XZError.wrongFieldValue }
         guard footerStreamFlags[1] & 0xF0 == 0
             else { throw XZError.fieldReservedValue }
 

@@ -9,58 +9,47 @@
 import Foundation
 
 /**
- Error happened during bzip2 decompression.
- It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
-
- - `wrongMagic`: unsupported magic number (not 0x425a).
- - `wrongCompressionMethod`: unsupported compression method (not type 'h').
- - `wrongBlockSize`: unsupported block size (not '0' — '9').
- - `wrongBlockType`: unsupported block type (not 'pi' or 'sqrt(pi)').
- - `randomizedBlock`: block is randomized; this is not supported.
- - `wrongHuffmanGroups`: unsupported number of Huffman tables/groups (not between 2 and 6).
- - `wrongSelector`: unsupported selector (greater than total number of Huffman groups).
- - `wrongHuffmanLengthCode`: unsupported code for Huffman length (not between 0 and 20).
- - `symbolNotFound`: symbol from input data was not found in Huffman tree.
- - `wrongCRC`: computed Cyclic Redundancy Check of uncompressed data didn't match the archive's value.
+ Represents an error, which happened during BZip2 decompression.
+ It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
  */
 public enum BZip2Error: Error {
-    /// Magic number was not 0x425a.
+    /// 'Magic' number is not 0x425a.
     case wrongMagic
-    /// Compression method was not type 'h' (not Huffman).
+    /// Compression method is not type 'h' (not Huffman).
     case wrongCompressionMethod
-    /// Unknown block size (not from '0' to '9').
+    /// Unsupported block size (not from '0' to '9').
     case wrongBlockSize
-    /// Unknown block type (was neither 'pi' nor 'sqrt(pi)').
+    /// Unsupported block type (is neither 'pi' nor 'sqrt(pi)').
     case wrongBlockType
     /// Block is randomized.
     case randomizedBlock
     /// Wrong number of Huffman tables/groups (should be between 2 and 6).
     case wrongHuffmanGroups
-    /// Selector was greater than total number of Huffman tables/groups.
+    /// Selector is greater than the total number of Huffman tables/groups.
     case wrongSelector
     /// Wrong code of Huffman length (should be between 0 and 20).
     case wrongHuffmanLengthCode
-    /// Symbol was not found in Huffman tree.
+    /// Symbol wasn't found in Huffman tree.
     case symbolNotFound
     /**
-     Computed CRC of uncompressed data didn't match the value stored in the archive.
-     Associated value contains already decompressed data.
+     Computed checksum of uncompressed data doesn't match the value stored in archive.
+     Associated value of the error contains already decompressed data.
      */
     case wrongCRC(Data)
 }
 
-/// Provides function to decompress data, which were compressed using BZip2.
+/// Provides decompression function for BZip2 algorithm.
 public class BZip2: DecompressionAlgorithm {
 
     /**
-     Decompresses `compressedData` with BZip2 algortihm.
+     Decompresses `data` using BZip2 algortihm.
 
-     If data passed is not actually compressed with BZip2, `BZip2Error` will be thrown.
+     If `data` is not actually compressed with BZip2, `BZip2Error` will be thrown.
 
-     - Parameter compressedData: Data compressed with BZip2.
+     - Parameter data: Data compressed with BZip2.
 
-     - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `compressedData`.
-     It may indicate that either the data is damaged or it might not be compressed with BZip2 at all.
+     - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `data`.
+     It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
 
      - Returns: Decompressed data.
      */
