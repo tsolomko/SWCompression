@@ -76,6 +76,7 @@ public class BZip2: DecompressionAlgorithm {
             throw BZip2Error.wrongBlockSize
         }
 
+        var totalCRC: UInt32 = 0
         while true {
             let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
             // Next 32 bits are crc (which currently is not checked).
@@ -88,8 +89,10 @@ public class BZip2: DecompressionAlgorithm {
                 for byte in blockBytes {
                     out.append(byte)
                 }
+                totalCRC = (totalCRC << 1) | (totalCRC >> 31)
+                totalCRC ^= blockCRC32;
             } else if blockType == 0x177245385090 {
-                guard CheckSums.bzip2CRC32(out) == blockCRC32
+                guard totalCRC == blockCRC32
                     else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 break
             } else {
