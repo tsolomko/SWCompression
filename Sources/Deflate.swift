@@ -381,12 +381,19 @@ public class Deflate: DecompressionAlgorithm {
             switch code {
             case .byte(let byte):
                 try mainLiterals.code(symbol: byte.toInt(), &bitWriter, DeflateError.symbolNotFound)
-            case .lengthDistance(let ld):
-                try mainLiterals.code(symbol: ld.lengthSymbol, &bitWriter, DeflateError.symbolNotFound)
-                bitWriter.write(number: ld.lengthExtraBits, bitsCount: ld.lengthExtraBitsCount)
+            case .lengthDistance(let length, let distance):
+                let lengthSymbol = Constants.lengthCode[Int(length) - 3]
+                let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
+                let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
+                    0 : (((lengthSymbol - 257) >> 2) - 1)
+                try mainLiterals.code(symbol: lengthSymbol, &bitWriter, DeflateError.symbolNotFound)
+                bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
 
-                try mainDistances.code(symbol: ld.distanceSymbol, &bitWriter, DeflateError.symbolNotFound)
-                bitWriter.write(number: ld.distanceExtraBits, bitsCount: ld.distanceExtraBitsCount)
+                let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
+                let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
+                let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
+                try mainDistances.code(symbol: distanceSymbol, &bitWriter, DeflateError.symbolNotFound)
+                bitWriter.write(number: distanceExtraBits, bitsCount: distanceExtraBitsCount)
             }
         }
 
@@ -397,38 +404,9 @@ public class Deflate: DecompressionAlgorithm {
         return bitWriter.buffer
     }
 
-    private struct LengthDistance {
-
-        let length: Int
-        let lengthSymbol: Int
-        let lengthExtraBits: Int
-        let lengthExtraBitsCount: Int
-
-        let distance: Int
-        let distanceSymbol: Int
-        let distanceExtraBits: Int
-        let distanceExtraBitsCount: Int
-
-        init(_ length: Int, _ distance: Int) {
-            self.length = length
-            let lengthSymbol = Constants.lengthCode[length - 3]
-            self.lengthSymbol = lengthSymbol
-            self.lengthExtraBits = length - Constants.lengthBase[lengthSymbol - 257]
-            self.lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
-                0 : (((lengthSymbol - 257) >> 2) - 1)
-
-            self.distance = distance
-            let distanceSymbol = ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1
-            self.distanceSymbol = distanceSymbol
-            self.distanceExtraBits = distance - Constants.distanceBase[distanceSymbol]
-            self.distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
-        }
-
-    }
-
     private enum BLDCode {
         case byte(UInt8)
-        case lengthDistance(LengthDistance)
+        case lengthDistance(UInt16, UInt16)
     }
 
     private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
@@ -483,10 +461,9 @@ public class Deflate: DecompressionAlgorithm {
                             repeatIndex = matchStartIndex + 1
                         }
                     }
-                    let ld = LengthDistance(matchLength, distance)
-                    buffer.append(BLDCode.lengthDistance(ld))
-                    stats[ld.lengthSymbol] += 1
-                    stats[286 + ld.distanceSymbol] += 1
+                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingBitPattern: matchLength), UInt16(truncatingBitPattern: distance)))
+                    stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
+                    stats[286 + ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
                     inputIndex += matchLength
                 } else {
                     buffer.append(BLDCode.byte(byte))
