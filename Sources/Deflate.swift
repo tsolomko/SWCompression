@@ -426,19 +426,9 @@ public class Deflate: DecompressionAlgorithm {
 
     }
 
-    private enum BLDCode: CustomStringConvertible {
+    private enum BLDCode {
         case byte(UInt8)
         case lengthDistance(LengthDistance)
-
-        var description: String {
-            switch self {
-            case .byte(let byte):
-                return "raw symbol: \(byte)"
-            case .lengthDistance(let ld):
-                return "length: \(ld.length), length symbol: \(ld.lengthSymbol), " +
-                    "distance: \(ld.distance), distance symbol: \(ld.distanceSymbol)"
-            }
-        }
     }
 
     private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
