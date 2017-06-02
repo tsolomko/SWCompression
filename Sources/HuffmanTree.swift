@@ -21,6 +21,8 @@ class HuffmanTree {
     private let leafCount: Int
 
     private let coding: Bool
+    /// Special array for coding part. Index in array = symbol, value in array = index in tree.
+    private var codingIndices: [[Int]]
 
     init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer, _ coding: Bool = false) {
         self.coding = coding
@@ -68,6 +70,8 @@ class HuffmanTree {
         self.leafCount = 1 << (lengths.last![1] + 1)
         self.tree = Array(repeating: .leaf(-1), count: leafCount)
 
+        self.codingIndices = coding ? Array(repeating: [-1, -1], count: lengths.count) : []
+
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
         var symbol = -1
@@ -81,6 +85,11 @@ class HuffmanTree {
             }
             // Then we need to reverse bit order of the symbol.
             var treeCode = reverse(bits: loopBits, in: symbol)
+
+            if coding {
+                self.codingIndices[length[0]] = [treeCode, bits]
+            }
+
             // Finally, we put it at its place in the tree.
             var index = 0
             for _ in 0..<bits {
@@ -161,60 +170,21 @@ class HuffmanTree {
     func code(symbol: Int, _ bitWriter: inout BitToByteWriter, _ symbolNotFoundError: Error) throws {
         precondition(self.coding, "HuffmanTree is not initalized for coding!")
 
-        var index = 0
-        while true {
-            switch self.tree[index] {
-            case .leaf(let foundSymbol):
-                if foundSymbol == symbol {
-                    return
-                } else {
-                    throw symbolNotFoundError
-                }
-            case .branch:
-                let leftChildIndex = 2 * index + 1
-                if leftChildIndex < self.leafCount {
-                    switch self.tree[leftChildIndex] {
-                    case .leaf(let foundLeftSymbol):
-                        if foundLeftSymbol == symbol {
-                            index = leftChildIndex
-                            bitWriter.write(bit: 0)
-                            continue
-                        } else {
-                            break
-                        }
-                    case .branch(let leftArray):
-                        if leftArray.contains(symbol) {
-                            index = leftChildIndex
-                            bitWriter.write(bit: 0)
-                            continue
-                        } else {
-                            break
-                        }
-                    }
-                }
+        guard symbol < self.codingIndices.count
+            else { throw symbolNotFoundError }
 
-                let rightChildIndex = 2 * index + 2
-                if rightChildIndex < self.leafCount {
-                    switch self.tree[rightChildIndex] {
-                    case .leaf(let foundRightSymbol):
-                        if foundRightSymbol == symbol {
-                            index = rightChildIndex
-                            bitWriter.write(bit: 1)
-                            continue
-                        } else {
-                            throw symbolNotFoundError
-                        }
-                    case .branch(let rightArray):
-                        if rightArray.contains(symbol) {
-                            index = rightChildIndex
-                            bitWriter.write(bit: 1)
-                            continue
-                        } else {
-                            throw symbolNotFoundError
-                        }
-                    }
-                }
-            }
+        let codingIndex = self.codingIndices[symbol]
+
+        guard codingIndex[0] > -1
+            else { throw symbolNotFoundError }
+
+        var treeCode = codingIndex[0]
+        let bits = codingIndex[1]
+
+        for _ in 0..<bits {
+            let bit = treeCode & 1
+            bitWriter.write(bit: bit == 0 ? 0 : 1)
+            treeCode >>= 1
         }
     }
 
