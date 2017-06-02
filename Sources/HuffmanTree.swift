@@ -10,19 +10,13 @@ import Foundation
 
 class HuffmanTree {
 
-    private enum HTNode {
-        case leaf(Int)
-        case branch(Set<Int>)
-    }
-
     private var pointerData: DataWithPointer
 
-    private var tree: [HTNode]
+    private var tree: [Int]
     private let leafCount: Int
 
-    private let coding: Bool
-    /// Special array for coding part. Index in array = symbol, value in array = index in tree.
     private var codingIndices: [[Int]]
+    private let coding: Bool
 
     init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer, _ coding: Bool = false) {
         self.coding = coding
@@ -68,7 +62,7 @@ class HuffmanTree {
 
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = 1 << (lengths.last![1] + 1)
-        self.tree = Array(repeating: .leaf(-1), count: leafCount)
+        self.tree = Array(repeating: -1, count: leafCount)
 
         self.codingIndices = coding ? Array(repeating: [-1, -1], count: lengths.count) : []
 
@@ -97,46 +91,7 @@ class HuffmanTree {
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = .leaf(length[0])
-        }
-
-        if coding {
-            for treeIndex in stride(from: self.leafCount - 1, through: 0, by: -1) {
-                switch self.tree[treeIndex] {
-                case .leaf(let symbol):
-                    if symbol == -1 {
-                        var replacementArray = Set<Int>()
-
-                        let leftChildIndex = 2 * treeIndex + 1
-                        if leftChildIndex < self.leafCount {
-                            switch self.tree[leftChildIndex] {
-                            case .leaf(let leftSymbol):
-                                replacementArray.insert(leftSymbol)
-                            case .branch(let leftArray):
-                                for leftChild in leftArray {
-                                    replacementArray.insert(leftChild)
-                                }
-                            }
-                        }
-
-                        let rightChildIndex = 2 * treeIndex + 2
-                        if rightChildIndex < self.leafCount {
-                            switch self.tree[rightChildIndex] {
-                            case .leaf(let rightSymbol):
-                                replacementArray.insert(rightSymbol)
-                            case .branch(let rightArray):
-                                for rightChild in rightArray {
-                                    replacementArray.insert(rightChild)
-                                }
-                            }
-                        }
-
-                        self.tree[treeIndex] = .branch(replacementArray)
-                    }
-                default:
-                    continue
-                }
-            }
+            self.tree[index] = length[0]
         }
     }
 
@@ -156,13 +111,8 @@ class HuffmanTree {
             guard index < self.leafCount else {
                 return -1
             }
-            switch self.tree[index] {
-            case .leaf(let symbol):
-                if symbol > -1 {
-                    return symbol
-                }
-            default:
-                continue
+            if self.tree[index] > -1 {
+                return self.tree[index]
             }
         }
     }
