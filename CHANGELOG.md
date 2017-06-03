@@ -1,4 +1,8 @@
 # Changelog
+v3.0.1
+----------------
+- Significanty reduced memory usage and improved speed of Deflate compression.
+
 v3.0.0
 ----------------
 - All errors have been renamed, so they conform to Swift Naming Conventions (lowerCamelCase).
