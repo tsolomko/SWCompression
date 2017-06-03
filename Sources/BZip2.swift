@@ -90,7 +90,7 @@ public class BZip2: DecompressionAlgorithm {
                     out.append(byte)
                 }
                 totalCRC = (totalCRC << 1) | (totalCRC >> 31)
-                totalCRC ^= blockCRC32;
+                totalCRC ^= blockCRC32
             } else if blockType == 0x177245385090 {
                 guard totalCRC == blockCRC32
                     else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
