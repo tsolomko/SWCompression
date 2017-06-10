@@ -69,13 +69,17 @@ class Bzip2Tests: XCTestCase {
         self.perform(test: "test5")
     }
 
+    #if LONG_TESTS
     func testBzip2_6() {
         self.perform(test: "test6")
     }
+    #endif
 
-//    func testBzip2_7() {
-//        self.perform(test: "test7")
-//    }
+    #if LONG_TESTS
+    func testBzip2_7() {
+        self.perform(test: "test7")
+    }
+    #endif
 
     func testBzip2_8() {
         self.perform(test: "test8")

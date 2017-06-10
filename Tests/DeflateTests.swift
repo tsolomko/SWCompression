@@ -68,9 +68,11 @@ class DeflateTests: XCTestCase {
         self.perform(compressionTest: "test6")
     }
 
+    #if LONG_TESTS
     func testDeflate7() {
         self.perform(compressionTest: "test7")
     }
+    #endif
 
     func testDeflate8() {
         self.perform(compressionTest: "test8")
