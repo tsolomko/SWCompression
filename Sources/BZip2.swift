@@ -238,8 +238,13 @@ public class BZip2: DecompressionAlgorithm {
         func bwt(transform bytes: [UInt8]) -> [Int] {
             let sortedBytes = bytes.sorted()
             var base: [Int] = Array(repeating: -1, count: 256)
-            for i in 0..<256 {
-                base[i] = sortedBytes.index(of: i.toUInt8()) ?? -1
+            
+            var byteType = -1
+            for i in 0..<sortedBytes.count {
+                if byteType < sortedBytes[i].toInt() {
+                    byteType = sortedBytes[i].toInt()
+                    base[byteType] = i
+                }
             }
 
             var pointers: [Int] = Array(repeating: -1, count: bytes.count)
