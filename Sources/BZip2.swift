@@ -251,8 +251,9 @@ public class BZip2: DecompressionAlgorithm {
             return pointers
         }
 
-        func bwt(reverse bytes: [UInt8], end: inout Int) -> [UInt8] {
+        func bwt(reverse bytes: [UInt8], _ pointer: Int) -> [UInt8] {
             var resultBytes: [UInt8] = []
+            var end = pointer
             if bytes.count > 0 {
                 let T = bwt(transform: bytes)
                 for _ in 0..<bytes.count {
@@ -263,7 +264,7 @@ public class BZip2: DecompressionAlgorithm {
             return resultBytes
         }
 
-        let nt = bwt(reverse: buffer, end: &pointer)
+        let nt = bwt(reverse: buffer, pointer)
         var i = 0
         var out: [UInt8] = []
         while i < nt.count {
