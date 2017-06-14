@@ -275,10 +275,6 @@ public class Deflate: DecompressionAlgorithm {
     public static func compress(data: Data) throws -> Data {
         let bytes = data.toArray(type: UInt8.self)
 
-        if bytes.count < 3 {
-            return Data(bytes: Deflate.createUncompressedBlock(bytes))
-        }
-
         let bldCodes = Deflate.lengthEncode(bytes)
 
         // Let's count possible sizes according to statistics.
@@ -410,8 +406,6 @@ public class Deflate: DecompressionAlgorithm {
     }
 
     private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
-        precondition(rawBytes.count >= 3, "Too small array!")
-
         var buffer: [BLDCode] = []
         var inputIndex = 0
         /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
@@ -419,21 +413,10 @@ public class Deflate: DecompressionAlgorithm {
 
         var stats = Array(repeating: 0, count: 316)
 
-        while inputIndex < rawBytes.count {
+        // Last two bytes of input will be considered separately.
+        // This also allows to use length encoding for arrays with size less than 3.
+        while inputIndex < rawBytes.count - 2 {
             let byte = rawBytes[inputIndex]
-
-            // For last two bytes there certainly will be no match.
-            // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
-            // To simplify code we check for this case explicitly.
-            if inputIndex >= rawBytes.count - 2 {
-                buffer.append(BLDCode.byte(byte))
-                stats[byte.toInt()] += 1
-                if inputIndex != rawBytes.count - 1 { // For the case of two remaining bytes.
-                    buffer.append(BLDCode.byte(rawBytes[inputIndex + 1]))
-                    stats[rawBytes[inputIndex + 1].toInt()] += 1
-                }
-                break
-            }
 
             let threeByteCrc = CheckSums.crc32([rawBytes[inputIndex],
                                                 rawBytes[inputIndex + 1],
@@ -481,6 +464,16 @@ public class Deflate: DecompressionAlgorithm {
             // TODO: Add limitation for dictionary size.
         }
 
+        // For last two bytes there certainly will be no match.
+        // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
+        while inputIndex < rawBytes.count {
+            let byte = rawBytes[inputIndex]
+            buffer.append(BLDCode.byte(byte))
+            stats[byte.toInt()] += 1
+            inputIndex += 1
+        }
+
+        // End of block symbol (256) should also be counted.
         stats[256] += 1
 
         return (buffer, stats)
