@@ -192,8 +192,8 @@ public struct GzipHeader {
 public class GzipArchive: Archive {
 
     public struct Member {
-        let header: GzipHeader
-        let data: Data
+        public let header: GzipHeader
+        public let data: Data
     }
 
     /**
