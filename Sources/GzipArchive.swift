@@ -191,6 +191,11 @@ public struct GzipHeader {
 /// Provides unarchive and archive functions for GZip archives.
 public class GzipArchive: Archive {
 
+    public struct Member {
+        let header: GzipHeader
+        let data: Data
+    }
+
     /**
      Unarchives GZip archive.
 
