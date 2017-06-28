@@ -176,4 +176,40 @@ class GzipTests: XCTestCase {
         self.archive(test: "test4")
     }
 
+    func testMultiArchive() {
+        guard let testURL = Constants.url(forTest: "test_multi", withType: GzipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        guard let members = try? GzipArchive.multiUnarchive(archive: testData) else {
+            XCTFail("Unable to unarchive.")
+            return
+        }
+
+        for i in 1...4 {
+            let header = members[i - 1].header
+            XCTAssertEqual(header.fileName, "test\(i).answer")
+            let data = members[i - 1].data
+
+            guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
+                XCTFail("Unable to get answer's URL.")
+                return
+            }
+
+            guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+                XCTFail("Unable to load answer.")
+                return
+            }
+
+            XCTAssertEqual(data, answerData)
+        }
+
+    }
+
 }
