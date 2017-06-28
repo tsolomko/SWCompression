@@ -217,7 +217,23 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try GzipHeader(pointerData)
+        return try processMember(&pointerData).data
+    }
+
+    public static func multiUnarchive(archive data: Data) throws -> [Member] {
+        /// Object with input data which supports convenient work with bit shifts.
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+
+        var result = [Member]()
+        while !pointerData.isAtTheEnd {
+            result.append(try processMember(&pointerData))
+        }
+
+        return result
+    }
+
+    static func processMember(_ pointerData: inout DataWithPointer) throws -> Member {
+        let header = try GzipHeader(pointerData)
 
         let memberData = Data(bytes: try Deflate.decompress(&pointerData))
 
@@ -227,7 +243,7 @@ public class GzipArchive: Archive {
         let isize = pointerData.intFromAlignedBytes(count: 4)
         guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
 
-        return memberData
+        return Member(header: header, data: memberData)
     }
 
     /**
