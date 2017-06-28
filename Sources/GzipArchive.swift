@@ -103,11 +103,11 @@ public struct GzipHeader {
      it might not be archived with GZip at all.
     */
     public init(archive data: Data) throws {
-        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        try self.init(pointerData)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        try self.init(&pointerData)
     }
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ pointerData: inout DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromAlignedBytes(count: 2)
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }
@@ -233,7 +233,7 @@ public class GzipArchive: Archive {
     }
 
     static func processMember(_ pointerData: inout DataWithPointer) throws -> Member {
-        let header = try GzipHeader(pointerData)
+        let header = try GzipHeader(&pointerData)
 
         let memberData = Data(bytes: try Deflate.decompress(&pointerData))
 

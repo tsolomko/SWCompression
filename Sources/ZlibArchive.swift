@@ -69,11 +69,11 @@ public struct ZlibHeader {
      it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        let pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        try self.init(pointerData)
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        try self.init(&pointerData)
     }
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ pointerData: inout DataWithPointer) throws {
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
         let compressionMethod = pointerData.intFromBits(count: 4)
@@ -140,7 +140,7 @@ public class ZlibArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        _ = try ZlibHeader(pointerData)
+        _ = try ZlibHeader(&pointerData)
 
         let out = try Deflate.decompress(&pointerData)
 
