@@ -10,7 +10,7 @@ import Foundation
 
 struct CheckSums {
 
-    // - MARK: Functions
+    // MARK: Functions
 
     static func crc32(_ array: [UInt8], prevValue: UInt32 = 0) -> UInt32 {
         var crc = ~prevValue
@@ -70,7 +70,7 @@ struct CheckSums {
         return (s2 << 16) + s1
     }
 
-    // - MARK: Tables
+    // MARK: Tables
 
     private static let crc32table: [UInt32] =
         [0, 1996959894, 3993919788, 2567524794, 124634137, 1886057615, 3915621685, 2657392035, 249268274,
