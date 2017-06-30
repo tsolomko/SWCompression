@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  XZArchive.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 18.12.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -94,7 +91,6 @@ public class XZArchive: Archive {
 
         return try processStream(&pointerData)
 
-
     }
 
     public static func multiUnarchive(archive data: Data) throws -> [Data] {
@@ -140,7 +136,7 @@ public class XZArchive: Archive {
 
     private static func processStream(_ pointerData: inout DataWithPointer) throws -> Data {
         var out: [UInt8] = []
-        
+
         // STREAM HEADER
         let streamHeader = try processStreamHeader(&pointerData)
 

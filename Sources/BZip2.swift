@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  BZip2.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 12.11.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -238,7 +235,7 @@ public class BZip2: DecompressionAlgorithm {
         func bwt(transform bytes: [UInt8]) -> [Int] {
             let sortedBytes = bytes.sorted()
             var base: [Int] = Array(repeating: -1, count: 256)
-            
+
             var byteType = -1
             for i in 0..<sortedBytes.count {
                 if byteType < sortedBytes[i].toInt() {
