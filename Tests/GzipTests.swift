@@ -176,7 +176,7 @@ class GzipTests: XCTestCase {
         self.archive(test: "test4")
     }
 
-    func testMultiArchive() {
+    func testMultiUnarchive() {
         guard let testURL = Constants.url(forTest: "test_multi", withType: GzipTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
@@ -191,6 +191,8 @@ class GzipTests: XCTestCase {
             XCTFail("Unable to unarchive.")
             return
         }
+
+        XCTAssertEqual(members.count, 4)
 
         for i in 1...4 {
             let header = members[i - 1].header
@@ -209,7 +211,41 @@ class GzipTests: XCTestCase {
 
             XCTAssertEqual(data, answerData)
         }
+    }
 
+    func testMultiUnarchiveRedundant() {
+        guard let testURL = Constants.url(forTest: "test1", withType: GzipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        guard let members = try? GzipArchive.multiUnarchive(archive: testData) else {
+            XCTFail("Unable to unarchive.")
+            return
+        }
+
+        XCTAssertEqual(members.count, 1)
+
+        let header = members[0].header
+        XCTAssertEqual(header.fileName, "test1.answer")
+        let data = members[0].data
+
+        guard let answerURL = Constants.url(forAnswer: "test1") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        XCTAssertEqual(data, answerData)
     }
 
 }
