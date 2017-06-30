@@ -92,33 +92,8 @@ public class XZArchive: Archive {
         // Let's now go to the start of the file.
         pointerData.index = 0
 
-//        streamLoop: while !pointerData.isAtTheEnd {
         return try processStream(&pointerData)
 
-//            guard !pointerData.isAtTheEnd else { break streamLoop }
-//
-//            // STREAM PADDING
-//            paddingBytes = 0
-//            while true {
-//                let byte = pointerData.alignedByte()
-//                if byte != 0 {
-//                    if paddingBytes % 4 != 0 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break
-//                    }
-//                }
-//                if pointerData.isAtTheEnd {
-//                    if byte != 0 || paddingBytes % 4 != 3 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break streamLoop
-//                    }
-//                }
-//                paddingBytes += 1
-//            }
-//            pointerData.index -= 1
-//        }
 
     }
 
@@ -126,9 +101,38 @@ public class XZArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
+        // Note: for multi-stream archives we don't check footer's magic bytes,
+        //  because it is impossible to determine the end of each stream 
+        //  without processing them, and checking last stream's footer doesn't
+        //  guarantee correctness of other streams.
+
         var result = [Data]()
-        while !pointerData.isAtTheEnd {
+        streamLoop: while !pointerData.isAtTheEnd {
             result.append(try processStream(&pointerData))
+
+            guard !pointerData.isAtTheEnd else { break streamLoop }
+
+            // STREAM PADDING
+            var paddingBytes = 0
+            while true {
+                let byte = pointerData.alignedByte()
+                if byte != 0 {
+                    if paddingBytes % 4 != 0 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break
+                    }
+                }
+                if pointerData.isAtTheEnd {
+                    if byte != 0 || paddingBytes % 4 != 3 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break streamLoop
+                    }
+                }
+                paddingBytes += 1
+            }
+            pointerData.index -= 1
         }
 
         return result
