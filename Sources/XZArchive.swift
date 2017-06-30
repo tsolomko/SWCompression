@@ -67,7 +67,6 @@ public class XZArchive: Archive {
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        var out: [UInt8] = []
 
         // First, we should check footer magic bytes.
         // If they are wrong, then file cannot be 'undamaged'.
@@ -94,6 +93,50 @@ public class XZArchive: Archive {
         pointerData.index = 0
 
 //        streamLoop: while !pointerData.isAtTheEnd {
+        return try processStream(&pointerData)
+
+//            guard !pointerData.isAtTheEnd else { break streamLoop }
+//
+//            // STREAM PADDING
+//            paddingBytes = 0
+//            while true {
+//                let byte = pointerData.alignedByte()
+//                if byte != 0 {
+//                    if paddingBytes % 4 != 0 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break
+//                    }
+//                }
+//                if pointerData.isAtTheEnd {
+//                    if byte != 0 || paddingBytes % 4 != 3 {
+//                        throw XZError.wrongPadding
+//                    } else {
+//                        break streamLoop
+//                    }
+//                }
+//                paddingBytes += 1
+//            }
+//            pointerData.index -= 1
+//        }
+
+    }
+
+    public static func multiUnarchive(archive data: Data) throws -> [Data] {
+        /// Object with input data which supports convenient work with bit shifts.
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+
+        var result = [Data]()
+        while !pointerData.isAtTheEnd {
+            result.append(try processStream(&pointerData))
+        }
+
+        return result
+    }
+
+    private static func processStream(_ pointerData: inout DataWithPointer) throws -> Data {
+        var out: [UInt8] = []
+        
         // STREAM HEADER
         let streamHeader = try processStreamHeader(&pointerData)
 
@@ -135,31 +178,6 @@ public class XZArchive: Archive {
 
         // STREAM FOOTER
         try processFooter(streamHeader, indexSize, &pointerData)
-
-//            guard !pointerData.isAtTheEnd else { break streamLoop }
-//
-//            // STREAM PADDING
-//            paddingBytes = 0
-//            while true {
-//                let byte = pointerData.alignedByte()
-//                if byte != 0 {
-//                    if paddingBytes % 4 != 0 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break
-//                    }
-//                }
-//                if pointerData.isAtTheEnd {
-//                    if byte != 0 || paddingBytes % 4 != 3 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break streamLoop
-//                    }
-//                }
-//                paddingBytes += 1
-//            }
-//            pointerData.index -= 1
-//        }
 
         return Data(bytes: out)
     }
