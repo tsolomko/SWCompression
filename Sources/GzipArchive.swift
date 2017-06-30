@@ -232,7 +232,7 @@ public class GzipArchive: Archive {
         return result
     }
 
-    static func processMember(_ pointerData: inout DataWithPointer) throws -> Member {
+    private static func processMember(_ pointerData: inout DataWithPointer) throws -> Member {
         let header = try GzipHeader(&pointerData)
 
         let memberData = Data(bytes: try Deflate.decompress(&pointerData))
