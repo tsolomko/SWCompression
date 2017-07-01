@@ -54,7 +54,12 @@ public class ZipEntry: ContainerEntry {
         return self.cdEntry.fileComment
     }
 
-    /// File or directory attributes related to the file system of the container's creator.
+    /**
+     File or directory attributes related to the file system of the container's creator.
+     
+     - Note:
+     Will be renamed to `externalFileAttributes` in 4.0.
+    */
     public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
@@ -79,6 +84,15 @@ public class ZipEntry: ContainerEntry {
             return size == 0 && name.characters.last == "/"
         }
     }
+
+    /**
+     Provides a dictionary with various attributes of the entry.
+     `FileAttributeKey` values are used as dictionary keys.
+     
+     - Note:
+     Will be renamed to `attributes` in 4.0.
+     */
+    public var entryAttributes: [FileAttributeKey: Any]
 
     /**
      Returns data associated with this entry.
@@ -165,6 +179,77 @@ public class ZipEntry: ContainerEntry {
     fileprivate init(_ cdEntry: CentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
         self.cdEntry = cdEntry
         self.pointerData = pointerData
+
+        var attributesDict = [FileAttributeKey: Any]()
+
+        // Modification time
+        let dosDate = cdEntry.lastModFileDate
+
+        let day = dosDate & 0x1F
+        let month = (dosDate & 0x1E0) >> 5
+        let year = 1980 + ((dosDate & 0xFE00) >> 9)
+
+        let dosTime = cdEntry.lastModFileTime
+
+        let seconds = 2 * (dosTime & 0x1F)
+        let minutes = (dosTime & 0x7E0) >> 5
+        let hours = (dosTime & 0xF800) >> 11
+
+        if let mtime = DateComponents(calendar: Calendar(identifier: .iso8601),
+                                      timeZone: TimeZone(abbreviation: "UTC"),
+                                      year: year, month: month, day: day,
+                                      hour: hours, minute: minutes, second: seconds).date {
+            attributesDict[FileAttributeKey.modificationDate] = mtime
+        }
+
+        // Size
+        attributesDict[FileAttributeKey.size] = cdEntry.uncompSize
+
+        // External file attributes. 
+
+        // For unix-like origin systems we can parse extended attributes.
+        let hostSystem = (cdEntry.versionMadeBy & 0xFF00) >> 8
+        if hostSystem == 3 {
+            // File type.
+            let fileType = (cdEntry.externalFileAttributes & 0xF0000000) >> 28
+            switch fileType {
+            case 0x2:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeCharacterSpecial
+            case 0x4:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+            case 0x6:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeBlockSpecial
+            case 0x8:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+            case 0xA:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeSymbolicLink
+            case 0xC:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeSocket
+            default:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeUnknown
+            }
+
+            // Posix permissions.
+            let posixPermissions = (cdEntry.externalFileAttributes & 0x0FFF0000) >> 16
+            attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
+        }
+
+        // For dos and unix-like systems we can parse dos attributes.
+        if hostSystem == 0 || hostSystem == 3 {
+            let attributes = cdEntry.externalFileAttributes & 0xFF
+
+            if attributes & 0x10 != 0 && hostSystem == 0 {
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+            } else if hostSystem == 0 {
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+            }
+
+            if attributes & 0x1 != 0 {
+                attributesDict[FileAttributeKey.appendOnly] = true
+            }
+        }
+
+        self.entryAttributes = attributesDict
     }
 
 }
@@ -419,6 +504,7 @@ struct CentralDirectoryEntry {
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
 
+        // TODO: Should we throw here?
         switch self.compressionMethod {
         case 0:
             break
