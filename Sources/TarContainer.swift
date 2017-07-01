@@ -74,6 +74,9 @@ public class TarEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
+     
+     - Note:
+     Will be renamed to `attributes` in 4.0.
      */
     public var entryAttributes: [FileAttributeKey: Any]
 
@@ -152,15 +155,14 @@ public class TarEntry: ContainerEntry {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
-    /// Path to linked entry (PAX only).
-    public private(set) var linkPath: String?
+    /// Path to a linked file.
+    public var linkPath: String? {
+        return paxLinkPath ?? linkedFileName
+    }
 
-    /**
-     Owner's group name.
+    private var paxLinkPath: String?
 
-     - Warning:
-     Deprecated and will be removed in 4.0.
-     */
+    /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
     fileprivate init(_ data: Data, _ index: inout Int,
@@ -347,7 +349,7 @@ public class TarEntry: ContainerEntry {
             case "hdrcharset":
                 break
             case "linkpath":
-                self.linkPath = value
+                self.paxLinkPath = value
             case "path":
                 self.paxPath = value
             case "size":
