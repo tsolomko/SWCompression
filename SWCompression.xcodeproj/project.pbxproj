@@ -94,6 +94,7 @@
 		069DCEA21EB64D0300ADC374 /* test7.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE991EB64D0300ADC374 /* test7.answer */; };
 		069DCEA31EB64D0300ADC374 /* test8.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9A1EB64D0300ADC374 /* test8.answer */; };
 		069DCEA41EB64D0300ADC374 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9B1EB64D0300ADC374 /* test9.answer */; };
+		069EBC371F0837B7008D5EF3 /* test_zip_lzma.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */; };
 		069F27701EDA0D5E00736269 /* TestUnicode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069F276F1EDA0D5E00736269 /* TestUnicode.zip */; };
 		06A393391DE0709300182E12 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
@@ -212,6 +213,7 @@
 		069DCE991EB64D0300ADC374 /* test7.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.answer; sourceTree = "<group>"; };
 		069DCE9A1EB64D0300ADC374 /* test8.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.answer; sourceTree = "<group>"; };
 		069DCE9B1EB64D0300ADC374 /* test9.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.answer; sourceTree = "<group>"; };
+		069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_lzma.zip; sourceTree = "<group>"; };
 		069F276F1EDA0D5E00736269 /* TestUnicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = TestUnicode.zip; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A393421DE070B500182E12 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
@@ -380,6 +382,7 @@
 		06BD0D1F1E3D0C630054AA5C /* ZIP */ = {
 			isa = PBXGroup;
 			children = (
+				069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */,
 				069F276F1EDA0D5E00736269 /* TestUnicode.zip */,
 				06BD0D201E3D0C630054AA5C /* SWCompressionSourceCode.zip */,
 				06BD0D211E3D0C630054AA5C /* TestDataDescriptor.zip */,
@@ -754,6 +757,7 @@
 				069DCE9E1EB64D0300ADC374 /* test3.answer in Resources */,
 				06991C721E05A9F70030FF07 /* test11.lzma in Resources */,
 				06D07AAE1EB64EE800BC8C65 /* test3.xz in Resources */,
+				069EBC371F0837B7008D5EF3 /* test_zip_lzma.zip in Resources */,
 				06CC187D1DE35269003532F5 /* test.zlib in Resources */,
 				06D07A9B1EB64E7A00BC8C65 /* test3.bz2 in Resources */,
 				069DCE9C1EB64D0300ADC374 /* test1.answer in Resources */,
