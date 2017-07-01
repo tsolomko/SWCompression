@@ -370,7 +370,7 @@ struct LocalHeader {
         }
 
         // Let's check headers's values for consistency.
-        guard self.versionNeeded <= 45
+        guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
         guard self.generalPurposeBitFlags & 0x2000 == 0 ||
             self.generalPurposeBitFlags & 0x40 == 0 ||
@@ -493,7 +493,7 @@ struct CentralDirectoryEntry {
         self.fileComment = fileComment
 
         // Let's check entry's values for consistency.
-        guard self.versionNeeded <= 45
+        guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
         guard self.diskNumberStart == currentDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
@@ -606,7 +606,7 @@ struct EndOfCentralDirectory {
             // Next two bytes are version of compressor, but we don't need it.
             _ = pointerData.uint64FromAlignedBytes(count: 2)
             let versionNeeded = pointerData.uint64FromAlignedBytes(count: 2)
-            guard versionNeeded <= 45
+            guard versionNeeded & 0xFF <= 63
                 else { throw ZipError.wrongVersion }
 
             // Update values read from basic End of CD with the ones from Zip64 End of CD.
