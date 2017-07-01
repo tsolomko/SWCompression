@@ -236,15 +236,15 @@ public class ZipEntry: ContainerEntry {
 
         // For dos and unix-like systems we can parse dos attributes.
         if hostSystem == 0 || hostSystem == 3 {
-            let attributes = cdEntry.externalFileAttributes & 0xFF
+            let dosAttributes = cdEntry.externalFileAttributes & 0xFF
 
-            if attributes & 0x10 != 0 && hostSystem == 0 {
+            if dosAttributes & 0x10 != 0 && hostSystem == 0 {
                 attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
             } else if hostSystem == 0 {
                 attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
             }
 
-            if attributes & 0x1 != 0 {
+            if dosAttributes & 0x1 != 0 {
                 attributesDict[FileAttributeKey.appendOnly] = true
             }
         }
