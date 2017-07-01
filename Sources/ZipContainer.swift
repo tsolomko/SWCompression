@@ -41,6 +41,7 @@ public enum ZipError: Error {
 public class ZipEntry: ContainerEntry {
 
     private let cdEntry: CentralDirectoryEntry
+    private var localHeader: LocalHeader?
     private var pointerData: DataWithPointer
 
     /// Name of the file or directory.
@@ -89,30 +90,32 @@ public class ZipEntry: ContainerEntry {
         // Now, let's move to the location of local header.
         pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
 
-        let localHeader = try LocalHeader(&pointerData)
+        if localHeader == nil {
+            localHeader = try LocalHeader(&pointerData)
+        }
 
         // Check local header for consistency with Central Directory entry.
-        guard localHeader.versionNeeded <= 45 &&
-            localHeader.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
-            localHeader.compressionMethod == cdEntry.compressionMethod &&
-            localHeader.lastModFileTime == cdEntry.lastModFileTime &&
-            localHeader.lastModFileDate == cdEntry.lastModFileDate
+        guard localHeader!.versionNeeded <= 45 &&
+            localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+            localHeader!.compressionMethod == cdEntry.compressionMethod &&
+            localHeader!.lastModFileTime == cdEntry.lastModFileTime &&
+            localHeader!.lastModFileDate == cdEntry.lastModFileDate
             else { throw ZipError.wrongLocalHeader }
-        let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+        let hasDataDescriptor = localHeader!.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
         var uncompSize = hasDataDescriptor ?
             Int(UInt32(truncatingBitPattern: cdEntry.uncompSize)) :
-            Int(UInt32(truncatingBitPattern: localHeader.uncompSize))
+            Int(UInt32(truncatingBitPattern: localHeader!.uncompSize))
         var compSize = hasDataDescriptor ?
             Int(UInt32(truncatingBitPattern: cdEntry.compSize)) :
-            Int(UInt32(truncatingBitPattern: localHeader.compSize))
-        var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader.crc32
+            Int(UInt32(truncatingBitPattern: localHeader!.compSize))
+        var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader!.crc32
 
         let fileBytes: [UInt8]
         let fileDataStart = pointerData.index
-        switch localHeader.compressionMethod {
+        switch localHeader!.compressionMethod {
         case 0:
             fileBytes = pointerData.alignedBytes(count: uncompSize)
         case 8:
@@ -146,7 +149,7 @@ public class ZipEntry: ContainerEntry {
             }
             // Now, let's update from CD with values from data descriptor.
             crc32 = pointerData.uint32FromAlignedBytes(count: 4)
-            let sizeOfSizeField: UInt32 = localHeader.zip64FieldsArePresent ? 8 : 4
+            let sizeOfSizeField: UInt32 = localHeader!.zip64FieldsArePresent ? 8 : 4
             compSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
             uncompSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
         }
