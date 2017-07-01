@@ -378,27 +378,6 @@ struct LocalHeader {
             else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
-
-        switch self.compressionMethod {
-        case 0:
-            break
-        case 8:
-            break
-        case 12:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
-                break
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
-        case 14:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
-                break
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
-        default:
-            throw ZipError.compressionNotSupported
-        }
     }
 
 }
@@ -503,28 +482,6 @@ struct CentralDirectoryEntry {
             else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
-
-        // TODO: Should we throw here?
-        switch self.compressionMethod {
-        case 0:
-            break
-        case 8:
-            break
-        case 12:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
-                break
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
-        case 14:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
-                break
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
-        default:
-            throw ZipError.compressionNotSupported
-        }
     }
 
 }
