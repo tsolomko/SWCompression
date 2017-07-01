@@ -109,8 +109,7 @@ public class ZipEntry: ContainerEntry {
         }
 
         // Check local header for consistency with Central Directory entry.
-        guard localHeader!.versionNeeded <= 45 &&
-            localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+        guard localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
             localHeader!.compressionMethod == cdEntry.compressionMethod &&
             localHeader!.lastModFileTime == cdEntry.lastModFileTime &&
             localHeader!.lastModFileDate == cdEntry.lastModFileDate
