@@ -92,7 +92,7 @@ public class ZipEntry: ContainerEntry {
      - Note:
      Will be renamed to `attributes` in 4.0.
      */
-    public var entryAttributes: [FileAttributeKey: Any]
+    public let entryAttributes: [FileAttributeKey: Any]
 
     /**
      Returns data associated with this entry.
