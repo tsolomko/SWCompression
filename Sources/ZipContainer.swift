@@ -372,8 +372,8 @@ struct LocalHeader {
         // Let's check headers's values for consistency.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
-        guard self.generalPurposeBitFlags & 0x2000 == 0 ||
-            self.generalPurposeBitFlags & 0x40 == 0 ||
+        guard self.generalPurposeBitFlags & 0x2000 == 0 &&
+            self.generalPurposeBitFlags & 0x40 == 0 &&
             self.generalPurposeBitFlags & 0x01 == 0
             else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
@@ -476,8 +476,8 @@ struct CentralDirectoryEntry {
             else { throw ZipError.wrongVersion }
         guard self.diskNumberStart == currentDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
-        guard self.generalPurposeBitFlags & 0x2000 == 0 ||
-            self.generalPurposeBitFlags & 0x40 == 0 ||
+        guard self.generalPurposeBitFlags & 0x2000 == 0 &&
+            self.generalPurposeBitFlags & 0x40 == 0 &&
             self.generalPurposeBitFlags & 0x01 == 0
             else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
