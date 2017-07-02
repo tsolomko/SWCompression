@@ -155,7 +155,7 @@ public struct GzipHeader {
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
             }
-            self.fileName = String(data: Data(fnameBytes), encoding: .utf8)
+            self.fileName = String(data: Data(fnameBytes), encoding: .isoLatin1)
         } else {
             self.fileName = nil
         }
@@ -169,7 +169,7 @@ public struct GzipHeader {
                 guard byte != 0 else { break }
                 fcommentBytes.append(byte)
             }
-            self.comment = String(data: Data(fcommentBytes), encoding: .utf8)
+            self.comment = String(data: Data(fcommentBytes), encoding: .isoLatin1)
         } else {
             self.comment = nil
         }
