@@ -106,14 +106,14 @@ public class ZipEntry: ContainerEntry {
 
         if localHeader == nil {
             localHeader = try LocalHeader(&pointerData)
+            // Check local header for consistency with Central Directory entry.
+            guard localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+                localHeader!.compressionMethod == cdEntry.compressionMethod &&
+                localHeader!.lastModFileTime == cdEntry.lastModFileTime &&
+                localHeader!.lastModFileDate == cdEntry.lastModFileDate
+                else { throw ZipError.wrongLocalHeader }
         }
 
-        // Check local header for consistency with Central Directory entry.
-        guard localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
-            localHeader!.compressionMethod == cdEntry.compressionMethod &&
-            localHeader!.lastModFileTime == cdEntry.lastModFileTime &&
-            localHeader!.lastModFileDate == cdEntry.lastModFileDate
-            else { throw ZipError.wrongLocalHeader }
         let hasDataDescriptor = localHeader!.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
