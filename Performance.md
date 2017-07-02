@@ -29,21 +29,21 @@ Another example of how language improves performance is compiler optimizations.
 Swift compiler uses 'whole module optimization' for Release configurations and
 this makes a big difference. You can check this out in [tests results](Tests/Results.md).
 
-Deflate, Decompression
+Deflate Decompression
 ----------------------
 Current state of perfomance is __good__.
 
 Fun fact: there were at least two times in history of development of SWCompression,
 when performance increase was achived by reimplementing Huffman encoding in a smarter way.
 
-Deflate, Compression
+Deflate Compression
 --------------------
 Current state of performance is __mediocre__.
 This is caused by incomplete implementation of some parts of algorithm.
 Moreover, there are slight overusage of memory during duplicate string elimination,
 which is caused by not really limiting size of a dictionary.
 
-BZip2, Decompression
+BZip2 Decompression
 --------------------
 Current state of performance is __average__.
 Most inefficient part of algorithm is BW transormation.

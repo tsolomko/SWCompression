@@ -169,7 +169,7 @@ use whole module optimizations, which are enabled by default for Release configu
 
 Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
 
-[Tests Results](Tests/Results.md) document contain results of performance testing of various algorithms.
+[Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
 
 Known issues
 ------------
