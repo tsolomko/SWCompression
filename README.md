@@ -162,7 +162,7 @@ do {
 There is a small program, [swcomp](https://github.com/tsolomko/swcomp),
 which uses SWCompression for unarchiving several types of archives.
 
-About performace
+Performace
 ----------------
 __TL;DR__ Constantly trying to improve performance;
 use whole module optimizations, which are enabled by default for Release configurations.
@@ -174,11 +174,10 @@ Further thoughts, details and notes about performance you can read in a [separat
 Known issues
 ------------
 - `wrongCRC` and `wrongCheck` errors for XZ and GZip multi-member archives
-contain only last member's data as their associated value instead of all processed members.
+contain only last member's data as their associated value instead of all successfully processed members.
 
 Comment: Philosophy for such errors is that by the time these errors are thrown,
-decompression was already performed,
-so we can still provide the result of decompression to the caller.
+decompression was already performed, so we can still provide the result of decompression to the caller.
 It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.
 
 Future plans
