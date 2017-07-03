@@ -9,3 +9,41 @@ readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
 github_file_prefix: https://github.com/tsolomko/SWCompression/tree/v3.1.0-test
 theme: fullwidth
+
+custom_categories:
+    - name: Compression
+      children:
+      - BZip2
+      - Deflate
+      - LZMA
+      - LZMA2
+    - name: Archives
+      children:
+      - GzipArchive
+      - GzipHeader
+      - ZlibArchive
+      - ZlibHeader
+      - XZArchive
+    - name: Containers
+      children:
+      - ZipContainer
+      - ZipEntry
+      - TarContainer
+      - TarEntry
+    - name: Errors
+      children:
+      - BZip2Error
+      - DeflateError
+      - GzipError
+      - LZMA2Error
+      - LZMAError
+      - TarError
+      - XZError
+      - ZipError
+      - ZlibError
+    - name: Protocols
+      children:
+      - Archive
+      - Container
+      - ContainerEntry
+      - DecompressionAlgorithm
