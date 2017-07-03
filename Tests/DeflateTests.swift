@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  DeflateTests.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 21.11.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import XCTest
 import SWCompression
@@ -68,9 +65,11 @@ class DeflateTests: XCTestCase {
         self.perform(compressionTest: "test6")
     }
 
+    #if LONG_TESTS
     func testDeflate7() {
         self.perform(compressionTest: "test7")
     }
+    #endif
 
     func testDeflate8() {
         self.perform(compressionTest: "test8")

@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  BitToByteWriter.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 03.02.17.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -81,11 +78,7 @@ class BitToByteWriter {
     func write(number: Int, bitsCount: Int, bitOrder: BitOrder = .straight) {
         var mask = bitOrder == .straight ? 1 : 1 << bitsCount
         for _ in 0..<bitsCount {
-            if number & mask > 0 {
-                self.write(bit: 1)
-            } else {
-                self.write(bit: 0)
-            }
+            self.write(bit: number & mask > 0 ? 1 : 0)
             switch bitOrder {
             case .straight:
                 mask <<= 1

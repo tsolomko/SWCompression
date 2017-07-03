@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  BZip2.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 12.11.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -238,8 +235,13 @@ public class BZip2: DecompressionAlgorithm {
         func bwt(transform bytes: [UInt8]) -> [Int] {
             let sortedBytes = bytes.sorted()
             var base: [Int] = Array(repeating: -1, count: 256)
-            for i in 0..<256 {
-                base[i] = sortedBytes.index(of: i.toUInt8()) ?? -1
+
+            var byteType = -1
+            for i in 0..<sortedBytes.count {
+                if byteType < sortedBytes[i].toInt() {
+                    byteType = sortedBytes[i].toInt()
+                    base[byteType] = i
+                }
             }
 
             var pointers: [Int] = Array(repeating: -1, count: bytes.count)
@@ -251,8 +253,9 @@ public class BZip2: DecompressionAlgorithm {
             return pointers
         }
 
-        func bwt(reverse bytes: [UInt8], end: inout Int) -> [UInt8] {
+        func bwt(reverse bytes: [UInt8], _ pointer: Int) -> [UInt8] {
             var resultBytes: [UInt8] = []
+            var end = pointer
             if bytes.count > 0 {
                 let T = bwt(transform: bytes)
                 for _ in 0..<bytes.count {
@@ -263,7 +266,7 @@ public class BZip2: DecompressionAlgorithm {
             return resultBytes
         }
 
-        let nt = bwt(reverse: buffer, end: &pointer)
+        let nt = bwt(reverse: buffer, pointer)
         var i = 0
         var out: [UInt8] = []
         while i < nt.count {

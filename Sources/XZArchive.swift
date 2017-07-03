@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  XZArchive.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 18.12.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -67,7 +64,6 @@ public class XZArchive: Archive {
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        var out: [UInt8] = []
 
         // First, we should check footer magic bytes.
         // If they are wrong, then file cannot be 'undamaged'.
@@ -93,7 +89,70 @@ public class XZArchive: Archive {
         // Let's now go to the start of the file.
         pointerData.index = 0
 
-//        streamLoop: while !pointerData.isAtTheEnd {
+        return try processStream(&pointerData)
+
+    }
+
+    /**
+     Unarchives XZ archive which contains one or more streams.
+
+     - Note: `wrongCheck` error contains only last processed stream's data as their associated value
+     instead of all successfully processed members.
+     This is a known issue and it will be fixed in future major version
+     because solution requires backwards-incompatible API changes.
+
+     - Parameter archive: XZ archive with one or more streams.
+
+     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
+     It may indicate that one of the streams of archive is damaged or
+     it might not be archived with XZ or LZMA(2) at all.
+
+     - Returns: Unarchived data.
+     */
+    public static func multiUnarchive(archive data: Data) throws -> [Data] {
+        /// Object with input data which supports convenient work with bit shifts.
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+
+        // Note: for multi-stream archives we don't check footer's magic bytes,
+        //  because it is impossible to determine the end of each stream 
+        //  without processing them, and checking last stream's footer doesn't
+        //  guarantee correctness of other streams.
+
+        var result = [Data]()
+        streamLoop: while !pointerData.isAtTheEnd {
+            result.append(try processStream(&pointerData))
+
+            guard !pointerData.isAtTheEnd else { break streamLoop }
+
+            // STREAM PADDING
+            var paddingBytes = 0
+            while true {
+                let byte = pointerData.alignedByte()
+                if byte != 0 {
+                    if paddingBytes % 4 != 0 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break
+                    }
+                }
+                if pointerData.isAtTheEnd {
+                    if byte != 0 || paddingBytes % 4 != 3 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break streamLoop
+                    }
+                }
+                paddingBytes += 1
+            }
+            pointerData.index -= 1
+        }
+
+        return result
+    }
+
+    private static func processStream(_ pointerData: inout DataWithPointer) throws -> Data {
+        var out: [UInt8] = []
+
         // STREAM HEADER
         let streamHeader = try processStreamHeader(&pointerData)
 
@@ -135,31 +194,6 @@ public class XZArchive: Archive {
 
         // STREAM FOOTER
         try processFooter(streamHeader, indexSize, &pointerData)
-
-//            guard !pointerData.isAtTheEnd else { break streamLoop }
-//
-//            // STREAM PADDING
-//            paddingBytes = 0
-//            while true {
-//                let byte = pointerData.alignedByte()
-//                if byte != 0 {
-//                    if paddingBytes % 4 != 0 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break
-//                    }
-//                }
-//                if pointerData.isAtTheEnd {
-//                    if byte != 0 || paddingBytes % 4 != 3 {
-//                        throw XZError.wrongPadding
-//                    } else {
-//                        break streamLoop
-//                    }
-//                }
-//                paddingBytes += 1
-//            }
-//            pointerData.index -= 1
-//        }
 
         return Data(bytes: out)
     }

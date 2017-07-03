@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  TarContainer.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 05.05.17.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -30,7 +27,12 @@ public enum TarError: Error {
 /// Represents either a file or directory entry in TAR container.
 public class TarEntry: ContainerEntry {
 
-    /// Represents a type of an entry.
+    /** 
+     Represents a type of an entry.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. `FileAttributeType` values will be used instead.
+     */
     public enum EntryType: String {
         /// Normal file.
         case normal = "0"
@@ -69,25 +71,69 @@ public class TarEntry: ContainerEntry {
     /// Size of the data associated with the entry.
     public private(set) var size: Int
 
-    /// File mode.
+    /**
+     Provides a dictionary with various attributes of the entry.
+     `FileAttributeKey` values are used as dictionary keys.
+     
+     - Note:
+     Will be renamed to `attributes` in 4.0.
+     */
+    public let entryAttributes: [FileAttributeKey: Any]
+
+    /** 
+     File mode.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public let mode: Int?
 
-    /// Owner's ID.
+    /**
+     Owner's ID.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public private(set) var ownerID: Int?
 
-    /// Owner's group ID.
+    /**
+     Owner's group ID.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public private(set) var groupID: Int?
 
-    /// The most recent modification time of the original file or directory.
+    /**
+     The most recent modification time of the original file or directory.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public private(set) var modificationTime: Date
 
-    /// Type of entry.
+    /**
+     Type of entry.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public let type: EntryType
 
-    /// Owner's user name.
+    /**
+     Owner's user name.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public private(set) var ownerUserName: String?
 
-    /// Owner's group name.
+    /**
+     Owner's group name.
+
+     - Warning:
+     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
+     */
     public private(set) var ownerGroupName: String?
 
     private let deviceMajorNumber: String?
@@ -109,41 +155,66 @@ public class TarEntry: ContainerEntry {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
-    /// Path to linked entry (PAX only).
-    public private(set) var linkPath: String?
+    /// Path to a linked file.
+    public var linkPath: String? {
+        return paxLinkPath ?? linkedFileName
+    }
+
+    private var paxLinkPath: String?
 
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
     fileprivate init(_ data: Data, _ index: inout Int,
                      _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
+        var attributesDict = [FileAttributeKey: Any]()
+
         let blockStartIndex = index
         // File name
         fileName = try data.nullEndedAsciiString(index, 100)
         index += 100
 
         // File mode
-        mode = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        if let posixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
+            attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
+            mode = posixPermissions
+        } else {
+            mode = nil
+        }
         index += 8
 
         // Owner's user ID
-        ownerID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        if let ownerAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
+            attributesDict[FileAttributeKey.ownerAccountID] = ownerAccountID
+            ownerID = ownerAccountID
+        } else {
+            ownerID = nil
+        }
         index += 8
 
         // Group's user ID
-        groupID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        if let groupAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
+            attributesDict[FileAttributeKey.groupOwnerAccountID] = groupAccountID
+            groupID = groupAccountID
+        } else {
+            groupID = nil
+        }
         index += 8
 
         // File size
         guard let octalFileSize = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
-        size = octalToDecimal(octalFileSize)
+        let fileSize = octalToDecimal(octalFileSize)
+        attributesDict[FileAttributeKey.size] = fileSize
+        size = fileSize
         index += 12
 
         // Modification time
         guard let octalMtime = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
-        modificationTime = Date(timeIntervalSince1970: TimeInterval(octalToDecimal(octalMtime)))
+        let mtime = Date(timeIntervalSince1970: TimeInterval(octalToDecimal(octalMtime)))
+        attributesDict[FileAttributeKey.modificationDate] = mtime
+        modificationTime = mtime
         index += 12
 
         // Checksum
@@ -169,7 +240,23 @@ public class TarEntry: ContainerEntry {
         index += 8
 
         // File type
-        type = EntryType(rawValue: String(Character(UnicodeScalar(data[index])))) ?? .vendorUnknownOrReserved
+        let fileType = EntryType(rawValue: String(Character(UnicodeScalar(data[index])))) ?? .vendorUnknownOrReserved
+        type = fileType
+        switch fileType {
+        case .normal:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+        case .symbolicLink:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeSymbolicLink
+        case .characterSpecial:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeCharacterSpecial
+        case .blockSpecial:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeBlockSpecial
+        case .directory:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+        default:
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeUnknown
+        }
+
         index += 1
 
         // Linked file name
@@ -184,10 +271,14 @@ public class TarEntry: ContainerEntry {
             guard ustarVersion == "00" else { throw TarError.wrongUstarVersion }
             index += 2
 
-            ownerUserName = try data.nullEndedAsciiString(index, 32)
+            let ownerName = try data.nullEndedAsciiString(index, 32)
+            attributesDict[FileAttributeKey.ownerAccountName] = ownerName
+            ownerUserName = ownerName
             index += 32
 
-            ownerGroupName = try data.nullEndedAsciiString(index, 32)
+            let groupName = try data.nullEndedAsciiString(index, 32)
+            attributesDict[FileAttributeKey.groupOwnerAccountName] = groupName
+            ownerGroupName = groupName
             index += 32
 
             deviceMajorNumber = try data.nullSpaceEndedAsciiString(index, 8)
@@ -241,18 +332,24 @@ public class TarEntry: ContainerEntry {
                 self.charset = value
             case "mtime":
                 if let interval = Double(value) {
-                    self.modificationTime = Date(timeIntervalSince1970: interval)
+                    let newMtime = Date(timeIntervalSince1970: interval)
+                    attributesDict[FileAttributeKey.modificationDate] = newMtime
+                    self.modificationTime = newMtime
                 }
             case "comment":
                 self.comment = value
             case "gid":
+                if let newValue = Int(value) {
+                    attributesDict[FileAttributeKey.groupOwnerAccountID] = newValue
+                }
                 self.groupID = Int(value)
             case "gname":
+                attributesDict[FileAttributeKey.groupOwnerAccountName] = value
                 self.ownerGroupName = value
             case "hdrcharset":
                 break
             case "linkpath":
-                self.linkPath = value
+                self.paxLinkPath = value
             case "path":
                 self.paxPath = value
             case "size":
@@ -260,13 +357,19 @@ public class TarEntry: ContainerEntry {
                     self.size = intValue
                 }
             case "uid":
+                if let newValue = Int(value) {
+                    attributesDict[FileAttributeKey.ownerAccountID] = newValue
+                }
                 self.ownerID = Int(value)
             case "uname":
+                attributesDict[FileAttributeKey.ownerAccountName] = value
                 self.ownerUserName = value
             default:
                 self.unknownExtendedHeaderEntries[keyword] = value
             }
         }
+
+        self.entryAttributes = attributesDict
 
         // File data
         index = blockStartIndex + 512

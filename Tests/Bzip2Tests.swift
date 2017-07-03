@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  Bzip2Tests.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 14.11.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import XCTest
 import SWCompression
@@ -69,13 +66,17 @@ class Bzip2Tests: XCTestCase {
         self.perform(test: "test5")
     }
 
+    #if LONG_TESTS
     func testBzip2_6() {
         self.perform(test: "test6")
     }
+    #endif
 
-//    func testBzip2_7() {
-//        self.perform(test: "test7")
-//    }
+    #if LONG_TESTS
+    func testBzip2_7() {
+        self.perform(test: "test7")
+    }
+    #endif
 
     func testBzip2_8() {
         self.perform(test: "test8")

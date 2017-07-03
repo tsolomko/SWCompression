@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  ZlibTests.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 14.11.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import XCTest
 import SWCompression

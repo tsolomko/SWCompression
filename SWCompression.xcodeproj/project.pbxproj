@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
+		0621E5181F0451C200C0003F /* test_multi.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0621E5171F0451C200C0003F /* test_multi.gz */; };
+		063336B71F06F0B6009EC0A3 /* test_multi_pad.xz in Resources */ = {isa = PBXBuildFile; fileRef = 063336B51F06F0B6009EC0A3 /* test_multi_pad.xz */; };
+		063336B81F06F0B6009EC0A3 /* test_multi.xz in Resources */ = {isa = PBXBuildFile; fileRef = 063336B61F06F0B6009EC0A3 /* test_multi.xz */; };
 		063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
@@ -91,6 +94,7 @@
 		069DCEA21EB64D0300ADC374 /* test7.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE991EB64D0300ADC374 /* test7.answer */; };
 		069DCEA31EB64D0300ADC374 /* test8.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9A1EB64D0300ADC374 /* test8.answer */; };
 		069DCEA41EB64D0300ADC374 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9B1EB64D0300ADC374 /* test9.answer */; };
+		069EBC371F0837B7008D5EF3 /* test_zip_lzma.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */; };
 		069F27701EDA0D5E00736269 /* TestUnicode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069F276F1EDA0D5E00736269 /* TestUnicode.zip */; };
 		06A393391DE0709300182E12 /* GzipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063364E21DC52979007E313F /* GzipArchive.swift */; };
 		06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064492581DC606D400F10981 /* ZlibArchive.swift */; };
@@ -160,6 +164,9 @@
 /* Begin PBXFileReference section */
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0621E5171F0451C200C0003F /* test_multi.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test_multi.gz; sourceTree = "<group>"; };
+		063336B51F06F0B6009EC0A3 /* test_multi_pad.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi_pad.xz; sourceTree = "<group>"; };
+		063336B61F06F0B6009EC0A3 /* test_multi.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi.xz; sourceTree = "<group>"; };
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		063DF1051DE1F07800F38082 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataWithPointer.swift; path = Sources/DataWithPointer.swift; sourceTree = SOURCE_ROOT; };
 		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
@@ -206,10 +213,8 @@
 		069DCE991EB64D0300ADC374 /* test7.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.answer; sourceTree = "<group>"; };
 		069DCE9A1EB64D0300ADC374 /* test8.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.answer; sourceTree = "<group>"; };
 		069DCE9B1EB64D0300ADC374 /* test9.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.answer; sourceTree = "<group>"; };
+		069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_lzma.zip; sourceTree = "<group>"; };
 		069F276F1EDA0D5E00736269 /* TestUnicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = TestUnicode.zip; sourceTree = "<group>"; };
-		06A3933E1DE070B500182E12 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
-		06A3933F1DE070B500182E12 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
-		06A393401DE070B500182E12 /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A393421DE070B500182E12 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
 		06ADB2D81EBCEFA60053A188 /* TarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarContainer.swift; sourceTree = "<group>"; };
@@ -323,6 +328,7 @@
 		069DCE7F1EB64B1500ADC374 /* GZip */ = {
 			isa = PBXGroup;
 			children = (
+				0621E5171F0451C200C0003F /* test_multi.gz */,
 				069DCE801EB64B1500ADC374 /* test1.gz */,
 				069DCE811EB64B1500ADC374 /* test2.gz */,
 				069DCE821EB64B1500ADC374 /* test3.gz */,
@@ -367,9 +373,6 @@
 		06A3933D1DE070B500182E12 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				06A3933E1DE070B500182E12 /* Info-iOS.plist */,
-				06A3933F1DE070B500182E12 /* Info-tvOS.plist */,
-				06A393401DE070B500182E12 /* Info-watchOS.plist */,
 				06A393411DE070B500182E12 /* Info.plist */,
 				06A393421DE070B500182E12 /* SWCompression.h */,
 			);
@@ -379,6 +382,7 @@
 		06BD0D1F1E3D0C630054AA5C /* ZIP */ = {
 			isa = PBXGroup;
 			children = (
+				069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */,
 				069F276F1EDA0D5E00736269 /* TestUnicode.zip */,
 				06BD0D201E3D0C630054AA5C /* SWCompressionSourceCode.zip */,
 				06BD0D211E3D0C630054AA5C /* TestDataDescriptor.zip */,
@@ -479,6 +483,8 @@
 		06D07AA21EB64EE800BC8C65 /* XZ */ = {
 			isa = PBXGroup;
 			children = (
+				063336B51F06F0B6009EC0A3 /* test_multi_pad.xz */,
+				063336B61F06F0B6009EC0A3 /* test_multi.xz */,
 				06D07AA31EB64EE800BC8C65 /* test1.xz */,
 				06D07AA41EB64EE800BC8C65 /* test2.xz */,
 				06D07AA51EB64EE800BC8C65 /* test3.xz */,
@@ -729,17 +735,20 @@
 				06D07AB31EB64EE800BC8C65 /* test8.xz in Resources */,
 				069DCEA11EB64D0300ADC374 /* test6.answer in Resources */,
 				06D07AAF1EB64EE800BC8C65 /* test4.xz in Resources */,
+				063336B81F06F0B6009EC0A3 /* test_multi.xz in Resources */,
 				06D07AAC1EB64EE800BC8C65 /* test1.xz in Resources */,
 				06BD0D231E3D0C630054AA5C /* SWCompressionSourceCode.zip in Resources */,
 				06D07AB11EB64EE800BC8C65 /* test6.xz in Resources */,
 				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
 				069DCEA41EB64D0300ADC374 /* test9.answer in Resources */,
 				06D07AAD1EB64EE800BC8C65 /* test2.xz in Resources */,
+				0621E5181F0451C200C0003F /* test_multi.gz in Resources */,
 				069DCE9F1EB64D0300ADC374 /* test4.answer in Resources */,
 				069DCEA21EB64D0300ADC374 /* test7.answer in Resources */,
 				06D07AB21EB64EE800BC8C65 /* test7.xz in Resources */,
 				069DCEA31EB64D0300ADC374 /* test8.answer in Resources */,
 				06D07A9F1EB64E7A00BC8C65 /* test7.bz2 in Resources */,
+				063336B71F06F0B6009EC0A3 /* test_multi_pad.xz in Resources */,
 				06991C711E05A9F70030FF07 /* test10.lzma in Resources */,
 				069DCEA01EB64D0300ADC374 /* test5.answer in Resources */,
 				069DCE8A1EB64B1500ADC374 /* test2.gz in Resources */,
@@ -748,6 +757,7 @@
 				069DCE9E1EB64D0300ADC374 /* test3.answer in Resources */,
 				06991C721E05A9F70030FF07 /* test11.lzma in Resources */,
 				06D07AAE1EB64EE800BC8C65 /* test3.xz in Resources */,
+				069EBC371F0837B7008D5EF3 /* test_zip_lzma.zip in Resources */,
 				06CC187D1DE35269003532F5 /* test.zlib in Resources */,
 				06D07A9B1EB64E7A00BC8C65 /* test3.bz2 in Resources */,
 				069DCE9C1EB64D0300ADC374 /* test1.answer in Resources */,
@@ -908,7 +918,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-iOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -932,7 +942,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-iOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -956,7 +966,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-watchOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
@@ -979,7 +989,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-watchOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
@@ -1003,7 +1013,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-tvOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
@@ -1026,7 +1036,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info-tvOS.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Service/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;

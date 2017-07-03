@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  Protocols.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 29.10.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -43,6 +40,15 @@ public protocol ContainerEntry {
 
     /// Check if entry is a directory.
     var isDirectory: Bool { get }
+
+    /**
+     Provides a dictionary with various attributes of the entry.
+     `FileAttributeKey` values are used as dictionary keys.
+
+     - Note:
+     Will be renamed to `attributes` in 4.0.
+     */
+    var entryAttributes: [FileAttributeKey: Any] { get }
 
     /// Retrieve entry's data from the container.
     func data() throws -> Data

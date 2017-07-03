@@ -199,7 +199,12 @@ class LZMADecoder {
 
     // MARK: Main LZMA (format) decoder function.
 
-    func decodeLZMA() throws {
+    /**
+     - Parameter externalUncompressedSize: stream doesn't contain uncompressed size property,
+     and decoder should use externally specified uncompressed size.
+     Used in ZIP containers with LZMA compression.
+     */
+    func decodeLZMA(_ externalUncompressedSize: Int? = nil) throws {
         // Firstly, we need to parse LZMA properties.
         try self.resetProperties()
         let dictSize = pointerData.intFromAlignedBytes(count: 4)
@@ -208,6 +213,11 @@ class LZMADecoder {
         /// Size of uncompressed data. -1 means it is unknown/undefined.
         var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
+
+        if let extUncompSize = externalUncompressedSize {
+            pointerData.index -= 8
+            uncompressedSize = extUncompSize
+        }
 
         try decode(&uncompressedSize)
     }
