@@ -1,40 +1,6 @@
 {
   "warnings": [
-    {
-      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/GzipArchive.swift",
-      "line": 191,
-      "symbol": "GzipArchive.Member",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/GzipArchive.swift",
-      "line": 192,
-      "symbol": "GzipArchive.Member.header",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/GzipArchive.swift",
-      "line": 193,
-      "symbol": "GzipArchive.Member.data",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/GzipArchive.swift",
-      "line": 220,
-      "symbol": "GzipArchive.multiUnarchive(archive:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/XZArchive.swift",
-      "line": 96,
-      "symbol": "XZArchive.multiUnarchive(archive:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    }
+
   ],
   "source_directory": "/Users/timofeysolomko/Developer/Compression/SWCompression"
 }
