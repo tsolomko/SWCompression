@@ -1,4 +1,20 @@
 # Changelog
+v3.1.0
+----------------
+- Added support for multi-member GZip archives.
+- Added support for multi-stream XZ archives.
+- Added property which allows access various entry's attributes for both Tar and ZIP.
+- Several Container/Zip/TarEntry's properties are now considered deprecated.
+- ZipEntry now provides access to modification time, posix permission and entry type using the new `entryAttributes` property.
+- Added support for PAX link path.
+- Fixed several problems with decompressing files compressed into ZIP container using LZMA.
+- Fixed discarding ZIP containers with `wrongVersion` error when they contain LZMA or BZip2 compressed files.
+- Encrypted ZIP containers should now be detected properly.
+- `ZipError.compressionNotSupported` is now only thrown when trying to get entry's data and not when just opening the archive.
+- Text fields from GZip header are now decoded with correct encoding.
+- Improved Deflate comrpession rate for some corner cases.
+- Improved BZip2 performance for cases of big data sizes.
+
 v3.0.1
 ----------------
 - Significanty reduced memory usage and improved speed of Deflate compression.

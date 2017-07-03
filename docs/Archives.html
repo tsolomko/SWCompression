@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Protocols  Reference</title>
+    <title>Archives  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="Protocols  Reference"></a>
+    <a title="Archives  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -43,7 +43,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">SWCompression Reference</a>
       <img class="carat" src="img/carat.png" />
-      Protocols  Reference
+      Archives  Reference
     </p>
 
     <div class="content-wrapper">
@@ -176,7 +176,7 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>Protocols</h1>
+            <h1>Archives</h1>
             
           </div>
         </section>
@@ -188,9 +188,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:P13SWCompression7Archive"></a>
-                    <a name="//apple_ref/swift/Protocol/Archive" class="dashAnchor"></a>
-                    <a class="token" href="#/s:P13SWCompression7Archive">Archive</a>
+                    <a name="/s:C13SWCompression11GzipArchive"></a>
+                    <a name="//apple_ref/swift/Class/GzipArchive" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression11GzipArchive">GzipArchive</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,20 +198,20 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A type that represents an archive.</p>
+                        <p>Provides unarchive and archive functions for GZip archives.</p>
 
-                        <a href="Protocols/Archive.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/GzipArchive.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Archive</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">GzipArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/Protocols.swift#L9-L14">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/GzipArchive.swift#L189-L386">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -219,9 +219,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:P13SWCompression9Container"></a>
-                    <a name="//apple_ref/swift/Protocol/Container" class="dashAnchor"></a>
-                    <a class="token" href="#/s:P13SWCompression9Container">Container</a>
+                    <a name="/s:V13SWCompression10GzipHeader"></a>
+                    <a name="//apple_ref/swift/Struct/GzipHeader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V13SWCompression10GzipHeader">GzipHeader</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -229,20 +229,55 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A type that represents a container of files, directories and/or other data.</p>
+                        <p>Represents a GZip archive&rsquo;s header.</p>
 
-                        <a href="Protocols/Container.html" class="slightly-smaller">See more</a>
+                        <a href="Structs/GzipHeader.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Container</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">GzipHeader</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/Protocols.swift#L25-L30">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/GzipArchive.swift#L36-L186">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C13SWCompression11ZlibArchive"></a>
+                    <a name="//apple_ref/swift/Class/ZlibArchive" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression11ZlibArchive">ZlibArchive</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Provides unarchive and archive functions for Zlib archives.</p>
+
+                        <a href="Classes/ZlibArchive.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZlibArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/ZlibArchive.swift#L117-L183">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -250,9 +285,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:P13SWCompression14ContainerEntry"></a>
-                    <a name="//apple_ref/swift/Protocol/ContainerEntry" class="dashAnchor"></a>
-                    <a class="token" href="#/s:P13SWCompression14ContainerEntry">ContainerEntry</a>
+                    <a name="/s:V13SWCompression10ZlibHeader"></a>
+                    <a name="//apple_ref/swift/Struct/ZlibHeader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V13SWCompression10ZlibHeader">ZlibHeader</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -260,30 +295,34 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A type that represents an entry from a container (file or directory) with attributes.</p>
+                        <p>Represents a Zlib archive&rsquo;s header.</p>
 
-                        <a href="Protocols/ContainerEntry.html" class="slightly-smaller">See more</a>
+                        <a href="Structs/ZlibHeader.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ContainerEntry</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ZlibHeader</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/Protocols.swift#L33-L56">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/ZlibArchive.swift#L29-L114">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:P13SWCompression22DecompressionAlgorithm"></a>
-                    <a name="//apple_ref/swift/Protocol/DecompressionAlgorithm" class="dashAnchor"></a>
-                    <a class="token" href="#/s:P13SWCompression22DecompressionAlgorithm">DecompressionAlgorithm</a>
+                    <a name="/s:C13SWCompression9XZArchive"></a>
+                    <a name="//apple_ref/swift/Class/XZArchive" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C13SWCompression9XZArchive">XZArchive</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -291,20 +330,20 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A type that provides an implementation of a particular decompression algorithm.</p>
+                        <p>Provides unarchive function for XZ archives.</p>
 
-                        <a href="Protocols/DecompressionAlgorithm.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/XZArchive.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">DecompressionAlgorithm</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">XZArchive</span><span class="p">:</span> <span class="kt"><a href="Protocols/Archive.html">Archive</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/Protocols.swift#L17-L22">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/XZArchive.swift#L45-L401">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

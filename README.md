@@ -100,7 +100,7 @@ let package = Package(
 More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
 SWCompression/ZIP and compression methods
--------
+-----------------------------------------
 Deflate is a default compression method of ZIP containers.
 
 This means, that if you use CocoaPods, when installing SWCompression/ZIP it will install SWCompression/Deflate as a dependency.
@@ -112,7 +112,7 @@ If you use Carthage or Swift Package Manager you always have the full package,
 and ZIP will be built with both BZip2 and LZMA support.
 
 Usage
--------
+-----
 #### Basics
 If you'd like to decompress "deflated" data just use:
 
@@ -162,26 +162,27 @@ do {
 There is a small program, [swcomp](https://github.com/tsolomko/swcomp),
 which uses SWCompression for unarchiving several types of archives.
 
-Why is it so slow?
-------------------
-Version 2.0 came with a great performance improvement.
-Just look at the [Tests Results](Tests/Results.md).
-So if it's slow the first thing you should do is to make sure you are using version >= 2.0.
+Performace
+----------------
+__TL;DR__ Constantly trying to improve performance;
+use whole module optimizations, which are enabled by default for Release configurations.
 
-Is it still slow?
-Maybe you are compiling SWCompression not for 'Release' but with 'Debug' build configuration?
-For some reason, when framework is built for 'Debug' its performance __significantly__ worse.
-You can once again check test results if you want to convince yourself that this is the case.
+Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
 
-Finally, SWCompression's code is not as optimized as original C/C++ versions of corresponding algorithms,
-so some difference in speed is expected.
+[Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
 
-To sum up, it is __highly recommended__ to build SWCompression with 'Release' configuration and use the latest version (at least 2.0).
+Known issues
+------------
+- `wrongCRC` and `wrongCheck` errors for XZ and GZip multi-member archives
+contain only last member's data as their associated value instead of all successfully processed members.
+
+Comment: Philosophy for such errors is that by the time these errors are thrown,
+decompression was already performed, so we can still provide the result of decompression to the caller.
+It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.
 
 Future plans
 -------------
 - Better Deflate compression.
-- Support for additional attributes in containers.
 - 7zip containers.
 - BZip2 compression.
 - Something else...

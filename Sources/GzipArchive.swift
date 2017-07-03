@@ -155,7 +155,7 @@ public struct GzipHeader {
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
             }
-            self.fileName = String(data: Data(fnameBytes), encoding: .utf8)
+            self.fileName = String(data: Data(fnameBytes), encoding: .isoLatin1)
         } else {
             self.fileName = nil
         }
@@ -169,7 +169,7 @@ public struct GzipHeader {
                 guard byte != 0 else { break }
                 fcommentBytes.append(byte)
             }
-            self.comment = String(data: Data(fcommentBytes), encoding: .utf8)
+            self.comment = String(data: Data(fcommentBytes), encoding: .isoLatin1)
         } else {
             self.comment = nil
         }
@@ -188,9 +188,15 @@ public struct GzipHeader {
 /// Provides unarchive and archive functions for GZip archives.
 public class GzipArchive: Archive {
 
+    /// Represents a member of multi-member of GZip archive.
     public struct Member {
+
+        /// GZip header of a member.
         public let header: GzipHeader
+
+        /// Unarchived data from a member.
         public let data: Data
+
     }
 
     /**
@@ -217,6 +223,23 @@ public class GzipArchive: Archive {
         return try processMember(&pointerData).data
     }
 
+    /**
+     Unarchives multi-member GZip archive.
+     Multi-member GZip archives are essentially several GZip archives following each other in a single file.
+
+     - Note: `wrongCRC` error contains only last processed member's data as their associated value
+     instead of all successfully processed members. 
+     This is a known issue and it will be fixed in future major version
+     because solution requires backwards-incompatible API changes.
+
+     - Parameter archive: GZip archive with one or more members.
+
+     - Throws: `DeflateError` or `GzipError` depending on the type of the problem.
+     It may indicate that one of the members of archive is damaged or
+     it might not be archived with GZip or compressed with Deflate at all.
+
+     - Returns: Unarchived data.
+     */
     public static func multiUnarchive(archive data: Data) throws -> [Member] {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)

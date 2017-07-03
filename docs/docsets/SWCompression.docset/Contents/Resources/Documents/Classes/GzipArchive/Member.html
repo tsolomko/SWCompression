@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CompressionMethod Enum Reference</title>
+    <title>Member Struct Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/CompressionMethod" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/Member" class="dashAnchor"></a>
 
-    <a title="CompressionMethod Enum Reference"></a>
+    <a title="Member Struct Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../../index.html">SWCompression Reference</a>
       <img class="carat" src="../../img/carat.png" />
-      CompressionMethod Enum Reference
+      Member Struct Reference
     </p>
 
     <div class="content-wrapper">
@@ -177,14 +177,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>CompressionMethod</h1>
+            <h1>Member</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CompressionMethod</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Member</span></code></pre>
 
                 </div>
               </div>
-            <p>Supported compression methods in GZip archive.</p>
+            <p>Represents a member of multi-member of GZip archive.</p>
 
           </div>
         </section>
@@ -196,9 +196,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FOV13SWCompression10GzipHeader17CompressionMethod7deflateFMS1_S1_"></a>
-                    <a name="//apple_ref/swift/Element/deflate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FOV13SWCompression10GzipHeader17CompressionMethod7deflateFMS1_S1_">deflate</a>
+                    <a name="/s:vVC13SWCompression11GzipArchive6Member6headerVS_10GzipHeader"></a>
+                    <a name="//apple_ref/swift/Property/header" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVC13SWCompression11GzipArchive6Member6headerVS_10GzipHeader">header</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -206,19 +206,49 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The only one supported compression method (Deflate).</p>
+                        <p>GZip header of a member.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n">deflate</span> <span class="o">=</span> <span class="mi">8</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">header</span><span class="p">:</span> <span class="kt"><a href="../../Structs/GzipHeader.html">GzipHeader</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/GzipArchive.swift#L49">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/GzipArchive.swift#L195">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVC13SWCompression11GzipArchive6Member4dataV10Foundation4Data"></a>
+                    <a name="//apple_ref/swift/Property/data" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVC13SWCompression11GzipArchive6Member4dataV10Foundation4Data">data</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Unarchived data from a member.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.1.0/Sources/GzipArchive.swift#L198">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

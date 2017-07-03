@@ -78,7 +78,7 @@ public class TarEntry: ContainerEntry {
      - Note:
      Will be renamed to `attributes` in 4.0.
      */
-    public var entryAttributes: [FileAttributeKey: Any]
+    public let entryAttributes: [FileAttributeKey: Any]
 
     /** 
      File mode.

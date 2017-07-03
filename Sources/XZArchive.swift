@@ -93,6 +93,22 @@ public class XZArchive: Archive {
 
     }
 
+    /**
+     Unarchives XZ archive which contains one or more streams.
+
+     - Note: `wrongCheck` error contains only last processed stream's data as their associated value
+     instead of all successfully processed members.
+     This is a known issue and it will be fixed in future major version
+     because solution requires backwards-incompatible API changes.
+
+     - Parameter archive: XZ archive with one or more streams.
+
+     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
+     It may indicate that one of the streams of archive is damaged or
+     it might not be archived with XZ or LZMA(2) at all.
+
+     - Returns: Unarchived data.
+     */
     public static func multiUnarchive(archive data: Data) throws -> [Data] {
         /// Object with input data which supports convenient work with bit shifts.
         var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
