@@ -1,4 +1,10 @@
 # Changelog
+v3.1.1
+----------------
+- Permissions attributes for TarEntry are now base-10.
+- Now throws `fieldIsNotNumber` error when encounters non-number required field in TAR header.
+- Slightly improved documentation.
+
 v3.1.0
 ----------------
 - Added support for multi-member GZip archives.
