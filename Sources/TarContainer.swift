@@ -175,7 +175,8 @@ public class TarEntry: ContainerEntry {
         index += 100
 
         // File mode
-        if let posixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
+        if let octalPosixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
+            let posixPermissions = octalToDecimal(octalPosixPermissions)
             attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
             mode = posixPermissions
         } else {
