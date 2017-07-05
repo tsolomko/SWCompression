@@ -188,31 +188,25 @@ public class TarEntry: ContainerEntry {
         index += 100
 
         // File mode
-        if let octalPosixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
-            let posixPermissions = octalToDecimal(octalPosixPermissions)
-            attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
-            mode = posixPermissions
-        } else {
-            mode = nil
-        }
+        guard let octalPosixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8))
+            else { throw TarError.fieldIsNotNumber }
+        let posixPermissions = octalToDecimal(octalPosixPermissions)
+        attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
+        mode = posixPermissions
         index += 8
 
         // Owner's user ID
-        if let ownerAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
-            attributesDict[FileAttributeKey.ownerAccountID] = ownerAccountID
-            ownerID = ownerAccountID
-        } else {
-            ownerID = nil
-        }
+        guard let ownerAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+            else { throw TarError.fieldIsNotNumber }
+        attributesDict[FileAttributeKey.ownerAccountID] = ownerAccountID
+        ownerID = ownerAccountID
         index += 8
 
         // Group's user ID
-        if let groupAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8)) {
-            attributesDict[FileAttributeKey.groupOwnerAccountID] = groupAccountID
-            groupID = groupAccountID
-        } else {
-            groupID = nil
-        }
+        guard let groupAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+            else { throw TarError.fieldIsNotNumber }
+        attributesDict[FileAttributeKey.groupOwnerAccountID] = groupAccountID
+        groupID = groupAccountID
         index += 8
 
         // File size
