@@ -88,9 +88,17 @@ public class ZipEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-     
+
      - Note:
-     Will be renamed to `attributes` in 4.0.
+     Will be renamed in 4.0.
+     
+     ## Possible attributes:
+
+        - `FileAttributeKey.modificationDate`
+        - `FileAttributeKey.size`
+        - `FileAttributeKey.type`, only if origin OS was UNIX- or DOS-like.
+        - `FileAttributeKey.posixPermissions`, only if origin OS was UNIX-like.
+        - `FileAttributeKey.appendOnly`, only if origin OS was DOS-like.
      */
     public let entryAttributes: [FileAttributeKey: Any]
 

@@ -74,13 +74,26 @@ public class TarEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-     
+
      - Note:
-     Will be renamed to `attributes` in 4.0.
+     Will be renamed in 4.0.
+
+     ## Possible attributes:
+        
+        - `FileAttributeKey.posixPermissions`,
+        - `FileAttributeKey.ownerAccountID`,
+        - `FileAttributeKey.groupOwnerAccountID`,
+        - `FileAttributeKey.size`,
+        - `FileAttributeKey.modificationDate`,
+        - `FileAttributeKey.type`,
+        - `FileAttributeKey.ownerAccountName`, if format of container is UStar,
+        - `FileAttributeKey.groupOwnerAccountName`, if format of container is UStar.
+     
+     Most modern TAR containers are in UStar format.
      */
     public let entryAttributes: [FileAttributeKey: Any]
 
-    /** 
+    /**
      File mode.
 
      - Warning:
