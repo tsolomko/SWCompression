@@ -7,6 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061C06211F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
+		061C06221F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
+		061C06231F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
+		061C06241F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
+		061C06261F0E8A0300832F0C /* GzipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06251F0E8A0300832F0C /* GzipError.swift */; };
+		061C06271F0E8A0300832F0C /* GzipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06251F0E8A0300832F0C /* GzipError.swift */; };
+		061C06281F0E8A0300832F0C /* GzipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06251F0E8A0300832F0C /* GzipError.swift */; };
+		061C06291F0E8A0300832F0C /* GzipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06251F0E8A0300832F0C /* GzipError.swift */; };
+		061C062B1F0E8A1D00832F0C /* GzipHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062A1F0E8A1D00832F0C /* GzipHeader.swift */; };
+		061C062C1F0E8A1D00832F0C /* GzipHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062A1F0E8A1D00832F0C /* GzipHeader.swift */; };
+		061C062D1F0E8A1D00832F0C /* GzipHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062A1F0E8A1D00832F0C /* GzipHeader.swift */; };
+		061C062E1F0E8A1D00832F0C /* GzipHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062A1F0E8A1D00832F0C /* GzipHeader.swift */; };
+		061C06301F0E8A4900832F0C /* ZlibError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062F1F0E8A4900832F0C /* ZlibError.swift */; };
+		061C06311F0E8A4900832F0C /* ZlibError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062F1F0E8A4900832F0C /* ZlibError.swift */; };
+		061C06321F0E8A4900832F0C /* ZlibError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062F1F0E8A4900832F0C /* ZlibError.swift */; };
+		061C06331F0E8A4900832F0C /* ZlibError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C062F1F0E8A4900832F0C /* ZlibError.swift */; };
+		061C06351F0E8A5F00832F0C /* ZlibHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06341F0E8A5F00832F0C /* ZlibHeader.swift */; };
+		061C06361F0E8A5F00832F0C /* ZlibHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06341F0E8A5F00832F0C /* ZlibHeader.swift */; };
+		061C06371F0E8A5F00832F0C /* ZlibHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06341F0E8A5F00832F0C /* ZlibHeader.swift */; };
+		061C06381F0E8A5F00832F0C /* ZlibHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06341F0E8A5F00832F0C /* ZlibHeader.swift */; };
+		061C063D1F0E8AB700832F0C /* ZipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C063C1F0E8AB700832F0C /* ZipError.swift */; };
+		061C063E1F0E8AB700832F0C /* ZipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C063C1F0E8AB700832F0C /* ZipError.swift */; };
+		061C063F1F0E8AB700832F0C /* ZipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C063C1F0E8AB700832F0C /* ZipError.swift */; };
+		061C06401F0E8AB700832F0C /* ZipError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C063C1F0E8AB700832F0C /* ZipError.swift */; };
+		061C06421F0E8AD500832F0C /* ZipEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06411F0E8AD500832F0C /* ZipEntry.swift */; };
+		061C06431F0E8AD500832F0C /* ZipEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06411F0E8AD500832F0C /* ZipEntry.swift */; };
+		061C06441F0E8AD500832F0C /* ZipEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06411F0E8AD500832F0C /* ZipEntry.swift */; };
+		061C06451F0E8AD500832F0C /* ZipEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06411F0E8AD500832F0C /* ZipEntry.swift */; };
+		061C06481F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */; };
+		061C06491F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */; };
+		061C064A1F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */; };
+		061C064B1F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */; };
+		061C064D1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */; };
+		061C064E1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */; };
+		061C064F1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */; };
+		061C06501F0E901C00832F0C /* ZipLocalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */; };
+		061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */; };
+		061C06531F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */; };
+		061C06541F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */; };
+		061C06551F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */; };
+		061C06571F0E90C800832F0C /* TarError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06561F0E90C800832F0C /* TarError.swift */; };
+		061C06581F0E90C800832F0C /* TarError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06561F0E90C800832F0C /* TarError.swift */; };
+		061C06591F0E90C800832F0C /* TarError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06561F0E90C800832F0C /* TarError.swift */; };
+		061C065A1F0E90C800832F0C /* TarError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06561F0E90C800832F0C /* TarError.swift */; };
+		061C065C1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
+		061C065D1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
+		061C065E1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
+		061C065F1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
 		0621E5181F0451C200C0003F /* test_multi.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0621E5171F0451C200C0003F /* test_multi.gz */; };
 		063336B71F06F0B6009EC0A3 /* test_multi_pad.xz in Resources */ = {isa = PBXBuildFile; fileRef = 063336B51F06F0B6009EC0A3 /* test_multi_pad.xz */; };
@@ -162,6 +210,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061C06201F0E89D900832F0C /* XZError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZError.swift; sourceTree = "<group>"; };
+		061C06251F0E8A0300832F0C /* GzipError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipError.swift; sourceTree = "<group>"; };
+		061C062A1F0E8A1D00832F0C /* GzipHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipHeader.swift; sourceTree = "<group>"; };
+		061C062F1F0E8A4900832F0C /* ZlibError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibError.swift; sourceTree = "<group>"; };
+		061C06341F0E8A5F00832F0C /* ZlibHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibHeader.swift; sourceTree = "<group>"; };
+		061C063C1F0E8AB700832F0C /* ZipError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipError.swift; sourceTree = "<group>"; };
+		061C06411F0E8AD500832F0C /* ZipEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipEntry.swift; sourceTree = "<group>"; };
+		061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipCentralDirectoryEntry.swift; sourceTree = "<group>"; };
+		061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipLocalHeader.swift; sourceTree = "<group>"; };
+		061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipEndOfCentralDirectory.swift; sourceTree = "<group>"; };
+		061C06561F0E90C800832F0C /* TarError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarError.swift; sourceTree = "<group>"; };
+		061C065B1F0E90E600832F0C /* TarEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarEntry.swift; sourceTree = "<group>"; };
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0621E5171F0451C200C0003F /* test_multi.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test_multi.gz; sourceTree = "<group>"; };
@@ -292,6 +352,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		061C06391F0E8A8300832F0C /* GZip */ = {
+			isa = PBXGroup;
+			children = (
+				063364E21DC52979007E313F /* GzipArchive.swift */,
+				061C062A1F0E8A1D00832F0C /* GzipHeader.swift */,
+				061C06251F0E8A0300832F0C /* GzipError.swift */,
+			);
+			name = GZip;
+			sourceTree = "<group>";
+		};
+		061C063A1F0E8A8B00832F0C /* Zlib */ = {
+			isa = PBXGroup;
+			children = (
+				064492581DC606D400F10981 /* ZlibArchive.swift */,
+				061C06341F0E8A5F00832F0C /* ZlibHeader.swift */,
+				061C062F1F0E8A4900832F0C /* ZlibError.swift */,
+			);
+			name = Zlib;
+			sourceTree = "<group>";
+		};
+		061C063B1F0E8A9500832F0C /* XZ */ = {
+			isa = PBXGroup;
+			children = (
+				061C06201F0E89D900832F0C /* XZError.swift */,
+				06E2346B1E068E9600F18798 /* XZArchive.swift */,
+			);
+			name = XZ;
+			sourceTree = "<group>";
+		};
+		061C06461F0E8AEC00832F0C /* ZIP */ = {
+			isa = PBXGroup;
+			children = (
+				067518351E2A86F700D16354 /* ZipContainer.swift */,
+				061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */,
+				061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */,
+				061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */,
+				061C06411F0E8AD500832F0C /* ZipEntry.swift */,
+				061C063C1F0E8AB700832F0C /* ZipError.swift */,
+			);
+			name = ZIP;
+			sourceTree = "<group>";
+		};
+		061C06601F0E913700832F0C /* TAR */ = {
+			isa = PBXGroup;
+			children = (
+				06ADB2D81EBCEFA60053A188 /* TarContainer.swift */,
+				061C065B1F0E90E600832F0C /* TarEntry.swift */,
+				061C06561F0E90C800832F0C /* TarError.swift */,
+			);
+			name = TAR;
+			sourceTree = "<group>";
+		};
 		0691B93E1EBE3E100037EE58 /* TAR */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,13 +530,13 @@
 				06A3931F1DE06FFE00182E12 /* Common */,
 				069D0FFE1E0D6CF200D8AA87 /* LZMA */,
 				063DF1081DE1F07800F38082 /* HuffmanTree.swift */,
-				06E2346B1E068E9600F18798 /* XZArchive.swift */,
-				063364E21DC52979007E313F /* GzipArchive.swift */,
-				064492581DC606D400F10981 /* ZlibArchive.swift */,
+				061C063B1F0E8A9500832F0C /* XZ */,
+				061C06391F0E8A8300832F0C /* GZip */,
+				061C063A1F0E8A8B00832F0C /* Zlib */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
 				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
-				067518351E2A86F700D16354 /* ZipContainer.swift */,
-				06ADB2D81EBCEFA60053A188 /* TarContainer.swift */,
+				061C06461F0E8AEC00832F0C /* ZIP */,
+				061C06601F0E913700832F0C /* TAR */,
 				06A3933D1DE070B500182E12 /* Service */,
 			);
 			path = Sources;
@@ -780,25 +892,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				061C06531F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
 				06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
+				061C064E1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1141DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF11E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
+				061C06491F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */,
 				063DF1171DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518371E2A86F700D16354 /* ZipContainer.swift in Sources */,
+				061C06581F0E90C800832F0C /* TarError.swift in Sources */,
+				061C06311F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFB1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234831E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20E1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
 				0681B3DF1E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
+				061C063E1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				069D0FE71E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06FED40D1DD7717E0013DFB2 /* BZip2.swift in Sources */,
+				061C062C1F0E8A1D00832F0C /* GzipHeader.swift in Sources */,
 				069D0FF61E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
 				065569681DC65C2A00A47E66 /* GzipArchive.swift in Sources */,
+				061C06221F0E89D900832F0C /* XZError.swift in Sources */,
 				06ADB2DA1EBCEFA60053A188 /* TarContainer.swift in Sources */,
 				06E2346D1E068E9600F18798 /* XZArchive.swift in Sources */,
+				061C06431F0E8AD500832F0C /* ZipEntry.swift in Sources */,
+				061C06361F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
+				061C065D1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				061C06271F0E8A0300832F0C /* GzipError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,25 +930,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				061C06541F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
 				06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */,
+				061C064F1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */,
 				063DF11C1DE1F2E200F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF21E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
+				061C064A1F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */,
 				063DF11D1DE1F2E200F38082 /* Protocols.swift in Sources */,
 				067518381E2A86F700D16354 /* ZipContainer.swift in Sources */,
+				061C06591F0E90C800832F0C /* TarError.swift in Sources */,
+				061C06321F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFC1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234841E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20F1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				0681B3E01E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
+				061C063F1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				069D0FE81E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				065569711DC65C2B00A47E66 /* Deflate.swift in Sources */,
+				061C062D1F0E8A1D00832F0C /* GzipHeader.swift in Sources */,
 				069D0FF71E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
 				06FED40E1DD7717E0013DFB2 /* BZip2.swift in Sources */,
+				061C06231F0E89D900832F0C /* XZError.swift in Sources */,
 				06ADB2DB1EBCEFA60053A188 /* TarContainer.swift in Sources */,
 				06E2346E1E068E9600F18798 /* XZArchive.swift in Sources */,
+				061C06441F0E8AD500832F0C /* ZipEntry.swift in Sources */,
+				061C06371F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
+				061C065E1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
+				061C06281F0E8A0300832F0C /* GzipError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,25 +968,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				061C06551F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
 				06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
+				061C06501F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1151DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF31E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
+				061C064B1F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */,
 				063DF1181DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518391E2A86F700D16354 /* ZipContainer.swift in Sources */,
+				061C065A1F0E90C800832F0C /* TarError.swift in Sources */,
+				061C06331F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFD1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234851E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC2101E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
 				0681B3E11E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
+				061C06401F0E8AB700832F0C /* ZipError.swift in Sources */,
 				069D0FE91E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06FED40F1DD7717E0013DFB2 /* BZip2.swift in Sources */,
+				061C062E1F0E8A1D00832F0C /* GzipHeader.swift in Sources */,
 				069D0FF81E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
 				065569761DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
+				061C06241F0E89D900832F0C /* XZError.swift in Sources */,
 				06ADB2DC1EBCEFA60053A188 /* TarContainer.swift in Sources */,
 				06E2346F1E068E9600F18798 /* XZArchive.swift in Sources */,
+				061C06451F0E8AD500832F0C /* ZipEntry.swift in Sources */,
+				061C06381F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
+				061C065F1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				061C06291F0E8A0300832F0C /* GzipError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,25 +1006,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
 				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06A393391DE0709300182E12 /* GzipArchive.swift in Sources */,
+				061C064D1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */,
 				063DF1131DE1F07800F38082 /* HuffmanTree.swift in Sources */,
 				069D0FF01E0D6CB600D8AA87 /* LZMARangeDecoder.swift in Sources */,
+				061C06481F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */,
 				063DF1161DE1F07800F38082 /* Protocols.swift in Sources */,
 				067518361E2A86F700D16354 /* ZipContainer.swift in Sources */,
+				061C06571F0E90C800832F0C /* TarError.swift in Sources */,
+				061C06301F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFA1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234821E06A6C200F18798 /* CheckSums.swift in Sources */,
 				069AC20D1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
 				0681B3DE1E44F674001A9D79 /* BitToByteWriter.swift in Sources */,
+				061C063D1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				069D0FE61E0D6C6400D8AA87 /* LZMADecoder.swift in Sources */,
 				06A3933B1DE0709300182E12 /* Deflate.swift in Sources */,
+				061C062B1F0E8A1D00832F0C /* GzipHeader.swift in Sources */,
 				069D0FF51E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift in Sources */,
 				06A3933C1DE0709300182E12 /* BZip2.swift in Sources */,
+				061C06211F0E89D900832F0C /* XZError.swift in Sources */,
 				06ADB2D91EBCEFA60053A188 /* TarContainer.swift in Sources */,
 				06E2346C1E068E9600F18798 /* XZArchive.swift in Sources */,
+				061C06421F0E8AD500832F0C /* ZipEntry.swift in Sources */,
+				061C06351F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
+				061C065C1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				061C06261F0E8A0300832F0C /* GzipError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
