@@ -40,13 +40,13 @@ Pod::Spec.new do |s|
   s.subspec 'GZip' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/GZipArchive.swift'
+    sp.source_files = 'Sources/{GzipArchive,GzipHeader,GzipError}.swift'
   end
 
   s.subspec 'Zlib' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/ZlibArchive.swift'
+    sp.source_files = 'Sources/{ZlibArchive,ZlibHeader,ZlibError}.swift'
   end
 
   s.subspec 'BZip2' do |sp|
@@ -64,19 +64,19 @@ Pod::Spec.new do |s|
   s.subspec 'XZ' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/LZMA'
-    sp.source_files = 'Sources/XZArchive.swift'
+    sp.source_files = 'Sources/{XZArchive,XZError}.swift'
   end
 
   s.subspec 'ZIP' do |sp|
     sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/ZipContainer.swift'
+    sp.source_files = 'Sources/{ZipContainer,ZipEntry,ZipError,ZipLocalHeader,ZipCentralDirectoryEntry,ZipEndOfCentralDirectory}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BUILD' }
   end
 
   s.subspec 'TAR' do |sp|
     sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/TarContainer.swift'
+    sp.source_files = 'Sources/{TarContainer,TarEntry,TarError}.swift'
   end
 
 end
