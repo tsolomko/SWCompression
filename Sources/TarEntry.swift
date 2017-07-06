@@ -159,62 +159,59 @@ public class TarEntry: ContainerEntry {
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
-    init(_ data: Data, _ index: inout Int,
-                     _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
+    init(_ pointerData: inout DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
         var attributesDict = [FileAttributeKey: Any]()
 
-        let blockStartIndex = index
+        let blockStartIndex = pointerData.index
         // File name
-        fileName = try data.nullEndedAsciiString(index, 100)
-        index += 100
+        fileName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let octalPosixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         let posixPermissions = octalPosixPermissions.octalToDecimal()
         attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
         mode = posixPermissions
-        index += 8
 
         // Owner's user ID
-        guard let ownerAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         attributesDict[FileAttributeKey.ownerAccountID] = ownerAccountID
         ownerID = ownerAccountID
-        index += 8
 
         // Group's user ID
-        guard let groupAccountID = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        guard let groupAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         attributesDict[FileAttributeKey.groupOwnerAccountID] = groupAccountID
         groupID = groupAccountID
-        index += 8
 
         // File size
-        guard let octalFileSize = Int(try data.nullSpaceEndedAsciiString(index, 12))
+        guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
         let fileSize = octalFileSize.octalToDecimal()
         attributesDict[FileAttributeKey.size] = fileSize
         size = fileSize
-        index += 12
 
         // Modification time
-        guard let octalMtime = Int(try data.nullSpaceEndedAsciiString(index, 12))
+        guard let octalMtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
         let mtime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
         attributesDict[FileAttributeKey.modificationDate] = mtime
         modificationTime = mtime
-        index += 12
 
         // Checksum
-        guard let octalChecksum = Int(try data.nullSpaceEndedAsciiString(index, 8))
+        guard let octalChecksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         let checksum = octalChecksum.octalToDecimal()
 
-        var headerDataForChecksum = data.subdata(in: blockStartIndex..<blockStartIndex + 512).toArray(type: UInt8.self)
+        // TODO: Change subdata to slicing in Swift 4.0.
+        let currentIndex = pointerData.index
+        pointerData.index = blockStartIndex
+        var headerDataForChecksum = pointerData.alignedBytes(count: 512)
         for i in 148..<156 {
             headerDataForChecksum[i] = 0x20
         }
+        pointerData.index = currentIndex
 
         // Some implementations treat bytes as signed integers, but some don't.
         // So we check both cases, coincedence in one of them will pass the checksum test.
@@ -226,10 +223,8 @@ public class TarEntry: ContainerEntry {
         guard unsignedOurChecksum == UInt(checksum) || signedOurChecksum == checksum
             else { throw TarError.wrongHeaderChecksum }
 
-        index += 8
-
         // File type
-        let fileType = EntryType(rawValue: String(Character(UnicodeScalar(data[index])))) ?? .vendorUnknownOrReserved
+        let fileType = EntryType(rawValue: String(Character(UnicodeScalar(pointerData.alignedByte())))) ?? .vendorUnknownOrReserved
         type = fileType
         switch fileType {
         case .normal:
@@ -246,38 +241,25 @@ public class TarEntry: ContainerEntry {
             attributesDict[FileAttributeKey.type] = FileAttributeType.typeUnknown
         }
 
-        index += 1
-
         // Linked file name
-        linkedFileName = try data.nullEndedAsciiString(index, 100)
-        index += 100
+        linkedFileName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
-        let posixIndicator = String(data: data.subdata(in: 257..<263), encoding: .ascii)
-        if posixIndicator == "ustar\u{00}" || posixIndicator == "ustar\u{20}" {
-            index += 6
+        let posixIndicator = try pointerData.nullSpaceEndedAsciiString(cutoff: 6)
+        if posixIndicator == "ustar" {
+            let ustarVersion = pointerData.alignedBytes(count: 2)
+            guard ustarVersion == [0x30, 0x30] else { throw TarError.wrongUstarVersion }
 
-            let ustarVersion = String(data: data.subdata(in: index..<index + 2), encoding: .ascii)
-            guard ustarVersion == "00" else { throw TarError.wrongUstarVersion }
-            index += 2
-
-            let ownerName = try data.nullEndedAsciiString(index, 32)
+            let ownerName = try pointerData.nullEndedAsciiString(cutoff: 32)
             attributesDict[FileAttributeKey.ownerAccountName] = ownerName
             ownerUserName = ownerName
-            index += 32
 
-            let groupName = try data.nullEndedAsciiString(index, 32)
+            let groupName = try pointerData.nullEndedAsciiString(cutoff: 32)
             attributesDict[FileAttributeKey.groupOwnerAccountName] = groupName
             ownerGroupName = groupName
-            index += 32
 
-            deviceMajorNumber = try data.nullSpaceEndedAsciiString(index, 8)
-            index += 8
-
-            deviceMinorNumber = try data.nullSpaceEndedAsciiString(index, 8)
-            index += 8
-
-            fileNamePrefix = try data.nullEndedAsciiString(index, 155)
-            index += 155
+            deviceMajorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
+            deviceMinorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
+            fileNamePrefix = try pointerData.nullEndedAsciiString(cutoff: 155)
         } else {
             ownerUserName = nil
             ownerGroupName = nil
@@ -361,10 +343,10 @@ public class TarEntry: ContainerEntry {
         self.entryAttributes = attributesDict
         
         // File data
-        index = blockStartIndex + 512
-        self.dataObject = data.subdata(in: index..<index + size)
-        index += size
-        index = index.roundTo512()
+        pointerData.index = blockStartIndex + 512
+        self.dataObject = Data(bytes: pointerData.alignedBytes(count: size))
+        pointerData.index -= size
+        pointerData.index += size.roundTo512()
     }
     
     /// Returns data associated with this entry.
@@ -374,49 +356,54 @@ public class TarEntry: ContainerEntry {
     
 }
 
-fileprivate extension Data {
+fileprivate extension DataWithPointer {
 
-    fileprivate func nullEndedBuffer(_ startIndex: Int, _ cutoff: Int) -> [UInt8] {
-        var index = startIndex
+    fileprivate func nullEndedBuffer(cutoff: Int) -> [UInt8] {
+        let startIndex = index
         var buffer = [UInt8]()
-        while true {
-            if self[index] == 0 || index - startIndex >= cutoff {
+        while index - startIndex < cutoff {
+            let byte = alignedByte()
+            if byte == 0 {
+                index -= 1
                 break
             }
-            buffer.append(self[index])
-            index += 1
+            buffer.append(byte)
         }
+        index += cutoff - (index - startIndex)
         return buffer
     }
 
-    fileprivate func nullEndedAsciiString(_ startIndex: Int, _ cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullEndedBuffer(startIndex, cutoff), encoding: .ascii) {
+    fileprivate func nullEndedAsciiString(cutoff: Int) throws -> String {
+        if let string = String(bytes: self.nullEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {
             throw TarError.notAsciiString
         }
     }
 
-    fileprivate func nullSpaceEndedBuffer(_ startIndex: Int, _ cutoff: Int) -> [UInt8] {
-        var index = startIndex
+    fileprivate func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
+        let startIndex = index
         var buffer = [UInt8]()
-        while true {
-            if self[index] == 0 || self[index] == 0x20 || index - startIndex >= cutoff {
+        while index - startIndex < cutoff {
+            let byte = alignedByte()
+            if byte == 0  || byte == 0x20 {
+                index -= 1
                 break
             }
-            buffer.append(self[index])
-            index += 1
+            buffer.append(byte)
         }
+        index += cutoff - (index - startIndex)
         return buffer
     }
 
-    fileprivate func nullSpaceEndedAsciiString(_ startIndex: Int, _ cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullSpaceEndedBuffer(startIndex, cutoff), encoding: .ascii) {
+    fileprivate func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
+        if let string = String(bytes: self.nullSpaceEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {
             throw TarError.notAsciiString
         }
     }
+
 
 }
 

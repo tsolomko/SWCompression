@@ -27,19 +27,23 @@ public class TarContainer: Container {
         // So we have to check this.
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
 
-        var output = [TarEntry]()
+        /// Object with input data which supports convenient work with bit shifts.
+        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
 
-        var index = 0
+        var output = [TarEntry]()
 
         var lastGlobalExtendedHeader: String?
         var lastLocalExtendedHeader: String?
 
+        // Container ends with two zero-filled records.
+        // TODO: Add better check and error throw.
         while true {
-            // Container ends with two zero-filled records.
-            if data.subdata(in: index..<index + 1024) == Data(bytes: Array(repeating: 0, count: 1024)) {
+            if pointerData.alignedBytes(count: 1024) == Array(repeating: 0, count: 1024) {
                 break
+            } else {
+                pointerData.index -= 1024
             }
-            let entry = try TarEntry(data, &index, lastGlobalExtendedHeader, lastLocalExtendedHeader)
+            let entry = try TarEntry(&pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader)
             switch entry.type {
             case .globalExtendedHeader:
                 lastGlobalExtendedHeader = String(data: entry.data(), encoding: .utf8)
