@@ -364,8 +364,9 @@ public class XZArchive: Archive {
 
 }
 
-extension DataWithPointer {
-    func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
+fileprivate extension DataWithPointer {
+
+    fileprivate func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
         var i = 1
         var result = self.alignedByte().toInt()
         var bytes: [UInt8] = [result.toUInt8()]
@@ -384,4 +385,5 @@ extension DataWithPointer {
         }
         return (result, bytes)
     }
+
 }
