@@ -171,7 +171,7 @@ public class TarEntry: ContainerEntry {
         // File mode
         guard let octalPosixPermissions = Int(try data.nullSpaceEndedAsciiString(index, 8))
             else { throw TarError.fieldIsNotNumber }
-        let posixPermissions = octalToDecimal(octalPosixPermissions)
+        let posixPermissions = octalPosixPermissions.octalToDecimal()
         attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
         mode = posixPermissions
         index += 8
@@ -193,7 +193,7 @@ public class TarEntry: ContainerEntry {
         // File size
         guard let octalFileSize = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
-        let fileSize = octalToDecimal(octalFileSize)
+        let fileSize = octalFileSize.octalToDecimal()
         attributesDict[FileAttributeKey.size] = fileSize
         size = fileSize
         index += 12
@@ -201,7 +201,7 @@ public class TarEntry: ContainerEntry {
         // Modification time
         guard let octalMtime = Int(try data.nullSpaceEndedAsciiString(index, 12))
             else { throw TarError.fieldIsNotNumber }
-        let mtime = Date(timeIntervalSince1970: TimeInterval(octalToDecimal(octalMtime)))
+        let mtime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
         attributesDict[FileAttributeKey.modificationDate] = mtime
         modificationTime = mtime
         index += 12
@@ -209,7 +209,7 @@ public class TarEntry: ContainerEntry {
         // Checksum
         guard let octalChecksum = Int(try data.nullSpaceEndedAsciiString(index, 8))
             else { throw TarError.fieldIsNotNumber }
-        let checksum = octalToDecimal(octalChecksum)
+        let checksum = octalChecksum.octalToDecimal()
 
         var headerDataForChecksum = data.subdata(in: blockStartIndex..<blockStartIndex + 512).toArray(type: UInt8.self)
         for i in 148..<156 {
@@ -364,7 +364,7 @@ public class TarEntry: ContainerEntry {
         index = blockStartIndex + 512
         self.dataObject = data.subdata(in: index..<index + size)
         index += size
-        index = roundTo512(value: index)
+        index = index.roundTo512()
     }
     
     /// Returns data associated with this entry.
@@ -420,20 +420,24 @@ fileprivate extension Data {
 
 }
 
-fileprivate func octalToDecimal(_ number: Int) -> Int {
-    var octal = number
-    var decimal = 0, i = 0
-    while octal != 0 {
-        let remainder = octal % 10
-        octal /= 10
-        decimal += remainder * Int(pow(8, Double(i)))
-        i += 1
-    }
-    return decimal
-}
+fileprivate extension Int {
 
-fileprivate func roundTo512(value: Int) -> Int {
-    let fractionNum = Double(value) / 512
-    let roundedNum = Int(ceil(fractionNum))
-    return roundedNum * 512
+    fileprivate func octalToDecimal() -> Int {
+        var octal = self
+        var decimal = 0, i = 0
+        while octal != 0 {
+            let remainder = octal % 10
+            octal /= 10
+            decimal += remainder * Int(pow(8, Double(i)))
+            i += 1
+        }
+        return decimal
+    }
+
+    fileprivate func roundTo512() -> Int {
+        let fractionNum = Double(self) / 512
+        let roundedNum = Int(ceil(fractionNum))
+        return roundedNum * 512
+    }
+
 }
