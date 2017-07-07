@@ -180,6 +180,10 @@ Comment: Philosophy for such errors is that by the time these errors are thrown,
 decompression was already performed, so we can still provide the result of decompression to the caller.
 It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.
 
+- GNU-specific extensions to TAR format (such as 'L' file type aka LongLink) are not fully supported.
+Currently, they are returned as usual files with `typeUnknown` file type,
+instead of being used as source of information about following entries.
+
 Future plans
 -------------
 - Better Deflate compression.
