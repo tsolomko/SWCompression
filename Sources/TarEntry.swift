@@ -244,11 +244,15 @@ public class TarEntry: ContainerEntry {
         // Linked file name
         linkedFileName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
-        let posixIndicator = try pointerData.nullSpaceEndedAsciiString(cutoff: 6)
-        if posixIndicator == "ustar" {
-            let ustarVersion = pointerData.alignedBytes(count: 2)
-            guard ustarVersion == [0x30, 0x30] else { throw TarError.wrongUstarVersion }
+        // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
+        // They differ in `magic` field value and how other fields are padded.
+        // Padding is taken care of in Data extension functions at the end of this file.
+        // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
+        let magic = pointerData.alignedBytes(count: 8)
 
+        if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
+            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
+            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
             let ownerName = try pointerData.nullEndedAsciiString(cutoff: 32)
             attributesDict[FileAttributeKey.ownerAccountName] = ownerName
             ownerUserName = ownerName
@@ -341,19 +345,19 @@ public class TarEntry: ContainerEntry {
         }
 
         self.entryAttributes = attributesDict
-        
+
         // File data
         pointerData.index = blockStartIndex + 512
         self.dataObject = Data(bytes: pointerData.alignedBytes(count: size))
         pointerData.index -= size
         pointerData.index += size.roundTo512()
     }
-    
+
     /// Returns data associated with this entry.
     public func data() -> Data {
         return dataObject
     }
-    
+
 }
 
 fileprivate extension DataWithPointer {

@@ -1,6 +1,10 @@
 # Changelog
 v3.1.1
 ----------------
+- `wrongUstarVersion` error is no longer incorrectly thrown for GNU tar containers.
+
+v3.1.1
+----------------
 - Permissions attributes for TarEntry are now base-10.
 - Now throws `fieldIsNotNumber` error when encounters non-number required field in TAR header.
 - Slightly improved documentation.
