@@ -71,4 +71,43 @@ class TarTests: XCTestCase {
         }
     }
 
+    func testFormats() {
+        // TODO: Make tests more sophisticated.
+
+        let formatTestNames = ["test_gnu", "test_oldgnu", "test_pax", "test_ustar", "test_v7"]
+
+        guard let answerURL = Constants.url(forAnswer: "test1") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        for testName in formatTestNames {
+            guard let testURL = Constants.url(forTest: testName, withType: TarTests.testType) else {
+                XCTFail("Unable to get test's URL.")
+                return
+            }
+
+            guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+                XCTFail("Unable to load test archive.")
+                return
+            }
+
+            guard let result = try? TarContainer.open(container: testData) else {
+                XCTFail("Unable to parse TAR container.")
+                return
+            }
+
+            XCTAssertEqual(result.count, 1)
+            XCTAssertEqual(result[0].name, "test1.answer")
+            XCTAssertEqual(result[0].size, 14)
+            XCTAssertEqual(result[0].isDirectory, false)
+            XCTAssertEqual(try? result[0].data(), answerData)
+        }
+    }
+
 }

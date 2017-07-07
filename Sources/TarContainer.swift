@@ -271,13 +271,16 @@ public class TarEntry: ContainerEntry {
         linkedFileName = try data.nullEndedAsciiString(index, 100)
         index += 100
 
-        let posixIndicator = String(data: data.subdata(in: 257..<263), encoding: .ascii)
-        if posixIndicator == "ustar\u{00}" || posixIndicator == "ustar\u{20}" {
-            index += 6
+        // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
+        // They differ in `magic` field value and how other fields are padded.
+        // Padding is taken care of in Data extension functions at the end of this file.
+        // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
+        let magic = data.subdata(in: 257..<265).toArray(type: UInt8.self)
 
-            let ustarVersion = String(data: data.subdata(in: index..<index + 2), encoding: .ascii)
-            guard ustarVersion == "00" else { throw TarError.wrongUstarVersion }
-            index += 2
+        if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
+            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
+            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
+            index += 8
 
             let ownerName = try data.nullEndedAsciiString(index, 32)
             attributesDict[FileAttributeKey.ownerAccountName] = ownerName
