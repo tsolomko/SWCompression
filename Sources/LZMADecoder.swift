@@ -77,10 +77,10 @@ class LZMADecoder {
 
     init(_ pointerData: inout DataWithPointer) throws {
         self.pointerData = pointerData
-        self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits, &self.pointerData)
+        self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits)
         // There are two types of matches so we need two decoders for them.
-        self.lenDecoder = LZMALenDecoder(&self.pointerData)
-        self.repLenDecoder = LZMALenDecoder(&self.pointerData)
+        self.lenDecoder = LZMALenDecoder()
+        self.repLenDecoder = LZMALenDecoder()
     }
 
     // MARK: LZMA2 related functions.
@@ -122,13 +122,13 @@ class LZMADecoder {
 
         self.posSlotDecoder = []
         for _ in 0..<LZMAConstants.numLenToPosStates {
-            self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6, &self.pointerData))
+            self.posSlotDecoder.append(LZMABitTreeDecoder(numBits: 6))
         }
-        self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits, &self.pointerData)
+        self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits)
         self.posDecoders = Array(repeating: LZMAConstants.probInitValue,
                                  count: 1 + LZMAConstants.numFullDistances - LZMAConstants.endPosModelIndex)
-        self.lenDecoder = LZMALenDecoder(&self.pointerData)
-        self.repLenDecoder = LZMALenDecoder(&self.pointerData)
+        self.lenDecoder = LZMALenDecoder()
+        self.repLenDecoder = LZMALenDecoder()
 
         self.stateReset = true
     }

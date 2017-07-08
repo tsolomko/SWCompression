@@ -8,13 +8,10 @@ import Foundation
 /// Used to decode symbols that need several bits for storing.
 class LZMABitTreeDecoder {
 
-    private var pointerData: DataWithPointer
-
     var probs: [Int]
     let numBits: Int
 
-    init(numBits: Int, _ pointerData: inout DataWithPointer) {
-        self.pointerData = pointerData
+    init(numBits: Int) {
         self.probs = Array(repeating: LZMAConstants.probInitValue,
                            count: 1 << numBits)
         self.numBits = numBits
