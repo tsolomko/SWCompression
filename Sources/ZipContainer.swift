@@ -11,13 +11,13 @@ public class ZipContainer: Container {
     /**
      Processes ZIP container and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
 
-     - Important: The order of entries is defined by ZIP container and, 
+     - Important: The order of entries is defined by ZIP container and,
      particularly, by a creator of a given ZIP container.
      It is likely that directories will be encountered earlier than files stored in those directories,
      but one SHOULD NOT rely on any particular order.
 
      - Parameter container: ZIP container's data.
-     
+
      - Throws: `ZipError` or any other error associated with compression type,
      depending on the type of the problem.
      It may indicate that either container is damaged or it might not be ZIP container at all.

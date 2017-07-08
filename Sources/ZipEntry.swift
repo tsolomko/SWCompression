@@ -178,6 +178,11 @@ public class ZipEntry: ContainerEntry {
             attributesDict[FileAttributeKey.modificationDate] = mtime
         }
 
+        // Extended Timestamp
+        if let mtimestamp = cdEntry.modificationTimestamp {
+            attributesDict[FileAttributeKey.modificationDate] = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
+        }
+
         // Size
         attributesDict[FileAttributeKey.size] = cdEntry.uncompSize
 
@@ -219,13 +224,13 @@ public class ZipEntry: ContainerEntry {
             } else if hostSystem == 0 {
                 attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
             }
-            
+
             if dosAttributes & 0x1 != 0 {
                 attributesDict[FileAttributeKey.appendOnly] = true
             }
         }
-        
+
         self.entryAttributes = attributesDict
     }
-    
+
 }

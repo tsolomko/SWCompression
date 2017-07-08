@@ -361,12 +361,6 @@ contain only last member&rsquo;s data as their associated value instead of all s
 <p>Comment: Philosophy for such errors is that by the time these errors are thrown,
 decompression was already performed, so we can still provide the result of decompression to the caller.
 It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.</p>
-
-<ul>
-<li>GNU-specific extensions to TAR format (such as &lsquo;L&rsquo; file type aka LongLink) are not fully supported.
-Currently, they are returned as usual files with <code>typeUnknown</code> file type,
-instead of being used as source of information about following entries.</li>
-</ul>
 <h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>

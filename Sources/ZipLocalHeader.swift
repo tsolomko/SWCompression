@@ -21,6 +21,10 @@ struct ZipLocalHeader {
 
     let fileName: String
 
+    private(set) var modificationTimestamp: Int?
+    private(set) var accessTimestamp: Int?
+    private(set) var creationTimestamp: Int?
+
     init(_ pointerData: inout DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
@@ -62,6 +66,18 @@ struct ZipLocalHeader {
                 self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
 
                 self.zip64FieldsArePresent = true
+            case 0x5455: // Extended Timestamp
+                let flags = pointerData.alignedByte()
+                guard flags & 0xF8 == 0 else { break }
+                if flags & 0x01 != 0 {
+                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
+                if flags & 0x02 != 0 {
+                    self.accessTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
+                if flags & 0x04 != 0 {
+                    self.creationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
             default:
                 pointerData.index += size
             }
@@ -77,5 +93,5 @@ struct ZipLocalHeader {
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
     }
-    
+
 }

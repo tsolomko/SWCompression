@@ -27,6 +27,8 @@ struct ZipCentralDirectoryEntry {
 
     private(set) var offset: UInt64
 
+    private(set) var modificationTimestamp: Int?
+
     init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x02014b50
@@ -71,7 +73,7 @@ struct ZipCentralDirectoryEntry {
             let headerID = pointerData.intFromAlignedBytes(count: 2)
             let size = pointerData.intFromAlignedBytes(count: 2)
             switch headerID {
-            case 0x0001:
+            case 0x0001: // Zip64
                 if self.uncompSize == 0xFFFFFFFF {
                     self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
                 }
@@ -84,13 +86,19 @@ struct ZipCentralDirectoryEntry {
                 if self.diskNumberStart == 0xFFFF {
                     self.diskNumberStart = pointerData.uint32FromAlignedBytes(count: 4)
                 }
+            case 0x5455: // Extended Timestamp
+                let flags = pointerData.alignedByte()
+                guard flags & 0xF8 == 0 else { break }
+                if flags & 0x01 != 0 {
+                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
             default:
                 pointerData.index += size
             }
         }
 
         guard let fileComment = String(data: Data(bytes: pointerData.alignedBytes(count: fileCommentLength)),
-                                       encoding: .utf8)
+                                    encoding: .utf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
 
@@ -106,5 +114,5 @@ struct ZipCentralDirectoryEntry {
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
     }
-    
+
 }

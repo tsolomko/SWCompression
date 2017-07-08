@@ -41,7 +41,7 @@ public class TarEntry: ContainerEntry {
 
     /// Name of the file or directory.
     public var name: String {
-        return paxPath ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
+        return (paxPath ?? gnuLongName) ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
     }
 
     /// True, if an entry is a directory.
@@ -149,7 +149,7 @@ public class TarEntry: ContainerEntry {
 
     /// Path to a linked file.
     public var linkPath: String? {
-        return paxLinkPath ?? linkedFileName
+        return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
     }
 
     private var paxLinkPath: String?
@@ -165,7 +165,25 @@ public class TarEntry: ContainerEntry {
 
     private let dataObject: Data
 
-    init(_ pointerData: inout DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
+    let isLongName: Bool
+    let isLongLinkName: Bool
+
+    private let gnuLongName: String?
+    private let gnuLongLinkName: String?
+
+    init(_ pointerData: inout DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
+         _ longName: String?, _ longLinkName: String?) throws {
+        if let longName = longName {
+            gnuLongName = longName
+        } else {
+            gnuLongName = nil
+        }
+        if let longLinkName = longLinkName {
+            gnuLongLinkName = longLinkName
+        } else {
+            gnuLongLinkName = nil
+        }
+
         var attributesDict = [FileAttributeKey: Any]()
 
         let blockStartIndex = pointerData.index
@@ -230,7 +248,10 @@ public class TarEntry: ContainerEntry {
             else { throw TarError.wrongHeaderChecksum }
 
         // File type
-        let fileType = EntryType(rawValue: String(Character(UnicodeScalar(pointerData.alignedByte())))) ?? .vendorUnknownOrReserved
+        let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.alignedByte())))
+        isLongLinkName = fileTypeIndicator == "K"
+        isLongName = fileTypeIndicator == "L"
+        let fileType = EntryType(rawValue: fileTypeIndicator) ?? .vendorUnknownOrReserved
         type = fileType
         switch fileType {
         case .normal:
@@ -361,9 +382,9 @@ public class TarEntry: ContainerEntry {
 
 }
 
-fileprivate extension DataWithPointer {
+extension DataWithPointer {
 
-    fileprivate func nullEndedBuffer(cutoff: Int) -> [UInt8] {
+    func nullEndedBuffer(cutoff: Int) -> [UInt8] {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
@@ -378,7 +399,7 @@ fileprivate extension DataWithPointer {
         return buffer
     }
 
-    fileprivate func nullEndedAsciiString(cutoff: Int) throws -> String {
+    func nullEndedAsciiString(cutoff: Int) throws -> String {
         if let string = String(bytes: self.nullEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {
@@ -386,7 +407,7 @@ fileprivate extension DataWithPointer {
         }
     }
 
-    fileprivate func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
+    func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
@@ -401,7 +422,7 @@ fileprivate extension DataWithPointer {
         return buffer
     }
 
-    fileprivate func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
+    func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
         if let string = String(bytes: self.nullSpaceEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {

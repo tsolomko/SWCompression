@@ -34,6 +34,8 @@ public class TarContainer: Container {
 
         var lastGlobalExtendedHeader: String?
         var lastLocalExtendedHeader: String?
+        var longLinkName: String?
+        var longName: String?
 
         // Container ends with two zero-filled records.
         // TODO: Add better check and error throw.
@@ -43,15 +45,26 @@ public class TarContainer: Container {
             } else {
                 pointerData.index -= 1024
             }
-            let entry = try TarEntry(&pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader)
+            let entry = try TarEntry(&pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+                                     longName, longLinkName)
             switch entry.type {
             case .globalExtendedHeader:
                 lastGlobalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             case .localExtendedHeader:
                 lastLocalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             default:
-                output.append(entry)
-                lastLocalExtendedHeader = nil
+                if entry.isLongName {
+                    longName = try DataWithPointer(data: entry.data(), bitOrder: .reversed)
+                        .nullEndedAsciiString(cutoff: entry.size)
+                } else if entry.isLongLinkName {
+                    longLinkName = try DataWithPointer(data: entry.data(), bitOrder: .reversed)
+                        .nullEndedAsciiString(cutoff: entry.size)
+                } else {
+                    output.append(entry)
+                    lastLocalExtendedHeader = nil
+                    longName = nil
+                    longLinkName = nil
+                }
             }
         }
 
