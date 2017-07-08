@@ -60,7 +60,7 @@ public class TarEntry: ContainerEntry {
 
     /// Name of the file or directory.
     public var name: String {
-        return paxPath ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
+        return (paxPath ?? gnuLongName) ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
     }
 
     /// True, if an entry is a directory.
@@ -170,7 +170,7 @@ public class TarEntry: ContainerEntry {
 
     /// Path to a linked file.
     public var linkPath: String? {
-        return paxLinkPath ?? linkedFileName
+        return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
     }
 
     private var paxLinkPath: String?
@@ -178,8 +178,25 @@ public class TarEntry: ContainerEntry {
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
+    let isLongName: Bool
+    let isLongLinkName: Bool
+
+    private let gnuLongName: String?
+    private let gnuLongLinkName: String?
+
     fileprivate init(_ data: Data, _ index: inout Int,
-                     _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
+                     _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
+                     _ longName: String?, _ longLinkName: String?) throws {
+        if let longName = longName {
+            gnuLongName = longName
+        } else {
+            gnuLongName = nil
+        }
+        if let longLinkName = longLinkName {
+            gnuLongLinkName = longLinkName
+        } else {
+            gnuLongLinkName = nil
+        }
         var attributesDict = [FileAttributeKey: Any]()
 
         let blockStartIndex = index
@@ -248,7 +265,10 @@ public class TarEntry: ContainerEntry {
         index += 8
 
         // File type
-        let fileType = EntryType(rawValue: String(Character(UnicodeScalar(data[index])))) ?? .vendorUnknownOrReserved
+        let fileTypeIndicator = String(Character(UnicodeScalar(data[index])))
+        isLongLinkName = fileTypeIndicator == "K"
+        isLongName = fileTypeIndicator == "L"
+        let fileType = EntryType(rawValue: fileTypeIndicator) ?? .vendorUnknownOrReserved
         type = fileType
         switch fileType {
         case .normal:
@@ -424,21 +444,32 @@ public class TarContainer: Container {
 
         var lastGlobalExtendedHeader: String?
         var lastLocalExtendedHeader: String?
+        var longLinkName: String?
+        var longName: String?
 
         while true {
             // Container ends with two zero-filled records.
             if data.subdata(in: index..<index + 1024) == Data(bytes: Array(repeating: 0, count: 1024)) {
                 break
             }
-            let entry = try TarEntry(data, &index, lastGlobalExtendedHeader, lastLocalExtendedHeader)
+            let entry = try TarEntry(data, &index, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+                                     longName, longLinkName)
             switch entry.type {
             case .globalExtendedHeader:
                 lastGlobalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             case .localExtendedHeader:
                 lastLocalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             default:
-                output.append(entry)
-                lastLocalExtendedHeader = nil
+                if entry.isLongName {
+                    longName = try entry.data().nullEndedAsciiString(0, entry.size)
+                } else if entry.isLongLinkName {
+                    longLinkName = try entry.data().nullEndedAsciiString(0, entry.size)
+                } else {
+                    output.append(entry)
+                    lastLocalExtendedHeader = nil
+                    longName = nil
+                    longLinkName = nil
+                }
             }
         }
 

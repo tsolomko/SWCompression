@@ -1,5 +1,10 @@
 # Changelog
-v3.1.1
+v3.1.3
+----------------
+- Added support for GNU LongLing and LongName extenstions to TAR format.
+- Added support for modification timestamp from extended timestamps ZIP extra field.
+
+v3.1.2
 ----------------
 - `wrongUstarVersion` error is no longer incorrectly thrown for GNU tar containers.
 
