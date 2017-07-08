@@ -210,6 +210,11 @@ public class ZipEntry: ContainerEntry {
             attributesDict[FileAttributeKey.modificationDate] = mtime
         }
 
+        // Extended Timestamp
+        if let mtimestamp = cdEntry.modificationTimestamp {
+            attributesDict[FileAttributeKey.modificationDate] = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
+        }
+
         // Size
         attributesDict[FileAttributeKey.size] = cdEntry.uncompSize
 
@@ -331,6 +336,10 @@ struct LocalHeader {
 
     let fileName: String
 
+    private(set) var modificationTimestamp: Int?
+    private(set) var accessTimestamp: Int?
+    private(set) var creationTimestamp: Int?
+
     init(_ pointerData: inout DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
@@ -372,6 +381,18 @@ struct LocalHeader {
                 self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
 
                 self.zip64FieldsArePresent = true
+            case 0x5455: // Extended Timestamp
+                let flags = pointerData.alignedByte()
+                guard flags & 0xF8 == 0 else { break }
+                if flags & 0x01 != 0 {
+                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
+                if flags & 0x02 != 0 {
+                    self.accessTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
+                if flags & 0x04 != 0 {
+                    self.creationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                }
             default:
                 pointerData.index += size
             }
@@ -411,6 +432,8 @@ struct CentralDirectoryEntry {
     let externalFileAttributes: UInt32
 
     private(set) var offset: UInt64
+
+    private(set) var modificationTimestamp: Int?
 
     init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
@@ -456,7 +479,7 @@ struct CentralDirectoryEntry {
             let headerID = pointerData.intFromAlignedBytes(count: 2)
             let size = pointerData.intFromAlignedBytes(count: 2)
             switch headerID {
-            case 0x0001:
+            case 0x0001: // Zip64
                 if self.uncompSize == 0xFFFFFFFF {
                     self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
                 }
@@ -468,6 +491,12 @@ struct CentralDirectoryEntry {
                 }
                 if self.diskNumberStart == 0xFFFF {
                     self.diskNumberStart = pointerData.uint32FromAlignedBytes(count: 4)
+                }
+            case 0x5455: // Extended Timestamp
+                let flags = pointerData.alignedByte()
+                guard flags & 0xF8 == 0 else { break }
+                if flags & 0x01 != 0 {
+                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
                 }
             default:
                 pointerData.index += size
