@@ -5,6 +5,8 @@
 
 import Foundation
 
+// TODO: Remove wrongUstarVersion error in 4.0.
+
 /**
  Represents an error, which happened during processing TAR container.
  It may indicate that either container is damaged or it might not be TAR container at all.

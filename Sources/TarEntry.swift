@@ -138,8 +138,6 @@ public class TarEntry: ContainerEntry {
     private let linkedFileName: String?
     private var paxPath: String?
 
-    private let dataObject: Data
-
     /// The most recent access time of the original file or directory (PAX only).
     public private(set) var accessTime: Date?
 
@@ -158,6 +156,14 @@ public class TarEntry: ContainerEntry {
 
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
+
+
+    /// Returns data associated with this entry.
+    public func data() -> Data {
+        return dataObject
+    }
+
+    private let dataObject: Data
 
     init(_ pointerData: inout DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?) throws {
         var attributesDict = [FileAttributeKey: Any]()
@@ -272,30 +278,9 @@ public class TarEntry: ContainerEntry {
             fileNamePrefix = nil
         }
 
-        func parseHeader(_ header: String?, _ fieldsDict: inout [String : String]) throws {
-            if let headerString = header {
-                let headerEntries = headerString.components(separatedBy: "\n")
-                for headerEntry in headerEntries {
-                    if headerEntry == "" {
-                        continue
-                    }
-                    let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
-                                                                        omittingEmptySubsequences: false)
-                    guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
-                        else { throw TarError.wrongPaxHeaderEntry }
-                    let keywordValue = String(headerEntrySplit[1])
-                    let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
-                                                                          omittingEmptySubsequences: false)
-                    let keyword = String(keywordValueSplit[0])
-                    let value = String(keywordValueSplit[1])
-                    fieldsDict[keyword] = value
-                }
-            }
-        }
-
         var fieldsDict = [String: String]()
-        try parseHeader(globalExtendedHeader, &fieldsDict)
-        try parseHeader(localExtendedHeader, &fieldsDict)
+        try TarEntry.parseHeader(globalExtendedHeader, &fieldsDict)
+        try TarEntry.parseHeader(localExtendedHeader, &fieldsDict)
 
         for (keyword, value) in fieldsDict {
             switch keyword {
@@ -353,9 +338,25 @@ public class TarEntry: ContainerEntry {
         pointerData.index += size.roundTo512()
     }
 
-    /// Returns data associated with this entry.
-    public func data() -> Data {
-        return dataObject
+    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String : String]) throws {
+        if let headerString = header {
+            let headerEntries = headerString.components(separatedBy: "\n")
+            for headerEntry in headerEntries {
+                if headerEntry == "" {
+                    continue
+                }
+                let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
+                                                                    omittingEmptySubsequences: false)
+                guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
+                    else { throw TarError.wrongPaxHeaderEntry }
+                let keywordValue = String(headerEntrySplit[1])
+                let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
+                                                                      omittingEmptySubsequences: false)
+                let keyword = String(keywordValueSplit[0])
+                let value = String(keywordValueSplit[1])
+                fieldsDict[keyword] = value
+            }
+        }
     }
 
 }
