@@ -75,7 +75,7 @@ class LZMADecoder {
     /// If that has happened, then stateReset is true.
     private var stateReset: Bool = false
 
-    init(_ pointerData: inout DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) throws {
         self.pointerData = pointerData
         self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits)
         // There are two types of matches so we need two decoders for them.
@@ -227,7 +227,7 @@ class LZMADecoder {
         }
 
         // First, we need to initialize Rande Decoder.
-        guard let rD = LZMARangeDecoder(&self.pointerData) else {
+        guard let rD = LZMARangeDecoder(pointerData) else {
             throw LZMAError.rangeDecoderInitError
         }
         self.rangeDecoder = rD

@@ -57,31 +57,31 @@ public class Deflate: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return Data(bytes: try decompress(&pointerData))
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        return Data(bytes: try decompress(bitReader))
     }
 
-    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
+    static func decompress(_ bitReader: BitReader) throws -> [UInt8] {
         /// An array for storing output data
         var out: [UInt8] = []
 
         while true {
             /// Is this a last block?
-            let isLastBit = pointerData.bit()
+            let isLastBit = bitReader.bit()
             /// Type of the current block.
-            let blockType = [UInt8](pointerData.bits(count: 2).reversed())
+            let blockType = [UInt8](bitReader.bits(count: 2).reversed())
 
             if blockType == [0, 0] { // Uncompressed block.
-                pointerData.skipUntilNextByte()
+                bitReader.skipUntilNextByte()
                 /// Length of the uncompressed data.
-                let length = pointerData.intFromBits(count: 16)
+                let length = bitReader.intFromBits(count: 16)
                 /// 1-complement of the length.
-                let nlength = pointerData.intFromBits(count: 16)
+                let nlength = bitReader.intFromBits(count: 16)
                 // Check if lengths are OK (nlength should be a 1-complement of length).
                 guard length & nlength == 0 else { throw DeflateError.wrongUncompressedBlockLengths }
                 // Process uncompressed data into the output
                 for _ in 0..<length {
-                    out.append(pointerData.alignedByte())
+                    out.append(bitReader.alignedByte())
                 }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
@@ -100,28 +100,28 @@ public class Deflate: DecompressionAlgorithm {
                     let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
                     let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
                     // Initialize trees from these bootstraps.
-                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData)
-                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData)
+                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, bitReader)
+                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
 
                     /// Number of literals codes.
-                    let literals = pointerData.intFromBits(count: 5) + 257
+                    let literals = bitReader.intFromBits(count: 5) + 257
                     /// Number of distances codes.
-                    let distances = pointerData.intFromBits(count: 5) + 1
+                    let distances = bitReader.intFromBits(count: 5) + 1
                     /// Number of code lengths codes.
-                    let codeLengthsLength = pointerData.intFromBits(count: 4) + 4
+                    let codeLengthsLength = bitReader.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
                     // Moreover, they are stored in a very specific order, 
                     //  defined by HuffmanTree.Constants.codeLengthOrders.
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
+                        lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.intFromBits(count: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, &pointerData)
+                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
                     var codeLengths: [Int] = []
@@ -140,17 +140,17 @@ public class Deflate: DecompressionAlgorithm {
                         } else if symbol == 16 {
                             // Copy previous code length 3 to 6 times.
                             // Next two bits show how many times we need to copy.
-                            count = pointerData.intFromBits(count: 2) + 3
+                            count = bitReader.intFromBits(count: 2) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
                             // Repeat code length 0 for from 3 to 10 times.
                             // Next three bits show how many times we need to copy.
-                            count = pointerData.intFromBits(count: 3) + 3
+                            count = bitReader.intFromBits(count: 3) + 3
                             what = 0
                         } else if symbol == 18 {
                             // Repeat code length 0 for from 11 to 138 times.
                             // Next seven bits show how many times we need to do this.
-                            count = pointerData.intFromBits(count: 7) + 11
+                            count = bitReader.intFromBits(count: 7) + 11
                             what = 0
                         } else {
                             throw DeflateError.wrongSymbol
@@ -163,9 +163,9 @@ public class Deflate: DecompressionAlgorithm {
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
                     mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]),
-                                               &pointerData)
+                                               bitReader)
                     mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]),
-                                                &pointerData)
+                                                bitReader)
                 }
 
                 // Main loop of data decompression.
@@ -190,7 +190,7 @@ public class Deflate: DecompressionAlgorithm {
                         // Actually, nextSymbol is not a starting value of length,
                         //  but an index for special array of starting values.
                         let length = Constants.lengthBase[nextSymbol - 257] +
-                            pointerData.intFromBits(count: extraLength)
+                            bitReader.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
@@ -203,7 +203,7 @@ public class Deflate: DecompressionAlgorithm {
                         let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                         // And yes, distanceCode is not a first part of distance but rather an index for special array.
                         let distance = Constants.distanceBase[distanceCode] +
-                            pointerData.intFromBits(count: extraDistance)
+                            bitReader.intFromBits(count: extraDistance)
 
                         // We should repeat last 'distance' amount of data.
                         // The amount of times we do this is round(length / distance).

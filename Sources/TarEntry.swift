@@ -171,7 +171,7 @@ public class TarEntry: ContainerEntry {
     private let gnuLongName: String?
     private let gnuLongLinkName: String?
 
-    init(_ pointerData: inout DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
+    init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
          _ longName: String?, _ longLinkName: String?) throws {
         if let longName = longName {
             gnuLongName = longName

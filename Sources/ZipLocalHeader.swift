@@ -25,7 +25,7 @@ struct ZipLocalHeader {
     private(set) var accessTimestamp: Int?
     private(set) var creationTimestamp: Int?
 
-    init(_ pointerData: inout DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
             else { throw ZipError.wrongSignature }

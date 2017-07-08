@@ -7,7 +7,7 @@ import Foundation
 
 class HuffmanTree {
 
-    private var pointerData: DataWithPointer
+    private var bitReader: BitReader
 
     private var tree: [Int]
     private let leafCount: Int
@@ -15,9 +15,9 @@ class HuffmanTree {
     private var codingIndices: [[Int]]
     private let coding: Bool
 
-    init(bootstrap: [[Int]], _ pointerData: inout DataWithPointer, _ coding: Bool = false) {
+    init(bootstrap: [[Int]], _ bitReader: BitReader, _ coding: Bool = false) {
         self.coding = coding
-        self.pointerData = pointerData
+        self.bitReader = bitReader
 
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [[Int]] = []
@@ -92,18 +92,18 @@ class HuffmanTree {
         }
     }
 
-    convenience init(lengthsToOrder: [Int], _ pointerData: inout DataWithPointer) {
+    convenience init(lengthsToOrder: [Int], _ bitReader: BitReader) {
         var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, &pointerData)
+        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, bitReader)
     }
 
     func findNextSymbol() -> Int {
         var index = 0
         while true {
-            let bit = pointerData.bit()
+            let bit = bitReader.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
             guard index < self.leafCount else {
                 return -1
@@ -114,7 +114,7 @@ class HuffmanTree {
         }
     }
 
-    func code(symbol: Int, _ bitWriter: inout BitToByteWriter, _ symbolNotFoundError: Error) throws {
+    func code(symbol: Int, _ bitWriter: BitToByteWriter, _ symbolNotFoundError: Error) throws {
         precondition(self.coding, "HuffmanTree is not initalized for coding!")
 
         guard symbol < self.codingIndices.count

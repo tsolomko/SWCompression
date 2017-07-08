@@ -100,7 +100,7 @@ public extension Deflate {
     }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
-        var bitWriter = BitToByteWriter(bitOrder: .reversed)
+        let bitWriter = BitToByteWriter(bitOrder: .reversed)
 
         // Write block header.
         // Note: For now it is only static huffman blocks.
@@ -109,7 +109,8 @@ public extension Deflate {
         bitWriter.write(bits: [1, 0])
 
         /// Empty DWP object for creating Huffman trees.
-        var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
+        /// TODO: Separate reading and writing trees, and make so this pointerData is not necessary.
+        let pointerData = BitReader(data: Data(), bitOrder: .reversed)
 
         // Constructing Huffman trees for the case of block with preset alphabets.
         // In this case codes for literals and distances are fixed.
@@ -117,32 +118,32 @@ public extension Deflate {
         let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
         let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
         /// Huffman tree for literal and length symbols/codes.
-        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData, true)
+        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, pointerData, true)
         /// Huffman tree for backward distance symbols/codes.
-        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData, true)
+        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, pointerData, true)
 
         for code in bldCodes {
             switch code {
             case .byte(let byte):
-                try mainLiterals.code(symbol: byte.toInt(), &bitWriter, DeflateError.symbolNotFound)
+                try mainLiterals.code(symbol: byte.toInt(), bitWriter, DeflateError.symbolNotFound)
             case .lengthDistance(let length, let distance):
                 let lengthSymbol = Constants.lengthCode[Int(length) - 3]
                 let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
                 let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                     0 : (((lengthSymbol - 257) >> 2) - 1)
-                try mainLiterals.code(symbol: lengthSymbol, &bitWriter, DeflateError.symbolNotFound)
+                try mainLiterals.code(symbol: lengthSymbol, bitWriter, DeflateError.symbolNotFound)
                 bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
 
                 let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
                 let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
                 let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
-                try mainDistances.code(symbol: distanceSymbol, &bitWriter, DeflateError.symbolNotFound)
+                try mainDistances.code(symbol: distanceSymbol, bitWriter, DeflateError.symbolNotFound)
                 bitWriter.write(number: distanceExtraBits, bitsCount: distanceExtraBitsCount)
             }
         }
 
         // End data symbol.
-        try mainLiterals.code(symbol: 256, &bitWriter, DeflateError.symbolNotFound)
+        try mainLiterals.code(symbol: 256, bitWriter, DeflateError.symbolNotFound)
         bitWriter.finish()
 
         return bitWriter.buffer

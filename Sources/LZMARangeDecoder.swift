@@ -17,7 +17,7 @@ class LZMARangeDecoder {
         return self.code == 0
     }
 
-    init?(_ pointerData: inout DataWithPointer) {
+    init?(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
 
         let byte = self.pointerData.alignedByte()
@@ -31,7 +31,7 @@ class LZMARangeDecoder {
     }
 
     init() {
-        self.pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
+        self.pointerData = DataWithPointer(data: Data())
         self.range = 0xFFFFFFFF
         self.code = 0
         self.isCorrupted = false

@@ -27,13 +27,13 @@ public class ZlibArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
 
-        _ = try ZlibHeader(&pointerData)
+        _ = try ZlibHeader(bitReader)
 
-        let out = try Deflate.decompress(&pointerData)
+        let out = try Deflate.decompress(bitReader)
 
-        let adler32 = pointerData.intFromAlignedBytes(count: 4).reverseBytes()
+        let adler32 = bitReader.intFromAlignedBytes(count: 4).reverseBytes()
         guard CheckSums.adler32(out) == adler32 else { throw ZlibError.wrongAdler32(Data(bytes: out)) }
 
         return Data(bytes: out)

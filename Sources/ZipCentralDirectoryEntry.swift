@@ -29,7 +29,7 @@ struct ZipCentralDirectoryEntry {
 
     private(set) var modificationTimestamp: Int?
 
-    init(_ pointerData: inout DataWithPointer, _ currentDiskNumber: UInt32) throws {
+    init(_ pointerData: DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
         guard pointerData.uint32FromAlignedBytes(count: 4) == 0x02014b50
             else { throw ZipError.wrongSignature }

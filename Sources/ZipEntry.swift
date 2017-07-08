@@ -10,7 +10,7 @@ public class ZipEntry: ContainerEntry {
 
     private let cdEntry: ZipCentralDirectoryEntry
     private var localHeader: ZipLocalHeader?
-    private var pointerData: DataWithPointer
+    private var bitReader: BitReader
 
     /// Name of the file or directory.
     public var name: String {
@@ -78,10 +78,10 @@ public class ZipEntry: ContainerEntry {
      */
     public func data() throws -> Data {
         // Now, let's move to the location of local header.
-        pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
+        bitReader.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
 
         if localHeader == nil {
-            localHeader = try ZipLocalHeader(&pointerData)
+            localHeader = try ZipLocalHeader(bitReader)
             // Check local header for consistency with Central Directory entry.
             guard localHeader!.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
                 localHeader!.compressionMethod == cdEntry.compressionMethod &&
@@ -103,45 +103,45 @@ public class ZipEntry: ContainerEntry {
         var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader!.crc32
 
         let fileBytes: [UInt8]
-        let fileDataStart = pointerData.index
+        let fileDataStart = bitReader.index
         switch localHeader!.compressionMethod {
         case 0:
-            fileBytes = pointerData.alignedBytes(count: uncompSize)
+            fileBytes = bitReader.alignedBytes(count: uncompSize)
         case 8:
-            fileBytes = try Deflate.decompress(&pointerData)
-            // Sometimes pointerData stays in not-aligned state after deflate decompression.
+            fileBytes = try Deflate.decompress(bitReader)
+            // Sometimes bitReader stays in not-aligned state after deflate decompression.
             // Following line ensures that this is not the case.
-            pointerData.skipUntilNextByte()
+            bitReader.skipUntilNextByte()
         case 12:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
-                fileBytes = try BZip2.decompress(&pointerData)
+                fileBytes = try BZip2.decompress(bitReader)
             #else
                 throw ZipError.compressionNotSupported
             #endif
         case 14:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
-                pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-                fileBytes = try LZMA.decompress(&pointerData, uncompSize)
+                bitReader.index += 4 // Skipping LZMA SDK version and size of properties.
+                fileBytes = try LZMA.decompress(bitReader, uncompSize)
             #else
                 throw ZipError.compressionNotSupported
             #endif
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = pointerData.index - fileDataStart
+        let realCompSize = bitReader.index - fileDataStart
 
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
-            let ddSignature = pointerData.uint32FromAlignedBytes(count: 4)
+            let ddSignature = bitReader.uint32FromAlignedBytes(count: 4)
             if ddSignature != 0x08074b50 {
-                pointerData.index -= 4
+                bitReader.index -= 4
             }
             // Now, let's update from CD with values from data descriptor.
-            crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+            crc32 = bitReader.uint32FromAlignedBytes(count: 4)
             let sizeOfSizeField: UInt32 = localHeader!.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
-            uncompSize = Int(pointerData.uint32FromAlignedBytes(count: sizeOfSizeField))
+            compSize = Int(bitReader.uint32FromAlignedBytes(count: sizeOfSizeField))
+            uncompSize = Int(bitReader.uint32FromAlignedBytes(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
@@ -152,9 +152,9 @@ public class ZipEntry: ContainerEntry {
         return Data(bytes: fileBytes)
     }
 
-    init(_ cdEntry: ZipCentralDirectoryEntry, _ pointerData: inout DataWithPointer) {
+    init(_ cdEntry: ZipCentralDirectoryEntry, _ bitReader: BitReader) {
         self.cdEntry = cdEntry
-        self.pointerData = pointerData
+        self.bitReader = bitReader
 
         var attributesDict = [FileAttributeKey: Any]()
 

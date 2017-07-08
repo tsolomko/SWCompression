@@ -22,21 +22,21 @@ public class BZip2: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .straight)
-        return Data(bytes: try decompress(&pointerData))
+        let bitReader = BitReader(data: data, bitOrder: .straight)
+        return Data(bytes: try decompress(bitReader))
     }
 
-    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
+    static func decompress(_ bitReader: BitReader) throws -> [UInt8] {
         /// An array for storing output data
         var out = [UInt8]()
 
-        let magic = pointerData.intFromBits(count: 16)
+        let magic = bitReader.intFromBits(count: 16)
         guard magic == 0x425a else { throw BZip2Error.wrongMagic }
 
-        let method = pointerData.intFromBits(count: 8)
+        let method = bitReader.intFromBits(count: 8)
         guard method == 104 else { throw BZip2Error.wrongCompressionMethod }
 
-        var blockSize = pointerData.intFromBits(count: 8)
+        var blockSize = bitReader.intFromBits(count: 8)
         if blockSize >= 49 && blockSize <= 57 {
             blockSize -= 48
         } else {
@@ -45,12 +45,12 @@ public class BZip2: DecompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         while true {
-            let blockType: Int64 = Int64(pointerData.intFromBits(count: 48))
-            // Next 32 bits are crc (which currently is not checked).
-            let blockCRC32 = UInt32(truncatingBitPattern: pointerData.intFromBits(count: 32))
+            let blockType: Int64 = Int64(bitReader.intFromBits(count: 48))
+
+            let blockCRC32 = UInt32(truncatingBitPattern: bitReader.intFromBits(count: 32))
 
             if blockType == 0x314159265359 {
-                let blockBytes = try decode(data: &pointerData)
+                let blockBytes = try decode(bitReader)
                 guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32
                     else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
                 for byte in blockBytes {
@@ -70,19 +70,19 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decode(data: inout DataWithPointer) throws -> [UInt8] {
-        let isRandomized = data.bit()
+    private static func decode(_ bitReader: BitReader) throws -> [UInt8] {
+        let isRandomized = bitReader.bit()
         guard isRandomized != 1 else { throw BZip2Error.randomizedBlock }
 
-        var pointer = data.intFromBits(count: 24)
+        var pointer = bitReader.intFromBits(count: 24)
 
         func computeUsed() -> [Bool] {
-            let huffmanUsedMap = data.intFromBits(count: 16)
+            let huffmanUsedMap = bitReader.intFromBits(count: 16)
             var mapMask = 1 << 15
             var used: [Bool] = []
             while mapMask > 0 {
                 if huffmanUsedMap & mapMask > 0 {
-                    let huffmanUsedBitmap = data.intFromBits(count: 16)
+                    let huffmanUsedBitmap = bitReader.intFromBits(count: 16)
                     var bitMask = 1 << 15
                     while bitMask > 0 {
                         used.append(huffmanUsedBitmap & bitMask > 0)
@@ -100,18 +100,18 @@ public class BZip2: DecompressionAlgorithm {
 
         let used = computeUsed()
 
-        let huffmanGroups = data.intFromBits(count: 3)
+        let huffmanGroups = bitReader.intFromBits(count: 3)
         guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.wrongHuffmanGroups }
 
         func computeSelectorsList() throws -> [Int] {
-            let selectorsUsed = data.intFromBits(count: 15)
+            let selectorsUsed = bitReader.intFromBits(count: 15)
 
             var mtf: [Int] = Array(0..<huffmanGroups)
             var selectorsList: [Int] = []
 
             for _ in 0..<selectorsUsed {
                 var c = 0
-                while data.bit() > 0 {
+                while bitReader.bit() > 0 {
                     c += 1
                     guard c < huffmanGroups else { throw BZip2Error.wrongSelector }
                 }
@@ -131,16 +131,16 @@ public class BZip2: DecompressionAlgorithm {
         func computeTables() throws -> [HuffmanTree] {
             var tables: [HuffmanTree] = []
             for _ in 0..<huffmanGroups {
-                var length = data.intFromBits(count: 5)
+                var length = bitReader.intFromBits(count: 5)
                 var lengths: [Int] = []
                 for _ in 0..<symbolsInUse {
                     guard length >= 0 && length <= 20 else { throw BZip2Error.wrongHuffmanLengthCode }
-                    while data.bit() > 0 {
-                        length -= (Int(data.bit() * 2) - 1)
+                    while bitReader.bit() > 0 {
+                        length -= (Int(bitReader.bit() * 2) - 1)
                     }
                     lengths.append(length)
                 }
-                let codes = HuffmanTree(lengthsToOrder: lengths, &data)
+                let codes = HuffmanTree(lengthsToOrder: lengths, bitReader)
                 tables.append(codes)
             }
 

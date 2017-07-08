@@ -73,11 +73,11 @@ public struct GzipHeader {
      it might not be archived with GZip at all.
      */
     public init(archive data: Data) throws {
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        try self.init(&pointerData)
+        let pointerData = DataWithPointer(data: data)
+        try self.init(pointerData)
     }
 
-    init(_ pointerData: inout DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = pointerData.intFromAlignedBytes(count: 2)
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }

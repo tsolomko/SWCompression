@@ -46,21 +46,21 @@ public struct ZlibHeader {
      it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        try self.init(&pointerData)
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        try self.init(bitReader)
     }
 
-    init(_ pointerData: inout DataWithPointer) throws {
+    init(_ bitReader: BitReader) throws {
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
-        let compressionMethod = pointerData.intFromBits(count: 4)
+        let compressionMethod = bitReader.intFromBits(count: 4)
         guard compressionMethod == 8 else { throw ZlibError.wrongCompressionMethod }
 
         self.compressionMethod = .deflate
 
         // Remaining four bits indicate window size.
         // For Deflate it must not be more than 7.
-        let compressionInfo = pointerData.intFromBits(count: 4)
+        let compressionInfo = bitReader.intFromBits(count: 4)
         guard compressionInfo <= 7 else { throw ZlibError.wrongCompressionInfo }
         let windowSize = 1 << (compressionInfo + 8)
 
@@ -70,14 +70,14 @@ public struct ZlibHeader {
         let cmf = compressionInfo << 4 + compressionMethod
 
         // Next five bits are fcheck bits which are supposed to be integrity check.
-        let fcheck = pointerData.intFromBits(count: 5)
+        let fcheck = bitReader.intFromBits(count: 5)
 
         // Sixth bit indicate if archive contain Adler-32 checksum of preset dictionary.
-        let fdict = pointerData.intFromBits(count: 1)
+        let fdict = bitReader.intFromBits(count: 1)
 
         // Remaining bits indicate compression level.
         guard let compressionLevel = ZlibHeader.CompressionLevel(rawValue:
-            pointerData.intFromBits(count: 2)) else { throw ZlibError.wrongCompressionLevel }
+            bitReader.intFromBits(count: 2)) else { throw ZlibError.wrongCompressionLevel }
 
         self.compressionLevel = compressionLevel
 
@@ -87,7 +87,7 @@ public struct ZlibHeader {
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
-            pointerData.index += 4
+            bitReader.index += 4
         }
     }
     

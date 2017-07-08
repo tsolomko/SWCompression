@@ -26,31 +26,31 @@ public class ZipContainer: Container {
      */
     public static func open(container data: Data) throws -> [ContainerEntry] {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
         var entries = [ZipEntry]()
 
-        pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
+        bitReader.index = bitReader.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
             // Check signature.
-            if pointerData.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
+            if bitReader.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
                 // We found it!
                 break
             }
-            if pointerData.index == 0 {
+            if bitReader.index == 0 {
                 throw ZipError.notFoundCentralDirectoryEnd
             }
-            pointerData.index -= 5
+            bitReader.index -= 5
         }
 
-        let endOfCD = try ZipEndOfCentralDirectory(&pointerData)
+        let endOfCD = try ZipEndOfCentralDirectory(bitReader)
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
+        bitReader.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
 
         for _ in 0..<cdEntries {
-            let cdEntry = try ZipCentralDirectoryEntry(&pointerData, endOfCD.currentDiskNumber)
-            entries.append(ZipEntry(cdEntry, &pointerData))
+            let cdEntry = try ZipCentralDirectoryEntry(bitReader, endOfCD.currentDiskNumber)
+            entries.append(ZipEntry(cdEntry, bitReader))
         }
 
         return entries

@@ -38,9 +38,9 @@ public class GzipArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
 
-        return try processMember(&pointerData).data
+        return try processMember(bitReader).data
     }
 
     /**
@@ -62,25 +62,25 @@ public class GzipArchive: Archive {
      */
     public static func multiUnarchive(archive data: Data) throws -> [Member] {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
 
         var result = [Member]()
-        while !pointerData.isAtTheEnd {
-            result.append(try processMember(&pointerData))
+        while !bitReader.isAtTheEnd {
+            result.append(try processMember(bitReader))
         }
 
         return result
     }
 
-    private static func processMember(_ pointerData: inout DataWithPointer) throws -> Member {
-        let header = try GzipHeader(&pointerData)
+    private static func processMember(_ bitReader: BitReader) throws -> Member {
+        let header = try GzipHeader(bitReader)
 
-        let memberData = Data(bytes: try Deflate.decompress(&pointerData))
+        let memberData = Data(bytes: try Deflate.decompress(bitReader))
 
-        let crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+        let crc32 = bitReader.uint32FromAlignedBytes(count: 4)
         guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
 
-        let isize = pointerData.intFromAlignedBytes(count: 4)
+        let isize = bitReader.intFromAlignedBytes(count: 4)
         guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
 
         return Member(header: header, data: memberData)
