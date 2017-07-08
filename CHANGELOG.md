@@ -1,7 +1,7 @@
 # Changelog
 v3.1.3
 ----------------
-- Added support for GNU LongLing and LongName extenstions to TAR format.
+- Added support for GNU LongLinkName and LongName extensions of TAR format.
 - Added support for modification timestamp from extended timestamps ZIP extra field.
 
 v3.1.2
