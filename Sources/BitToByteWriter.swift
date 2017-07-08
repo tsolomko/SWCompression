@@ -10,9 +10,9 @@ class BitToByteWriter {
     private(set) var buffer: [UInt8] = []
     private var bitMask: UInt8
     private var currentByte: UInt8 = 0
-    private var bitOrder: BitOrder
+    private var bitOrder: BitReader.BitOrder
 
-    init(bitOrder: BitOrder) {
+    init(bitOrder: BitReader.BitOrder) {
         self.bitOrder = bitOrder
 
         switch self.bitOrder {
@@ -75,7 +75,7 @@ class BitToByteWriter {
         }
     }
 
-    func write(number: Int, bitsCount: Int, bitOrder: BitOrder = .straight) {
+    func write(number: Int, bitsCount: Int, bitOrder: BitReader.BitOrder = .straight) {
         var mask = bitOrder == .straight ? 1 : 1 << bitsCount
         for _ in 0..<bitsCount {
             self.write(bit: number & mask > 0 ? 1 : 0)
