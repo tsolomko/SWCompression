@@ -187,6 +187,10 @@
 		06CDFCB31F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
 		06CDFCB41F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
 		06CDFCB51F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
+		06CDFCB71F111E6900292758 /* BitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB61F111E6900292758 /* BitReader.swift */; };
+		06CDFCB81F111E6900292758 /* BitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB61F111E6900292758 /* BitReader.swift */; };
+		06CDFCB91F111E6900292758 /* BitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB61F111E6900292758 /* BitReader.swift */; };
+		06CDFCBA1F111E6900292758 /* BitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB61F111E6900292758 /* BitReader.swift */; };
 		06D07A991EB64E7A00BC8C65 /* test1.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06D07A901EB64E7A00BC8C65 /* test1.bz2 */; };
 		06D07A9A1EB64E7A00BC8C65 /* test2.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06D07A911EB64E7A00BC8C65 /* test2.bz2 */; };
 		06D07A9B1EB64E7A00BC8C65 /* test3.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06D07A921EB64E7A00BC8C65 /* test3.bz2 */; };
@@ -318,6 +322,7 @@
 		06CDFCA71F111D9700292758 /* DeflateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateError.swift; sourceTree = "<group>"; };
 		06CDFCAC1F111DBE00292758 /* LZMAError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAError.swift; sourceTree = "<group>"; };
 		06CDFCB11F111DEC00292758 /* LZMA2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2Error.swift; sourceTree = "<group>"; };
+		06CDFCB61F111E6900292758 /* BitReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitReader.swift; path = Sources/BitReader.swift; sourceTree = SOURCE_ROOT; };
 		06D07A901EB64E7A00BC8C65 /* test1.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.bz2; sourceTree = "<group>"; };
 		06D07A911EB64E7A00BC8C65 /* test2.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.bz2; sourceTree = "<group>"; };
 		06D07A921EB64E7A00BC8C65 /* test3.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.bz2; sourceTree = "<group>"; };
@@ -512,6 +517,7 @@
 			isa = PBXGroup;
 			children = (
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
+				06CDFCB61F111E6900292758 /* BitReader.swift */,
 				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
@@ -951,6 +957,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06531F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				06CDFCB81F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
 				061C064E1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
@@ -994,6 +1001,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06541F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				06CDFCB91F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */,
 				061C064F1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
@@ -1037,6 +1045,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06551F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				06CDFCBA1F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				061C06501F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
@@ -1080,6 +1089,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				06CDFCB71F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06A393391DE0709300182E12 /* GzipArchive.swift in Sources */,
 				061C064D1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
