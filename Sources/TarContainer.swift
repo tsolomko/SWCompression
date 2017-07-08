@@ -461,9 +461,9 @@ public class TarContainer: Container {
                 lastLocalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             default:
                 if entry.isLongName {
-                    longName = String(data: entry.data(), encoding: .utf8)
+                    longName = try entry.data().nullEndedAsciiString(0, entry.size)
                 } else if entry.isLongLinkName {
-                    longLinkName = String(data: entry.data(), encoding: .utf8)
+                    longLinkName = try entry.data().nullEndedAsciiString(0, entry.size)
                 } else {
                     output.append(entry)
                     lastLocalExtendedHeader = nil
