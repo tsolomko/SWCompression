@@ -114,7 +114,7 @@ class HuffmanTree {
         }
     }
 
-    func code(symbol: Int, _ bitWriter: BitToByteWriter, _ symbolNotFoundError: Error) throws {
+    func code(symbol: Int, _ bitWriter: BitWriter, _ symbolNotFoundError: Error) throws {
         precondition(self.coding, "HuffmanTree is not initalized for coding!")
 
         guard symbol < self.codingIndices.count

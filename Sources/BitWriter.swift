@@ -5,7 +5,7 @@
 
 import Foundation
 
-class BitToByteWriter {
+class BitWriter {
 
     private(set) var buffer: [UInt8] = []
     private var bitMask: UInt8

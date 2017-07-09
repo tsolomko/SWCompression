@@ -74,7 +74,7 @@ public extension Deflate {
     }
 
     private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
-        let bitWriter = BitToByteWriter(bitOrder: .reversed)
+        let bitWriter = BitWriter(bitOrder: .reversed)
 
         // Write block header.
         // Note: Only one block is supported for now.
@@ -100,7 +100,7 @@ public extension Deflate {
     }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
-        let bitWriter = BitToByteWriter(bitOrder: .reversed)
+        let bitWriter = BitWriter(bitOrder: .reversed)
 
         // Write block header.
         // Note: For now it is only static huffman blocks.
