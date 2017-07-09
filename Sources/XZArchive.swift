@@ -164,7 +164,7 @@ public class XZArchive: Archive {
 
     private static func processStreamHeader(_ pointerData: DataWithPointer) throws -> (checkType: UInt8, flagsCRC: UInt32) {
         // Check magic number.
-        guard pointerData.uint64(count: 6) == 0x005A587A37FD
+        guard pointerData.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
             else { throw XZError.wrongMagic }
 
         let flagsBytes = pointerData.bytes(count: 2)

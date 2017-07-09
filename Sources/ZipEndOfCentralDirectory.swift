@@ -80,8 +80,8 @@ struct ZipEndOfCentralDirectory {
             _ = pointerData.uint64()
 
             // Next two bytes are version of compressor, but we don't need it.
-            _ = pointerData.uint64(count: 2)
-            let versionNeeded = pointerData.uint64(count: 2)
+            _ = pointerData.uint16()
+            let versionNeeded = pointerData.uint16()
             guard versionNeeded & 0xFF <= 63
                 else { throw ZipError.wrongVersion }
 
