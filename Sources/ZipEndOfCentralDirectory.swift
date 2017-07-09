@@ -36,7 +36,12 @@ struct ZipEndOfCentralDirectory {
         self.cdSize = pointerData.uint64(count: 4)
         /// Offset to the start of Central Directory.
         self.cdOffset = pointerData.uint64(count: 4)
-        let zipCommentLength = pointerData.intFromAlignedBytes(count: 2)
+
+        // There is also a .ZIP file comment, but we don't need it.
+        // Here's how it can be processed:
+        // let zipCommentLength = pointerData.intFromAlignedBytes(count: 2)
+        // let zipComment = String(data: Data(bytes: pointerData.bytes(count: zipCommentLength)),
+        //                         encoding: .utf8)
 
         // Check if zip64 records are present.
         if self.currentDiskNumber == 0xFFFF || self.cdDiskNumber == 0xFFFF ||
@@ -45,14 +50,9 @@ struct ZipEndOfCentralDirectory {
             zip64RecordExists = true
         }
 
-        // There is also a .ZIP file comment, but we don't need it.
-        // Here's how it can be processed:
-        // let zipComment = String(data: Data(bytes: pointerData.bytes(count: zipCommentLength)),
-        //                         encoding: .utf8)
-
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
             // Back to start of end of CD record.
-            pointerData.index -= zipCommentLength + 22
+            pointerData.index -= 22
             // Zip64 locator takes exactly 20 bytes.
             pointerData.index -= 20
 
@@ -65,7 +65,7 @@ struct ZipEndOfCentralDirectory {
                 else { throw ZipError.multiVolumesNotSupported }
 
             let zip64CDEndOffset = pointerData.uint64()
-            let totalDisks = pointerData.uint64(count: 1) // TODO: ??
+            let totalDisks = pointerData.uint32()
             guard totalDisks == 1
                 else { throw ZipError.multiVolumesNotSupported }
 
