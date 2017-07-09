@@ -114,7 +114,11 @@ public class ZipEntry: ContainerEntry {
             bitReader.skipUntilNextByte()
         case 12:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
-                fileBytes = try BZip2.decompress(bitReader)
+                // BZip2 algorithm considers bits in a byte in a different order.
+                let straightReader = bitReader.readerWithReversedBitOrder()
+                fileBytes = try BZip2.decompress(straightReader)
+                straightReader.skipUntilNextByte()
+                bitReader.index = straightReader.index
             #else
                 throw ZipError.compressionNotSupported
             #endif
