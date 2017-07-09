@@ -27,19 +27,43 @@ extension UInt8 {
 
 }
 
-extension Int {
+extension UInt16 {
 
-    func toUInt8() -> UInt8 {
-        return UInt8(truncatingBitPattern: UInt(self))
+    func toInt() -> Int {
+        return Int(bitPattern: UInt(self))
+    }
+    
+}
+
+extension UInt32 {
+
+    func toInt() -> Int {
+        return Int(bitPattern: UInt(self))
     }
 
-    func reverseBytes() -> Int {
-        var result = 0
-        for i in 0..<4 {
+    func reverseBytes() -> UInt32 {
+        var result: UInt32 = 0
+        for i: UInt32 in 0..<4 {
             let byte = ((self & (0xFF << (i * 8))) >> (i * 8))
             result += byte << (8 * (3 - i))
         }
         return result
+    }
+
+}
+
+extension UInt64 {
+
+    func toInt() -> Int {
+        return Int(bitPattern: UInt(self))
+    }
+
+}
+
+extension Int {
+
+    func toUInt8() -> UInt8 {
+        return UInt8(truncatingBitPattern: UInt(self))
     }
 
 }
