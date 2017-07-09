@@ -374,7 +374,7 @@ fileprivate extension DataWithPointer {
             return (result, bytes)
         }
         result &= 0x7F
-        while self.prevAlignedByte & 0x80 != 0 {
+        while self.previousByte & 0x80 != 0 {
             let byte = self.byte()
             if i >= 9 || byte == 0x00 {
                 throw XZError.multiByteIntegerError

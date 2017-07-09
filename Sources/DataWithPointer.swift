@@ -15,7 +15,7 @@ class DataWithPointer {
         return self.size == self.index
     }
 
-    var prevAlignedByte: UInt8 {
+    var previousByte: UInt8 {
         return self.data[self.index - 1]
     }
 
