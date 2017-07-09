@@ -358,7 +358,7 @@ public class XZArchive: Archive {
             else { throw XZError.fieldReservedValue }
 
         // Check footer's magic number
-        guard pointerData.intFromAlignedBytes(count: 2) == 0x5A59
+        guard pointerData.bytes(count: 2) == [0x59, 0x5A]
             else { throw XZError.wrongMagic }
     }
 

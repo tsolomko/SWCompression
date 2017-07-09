@@ -79,7 +79,7 @@ public struct GzipHeader {
 
     init(_ pointerData: DataWithPointer) throws {
         // First two bytes should be correct 'magic' bytes
-        let magic = pointerData.intFromAlignedBytes(count: 2)
+        let magic = pointerData.uint16()
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
@@ -94,9 +94,11 @@ public struct GzipHeader {
         guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.wrongFlags }
         headerBytes.append(flags)
 
-        let mtime = pointerData.intFromAlignedBytes(count: 4)
+        var mtime = 0
         for i in 0..<4 {
-            headerBytes.append(((mtime & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
+            let byte = pointerData.byte()
+            mtime |= byte.toInt() << (8 * i)
+            headerBytes.append(byte)
         }
         self.modificationTime = mtime == 0 ? nil : Date(timeIntervalSince1970: TimeInterval(mtime))
 
@@ -110,9 +112,11 @@ public struct GzipHeader {
 
         // Some archives may contain extra fields
         if flags & Flags.fextra != 0 {
-            let xlen = pointerData.intFromAlignedBytes(count: 2)
+            var xlen = 0
             for i in 0..<2 {
-                headerBytes.append(((xlen & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
+                let byte = pointerData.byte()
+                xlen |= byte.toInt() << (8 * i)
+                headerBytes.append(byte)
             }
             for _ in 0..<xlen {
                 headerBytes.append(pointerData.byte())

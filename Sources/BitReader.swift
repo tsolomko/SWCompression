@@ -148,11 +148,6 @@ class BitReader: DataWithPointer {
         return super.bytes(count: count)
     }
 
-    override func intFromAlignedBytes(count: Int) -> Int {
-        self.skipUntilNextByte()
-        return super.intFromAlignedBytes(count: count)
-    }
-
     override func uint64(count: UInt64 = 8) -> UInt64 {
         self.skipUntilNextByte()
         return super.uint64(count: count)

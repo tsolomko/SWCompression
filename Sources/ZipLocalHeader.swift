@@ -7,11 +7,11 @@ import Foundation
 
 struct ZipLocalHeader {
 
-    let versionNeeded: Int
-    let generalPurposeBitFlags: Int
-    let compressionMethod: Int
-    let lastModFileTime: Int
-    let lastModFileDate: Int
+    let versionNeeded: UInt16
+    let generalPurposeBitFlags: UInt16
+    let compressionMethod: UInt16
+    let lastModFileTime: UInt16
+    let lastModFileDate: UInt16
 
     let crc32: UInt32
     private(set) var compSize: UInt64
@@ -21,31 +21,31 @@ struct ZipLocalHeader {
 
     let fileName: String
 
-    private(set) var modificationTimestamp: Int?
-    private(set) var accessTimestamp: Int?
-    private(set) var creationTimestamp: Int?
+    private(set) var modificationTimestamp: UInt32?
+    private(set) var accessTimestamp: UInt32?
+    private(set) var creationTimestamp: UInt32?
 
     init(_ pointerData: DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32() == 0x04034b50
             else { throw ZipError.wrongSignature }
 
-        self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
+        self.versionNeeded = pointerData.uint16()
 
-        self.generalPurposeBitFlags = pointerData.intFromAlignedBytes(count: 2)
+        self.generalPurposeBitFlags = pointerData.uint16()
 
-        self.compressionMethod = pointerData.intFromAlignedBytes(count: 2)
+        self.compressionMethod = pointerData.uint16()
 
-        self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
-        self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
+        self.lastModFileTime = pointerData.uint16()
+        self.lastModFileDate = pointerData.uint16()
 
         self.crc32 = pointerData.uint32()
 
         self.compSize = pointerData.uint64(count: 4)
         self.uncompSize = pointerData.uint64(count: 4)
 
-        let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
-        let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
+        let fileNameLength = pointerData.uint16().toInt()
+        let extraFieldLength = pointerData.uint16().toInt()
 
         guard let fileName = String(data: Data(bytes: pointerData.bytes(count: fileNameLength)),
                                     encoding: .utf8)
@@ -55,12 +55,10 @@ struct ZipLocalHeader {
         let extraFieldStart = pointerData.index
         while pointerData.index - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
-            // But we are (currently) only interested in Zip64 related fields (with headerID = 0x0001),
-            // because they directly impact further extraction process.
-            let headerID = pointerData.intFromAlignedBytes(count: 2)
-            let size = pointerData.intFromAlignedBytes(count: 2)
+            let headerID = pointerData.uint16()
+            let size = pointerData.uint16().toInt()
             switch headerID {
-            case 0x0001:
+            case 0x0001: // Zip64
                 // In local header both uncompressed size and compressed size fields are required.
                 self.uncompSize = pointerData.uint64()
                 self.compSize = pointerData.uint64()
@@ -70,13 +68,13 @@ struct ZipLocalHeader {
                 let flags = pointerData.byte()
                 guard flags & 0xF8 == 0 else { break }
                 if flags & 0x01 != 0 {
-                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                    self.modificationTimestamp = pointerData.uint32()
                 }
                 if flags & 0x02 != 0 {
-                    self.accessTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                    self.accessTimestamp = pointerData.uint32()
                 }
                 if flags & 0x04 != 0 {
-                    self.creationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                    self.creationTimestamp = pointerData.uint32()
                 }
             default:
                 pointerData.index += size

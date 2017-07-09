@@ -7,12 +7,12 @@ import Foundation
 
 struct ZipCentralDirectoryEntry {
 
-    let versionMadeBy: Int
-    let versionNeeded: Int
-    let generalPurposeBitFlags: Int
-    let compressionMethod: Int
-    let lastModFileTime: Int
-    let lastModFileDate: Int
+    let versionMadeBy: UInt16
+    let versionNeeded: UInt16
+    let generalPurposeBitFlags: UInt16
+    let compressionMethod: UInt16
+    let lastModFileTime: UInt16
+    let lastModFileDate: UInt16
     let crc32: UInt32
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
@@ -22,40 +22,40 @@ struct ZipCentralDirectoryEntry {
 
     private(set) var diskNumberStart: UInt32
 
-    let internalFileAttributes: Int
+    let internalFileAttributes: UInt16
     let externalFileAttributes: UInt32
 
     private(set) var offset: UInt64
 
-    private(set) var modificationTimestamp: Int?
+    private(set) var modificationTimestamp: UInt32?
 
     init(_ pointerData: DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
         guard pointerData.uint32() == 0x02014b50
             else { throw ZipError.wrongSignature }
 
-        self.versionMadeBy = pointerData.intFromAlignedBytes(count: 2)
-        self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
+        self.versionMadeBy = pointerData.uint16()
+        self.versionNeeded = pointerData.uint16()
 
-        self.generalPurposeBitFlags = pointerData.intFromAlignedBytes(count: 2)
+        self.generalPurposeBitFlags = pointerData.uint16()
 
-        self.compressionMethod = pointerData.intFromAlignedBytes(count: 2)
+        self.compressionMethod = pointerData.uint16()
 
-        self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
-        self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
+        self.lastModFileTime = pointerData.uint16()
+        self.lastModFileDate = pointerData.uint16()
 
         self.crc32 = pointerData.uint32()
 
         self.compSize = pointerData.uint64(count: 4)
         self.uncompSize = pointerData.uint64(count: 4)
 
-        let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
-        let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
-        let fileCommentLength = pointerData.intFromAlignedBytes(count: 2)
+        let fileNameLength = pointerData.uint16().toInt()
+        let extraFieldLength = pointerData.uint16().toInt()
+        let fileCommentLength = pointerData.uint16().toInt()
 
         self.diskNumberStart = pointerData.uint32(count: 2)
 
-        self.internalFileAttributes = pointerData.intFromAlignedBytes(count: 2)
+        self.internalFileAttributes = pointerData.uint16()
         self.externalFileAttributes = pointerData.uint32()
 
         self.offset = pointerData.uint64(count: 4)
@@ -68,10 +68,8 @@ struct ZipCentralDirectoryEntry {
         let extraFieldStart = pointerData.index
         while pointerData.index - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
-            // But we are (currently) only interested in Zip64 related fields (with headerID = 0x0001),
-            // because they directly impact further extraction process.
-            let headerID = pointerData.intFromAlignedBytes(count: 2)
-            let size = pointerData.intFromAlignedBytes(count: 2)
+            let headerID = pointerData.uint16()
+            let size = pointerData.uint16().toInt()
             switch headerID {
             case 0x0001: // Zip64
                 if self.uncompSize == 0xFFFFFFFF {
@@ -90,7 +88,7 @@ struct ZipCentralDirectoryEntry {
                 let flags = pointerData.byte()
                 guard flags & 0xF8 == 0 else { break }
                 if flags & 0x01 != 0 {
-                    self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)
+                    self.modificationTimestamp = pointerData.uint32()
                 }
             default:
                 pointerData.index += size

@@ -204,11 +204,11 @@ class LZMADecoder {
     func decodeLZMA(_ externalUncompressedSize: Int? = nil) throws {
         // Firstly, we need to parse LZMA properties.
         try self.resetProperties()
-        let dictSize = pointerData.intFromAlignedBytes(count: 4)
+        let dictSize = pointerData.uint32().toInt()
         dictionarySize = dictSize < (1 << 12) ? 1 << 12 : dictSize
 
         /// Size of uncompressed data. -1 means it is unknown/undefined.
-        var uncompressedSize = pointerData.intFromAlignedBytes(count: 8)
+        var uncompressedSize = pointerData.uint64().toInt()
         uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
 
         if let extUncompSize = externalUncompressedSize {

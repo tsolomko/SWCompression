@@ -159,13 +159,13 @@ public class ZipEntry: ContainerEntry {
         var attributesDict = [FileAttributeKey: Any]()
 
         // Modification time
-        let dosDate = cdEntry.lastModFileDate
+        let dosDate = cdEntry.lastModFileDate.toInt()
 
         let day = dosDate & 0x1F
         let month = (dosDate & 0x1E0) >> 5
         let year = 1980 + ((dosDate & 0xFE00) >> 9)
 
-        let dosTime = cdEntry.lastModFileTime
+        let dosTime = cdEntry.lastModFileTime.toInt()
 
         let seconds = 2 * (dosTime & 0x1F)
         let minutes = (dosTime & 0x7E0) >> 5

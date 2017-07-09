@@ -39,7 +39,7 @@ struct ZipEndOfCentralDirectory {
 
         // There is also a .ZIP file comment, but we don't need it.
         // Here's how it can be processed:
-        // let zipCommentLength = pointerData.intFromAlignedBytes(count: 2)
+        // let zipCommentLength = pointerData.uint16().toInt()
         // let zipComment = String(data: Data(bytes: pointerData.bytes(count: zipCommentLength)),
         //                         encoding: .utf8)
 

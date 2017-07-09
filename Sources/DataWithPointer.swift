@@ -42,15 +42,6 @@ class DataWithPointer {
         return result
     }
 
-    func intFromAlignedBytes(count: Int) -> Int {
-        var result = 0
-        for i in 0..<count {
-            result |= self.data[self.index].toInt() << (8 * i)
-            self.index += 1
-        }
-        return result
-    }
-
     func uint64(count: UInt64 = 8) -> UInt64 {
         precondition(count <= 8, "UInt64 cannot store more than 8 bytes of data!")
         var result: UInt64 = 0

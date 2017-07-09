@@ -80,8 +80,8 @@ public class GzipArchive: Archive {
         let crc32 = bitReader.uint32()
         guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
 
-        let isize = bitReader.intFromAlignedBytes(count: 4)
-        guard UInt64(memberData.count) % UInt64(1) << 32 == UInt64(isize) else { throw GzipError.wrongISize }
+        let isize = bitReader.uint64(count: 4)
+        guard UInt64(memberData.count) % (UInt64(1) << 32) == isize else { throw GzipError.wrongISize }
 
         return Member(header: header, data: memberData)
     }
