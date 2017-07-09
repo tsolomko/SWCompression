@@ -231,7 +231,7 @@ public class TarEntry: ContainerEntry {
         // TODO: Change subdata to slicing in Swift 4.0.
         let currentIndex = pointerData.index
         pointerData.index = blockStartIndex
-        var headerDataForChecksum = pointerData.alignedBytes(count: 512)
+        var headerDataForChecksum = pointerData.bytes(count: 512)
         for i in 148..<156 {
             headerDataForChecksum[i] = 0x20
         }
@@ -248,7 +248,7 @@ public class TarEntry: ContainerEntry {
             else { throw TarError.wrongHeaderChecksum }
 
         // File type
-        let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.alignedByte())))
+        let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
         isLongLinkName = fileTypeIndicator == "K"
         isLongName = fileTypeIndicator == "L"
         let fileType = EntryType(rawValue: fileTypeIndicator) ?? .vendorUnknownOrReserved
@@ -275,7 +275,7 @@ public class TarEntry: ContainerEntry {
         // They differ in `magic` field value and how other fields are padded.
         // Padding is taken care of in Data extension functions at the end of this file.
         // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
-        let magic = pointerData.alignedBytes(count: 8)
+        let magic = pointerData.bytes(count: 8)
 
         if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
@@ -354,7 +354,7 @@ public class TarEntry: ContainerEntry {
 
         // File data
         pointerData.index = blockStartIndex + 512
-        self.dataObject = Data(bytes: pointerData.alignedBytes(count: size))
+        self.dataObject = Data(bytes: pointerData.bytes(count: size))
         pointerData.index -= size
         pointerData.index += size.roundTo512()
     }
@@ -388,7 +388,7 @@ extension DataWithPointer {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
-            let byte = alignedByte()
+            let byte = self.byte()
             if byte == 0 {
                 index -= 1
                 break
@@ -411,7 +411,7 @@ extension DataWithPointer {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
-            let byte = alignedByte()
+            let byte = self.byte()
             if byte == 0  || byte == 0x20 {
                 index -= 1
                 break
@@ -429,7 +429,6 @@ extension DataWithPointer {
             throw TarError.notAsciiString
         }
     }
-
 
 }
 

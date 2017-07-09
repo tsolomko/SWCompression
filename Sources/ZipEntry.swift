@@ -106,7 +106,7 @@ public class ZipEntry: ContainerEntry {
         let fileDataStart = bitReader.index
         switch localHeader!.compressionMethod {
         case 0:
-            fileBytes = bitReader.alignedBytes(count: uncompSize)
+            fileBytes = bitReader.bytes(count: uncompSize)
         case 8:
             fileBytes = try Deflate.decompress(bitReader)
             // Sometimes bitReader stays in not-aligned state after deflate decompression.
@@ -133,15 +133,15 @@ public class ZipEntry: ContainerEntry {
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
-            let ddSignature = bitReader.uint32FromAlignedBytes(count: 4)
+            let ddSignature = bitReader.uint32()
             if ddSignature != 0x08074b50 {
                 bitReader.index -= 4
             }
             // Now, let's update from CD with values from data descriptor.
-            crc32 = bitReader.uint32FromAlignedBytes(count: 4)
+            crc32 = bitReader.uint32()
             let sizeOfSizeField: UInt32 = localHeader!.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(bitReader.uint32FromAlignedBytes(count: sizeOfSizeField))
-            uncompSize = Int(bitReader.uint32FromAlignedBytes(count: sizeOfSizeField))
+            compSize = Int(bitReader.uint32(count: sizeOfSizeField))
+            uncompSize = Int(bitReader.uint32(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count

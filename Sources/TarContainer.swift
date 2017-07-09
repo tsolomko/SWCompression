@@ -40,7 +40,7 @@ public class TarContainer: Container {
         // Container ends with two zero-filled records.
         // TODO: Add better check and error throw.
         while true {
-            if pointerData.alignedBytes(count: 1024) == Array(repeating: 0, count: 1024) {
+            if pointerData.bytes(count: 1024) == Array(repeating: 0, count: 1024) {
                 break
             } else {
                 pointerData.index -= 1024

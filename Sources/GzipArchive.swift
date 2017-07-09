@@ -77,7 +77,7 @@ public class GzipArchive: Archive {
 
         let memberData = Data(bytes: try Deflate.decompress(bitReader))
 
-        let crc32 = bitReader.uint32FromAlignedBytes(count: 4)
+        let crc32 = bitReader.uint32()
         guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
 
         let isize = bitReader.intFromAlignedBytes(count: 4)

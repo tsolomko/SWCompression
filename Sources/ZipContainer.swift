@@ -32,7 +32,7 @@ public class ZipContainer: Container {
         bitReader.index = bitReader.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
             // Check signature.
-            if bitReader.uint32FromAlignedBytes(count: 4) == 0x06054b50 {
+            if bitReader.uint32() == 0x06054b50 {
                 // We found it!
                 break
             }

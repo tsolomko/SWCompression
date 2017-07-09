@@ -28,12 +28,12 @@ class DataWithPointer {
         self.data = data
     }
 
-    func alignedByte() -> UInt8 {
+    func byte() -> UInt8 {
         self.index += 1
         return self.data[self.index - 1]
     }
 
-    func alignedBytes(count: Int) -> [UInt8] {
+    func bytes(count: Int) -> [UInt8] {
         var result: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
             result[i] = self.data[self.index]
@@ -51,7 +51,7 @@ class DataWithPointer {
         return result
     }
 
-    func uint64FromAlignedBytes(count: UInt64) -> UInt64 {
+    func uint64(count: UInt64 = 8) -> UInt64 {
         precondition(count <= 8, "UInt64 cannot store more than 8 bytes of data!")
         var result: UInt64 = 0
         for i: UInt64 in 0..<count {
@@ -61,7 +61,7 @@ class DataWithPointer {
         return result
     }
 
-    func uint32FromAlignedBytes(count: UInt32) -> UInt32 {
+    func uint32(count: UInt32 = 4) -> UInt32 {
         precondition(count <= 4, "UInt32 cannot store more than 4 bytes of data!")
         var result: UInt32 = 0
         for i: UInt32 in 0..<count {

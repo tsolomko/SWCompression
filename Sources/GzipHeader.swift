@@ -84,13 +84,13 @@ public struct GzipHeader {
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
-        let method = pointerData.alignedByte()
+        let method = pointerData.byte()
         guard method == 8 else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
 
         self.compressionMethod = .deflate
 
-        let flags = pointerData.alignedByte()
+        let flags = pointerData.byte()
         guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.wrongFlags }
         headerBytes.append(flags)
 
@@ -100,10 +100,10 @@ public struct GzipHeader {
         }
         self.modificationTime = mtime == 0 ? nil : Date(timeIntervalSince1970: TimeInterval(mtime))
 
-        let extraFlags = pointerData.alignedByte()
+        let extraFlags = pointerData.byte()
         headerBytes.append(extraFlags)
 
-        self.osType = FileSystemType(rawValue: pointerData.alignedByte().toInt()) ?? .other
+        self.osType = FileSystemType(rawValue: pointerData.byte().toInt()) ?? .other
         headerBytes.append(self.osType.rawValue.toUInt8())
 
         self.isTextFile = flags & Flags.ftext != 0
@@ -115,7 +115,7 @@ public struct GzipHeader {
                 headerBytes.append(((xlen & (0xFF << (i * 8))) >> (i * 8)).toUInt8())
             }
             for _ in 0..<xlen {
-                headerBytes.append(pointerData.alignedByte())
+                headerBytes.append(pointerData.byte())
             }
         }
 
@@ -123,7 +123,7 @@ public struct GzipHeader {
         if flags & Flags.fname != 0 {
             var fnameBytes: [UInt8] = []
             while true {
-                let byte = pointerData.alignedByte()
+                let byte = pointerData.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
@@ -137,7 +137,7 @@ public struct GzipHeader {
         if flags & Flags.fcomment != 0 {
             var fcommentBytes: [UInt8] = []
             while true {
-                let byte = pointerData.alignedByte()
+                let byte = pointerData.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fcommentBytes.append(byte)
@@ -150,7 +150,7 @@ public struct GzipHeader {
         // Some archives may contain 2-bytes checksum
         if flags & Flags.fhcrc != 0 {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
-            let crc16 = UInt32(truncatingBitPattern: pointerData.uint64FromAlignedBytes(count: 2))
+            let crc16 = UInt32(truncatingBitPattern: pointerData.uint64(count: 2))
             let ourCRC32 = CheckSums.crc32(headerBytes)
             guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }

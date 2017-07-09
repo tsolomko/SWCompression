@@ -81,7 +81,7 @@ public class Deflate: DecompressionAlgorithm {
                 guard length & nlength == 0 else { throw DeflateError.wrongUncompressedBlockLengths }
                 // Process uncompressed data into the output
                 for _ in 0..<length {
-                    out.append(bitReader.alignedByte())
+                    out.append(bitReader.byte())
                 }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)

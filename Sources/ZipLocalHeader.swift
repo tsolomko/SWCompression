@@ -27,7 +27,7 @@ struct ZipLocalHeader {
 
     init(_ pointerData: DataWithPointer) throws {
         // Check signature.
-        guard pointerData.uint32FromAlignedBytes(count: 4) == 0x04034b50
+        guard pointerData.uint32() == 0x04034b50
             else { throw ZipError.wrongSignature }
 
         self.versionNeeded = pointerData.intFromAlignedBytes(count: 2)
@@ -39,15 +39,15 @@ struct ZipLocalHeader {
         self.lastModFileTime = pointerData.intFromAlignedBytes(count: 2)
         self.lastModFileDate = pointerData.intFromAlignedBytes(count: 2)
 
-        self.crc32 = pointerData.uint32FromAlignedBytes(count: 4)
+        self.crc32 = pointerData.uint32()
 
-        self.compSize = pointerData.uint64FromAlignedBytes(count: 4)
-        self.uncompSize = pointerData.uint64FromAlignedBytes(count: 4)
+        self.compSize = pointerData.uint64(count: 4)
+        self.uncompSize = pointerData.uint64(count: 4)
 
         let fileNameLength = pointerData.intFromAlignedBytes(count: 2)
         let extraFieldLength = pointerData.intFromAlignedBytes(count: 2)
 
-        guard let fileName = String(data: Data(bytes: pointerData.alignedBytes(count: fileNameLength)),
+        guard let fileName = String(data: Data(bytes: pointerData.bytes(count: fileNameLength)),
                                     encoding: .utf8)
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
@@ -62,12 +62,12 @@ struct ZipLocalHeader {
             switch headerID {
             case 0x0001:
                 // In local header both uncompressed size and compressed size fields are required.
-                self.uncompSize = pointerData.uint64FromAlignedBytes(count: 8)
-                self.compSize = pointerData.uint64FromAlignedBytes(count: 8)
+                self.uncompSize = pointerData.uint64()
+                self.compSize = pointerData.uint64()
 
                 self.zip64FieldsArePresent = true
             case 0x5455: // Extended Timestamp
-                let flags = pointerData.alignedByte()
+                let flags = pointerData.byte()
                 guard flags & 0xF8 == 0 else { break }
                 if flags & 0x01 != 0 {
                     self.modificationTimestamp = pointerData.intFromAlignedBytes(count: 4)

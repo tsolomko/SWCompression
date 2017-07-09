@@ -24,7 +24,7 @@ public class LZMA2: DecompressionAlgorithm {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
 
-        let dictionarySize = try LZMA2.dictionarySize(pointerData.alignedByte())
+        let dictionarySize = try LZMA2.dictionarySize(pointerData.byte())
 
         return Data(bytes: try LZMA2.decompress(dictionarySize, pointerData))
     }

@@ -91,7 +91,7 @@ class LZMADecoder {
     }
 
     private func resetProperties() throws {
-        var properties = pointerData.alignedByte()
+        var properties = pointerData.byte()
         if properties >= (9 * 5 * 5) {
             throw LZMAError.wrongProperties
         }
@@ -134,9 +134,9 @@ class LZMADecoder {
     }
 
     private func decodeUncompressed() {
-        let dataSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
+        let dataSize = self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
         for _ in 0..<dataSize {
-            let byte = pointerData.alignedByte()
+            let byte = pointerData.byte()
             self.put(byte)
         }
     }
@@ -146,8 +146,8 @@ class LZMADecoder {
         let uncompressedSizeBits = controlByte & 0x1F
         let reset = (controlByte & 0x60) >> 5
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
-            self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
-        let compressedSize = self.pointerData.alignedByte().toInt() << 8 + self.pointerData.alignedByte().toInt() + 1
+            self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
+        let compressedSize = self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
         var dataStartIndex = pointerData.index
         switch reset {
         case 0:
@@ -175,7 +175,7 @@ class LZMADecoder {
 
     func decodeLZMA2(_ lzma2DictionarySize: Int) throws {
         mainLoop: while true {
-            let controlByte = pointerData.alignedByte()
+            let controlByte = pointerData.byte()
             switch controlByte {
             case 0:
                 break mainLoop

@@ -20,9 +20,9 @@ class LZMARangeDecoder {
     init?(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
 
-        let byte = self.pointerData.alignedByte()
+        let byte = self.pointerData.byte()
         for _ in 0..<4 {
-            self.code = (self.code << 8) | UInt32(self.pointerData.alignedByte())
+            self.code = (self.code << 8) | UInt32(self.pointerData.byte())
         }
         if byte != 0 || self.code == self.range {
             self.isCorrupted = true
@@ -41,7 +41,7 @@ class LZMARangeDecoder {
     func normalize() {
         if self.range < UInt32(LZMAConstants.topValue) {
             self.range <<= 8
-            self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
+            self.code = (self.code << 8) | UInt32(pointerData.byte())
         }
     }
 
