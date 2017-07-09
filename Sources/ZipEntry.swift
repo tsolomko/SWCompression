@@ -139,9 +139,9 @@ public class ZipEntry: ContainerEntry {
             }
             // Now, let's update from CD with values from data descriptor.
             crc32 = bitReader.uint32()
-            let sizeOfSizeField: UInt32 = localHeader!.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(bitReader.uint32(count: sizeOfSizeField))
-            uncompSize = Int(bitReader.uint32(count: sizeOfSizeField))
+            let sizeOfSizeField: UInt64 = localHeader!.zip64FieldsArePresent ? 8 : 4
+            compSize = Int(bitReader.uint64(count: sizeOfSizeField))
+            uncompSize = Int(bitReader.uint64(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
