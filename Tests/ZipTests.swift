@@ -58,6 +58,10 @@ class ZipTests: XCTestCase {
             XCTFail("Incorrect number of entries.")
             return
         }
+
+        for entry in entries {
+            XCTAssertNotNil(try? entry.data())
+        }
     }
 
     func testDataDescriptor() {
