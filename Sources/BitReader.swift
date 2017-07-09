@@ -162,5 +162,10 @@ class BitReader: DataWithPointer {
         self.skipUntilNextByte()
         return super.uint32(count: count)
     }
+
+    override func uint16(count: UInt16 = 2) -> UInt16 {
+        self.skipUntilNextByte()
+        return super.uint16(count: count)
+    }
     
 }

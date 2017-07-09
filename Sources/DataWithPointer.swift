@@ -71,4 +71,14 @@ class DataWithPointer {
         return result
     }
 
+    func uint16(count: UInt16 = 2) -> UInt16 {
+        precondition(count <= 2, "UInt16 cannot store more than 2 bytes of data!")
+        var result: UInt16 = 0
+        for i: UInt16 in 0..<count {
+            result |= UInt16(self.data[self.index]) << (8 * i)
+            self.index += 1
+        }
+        return result
+    }
+
 }
