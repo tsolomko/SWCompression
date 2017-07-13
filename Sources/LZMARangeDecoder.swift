@@ -51,9 +51,9 @@ class LZMARangeDecoder {
         var count = directBits
         repeat {
             self.range >>= 1
-            self.code = UInt32.subtractWithOverflow(self.code, self.range).0
-            let t = UInt32.subtractWithOverflow(0, self.code >> 31).0
-            self.code = UInt32.addWithOverflow(self.code, self.range & t).0
+            self.code = self.code &- self.range
+            let t = 0 &- (self.code >> 31)
+            self.code = self.code &+ (self.range & t)
 
             if self.code == self.range {
                 self.isCorrupted = true
