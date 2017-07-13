@@ -30,18 +30,6 @@ class BitReader: DataWithPointer {
         super.init(data: data)
     }
 
-    func readerWithReversedBitOrder() -> BitReader {
-        let newReader: BitReader
-        switch self.bitOrder {
-        case .reversed:
-            newReader = BitReader(data: self.data, bitOrder: .straight)
-        case .straight:
-            newReader = BitReader(data: self.data, bitOrder: .reversed)
-        }
-        newReader.index = self.index
-        return newReader
-    }
-
     func bits(count: Int) -> [UInt8] {
         guard count > 0 else {
             return []
