@@ -113,6 +113,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries[0].name, "текстовый файл")
         XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertNotNil(try? entries[0].data())
     }
 
     func testZipLZMA() {
