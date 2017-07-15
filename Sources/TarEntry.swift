@@ -160,7 +160,6 @@ public class TarEntry: ContainerEntry {
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
-
     /// Returns data associated with this entry.
     public func data() -> Data {
         return dataObject
@@ -416,7 +415,7 @@ extension DataWithPointer {
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
             let byte = self.byte()
-            if byte == 0  || byte == 0x20 {
+            if byte == 0 || byte == 0x20 {
                 index -= 1
                 break
             }

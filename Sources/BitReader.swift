@@ -162,5 +162,5 @@ class BitReader: DataWithPointer {
         self.skipUntilNextByte()
         return super.uint16(count: count)
     }
-    
+
 }

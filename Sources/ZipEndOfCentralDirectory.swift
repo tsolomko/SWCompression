@@ -101,10 +101,10 @@ struct ZipEndOfCentralDirectory {
 
             // Then, there might be 'zip64 extensible data sector' with 'special purpose data'.
             // But we don't need them currently, so let's skip them.
-            
+
             // To find the size of these data:
             // let specialPurposeDataSize = zip64EndCDSize - 56
         }
     }
-    
+
 }
