@@ -34,7 +34,6 @@ struct ZipLocalHeader {
 
         self.generalPurposeBitFlags = pointerData.uint16()
         let useUtf8 = generalPurposeBitFlags & 0x800 != 0
-        let cp437Available = CFStringIsEncodingAvailable(ZipContainer.cp437Encoding)
 
         self.compressionMethod = pointerData.uint16()
 
@@ -49,18 +48,9 @@ struct ZipLocalHeader {
         let fileNameLength = pointerData.uint16().toInt()
         let extraFieldLength = pointerData.uint16().toInt()
 
-        let fileNameBytes = pointerData.bytes(count: fileNameLength)
-        let fileNameBytesAreUtf8 = ZipContainer.isUtf8(fileNameBytes)
-        if !useUtf8 && cp437Available && !fileNameBytesAreUtf8 {
-            guard let fileName = String(data: Data(bytes: fileNameBytes), encoding: String.Encoding(rawValue:
-                CFStringConvertEncodingToNSStringEncoding(ZipContainer.cp437Encoding)))
-                else { throw ZipError.wrongTextField }
-            self.fileName = fileName
-        } else {
-            guard let fileName = String(data: Data(bytes: fileNameBytes), encoding: .utf8)
-                else { throw ZipError.wrongTextField }
-            self.fileName = fileName
-        }
+        guard let fileName = ZipCommon.getStringField(pointerData, fileNameLength, useUtf8)
+            else { throw ZipError.wrongTextField }
+        self.fileName = fileName
 
         let extraFieldStart = pointerData.index
         while pointerData.index - extraFieldStart < extraFieldLength {
