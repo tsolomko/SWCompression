@@ -151,6 +151,8 @@ class ZipTests: XCTestCase {
         }
 
         XCTAssertEqual(try? entries[0].data(), answerData)
+        // Test repeat of getting entry data (there was a problem with it).
+        XCTAssertEqual(try? entries[0].data(), answerData)
     }
 
     func testZipBZip2() {

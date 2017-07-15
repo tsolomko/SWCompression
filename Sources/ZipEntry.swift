@@ -85,6 +85,8 @@ public class ZipEntry: ContainerEntry {
                 localHeader!.lastModFileTime == cdEntry.lastModFileTime &&
                 localHeader!.lastModFileDate == cdEntry.lastModFileDate
                 else { throw ZipError.wrongLocalHeader }
+        } else {
+            pointerData.index += localHeader!.headerSize
         }
 
         let hasDataDescriptor = localHeader!.generalPurposeBitFlags & 0x08 != 0
