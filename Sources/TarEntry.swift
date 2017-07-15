@@ -311,7 +311,9 @@ public class TarEntry: ContainerEntry {
                 self.charset = value
             case "ctime":
                 if let interval = Double(value) {
-                    self.creationTime = Date(timeIntervalSince1970: interval)
+                    let ctime = Date(timeIntervalSince1970: interval)
+                    attributesDict[FileAttributeKey.creationDate] = ctime
+                    self.creationTime = ctime
                 }
             case "mtime":
                 if let interval = Double(value) {
