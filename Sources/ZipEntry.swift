@@ -43,11 +43,8 @@ public class ZipEntry: ContainerEntry {
      Otherwise, it is true if size of data is 0 AND last character of entry's name is '/'.
      */
     public var isDirectory: Bool {
-        let hostSystem = (cdEntry.versionMadeBy & 0xFF00) >> 8
-        if hostSystem == 0 || hostSystem == 3 { // MS-DOS or UNIX case.
-            // In both of this cases external file attributes indicate if this is a directory.
-            // This is indicated by a special bit in the lowest byte of attributes.
-            return cdEntry.externalFileAttributes & 0x10 != 0
+        if let fileType = entryAttributes[FileAttributeKey.type] as? FileAttributeType {
+            return fileType == FileAttributeType.typeDirectory
         } else {
             return size == 0 && name.characters.last == "/"
         }
