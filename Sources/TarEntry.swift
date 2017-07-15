@@ -141,6 +141,9 @@ public class TarEntry: ContainerEntry {
     /// The most recent access time of the original file or directory (PAX only).
     public private(set) var accessTime: Date?
 
+    /// The creation time of the original file or directory (PAX only).
+    public private(set) var creationTime: Date?
+
     /// Name of the character set used to encode entry's data (PAX only).
     public private(set) var charset: String?
 
@@ -306,6 +309,10 @@ public class TarEntry: ContainerEntry {
                 }
             case "charset":
                 self.charset = value
+            case "ctime":
+                if let interval = Double(value) {
+                    self.creationTime = Date(timeIntervalSince1970: interval)
+                }
             case "mtime":
                 if let interval = Double(value) {
                     let newMtime = Date(timeIntervalSince1970: interval)
