@@ -63,6 +63,9 @@
 		06393DF61F1A7F8E00A647A0 /* ZipCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06393DF41F1A7F8E00A647A0 /* ZipCommon.swift */; };
 		06393DF71F1A7F8E00A647A0 /* ZipCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06393DF41F1A7F8E00A647A0 /* ZipCommon.swift */; };
 		06393DF81F1A7F8E00A647A0 /* ZipCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06393DF41F1A7F8E00A647A0 /* ZipCommon.swift */; };
+		06393DFD1F1A858000A647A0 /* long_test_gnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06393DFA1F1A858000A647A0 /* long_test_gnu.tar */; };
+		06393DFE1F1A858000A647A0 /* long_test_oldgnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06393DFB1F1A858000A647A0 /* long_test_oldgnu.tar */; };
+		06393DFF1F1A858000A647A0 /* long_test_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06393DFC1F1A858000A647A0 /* long_test_pax.tar */; };
 		063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
@@ -263,6 +266,9 @@
 		063336B61F06F0B6009EC0A3 /* test_multi.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi.xz; sourceTree = "<group>"; };
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		06393DF41F1A7F8E00A647A0 /* ZipCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipCommon.swift; sourceTree = "<group>"; };
+		06393DFA1F1A858000A647A0 /* long_test_gnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_gnu.tar; sourceTree = "<group>"; };
+		06393DFB1F1A858000A647A0 /* long_test_oldgnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_oldgnu.tar; sourceTree = "<group>"; };
+		06393DFC1F1A858000A647A0 /* long_test_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_pax.tar; sourceTree = "<group>"; };
 		063DF1051DE1F07800F38082 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataWithPointer.swift; path = Sources/DataWithPointer.swift; sourceTree = SOURCE_ROOT; };
 		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		063DF1081DE1F07800F38082 /* HuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanTree.swift; path = Sources/HuffmanTree.swift; sourceTree = SOURCE_ROOT; };
@@ -452,9 +458,20 @@
 			name = TAR;
 			sourceTree = "<group>";
 		};
+		06393DF91F1A858000A647A0 /* Long names */ = {
+			isa = PBXGroup;
+			children = (
+				06393DFA1F1A858000A647A0 /* long_test_gnu.tar */,
+				06393DFB1F1A858000A647A0 /* long_test_oldgnu.tar */,
+				06393DFC1F1A858000A647A0 /* long_test_pax.tar */,
+			);
+			path = "Long names";
+			sourceTree = "<group>";
+		};
 		0691B93E1EBE3E100037EE58 /* TAR */ = {
 			isa = PBXGroup;
 			children = (
+				06393DF91F1A858000A647A0 /* Long names */,
 				06D345631F102E740057173F /* Formats */,
 				068B36781ED0AC050016269E /* full_test.tar */,
 				0691B93F1EBE3E100037EE58 /* test.tar */,
@@ -899,6 +916,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				069DCE9D1EB64D0300ADC374 /* test2.answer in Resources */,
+				06393DFD1F1A858000A647A0 /* long_test_gnu.tar in Resources */,
 				06D07AB01EB64EE800BC8C65 /* test5.xz in Resources */,
 				06BD0D241E3D0C630054AA5C /* TestDataDescriptor.zip in Resources */,
 				0691B9401EBE3E100037EE58 /* test.tar in Resources */,
@@ -910,6 +928,7 @@
 				06991C701E05A9F70030FF07 /* test9.lzma in Resources */,
 				06D3456A1F102E740057173F /* test_oldgnu.tar in Resources */,
 				06BD0D251E3D0C630054AA5C /* TestZip64.zip in Resources */,
+				06393DFF1F1A858000A647A0 /* long_test_pax.tar in Resources */,
 				069DCE8D1EB64B1500ADC374 /* test5.gz in Resources */,
 				069DCE911EB64B1500ADC374 /* test9.gz in Resources */,
 				06D07AA11EB64E7A00BC8C65 /* test9.bz2 in Resources */,
@@ -925,6 +944,7 @@
 				06BD0D231E3D0C630054AA5C /* SWCompressionSourceCode.zip in Resources */,
 				06D07AB11EB64EE800BC8C65 /* test6.xz in Resources */,
 				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
+				06393DFE1F1A858000A647A0 /* long_test_oldgnu.tar in Resources */,
 				069DCEA41EB64D0300ADC374 /* test9.answer in Resources */,
 				06D07AAD1EB64EE800BC8C65 /* test2.xz in Resources */,
 				0621E5181F0451C200C0003F /* test_multi.gz in Resources */,
