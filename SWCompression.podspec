@@ -27,56 +27,44 @@ Pod::Spec.new do |s|
 
   # This is subspec for internal use by other subspecs.
   # It should not be included directly in Podfile.
-  s.subspec 'Common' do |sp|
-    sp.public_header_files = 'Sources/Service/SWCompression.h'
-    sp.source_files  = "Sources/{CheckSums.swift,DataWithPointer.swift,Extensions.swift,Protocols.swift,Service/*.swift,Service/*.h}"
-  end
 
   s.subspec 'Deflate' do |sp|
-    sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/{Deflate.swift,HuffmanTree.swift,BitToByteWriter.swift}'
+    sp.source_files = 'Sources/{Deflate,DeflateCompression,DeflateError,Extensions,Protocols,DataWithPointer,BitReader,HuffmanTree,BitWriter}.swift'
   end
 
   s.subspec 'GZip' do |sp|
-    sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
     sp.source_files = 'Sources/{GzipArchive,GzipHeader,GzipError}.swift'
   end
 
   s.subspec 'Zlib' do |sp|
-    sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
     sp.source_files = 'Sources/{ZlibArchive,ZlibHeader,ZlibError}.swift'
   end
 
   s.subspec 'BZip2' do |sp|
-    sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/{BZip2.swift,HuffmanTree.swift,BitToByteWriter.swift}'
+    sp.source_files = 'Sources/{BZip2,BZip2Error,Extensions,Protocols,DataWithPointer,BitReader,HuffmanTree}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BZ2' }
   end
 
   s.subspec 'LZMA' do |sp|
-    sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/LZMA*.swift'
+    sp.source_files = 'Sources/{LZMA*,Extensions,Protocols,DataWithPointer}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_LZMA' }
   end
 
   s.subspec 'XZ' do |sp|
-    sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/LZMA'
     sp.source_files = 'Sources/{XZArchive,XZError}.swift'
   end
 
   s.subspec 'ZIP' do |sp|
-    sp.dependency 'SWCompression/Common'
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{ZipContainer,ZipEntry,ZipError,ZipLocalHeader,ZipCentralDirectoryEntry,ZipEndOfCentralDirectory}.swift'
+    sp.source_files = 'Sources/{Zip*}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BUILD' }
   end
 
   s.subspec 'TAR' do |sp|
-    sp.dependency 'SWCompression/Common'
-    sp.source_files = 'Sources/{TarContainer,TarEntry,TarError}.swift'
+    sp.source_files = 'Sources/{Tar*,Extensions,Protocols,DataWithPointer}.swift'
   end
 
 end
