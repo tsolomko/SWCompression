@@ -45,6 +45,30 @@ public class TarContainer: Container {
             } else {
                 pointerData.index -= 1024
             }
+            pointerData.index += 156
+            let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
+            if fileTypeIndicator == "K" || fileTypeIndicator == "L" {
+                pointerData.index -= 33
+
+                guard let octalSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+                    else { throw TarError.fieldIsNotNumber }
+                let size = octalSize.octalToDecimal()
+                pointerData.index += 376
+
+                let dataStartIndex = pointerData.index
+                let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
+
+                if fileTypeIndicator == "K" {
+                    longLinkName = longPath
+                } else {
+                    longName = longPath
+                }
+                pointerData.index = dataStartIndex
+                pointerData.index += size.roundTo512()
+                continue
+            }
+            pointerData.index -= 157
+
             let entry = try TarEntry(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                      longName, longLinkName)
             switch entry.type {
@@ -53,16 +77,10 @@ public class TarContainer: Container {
             case .localExtendedHeader:
                 lastLocalExtendedHeader = String(data: entry.data(), encoding: .utf8)
             default:
-                if entry.isLongName {
-                    longName = try DataWithPointer(data: entry.data()).nullEndedAsciiString(cutoff: entry.size)
-                } else if entry.isLongLinkName {
-                    longLinkName = try DataWithPointer(data: entry.data()).nullEndedAsciiString(cutoff: entry.size)
-                } else {
-                    output.append(entry)
-                    lastLocalExtendedHeader = nil
-                    longName = nil
-                    longLinkName = nil
-                }
+                output.append(entry)
+                lastLocalExtendedHeader = nil
+                longName = nil
+                longLinkName = nil
             }
         }
 

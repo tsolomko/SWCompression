@@ -165,9 +165,6 @@ public class TarEntry: ContainerEntry {
 
     private let dataObject: Data
 
-    let isLongName: Bool
-    let isLongLinkName: Bool
-
     private let gnuLongName: String?
     private let gnuLongLinkName: String?
 
@@ -249,8 +246,6 @@ public class TarEntry: ContainerEntry {
 
         // File type
         let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
-        isLongLinkName = fileTypeIndicator == "K"
-        isLongName = fileTypeIndicator == "L"
         let fileType = EntryType(rawValue: fileTypeIndicator) ?? .vendorUnknownOrReserved
         type = fileType
         switch fileType {
@@ -432,9 +427,9 @@ extension DataWithPointer {
 
 }
 
-fileprivate extension Int {
+extension Int {
 
-    fileprivate func octalToDecimal() -> Int {
+    func octalToDecimal() -> Int {
         var octal = self
         var decimal = 0, i = 0
         while octal != 0 {
@@ -446,7 +441,7 @@ fileprivate extension Int {
         return decimal
     }
 
-    fileprivate func roundTo512() -> Int {
+    func roundTo512() -> Int {
         let fractionNum = Double(self) / 512
         let roundedNum = Int(ceil(fractionNum))
         return roundedNum * 512
