@@ -52,7 +52,7 @@ struct ZipEndOfCentralDirectory {
 
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
             // Back to start of end of CD record.
-            pointerData.index -= 22
+            pointerData.index -= 20
             // Zip64 locator takes exactly 20 bytes.
             pointerData.index -= 20
 
