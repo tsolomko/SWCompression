@@ -1,34 +1,45 @@
-language: objective-c
-osx_image: xcode8.3
-xcode_project: SWCompression.xcodeproj
-xcode_scheme: SWCompression
+
 env:
   global:
   - FRAMEWORK_NAME=SWCompression
-before_install:
-- brew update
-- brew outdated carthage || brew upgrade carthage
-- brew install git-lfs
-- git lfs install
-before_script:
-- cd Tests/Test\ Files
-- git lfs pull
-- cd ../..
-before_deploy:
-- carthage build --no-skip-current
-- carthage archive $FRAMEWORK_NAME
-script:
-- xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+matrix:
+    include:
+    - language: objective-c
+      osx_image: xcode8.3
+      xcode_project: SWCompression.xcodeproj
+      xcode_scheme: SWCompression
+      before_install:
+      - brew update
+      - brew outdated carthage || brew upgrade carthage
+      - brew install git-lfs
+      - git lfs install
+      before_script:
+      - cd Tests/Test\ Files
+      - git lfs pull
+      - cd ../..
+      before_deploy:
+      - carthage build --no-skip-current
+      - carthage archive $FRAMEWORK_NAME
+      script:
+      - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
+      after_success:
+      - bash <(curl -s https://codecov.io/bash)
+      deploy:
+        provider: releases
+        api_key:
+          secure: lhJi7BsAuhGo9T4rgD/UWlVRnfrO5xLIF3BUuPHb21045tEXk/BGEHgc9a9CTFm2/iR3SmP/GDsmqfJlMzWLvuTlyV5i8otIodwIp5NYstFhyA2JaEVglmnzlkf/2FkNb5KKJDyGM1KuecYmPRTUUzYThVXl59GZ2esgfiCN26pDeDgwRyJt34jeUj0VzK9JDmEJ/ODG/hvuUWyZp0zni+m6WTPZ7dILeazFEc81WATBfMo5oa8ZBChSM6lDKaW8XyKZWrMXjsK6dKfQTcVwnvrplfw2TqfPVA+YfePcq1os5Do5CELnhrUZMSI6qvOmPauzGStjsAVFTiMaYO6HdHO03mn5L9SUuyhhKqHmh2pAkM1zKxbtfKbk6oi4zJJgvbTjIO4K2X5SUwHFgjULijW9JJeCFjsLfwODvFNFHeLeql3jaKNo6kRn2VvT/uNuT3aZa+r+WeFL0HgD6Z/EEkQW5yI6DocjetRP6y9B0rpA+YyALbd0SkVIqvoywztSfxWwp7eKhQHbG/FTIfWlmMbtLq5xULQb6TyjVHO94iSfsDV2rjAeDJY73P+rPsvej4Y9LFS8VOHcsrFhFlbR9E0NjCO2CH2TZcjXPOdLu4gfapPdiqQIdgWjC6ECUwsq+Ux6jJ6QIrGC2TI/Fw58mtLf1G8SdqBRXo+Kw0IAB4g=
+        file: "$FRAMEWORK_NAME.framework.zip"
+        skip_cleanup: true
+        on:
+          repo: tsolomko/SWCompression
+          tags: true
+    - language: generic
+      os: linux
+      sudo: required
+      dist: trusty
+      install:
+      - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+      script:
+      - swift build && swift build -c release
 notifications:
   email: false
-deploy:
-  provider: releases
-  api_key:
-    secure: lhJi7BsAuhGo9T4rgD/UWlVRnfrO5xLIF3BUuPHb21045tEXk/BGEHgc9a9CTFm2/iR3SmP/GDsmqfJlMzWLvuTlyV5i8otIodwIp5NYstFhyA2JaEVglmnzlkf/2FkNb5KKJDyGM1KuecYmPRTUUzYThVXl59GZ2esgfiCN26pDeDgwRyJt34jeUj0VzK9JDmEJ/ODG/hvuUWyZp0zni+m6WTPZ7dILeazFEc81WATBfMo5oa8ZBChSM6lDKaW8XyKZWrMXjsK6dKfQTcVwnvrplfw2TqfPVA+YfePcq1os5Do5CELnhrUZMSI6qvOmPauzGStjsAVFTiMaYO6HdHO03mn5L9SUuyhhKqHmh2pAkM1zKxbtfKbk6oi4zJJgvbTjIO4K2X5SUwHFgjULijW9JJeCFjsLfwODvFNFHeLeql3jaKNo6kRn2VvT/uNuT3aZa+r+WeFL0HgD6Z/EEkQW5yI6DocjetRP6y9B0rpA+YyALbd0SkVIqvoywztSfxWwp7eKhQHbG/FTIfWlmMbtLq5xULQb6TyjVHO94iSfsDV2rjAeDJY73P+rPsvej4Y9LFS8VOHcsrFhFlbR9E0NjCO2CH2TZcjXPOdLu4gfapPdiqQIdgWjC6ECUwsq+Ux6jJ6QIrGC2TI/Fw58mtLf1G8SdqBRXo+Kw0IAB4g=
-  file: "$FRAMEWORK_NAME.framework.zip"
-  skip_cleanup: true
-  on:
-    repo: tsolomko/SWCompression
-    tags: true
