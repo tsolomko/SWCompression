@@ -30,6 +30,12 @@ class ZipTests: XCTestCase {
             XCTFail("Incorrect number of entries.")
             return
         }
+
+        #if LONG_TESTS
+            for entry in entries {
+                XCTAssertNotNil(try? entry.data())
+            }
+        #endif
     }
 
     func testZip64() {
@@ -51,6 +57,10 @@ class ZipTests: XCTestCase {
         guard entries.count == 6 else {
             XCTFail("Incorrect number of entries.")
             return
+        }
+
+        for entry in entries {
+            XCTAssertNotNil(try? entry.data())
         }
     }
 
@@ -103,10 +113,50 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries[0].name, "текстовый файл")
         XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertNotNil(try? entries[0].data())
     }
 
     func testZipLZMA() {
         guard let testURL = Constants.url(forTest: "test_zip_lzma", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        guard let entries = try? ZipContainer.open(container: testData) else {
+            XCTFail("Unable to open ZIP archive.")
+            return
+        }
+
+        guard entries.count == 1 else {
+            XCTFail("Incorrect number of entries.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].name, "test4.answer")
+        XCTAssertEqual(entries[0].isDirectory, false)
+
+        guard let answerURL = Constants.url(forAnswer: "test4") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load answer.")
+            return
+        }
+
+        XCTAssertEqual(try? entries[0].data(), answerData)
+        // Test repeat of getting entry data (there was a problem with it).
+        XCTAssertEqual(try? entries[0].data(), answerData)
+    }
+
+    func testZipBZip2() {
+        guard let testURL = Constants.url(forTest: "test_zip_bzip2", withType: ZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }

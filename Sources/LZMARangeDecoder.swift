@@ -1,10 +1,7 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  LZMARangeDecoder.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 23.12.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
@@ -20,12 +17,12 @@ class LZMARangeDecoder {
         return self.code == 0
     }
 
-    init?(_ pointerData: inout DataWithPointer) {
+    init?(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
 
-        let byte = self.pointerData.alignedByte()
+        let byte = self.pointerData.byte()
         for _ in 0..<4 {
-            self.code = (self.code << 8) | UInt32(self.pointerData.alignedByte())
+            self.code = (self.code << 8) | UInt32(self.pointerData.byte())
         }
         if byte != 0 || self.code == self.range {
             self.isCorrupted = true
@@ -34,7 +31,7 @@ class LZMARangeDecoder {
     }
 
     init() {
-        self.pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
+        self.pointerData = DataWithPointer(data: Data())
         self.range = 0xFFFFFFFF
         self.code = 0
         self.isCorrupted = false
@@ -44,7 +41,7 @@ class LZMARangeDecoder {
     func normalize() {
         if self.range < UInt32(LZMAConstants.topValue) {
             self.range <<= 8
-            self.code = (self.code << 8) | UInt32(pointerData.alignedByte())
+            self.code = (self.code << 8) | UInt32(pointerData.byte())
         }
     }
 
@@ -54,9 +51,9 @@ class LZMARangeDecoder {
         var count = directBits
         repeat {
             self.range >>= 1
-            self.code = UInt32.subtractWithOverflow(self.code, self.range).0
-            let t = UInt32.subtractWithOverflow(0, self.code >> 31).0
-            self.code = UInt32.addWithOverflow(self.code, self.range & t).0
+            self.code = self.code &- self.range
+            let t = 0 &- (self.code >> 31)
+            self.code = self.code &+ (self.range & t)
 
             if self.code == self.range {
                 self.isCorrupted = true

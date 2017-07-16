@@ -1,7 +1,23 @@
 # Changelog
+v3.2.0
+----------------
+- Split source files.
+- Removed SWCompression/Common subpodspec.
+- Moved test files into separate repository as a submodule.
+    - Fixed problem with Swift Package Manager requirement to disable smudge-filter of git-lfs.
+- Support creation time for TarEntries.
+- Add support for ZIP standardized CP437 encoding of string fields.
+    - Fallback to UTF-8 if this encoding is unavailable on the platform.
+    - Fallback to UTF-8 if it is detected that string fields is in UTF-8.
+        - Necessary, because Info-ZIP doesn't marks fields it creates with UTF-8 flag.
+- Fixed problem with finding zip64 end of Central Directory locator.
+- Fixed problem with accessing `ZipEntry`'s data two or more times.
+- Fixed problem with accessing data of BZip2 compressed `ZipEntry`.
+- Fixed problem with reading zip64 data descriptor.
+
 v3.1.3
 ----------------
-- Added support for GNU LongLing and LongName extenstions to TAR format.
+- Added support for GNU LongLinkName and LongName extensions of TAR format.
 - Added support for modification timestamp from extended timestamps ZIP extra field.
 
 v3.1.2

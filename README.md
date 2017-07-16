@@ -73,9 +73,6 @@ Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions.
-It is included in every other subspec and should not be specified directly in Podfile.
-
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
 
@@ -170,6 +167,20 @@ use whole module optimizations, which are enabled by default for Release configu
 Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
 
 [Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
+
+Running tests locally
+---------------------
+If you want to run tests locally you need to clone this repository and do some additional steps:
+```bash
+$ git submodule update --init --recursive
+$ cd Tests/Test\ Files
+$ git lfs pull
+```
+These commands fetch example archives and other files which are used for testing.
+These files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
+Git LFS is also used for storing them which basically is the reason for having them in other repository.
+Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
+(requires installing git-lfs _locally_ with `--skip-smudge` option to solve the problem).
 
 Known issues
 ------------

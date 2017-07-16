@@ -5,25 +5,10 @@
 
 import Foundation
 
-/**
- Represents an error, which happened during Deflate compression or decompression.
- It may indicate that either the data is damaged or it might not be compressed with Deflate at all.
- */
-public enum DeflateError: Error {
-    /// Uncompressed block's `length` and `nlength` bytes isn't consistent with each other.
-    case wrongUncompressedBlockLengths
-    /// Unknown block type (not 0, 1 or 2).
-    case wrongBlockType
-    /// Decoded symbol was found in Huffman tree but is unknown.
-    case wrongSymbol
-    /// Symbol wasn't found in Huffman tree.
-    case symbolNotFound
-}
-
 /// Provides compression and decompression functions for Deflate algorithm.
 public class Deflate: DecompressionAlgorithm {
 
-    private struct Constants {
+    struct Constants {
         static let codeLengthOrders: [Int] =
             [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
 
@@ -72,31 +57,31 @@ public class Deflate: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        var pointerData = DataWithPointer(data: data, bitOrder: .reversed)
-        return Data(bytes: try decompress(&pointerData))
+        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        return Data(bytes: try decompress(bitReader))
     }
 
-    static func decompress(_ pointerData: inout DataWithPointer) throws -> [UInt8] {
+    static func decompress(_ bitReader: BitReader) throws -> [UInt8] {
         /// An array for storing output data
         var out: [UInt8] = []
 
         while true {
             /// Is this a last block?
-            let isLastBit = pointerData.bit()
+            let isLastBit = bitReader.bit()
             /// Type of the current block.
-            let blockType = [UInt8](pointerData.bits(count: 2).reversed())
+            let blockType = [UInt8](bitReader.bits(count: 2).reversed())
 
             if blockType == [0, 0] { // Uncompressed block.
-                pointerData.skipUntilNextByte()
+                bitReader.skipUntilNextByte()
                 /// Length of the uncompressed data.
-                let length = pointerData.intFromBits(count: 16)
+                let length = bitReader.intFromBits(count: 16)
                 /// 1-complement of the length.
-                let nlength = pointerData.intFromBits(count: 16)
+                let nlength = bitReader.intFromBits(count: 16)
                 // Check if lengths are OK (nlength should be a 1-complement of length).
                 guard length & nlength == 0 else { throw DeflateError.wrongUncompressedBlockLengths }
                 // Process uncompressed data into the output
                 for _ in 0..<length {
-                    out.append(pointerData.alignedByte())
+                    out.append(bitReader.byte())
                 }
             } else if blockType == [1, 0] || blockType == [0, 1] {
                 // Block with Huffman coding (either static or dynamic)
@@ -115,28 +100,28 @@ public class Deflate: DecompressionAlgorithm {
                     let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
                     let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
                     // Initialize trees from these bootstraps.
-                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData)
-                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData)
+                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, bitReader)
+                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
 
                     /// Number of literals codes.
-                    let literals = pointerData.intFromBits(count: 5) + 257
+                    let literals = bitReader.intFromBits(count: 5) + 257
                     /// Number of distances codes.
-                    let distances = pointerData.intFromBits(count: 5) + 1
+                    let distances = bitReader.intFromBits(count: 5) + 1
                     /// Number of code lengths codes.
-                    let codeLengthsLength = pointerData.intFromBits(count: 4) + 4
+                    let codeLengthsLength = bitReader.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
                     // Moreover, they are stored in a very specific order, 
                     //  defined by HuffmanTree.Constants.codeLengthOrders.
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[Constants.codeLengthOrders[i]] = pointerData.intFromBits(count: 3)
+                        lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.intFromBits(count: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, &pointerData)
+                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
                     var codeLengths: [Int] = []
@@ -155,17 +140,17 @@ public class Deflate: DecompressionAlgorithm {
                         } else if symbol == 16 {
                             // Copy previous code length 3 to 6 times.
                             // Next two bits show how many times we need to copy.
-                            count = pointerData.intFromBits(count: 2) + 3
+                            count = bitReader.intFromBits(count: 2) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
                             // Repeat code length 0 for from 3 to 10 times.
                             // Next three bits show how many times we need to copy.
-                            count = pointerData.intFromBits(count: 3) + 3
+                            count = bitReader.intFromBits(count: 3) + 3
                             what = 0
                         } else if symbol == 18 {
                             // Repeat code length 0 for from 11 to 138 times.
                             // Next seven bits show how many times we need to do this.
-                            count = pointerData.intFromBits(count: 7) + 11
+                            count = bitReader.intFromBits(count: 7) + 11
                             what = 0
                         } else {
                             throw DeflateError.wrongSymbol
@@ -178,9 +163,9 @@ public class Deflate: DecompressionAlgorithm {
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
                     mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]),
-                                               &pointerData)
+                                               bitReader)
                     mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]),
-                                                &pointerData)
+                                                bitReader)
                 }
 
                 // Main loop of data decompression.
@@ -205,7 +190,7 @@ public class Deflate: DecompressionAlgorithm {
                         // Actually, nextSymbol is not a starting value of length,
                         //  but an index for special array of starting values.
                         let length = Constants.lengthBase[nextSymbol - 257] +
-                            pointerData.intFromBits(count: extraLength)
+                            bitReader.intFromBits(count: extraLength)
 
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
@@ -218,7 +203,7 @@ public class Deflate: DecompressionAlgorithm {
                         let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                         // And yes, distanceCode is not a first part of distance but rather an index for special array.
                         let distance = Constants.distanceBase[distanceCode] +
-                            pointerData.intFromBits(count: extraDistance)
+                            bitReader.intFromBits(count: extraDistance)
 
                         // We should repeat last 'distance' amount of data.
                         // The amount of times we do this is round(length / distance).
@@ -254,226 +239,6 @@ public class Deflate: DecompressionAlgorithm {
         }
 
         return out
-    }
-
-    /**
-     Compresses `data` with Deflate algortihm.
-
-     If during compression something goes wrong `DeflateError` will be thrown.
-
-     - Parameter data: Data to compress.
-
-     - Note: Currently, SWCompression creates only one block for all data
-     and the block can either be uncompressed or compressed with static Huffman encoding.
-     Choice of one block type or the other depends on bytes' statistics of data.
-     However, if data size is greater than 65535 (the maximum value stored in 2 bytes),
-     then static Huffman block will be created.
-     */
-    public static func compress(data: Data) throws -> Data {
-        let bytes = data.toArray(type: UInt8.self)
-
-        let bldCodes = Deflate.lengthEncode(bytes)
-
-        // Let's count possible sizes according to statistics.
-
-        // Uncompressed block size calculation is simple:
-        let uncompBlockSize = 1 + 2 + 2 + bytes.count // Header, length, n-length and data.
-
-        // Static Huffman size is more complicated...
-        var bitsCount = 3 // Three bits for block's header.
-        for (symbol, symbolCount) in bldCodes.stats.enumerated() {
-            let codeSize: Int
-            // There are extra bits for some codes.
-            let extraBitsCount: Int
-            switch symbol {
-            case 0...143:
-                codeSize = 8
-                extraBitsCount = 0
-            case 144...255:
-                codeSize = 9
-                extraBitsCount = 0
-            case 256...279:
-                codeSize = 7
-                extraBitsCount = 256 <= symbol && symbol <= 260 ? 0 : (((symbol - 257) >> 2) - 1)
-            case 280...285:
-                codeSize = 8
-                extraBitsCount = symbol == 285 ? 0 : (((symbol - 257) >> 2) - 1)
-            case 286...315:
-                codeSize = 5
-                extraBitsCount = symbol == 286 || symbol == 287 ? 0 : (((symbol - 286) >> 1) - 1)
-            default:
-                throw DeflateError.symbolNotFound
-            }
-            bitsCount += (symbolCount * (codeSize + extraBitsCount))
-        }
-        let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
-
-        // Since `length` of uncompressed block is 16-bit integer,
-        // there is a limitation on size of uncompressed block.
-        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
-        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
-            // If according to our calculations static huffman will not make output smaller than input,
-            // we fallback to creating uncompressed block.
-            // In this case dynamic Huffman encoding can be efficient.
-            // TODO: Implement dynamic Huffman code!
-            return Data(bytes: Deflate.createUncompressedBlock(bytes))
-        } else {
-            return Data(bytes: try Deflate.encodeHuffmanBlock(bldCodes.codes))
-        }
-    }
-
-    private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
-        let bitWriter = BitToByteWriter(bitOrder: .reversed)
-
-        // Write block header.
-        // Note: Only one block is supported for now.
-        bitWriter.write(bit: 1)
-        bitWriter.write(bits: [0, 0])
-
-        // Before writing lengths we need to discard remaining bits in current byte.
-        bitWriter.finish()
-
-        // Write data's length.
-        bitWriter.write(number: bytes.count, bitsCount: 16)
-        // Write data's n-length.
-        bitWriter.write(number: bytes.count ^ (1 << 16 - 1), bitsCount: 16)
-
-        var out = bitWriter.buffer
-
-        // Write actual data.
-        for byte in bytes {
-            out.append(byte)
-        }
-
-        return out
-    }
-
-    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
-        var bitWriter = BitToByteWriter(bitOrder: .reversed)
-
-        // Write block header.
-        // Note: For now it is only static huffman blocks.
-        // Note: Only one block is supported for now.
-        bitWriter.write(bit: 1)
-        bitWriter.write(bits: [1, 0])
-
-        /// Empty DWP object for creating Huffman trees.
-        var pointerData = DataWithPointer(data: Data(), bitOrder: .reversed)
-
-        // Constructing Huffman trees for the case of block with preset alphabets.
-        // In this case codes for literals and distances are fixed.
-        // Bootstraps for trees (first element in pair is code, second is number of bits).
-        let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
-        let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
-        /// Huffman tree for literal and length symbols/codes.
-        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, &pointerData, true)
-        /// Huffman tree for backward distance symbols/codes.
-        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, &pointerData, true)
-
-        for code in bldCodes {
-            switch code {
-            case .byte(let byte):
-                try mainLiterals.code(symbol: byte.toInt(), &bitWriter, DeflateError.symbolNotFound)
-            case .lengthDistance(let length, let distance):
-                let lengthSymbol = Constants.lengthCode[Int(length) - 3]
-                let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
-                let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
-                    0 : (((lengthSymbol - 257) >> 2) - 1)
-                try mainLiterals.code(symbol: lengthSymbol, &bitWriter, DeflateError.symbolNotFound)
-                bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
-
-                let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
-                let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
-                let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
-                try mainDistances.code(symbol: distanceSymbol, &bitWriter, DeflateError.symbolNotFound)
-                bitWriter.write(number: distanceExtraBits, bitsCount: distanceExtraBitsCount)
-            }
-        }
-
-        // End data symbol.
-        try mainLiterals.code(symbol: 256, &bitWriter, DeflateError.symbolNotFound)
-        bitWriter.finish()
-
-        return bitWriter.buffer
-    }
-
-    private enum BLDCode {
-        case byte(UInt8)
-        case lengthDistance(UInt16, UInt16)
-    }
-
-    private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
-        var buffer: [BLDCode] = []
-        var inputIndex = 0
-        /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
-        var dictionary = [UInt32: Int]()
-
-        var stats = Array(repeating: 0, count: 316)
-
-        // Last two bytes of input will be considered separately.
-        // This also allows to use length encoding for arrays with size less than 3.
-        while inputIndex < rawBytes.count - 2 {
-            let byte = rawBytes[inputIndex]
-
-            let threeByteCrc = CheckSums.crc32([rawBytes[inputIndex],
-                                                rawBytes[inputIndex + 1],
-                                                rawBytes[inputIndex + 2]])
-
-            if let matchStartIndex = dictionary[threeByteCrc] {
-                // We need to update position of this match to keep distances as small as possible.
-                dictionary[threeByteCrc] = inputIndex
-
-                /// - Note: Minimum match length equals to three.
-                var matchLength = 3
-                /// Cyclic index which is used to compare bytes in match and in input.
-                var repeatIndex = matchStartIndex + matchLength
-
-                /// - Note: Maximum allowed distance equals to 32768.
-                let distance = inputIndex - matchStartIndex
-
-                // Again, the distance cannot be greater than 32768.
-                if distance <= 32768 {
-                    while inputIndex + matchLength < rawBytes.count &&
-                        rawBytes[inputIndex + matchLength] == rawBytes[repeatIndex] && matchLength < 258 {
-                        matchLength += 1
-                        repeatIndex += 1
-                        if repeatIndex > inputIndex {
-                            repeatIndex = matchStartIndex + 1
-                        }
-                    }
-                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingBitPattern: matchLength), UInt16(truncatingBitPattern: distance)))
-                    stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
-                    stats[286 + ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
-                    inputIndex += matchLength
-                } else {
-                    buffer.append(BLDCode.byte(byte))
-                    stats[byte.toInt()] += 1
-                    inputIndex += 1
-                }
-            } else {
-                // We need to remember where we met this three-byte sequence.
-                dictionary[threeByteCrc] = inputIndex
-
-                buffer.append(BLDCode.byte(byte))
-                stats[byte.toInt()] += 1
-                inputIndex += 1
-            }
-            // TODO: Add limitation for dictionary size.
-        }
-
-        // For last two bytes there certainly will be no match.
-        // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
-        while inputIndex < rawBytes.count {
-            let byte = rawBytes[inputIndex]
-            buffer.append(BLDCode.byte(byte))
-            stats[byte.toInt()] += 1
-            inputIndex += 1
-        }
-
-        // End of block symbol (256) should also be counted.
-        stats[256] += 1
-
-        return (buffer, stats)
     }
 
 }

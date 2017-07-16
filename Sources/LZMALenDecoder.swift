@@ -1,16 +1,11 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  LZMALenDecoder.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 23.12.16.
-//  Copyright © 2017 Timofey Solomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
 class LZMALenDecoder {
-
-    private var pointerData: DataWithPointer
 
     private var choice: Int = LZMAConstants.probInitValue
     private var choice2: Int = LZMAConstants.probInitValue
@@ -18,13 +13,11 @@ class LZMALenDecoder {
     private var midCoder: [LZMABitTreeDecoder] = []
     private var highCoder: LZMABitTreeDecoder
 
-    init(_ pointerData: inout DataWithPointer) {
-        self.pointerData = pointerData
-
-        self.highCoder = LZMABitTreeDecoder(numBits: 8, &self.pointerData)
+    init() {
+        self.highCoder = LZMABitTreeDecoder(numBits: 8)
         for _ in 0..<(1 << LZMAConstants.numPosBitsMax) {
-            self.lowCoder.append(LZMABitTreeDecoder(numBits: 3, &self.pointerData))
-            self.midCoder.append(LZMABitTreeDecoder(numBits: 3, &self.pointerData))
+            self.lowCoder.append(LZMABitTreeDecoder(numBits: 3))
+            self.midCoder.append(LZMABitTreeDecoder(numBits: 3))
         }
     }
 
