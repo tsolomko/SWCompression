@@ -547,6 +547,7 @@
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
 				0681B3DD1E44F674001A9D79 /* BitWriter.swift */,
+				063DF1081DE1F07800F38082 /* HuffmanTree.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -598,7 +599,6 @@
 			isa = PBXGroup;
 			children = (
 				06A3931F1DE06FFE00182E12 /* Common */,
-				063DF1081DE1F07800F38082 /* HuffmanTree.swift */,
 				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
 				06CDFCA71F111D9700292758 /* DeflateError.swift */,
 				06CDFC9D1F111D2600292758 /* DeflateCompression.swift */,

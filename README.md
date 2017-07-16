@@ -73,9 +73,6 @@ Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-_Note:_ Actually, there is one more subspec (SWCompression/Common) but it does not contain any end-user functions.
-It is included in every other subspec and should not be specified directly in Podfile.
-
 ##### Carthage
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
 

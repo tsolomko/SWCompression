@@ -25,6 +25,8 @@ struct ZipLocalHeader {
     private(set) var accessTimestamp: UInt32?
     private(set) var creationTimestamp: UInt32?
 
+    let headerSize: Int
+
     init(_ pointerData: DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32() == 0x04034b50
@@ -47,6 +49,7 @@ struct ZipLocalHeader {
 
         let fileNameLength = pointerData.uint16().toInt()
         let extraFieldLength = pointerData.uint16().toInt()
+        self.headerSize = 30 + fileNameLength + extraFieldLength
 
         guard let fileName = ZipCommon.getStringField(pointerData, fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }

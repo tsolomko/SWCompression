@@ -5,10 +5,19 @@
 
 import Foundation
 
+#if os(Linux)
+    import CoreFoundation
+#endif
+
 class ZipCommon {
 
-    static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
-    static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
+    #if os(Linux)
+        static let cp437Encoding: CFStringEncoding = UInt32(truncatingBitPattern: UInt(kCFStringEncodingDOSLatinUS))
+        static let cp437Available: Bool = CFStringIsEncodingAvailable(cp437Encoding)
+    #else
+        static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
+        static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
+    #endif
 
     static func getStringField(_ pointerData: DataWithPointer, _ length: Int, _ useUtf8: Bool) -> String? {
         let bytes = pointerData.bytes(count: length)
@@ -73,6 +82,5 @@ class ZipCommon {
         }
         return true
     }
-
 
 }

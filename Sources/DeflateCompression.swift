@@ -221,10 +221,10 @@ public extension Deflate {
             stats[byte.toInt()] += 1
             inputIndex += 1
         }
-        
+
         // End of block symbol (256) should also be counted.
         stats[256] += 1
-        
+
         return (buffer, stats)
     }
 

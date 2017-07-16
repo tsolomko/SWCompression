@@ -159,6 +159,5 @@ public struct GzipHeader {
             guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }
-    
-}
 
+}

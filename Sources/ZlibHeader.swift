@@ -90,5 +90,5 @@ public struct ZlibHeader {
             bitReader.index += 4
         }
     }
-    
+
 }

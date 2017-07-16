@@ -68,7 +68,8 @@ public class TarEntry: ContainerEntry {
      - `FileAttributeKey.modificationDate`,
      - `FileAttributeKey.type`,
      - `FileAttributeKey.ownerAccountName`, if format of container is UStar,
-     - `FileAttributeKey.groupOwnerAccountName`, if format of container is UStar.
+     - `FileAttributeKey.groupOwnerAccountName`, if format of container is UStar,
+     - `FileAttributeKey.creationDate`, if format of container is PAX.
 
      Most modern TAR containers are in UStar format.
      */
@@ -159,7 +160,6 @@ public class TarEntry: ContainerEntry {
 
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
-
 
     /// Returns data associated with this entry.
     public func data() -> Data {
@@ -311,7 +311,9 @@ public class TarEntry: ContainerEntry {
                 self.charset = value
             case "ctime":
                 if let interval = Double(value) {
-                    self.creationTime = Date(timeIntervalSince1970: interval)
+                    let ctime = Date(timeIntervalSince1970: interval)
+                    attributesDict[FileAttributeKey.creationDate] = ctime
+                    self.creationTime = ctime
                 }
             case "mtime":
                 if let interval = Double(value) {
@@ -414,7 +416,7 @@ extension DataWithPointer {
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
             let byte = self.byte()
-            if byte == 0  || byte == 0x20 {
+            if byte == 0 || byte == 0x20 {
                 index -= 1
                 break
             }

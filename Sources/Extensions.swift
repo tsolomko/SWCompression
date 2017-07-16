@@ -32,7 +32,7 @@ extension UInt16 {
     func toInt() -> Int {
         return Int(bitPattern: UInt(self))
     }
-    
+
 }
 
 extension UInt32 {
