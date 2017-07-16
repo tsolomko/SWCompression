@@ -17,7 +17,7 @@ struct ZipCentralDirectoryEntry {
     private(set) var compSize: UInt64
     private(set) var uncompSize: UInt64
 
-    var fileName: String
+    let fileName: String
     let fileComment: String
 
     private(set) var diskNumberStart: UInt32
