@@ -68,7 +68,8 @@ public class TarEntry: ContainerEntry {
      - `FileAttributeKey.modificationDate`,
      - `FileAttributeKey.type`,
      - `FileAttributeKey.ownerAccountName`, if format of container is UStar,
-     - `FileAttributeKey.groupOwnerAccountName`, if format of container is UStar.
+     - `FileAttributeKey.groupOwnerAccountName`, if format of container is UStar,
+     - `FileAttributeKey.creationDate`, if format of container is PAX.
 
      Most modern TAR containers are in UStar format.
      */
