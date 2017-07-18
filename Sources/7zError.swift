@@ -13,4 +13,5 @@ public enum SevenZipError: Error {
     case wrongPropertyID
     case multiByteIntegerError
     case wrongHeaderCRC
+    case wrongExternal
 }
