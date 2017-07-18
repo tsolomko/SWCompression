@@ -21,8 +21,8 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        guard let entries = try? SevenZipContainer.open(container: testData) else {
-            XCTFail("Unable to open ZIP archive.")
+        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+            XCTFail("Unable to open 7z archive.")
             return
         }
     }
