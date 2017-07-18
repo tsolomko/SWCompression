@@ -14,4 +14,6 @@ public enum SevenZipError: Error {
     case multiByteIntegerError
     case wrongHeaderCRC
     case wrongExternal
+    case reservedCodecFlags
+    case unknownNumFolders
 }

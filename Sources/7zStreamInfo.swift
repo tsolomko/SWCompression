@@ -7,9 +7,9 @@ import Foundation
 
 struct SevenZipStreamInfo {
 
-    var pack: SevenZipPackInfo?
-    var coders: SevenZipCoderInfo?
-    var substreams: [SevenZipSubstreamInfo]?
+    var packInfo: SevenZipPackInfo?
+    var coderInfo: SevenZipCoderInfo?
+    var substreamInfo: SevenZipSubstreamInfo?
 
     init(_ pointerData: DataWithPointer) throws  {
         while true {
@@ -19,11 +19,13 @@ struct SevenZipStreamInfo {
             }
             switch structureType {
             case 0x06: // **StreamsInfo - PackInfo**
-                pack = try SevenZipPackInfo(pointerData)
+                packInfo = try SevenZipPackInfo(pointerData)
             case 0x07: // **StreamsInfo - CodersInfo**
-                coders = try SevenZipCoderInfo(pointerData)
+                coderInfo = try SevenZipCoderInfo(pointerData)
             case 0x08: // **StreamsInfo - SubstreamsInfo**
-                break
+                guard let numFolders = coderInfo?.numFolders
+                    else { throw SevenZipError.unknownNumFolders }
+                substreamInfo = try SevenZipSubstreamInfo(pointerData, numFolders)
             default:
                 throw SevenZipError.wrongPropertyID
             }

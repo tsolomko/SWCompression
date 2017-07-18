@@ -16,9 +16,9 @@ struct SevenZipHeader {
     }
 
     var archiveProperties: [ArchiveProperty]?
-    var additionalStreams: [SevenZipStreamInfo]?
-    var mainStreams: [SevenZipStreamInfo]?
-    var files: [SevenZipFileInfo]?
+    var additionalStreams: SevenZipStreamInfo?
+    var mainStreams: SevenZipStreamInfo?
+    var fileInfo: SevenZipFileInfo?
 
     init(_ pointerData: DataWithPointer) throws {
         guard pointerData.byte() == 0x01
@@ -33,11 +33,11 @@ struct SevenZipHeader {
             case 0x02: // **Header - ArchiveProperties**
                 archiveProperties = try SevenZipHeader.getArchiveProperties(pointerData)
             case 0x03: // **Header - AdditionalStreamsInfo**
-                _ = try SevenZipStreamInfo(pointerData) // TODO: Or it can be more than one?
+                additionalStreams = try SevenZipStreamInfo(pointerData) // TODO: Or it can be more than one?
             case 0x04: // **Header - MainStreamsInfo**
-                _ = try SevenZipStreamInfo(pointerData)
+                mainStreams = try SevenZipStreamInfo(pointerData)
             case 0x05: // **Header - FilesInfo**
-                break
+                fileInfo = try SevenZipFileInfo(pointerData)
             default:
                 throw SevenZipError.wrongPropertyID
             }

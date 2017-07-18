@@ -230,6 +230,7 @@ public class XZArchive: Archive {
             blockBytes.append(contentsOf: uncompressedSizeDecodeResult.bytesProcessed)
         }
 
+        // TODO: First parse, then use.
         var filters: [(DataWithPointer) throws -> [UInt8]] = []
         for _ in 0..<numberOfFilters {
             let filterIDTuple = try pointerData.multiByteDecode(XZError.multiByteIntegerError)

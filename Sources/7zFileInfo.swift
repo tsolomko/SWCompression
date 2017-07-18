@@ -6,11 +6,42 @@
 import Foundation
 
 struct SevenZipFileInfo {
-    init(_ pointerData: DataWithPointer) throws {
 
+    struct File {
+        var isEmptyStream = false
+        var isEmptyFile = false
+        var isAntiFile = false
     }
-//    BYTE NID::kFilesInfo;  (0x05)
-//    UINT64 NumFiles
+
+    let numFiles: Int
+    var files = [File]()
+
+    init(_ pointerData: DataWithPointer) throws {
+        numFiles = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        for _ in 0..<numFiles {
+            files.append(File())
+        }
+        let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed) // TODO: bitOrder ???
+        var totalEmptyStreams = 0
+        while true {
+            let propertyType = pointerData.byte()
+            if propertyType == 0 {
+                break
+            }
+            switch propertyType {
+            case 0x0E: // Empty stream
+                for i in 0..<numFiles {
+                    let isEmptyStream = bitReader.bit() != 0
+                    files[i].isEmptyStream = isEmptyStream
+                    totalEmptyStreams += isEmptyStream ? 1 : 0 // TODO: Should we skipUntilNextByte() ???
+                }
+            case 0x0F: // Empty file
+                break
+            default:
+                break // TODO: Should we throw error?
+            }
+        }
+    }
 //
 //    for (;;)
 //    {
@@ -22,9 +53,6 @@ struct SevenZipFileInfo {
 //
 //    switch(PropertyType)
 //    {
-//    kEmptyStream:   (0x0E)
-//    for(NumFiles)
-//    BIT IsEmptyStream
 //
 //    kEmptyFile:     (0x0F)
 //    for(EmptyStreams)

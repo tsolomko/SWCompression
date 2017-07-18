@@ -13,6 +13,8 @@ struct SevenZipCoderInfo {
     var folders: [SevenZipFolder]?
     var dataStreamIndex: Int?
 
+    let unpackSizes: [Int]
+
     init(_ pointerData: DataWithPointer) throws {
         guard pointerData.byte() == 0x0B
             else { throw SevenZipError.wrongPropertyID }
@@ -30,22 +32,27 @@ struct SevenZipCoderInfo {
             throw SevenZipError.wrongExternal
         }
 
+        guard pointerData.byte() == 0x0C
+            else { throw SevenZipError.wrongPropertyID }
+        var sizes = [Int]()
+        if external == 0 {
+            for folder in folders! {
+                for _ in 0..<folder.numPackedStreams { // TODO: ???
+                    sizes.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                }
+            }
+        }
+        unpackSizes = sizes
+
         // TODO:
-        //
-        //    BYTE ID::kCodersUnPackSize  (0x0C)
-        //    for(Folders)
-        //    for(Folder.NumOutStreams)
-        //    UINT64 UnPackSize;
-        //
         //
         //    []
         //    BYTE NID::kCRC   (0x0A)
         //    UnPackDigests[NumFolders]
         //    []
-        //    
-        //    
-        //    
-        //    BYTE NID::kEnd
+        //
 
+        guard pointerData.byte() == 0x00
+            else { throw SevenZipError.wrongPropertyID }
     }
 }
