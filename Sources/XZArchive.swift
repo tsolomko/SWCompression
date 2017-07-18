@@ -213,7 +213,7 @@ public class XZArchive: Archive {
         /// Should match size of compressed data.
         var compressedSize = -1
         if blockFlags & 0x40 != 0 {
-            let compressedSizeDecodeResult = try pointerData.multiByteDecode()
+            let compressedSizeDecodeResult = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
             compressedSize = compressedSizeDecodeResult.multiByteInteger
             guard compressedSize > 0
                 else { throw XZError.wrongFieldValue }
@@ -223,7 +223,7 @@ public class XZArchive: Archive {
         /// Should match the size of data after decompression.
         var uncompressedSize = -1
         if blockFlags & 0x80 != 0 {
-            let uncompressedSizeDecodeResult = try pointerData.multiByteDecode()
+            let uncompressedSizeDecodeResult = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
             uncompressedSize = uncompressedSizeDecodeResult.multiByteInteger
             guard uncompressedSize > 0
                 else { throw XZError.wrongFieldValue }
@@ -232,7 +232,7 @@ public class XZArchive: Archive {
 
         var filters: [(DataWithPointer) throws -> [UInt8]] = []
         for _ in 0..<numberOfFilters {
-            let filterIDTuple = try pointerData.multiByteDecode()
+            let filterIDTuple = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
             let filterID = filterIDTuple.multiByteInteger
             blockBytes.append(contentsOf: filterIDTuple.bytesProcessed)
             guard UInt64(filterID) < 0x4000000000000000
@@ -241,7 +241,7 @@ public class XZArchive: Archive {
             switch filterID {
             case 0x21: // LZMA2
                 // First, we need to skip byte with the size of filter's properties
-                blockBytes.append(contentsOf: try pointerData.multiByteDecode().bytesProcessed)
+                blockBytes.append(contentsOf: try pointerData.multiByteDecode(XZError.multiByteIntegerError).bytesProcessed)
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = pointerData.byte()
                 blockBytes.append(filterPropeties)
@@ -296,18 +296,18 @@ public class XZArchive: Archive {
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
                                      _ pointerData: DataWithPointer) throws -> Int {
         var indexBytes: [UInt8] = [0x00]
-        let numberOfRecordsTuple = try pointerData.multiByteDecode()
+        let numberOfRecordsTuple = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
         indexBytes.append(contentsOf: numberOfRecordsTuple.bytesProcessed)
         let numberOfRecords = numberOfRecordsTuple.multiByteInteger
         guard numberOfRecords == blockInfos.count
             else { throw XZError.wrongFieldValue }
         for blockInfo in blockInfos {
-            let unpaddedSizeTuple = try pointerData.multiByteDecode()
+            let unpaddedSizeTuple = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
             guard unpaddedSizeTuple.multiByteInteger == blockInfo.unpaddedSize
                 else { throw XZError.wrongFieldValue }
             indexBytes.append(contentsOf: unpaddedSizeTuple.bytesProcessed)
 
-            let uncompSizeTuple = try pointerData.multiByteDecode()
+            let uncompSizeTuple = try pointerData.multiByteDecode(XZError.multiByteIntegerError)
             guard uncompSizeTuple.multiByteInteger == blockInfo.uncompSize
                 else { throw XZError.wrongDataSize }
             indexBytes.append(contentsOf: uncompSizeTuple.bytesProcessed)
@@ -360,30 +360,6 @@ public class XZArchive: Archive {
         // Check footer's magic number
         guard pointerData.bytes(count: 2) == [0x59, 0x5A]
             else { throw XZError.wrongMagic }
-    }
-
-}
-
-fileprivate extension DataWithPointer {
-
-    fileprivate func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
-        var i = 1
-        var result = self.byte().toInt()
-        var bytes: [UInt8] = [result.toUInt8()]
-        if result <= 127 {
-            return (result, bytes)
-        }
-        result &= 0x7F
-        while self.previousByte & 0x80 != 0 {
-            let byte = self.byte()
-            if i >= 9 || byte == 0x00 {
-                throw XZError.multiByteIntegerError
-            }
-            bytes.append(byte)
-            result += (byte.toInt() & 0x7F) << (7 * i)
-            i += 1
-        }
-        return (result, bytes)
     }
 
 }
