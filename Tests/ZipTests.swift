@@ -26,10 +26,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 211 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
+        XCTAssertEqual(entries.count, 211)
 
         #if LONG_TESTS
             for entry in entries {
@@ -54,10 +51,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 6 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
+        XCTAssertEqual(entries.count, 6)
 
         for entry in entries {
             XCTAssertNotNil(try? entry.data())
@@ -80,10 +74,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 6 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
+        XCTAssertEqual(entries.count, 6)
 
         for entry in entries where !entry.isDirectory {
             XCTAssertNotNil(try? entry.data())
@@ -106,11 +97,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 1 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
-
+        XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].name, "текстовый файл")
         XCTAssertEqual(entries[0].isDirectory, false)
         XCTAssertNotNil(try? entries[0].data())
@@ -132,11 +119,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 1 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
-
+        XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].name, "test4.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
 
@@ -171,11 +154,7 @@ class ZipTests: XCTestCase {
             return
         }
 
-        guard entries.count == 1 else {
-            XCTFail("Incorrect number of entries.")
-            return
-        }
-
+        XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].name, "test4.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
 
