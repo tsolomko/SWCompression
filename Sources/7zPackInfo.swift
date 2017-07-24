@@ -9,8 +9,8 @@ struct SevenZipPackInfo {
 
     let packPosition: Int
     let numPackStreams: Int
-
-    var packSizes: [Int]?
+    var packSizes = [Int]()
+    var digests = [UInt32?]()
 
     init(_ pointerData: DataWithPointer) throws {
         packPosition = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
@@ -22,17 +22,29 @@ struct SevenZipPackInfo {
             }
             switch structureType {
             case 0x09: // **PackInfo - PackSizes**
-                packSizes = []
                 for _ in 0..<numPackStreams {
-                    packSizes?.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                    packSizes.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
                 }
             case 0x0A: // **PackInfo - PackStreamDigests**
-                // TODO:
-                //    []
-                //    BYTE NID::kCRC      (0x0A)
-                //    PackStreamDigests[NumPackStreams]
-                //    []
-                break
+                let allDefined = pointerData.byte()
+                let definedBits: [UInt8]
+                let numStreams = numPackStreams
+                if allDefined == 0 {
+                    let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed) // TODO: Bit order???
+                    bitReader.index = pointerData.index
+                    definedBits = bitReader.bits(count: numStreams)
+                    bitReader.skipUntilNextByte()
+                    pointerData.index = bitReader.index
+                } else {
+                    definedBits = Array(repeating: 1, count: numStreams)
+                }
+                for bit in definedBits {
+                    if bit == 1 {
+                        digests.append(pointerData.uint32())
+                    } else {
+                        digests.append(nil)
+                    }
+                }
             default:
                 throw SevenZipError.wrongPropertyID
             }

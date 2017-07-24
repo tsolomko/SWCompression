@@ -37,8 +37,8 @@ struct SevenZipFolder {
         for _ in 0..<numCodecs {
             let codec = try SevenZipCodec(pointerData)
             codecs.append(codec)
-            outStreamsTotal += codec.numOutStreams ?? 0
-            inStreamsTotal += codec.numInStreams ?? 0
+            outStreamsTotal += codec.numOutStreams
+            inStreamsTotal += codec.numInStreams
         }
         self.codecs = codecs
         numBindPairs = outStreamsTotal - 1

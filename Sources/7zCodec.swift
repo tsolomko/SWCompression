@@ -13,8 +13,8 @@ struct SevenZipCodec {
 
     let id: [UInt8]
 
-    var numInStreams: Int?
-    var numOutStreams: Int?
+    let numInStreams: Int
+    let numOutStreams: Int
 
     var propertiesSize: Int?
     var properties: [UInt8]?
@@ -29,10 +29,11 @@ struct SevenZipCodec {
 
         id = pointerData.bytes(count: idSize)
 
-        if isComplex {
-            numInStreams = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-            numOutStreams = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-        }
+        // TODO: Introduce typealias for SevenZipError.multiByteIntegerError.
+        numInStreams = isComplex ? try pointerData
+            .multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger : 1
+        numOutStreams = isComplex ? try pointerData
+            .multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger : 1
 
         if attributesExist {
             propertiesSize = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
