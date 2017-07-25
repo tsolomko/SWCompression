@@ -24,4 +24,5 @@ public enum SevenZipError: Error {
     case compressionNotSupported
     case wrongDataSize
     case wrongCRC
+    case wrongCoderProperties
 }

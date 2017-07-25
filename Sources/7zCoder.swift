@@ -7,6 +7,12 @@ import Foundation
 
 class SevenZipCoder {
 
+    /// Possible coder IDs.
+    struct ID {
+        static let lzma2: [UInt8] = [0x21]
+        static let lzma: [UInt8] = [0x03, 0x01, 0x01]
+    }
+
     let idSize: Int
     let isComplex: Bool
     let hasAttributes: Bool
@@ -39,6 +45,7 @@ class SevenZipCoder {
             properties = pointerData.bytes(count: propertiesSize!)
         }
     }
+
 }
 
 extension SevenZipCoder: Equatable {

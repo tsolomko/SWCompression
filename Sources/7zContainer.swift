@@ -7,11 +7,7 @@ import Foundation
 
 public class SevenZipContainer: Container {
 
-    static let signatureHeaderSize = 0
-
-    // Coder IDs
-    static let lzma2ID: [UInt8] = [0x21]
-    static let lzmaID: [UInt8] = [0x03, 0x01, 0x01]
+    static let signatureHeaderSize = 32
 
     public static func open(container data: Data) throws -> [ContainerEntry] {
         /// Object with input data which supports convenient work with bit shifts.
@@ -47,36 +43,67 @@ public class SevenZipContainer: Container {
 
         if type == 0x17 {
             let packedHeaderStreamInfo = try SevenZipStreamInfo(pointerData)
+
             let folder = packedHeaderStreamInfo.coderInfo.folders[0]
             guard let packInfo = packedHeaderStreamInfo.packInfo else { return [] } // TODO: throw
+
             let folderOffset = signatureHeaderSize + packInfo.packPosition
             pointerData.index = folderOffset
+
             var packedHeaderEndIndex: Int? = nil
+            
             var headerPointerData = DataWithPointer(data: pointerData.data)
             headerPointerData.index = pointerData.index
+
             for coder in folder.orderedCoders() {
                 guard coder.numInStreams == 1 || coder.numOutStreams == 1
                     else { throw SevenZipError.multiStreamNotSupported }
-                let decodedData: Data
+
                 let unpackSize = folder.unpackSize(for: coder)
-                if coder.id == lzma2ID {
-                    precondition(coder.propertiesSize == 1) // TODO:
-                    decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(coder.properties![0]), // TODO:
+
+                let decodedData: Data
+
+                if coder.id == SevenZipCoder.ID.lzma2 {
+                    // Dictionary size is stored in coder's properties.
+                    guard let properties = coder.properties
+                        else { throw SevenZipError.wrongCoderProperties }
+                    guard properties.count == 1
+                        else { throw SevenZipError.wrongCoderProperties }
+
+                    decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
                                                                    pointerData))
-                } else if coder.id == lzmaID {
-                    var dataToDecode = Data(bytes: coder.properties!) // TODO:
-                    dataToDecode.append(headerPointerData.data.subdata(in: headerPointerData.index..<headerPointerData.size)) // TODO:
-                    decodedData = Data(bytes: try LZMA.decompress(DataWithPointer(data: dataToDecode), unpackSize))
+                } else if coder.id == SevenZipCoder.ID.lzma {
+                    // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
+                    guard let properties = coder.properties
+                        else { throw SevenZipError.wrongCoderProperties }
+                    guard properties.count == 5
+                        else { throw SevenZipError.wrongCoderProperties }
+
+                    let lzmaDecoder = try LZMADecoder(headerPointerData)
+
+                    var dictionarySize = 0
+                    for i in 1..<4 {
+                        dictionarySize |= properties[i].toInt() << (8 * (i - 1))
+                    }
+
+                    try lzmaDecoder.decodeLZMA(unpackSize, properties[0], dictionarySize)
+                    decodedData = Data(bytes: lzmaDecoder.out)
                 } else {
                     throw SevenZipError.compressionNotSupported
                 }
+
                 guard decodedData.count == unpackSize
                     else { throw SevenZipError.wrongDataSize }
+
+                // Save header's data end index after first pass.
+                // Necessary to calculate and check packed size later.
                 if packedHeaderEndIndex == nil {
                     packedHeaderEndIndex = headerPointerData.index
                 }
+
                 headerPointerData = DataWithPointer(data: decodedData)
             }
+
             guard packedHeaderEndIndex! - pointerData.index == packInfo.packSizes[0]
                 else { throw SevenZipError.wrongDataSize }
             guard headerPointerData.size == folder.unpackSize()
