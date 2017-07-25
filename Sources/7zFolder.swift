@@ -120,4 +120,13 @@ class SevenZipFolder {
          return 0
     }
 
+    func unpackSize(for coder: SevenZipCoder) -> Int {
+        for i in 0..<coders.count {
+            if coders[i] == coder {
+                return unpackSizes[i]
+            }
+        }
+        return 0
+    }
+
 }

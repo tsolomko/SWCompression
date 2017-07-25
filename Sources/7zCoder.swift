@@ -23,7 +23,7 @@ class SevenZipCoder {
         let flags = pointerData.byte()
         guard flags & 0xC0 == 0
             else { throw SevenZipError.reservedCodecFlags }
-        idSize = (flags & 0xF).toInt()
+        idSize = (flags & 0x0F).toInt()
         isComplex = flags & 0x10 != 0
         hasAttributes = flags & 0x20 != 0
 
@@ -39,4 +39,21 @@ class SevenZipCoder {
             properties = pointerData.bytes(count: propertiesSize!)
         }
     }
+}
+
+extension SevenZipCoder: Equatable {
+
+    static func == (lhs: SevenZipCoder, rhs: SevenZipCoder) -> Bool {
+        let propertiesEqual: Bool
+        if lhs.properties == nil && rhs.properties == nil {
+            propertiesEqual = true
+        } else if lhs.properties != nil && rhs.properties != nil {
+            propertiesEqual = lhs.properties! == rhs.properties!
+        } else {
+            propertiesEqual = false
+        }
+        return lhs.id == rhs.id && lhs.numInStreams == rhs.numInStreams &&
+            lhs.numOutStreams == rhs.numOutStreams && propertiesEqual
+    }
+
 }

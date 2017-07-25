@@ -20,4 +20,8 @@ public enum SevenZipError: Error {
     case externalNotSupported
     case altMethodsNotSupported
     case wrongStreamsNumber
+    case multiStreamNotSupported
+    case compressionNotSupported
+    case wrongDataSize
+    case wrongCRC
 }
