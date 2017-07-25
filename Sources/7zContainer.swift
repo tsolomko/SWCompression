@@ -71,7 +71,7 @@ extension DataWithPointer {
     /// Abbreviation for "sevenZipMultiByteDecode".
     func szMbd() -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
         let firstByte = self.byte().toInt()
-        var mask = 1
+        var mask = 0x80
         var bytes = [firstByte.toUInt8()]
         var value = 0
         for i in 0..<8 {
