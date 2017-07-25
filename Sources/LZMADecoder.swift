@@ -6,18 +6,18 @@
 import Foundation
 
 struct LZMAConstants {
-    static let topValue: Int = 1 << 24
-    static let numBitModelTotalBits: Int = 11
-    static let numMoveBits: Int = 5
-    static let probInitValue: Int = ((1 << numBitModelTotalBits) / 2)
-    static let numPosBitsMax: Int = 4
-    static let numStates: Int = 12
-    static let numLenToPosStates: Int = 4
-    static let numAlignBits: Int = 4
-    static let startPosModelIndex: Int = 4
-    static let endPosModelIndex: Int = 14
-    static let numFullDistances: Int = (1 << (endPosModelIndex >> 1))
-    static let matchMinLen: Int = 2
+    static let topValue = 1 << 24
+    static let numBitModelTotalBits = 11
+    static let numMoveBits = 5
+    static let probInitValue = ((1 << numBitModelTotalBits) / 2)
+    static let numPosBitsMax = 4
+    static let numStates = 12
+    static let numLenToPosStates = 4
+    static let numAlignBits = 4
+    static let startPosModelIndex = 4
+    static let endPosModelIndex = 14
+    static let numFullDistances = (1 << (endPosModelIndex >> 1))
+    static let matchMinLen = 2
     // LZMAConstants.numStates << LZMAConstants.numPosBitsMax = 192
 }
 
@@ -28,19 +28,19 @@ class LZMADecoder {
     private var lc: UInt8 = 0
     private var lp: UInt8 = 0
     private var pb: UInt8 = 0
-    private var dictionarySize: Int = 0
+    private var dictionarySize = 0
 
-    private var rangeDecoder: LZMARangeDecoder = LZMARangeDecoder()
-    private var posSlotDecoder: [LZMABitTreeDecoder] = []
-    private var alignDecoder: LZMABitTreeDecoder
-    private var lenDecoder: LZMALenDecoder
-    private var repLenDecoder: LZMALenDecoder
+    private var rangeDecoder = LZMARangeDecoder()
+    private var posSlotDecoder  = [LZMABitTreeDecoder]()
+    private var alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits)
+    private var lenDecoder = LZMALenDecoder()
+    private var repLenDecoder = LZMALenDecoder()
 
     /**
      For literal decoding we need `1 << (lc + lp)` amount of tables.
      Each table contains 0x300 probabilities.
      */
-    private var literalProbs: [[Int]] = []
+    private var literalProbs = [[Int]]()
 
     /**
      Array with all probabilities:
@@ -52,35 +52,31 @@ class LZMADecoder {
      - 229..<241: isRepG2
      - 241..<433: isRep0Long
      */
-    private var probabilities: [Int] = []
+    private var probabilities = [Int]()
 
-    private var posDecoders: [Int] = []
+    private var posDecoders = [Int]()
 
     // 'Distance history table'.
-    private var rep0: Int = 0
-    private var rep1: Int = 0
-    private var rep2: Int = 0
-    private var rep3: Int = 0
+    private var rep0 = 0
+    private var rep1 = 0
+    private var rep2 = 0
+    private var rep3 = 0
 
     /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
-    private var state: Int = 0
+    private var state = 0
 
     /// An array for storing output data.
-    var out: [UInt8] = []
+    var out = [UInt8]()
     // This array will also serve as dictionary and out window.
-    private var dictStart: Int = 0
-    private var dictEnd: Int = 0
+    private var dictStart = 0
+    private var dictEnd = 0
 
     /// For proper processing of LZMA data `resetState` and `resetProperties` functions should be called at least once.
     /// If that has happened, then stateReset is true.
-    private var stateReset: Bool = false
+    private var stateReset = false
 
     init(_ pointerData: DataWithPointer) throws {
         self.pointerData = pointerData
-        self.alignDecoder = LZMABitTreeDecoder(numBits: LZMAConstants.numAlignBits)
-        // There are two types of matches so we need two decoders for them.
-        self.lenDecoder = LZMALenDecoder()
-        self.repLenDecoder = LZMALenDecoder()
     }
 
     // MARK: LZMA2 related functions.
