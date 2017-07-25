@@ -27,4 +27,38 @@ class SevenZipTests: XCTestCase {
         }
     }
 
+    func test2() {
+        guard let testURL = Constants.url(forTest: "test2", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+            XCTFail("Unable to open 7z archive.")
+            return
+        }
+    }
+
+    func test3() {
+        guard let testURL = Constants.url(forTest: "test3", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
+            XCTFail("Unable to load test archive.")
+            return
+        }
+
+        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+            XCTFail("Unable to open 7z archive.")
+            return
+        }
+    }
+
 }

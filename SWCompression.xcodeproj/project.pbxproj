@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		061358FB1F274E080065BCEB /* test2.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061358F91F274E080065BCEB /* test2.7z */; };
+		061358FC1F274E080065BCEB /* test3.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061358FA1F274E080065BCEB /* test3.7z */; };
 		061C06211F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
 		061C06221F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
 		061C06231F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
@@ -293,6 +295,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061358F91F274E080065BCEB /* test2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.7z; sourceTree = "<group>"; };
+		061358FA1F274E080065BCEB /* test3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.7z; sourceTree = "<group>"; };
 		061C06201F0E89D900832F0C /* XZError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZError.swift; sourceTree = "<group>"; };
 		061C06251F0E8A0300832F0C /* GzipError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipError.swift; sourceTree = "<group>"; };
 		061C062A1F0E8A1D00832F0C /* GzipHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipHeader.swift; sourceTree = "<group>"; };
@@ -547,6 +551,8 @@
 		064F722D1F1E63D800017297 /* 7z */ = {
 			isa = PBXGroup;
 			children = (
+				061358F91F274E080065BCEB /* test2.7z */,
+				061358FA1F274E080065BCEB /* test3.7z */,
 				064F722E1F1E63D800017297 /* test1.7z */,
 			);
 			path = 7z;
@@ -1029,8 +1035,10 @@
 				06D3456D1F102E740057173F /* test_v7.tar in Resources */,
 				06D07AAC1EB64EE800BC8C65 /* test1.xz in Resources */,
 				06D345691F102E740057173F /* test_gnu.tar in Resources */,
+				061358FC1F274E080065BCEB /* test3.7z in Resources */,
 				06BD0D231E3D0C630054AA5C /* SWCompressionSourceCode.zip in Resources */,
 				06D07AB11EB64EE800BC8C65 /* test6.xz in Resources */,
+				061358FB1F274E080065BCEB /* test2.7z in Resources */,
 				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
 				06393DFE1F1A858000A647A0 /* long_test_oldgnu.tar in Resources */,
 				069DCEA41EB64D0300ADC374 /* test9.answer in Resources */,
