@@ -86,18 +86,16 @@ class LZMADecoder {
         self.dictStart = self.dictEnd
     }
 
-    private func resetProperties() throws {
-        var properties = pointerData.byte()
+    private func resetProperties(_ properties: UInt8) throws {
         if properties >= (9 * 5 * 5) {
             throw LZMAError.wrongProperties
         }
         /// The number of literal context bits
         self.lc = properties % 9
-        properties /= 9
         /// The number of pos bits
-        self.pb = properties / 5
+        self.pb = (properties / 9) / 5
         /// The number of literal pos bits
-        self.lp = properties % 5
+        self.lp = (properties / 9) % 5
 
         // We need to 'reset state' because several properties of Decoder depend on the values of lc, lp, pb.
         self.resetState()
@@ -151,10 +149,10 @@ class LZMADecoder {
         case 1:
             self.resetState()
         case 2:
-            try self.resetProperties()
+            try self.resetProperties(pointerData.byte())
             dataStartIndex += 1
         case 3:
-            try self.resetProperties()
+            try self.resetProperties(pointerData.byte())
             dataStartIndex += 1
             self.resetDictionary(dictSize)
         default:
@@ -197,19 +195,19 @@ class LZMADecoder {
      and decoder should use externally specified uncompressed size.
      Used in ZIP containers with LZMA compression.
      */
-    func decodeLZMA(_ externalUncompressedSize: Int? = nil) throws {
+    func decodeLZMA(_ externalUncompressedSize: Int? = nil, _ propertiesByte: UInt8? = nil, _ dSize: Int? = nil) throws {
         // Firstly, we need to parse LZMA properties.
-        try self.resetProperties()
-        let dictSize = pointerData.uint32().toInt()
+        try self.resetProperties(propertiesByte ?? pointerData.byte())
+        let dictSize = dSize ?? pointerData.uint32().toInt()
         dictionarySize = dictSize < (1 << 12) ? 1 << 12 : dictSize
 
         /// Size of uncompressed data. -1 means it is unknown/undefined.
-        var uncompressedSize = pointerData.uint64().toInt()
-        uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
-
+        var uncompressedSize: Int
         if let extUncompSize = externalUncompressedSize {
-            pointerData.index -= 8
             uncompressedSize = extUncompSize
+        } else {
+            uncompressedSize = pointerData.uint64().toInt()
+            uncompressedSize = Double(uncompressedSize) == pow(Double(2), Double(64)) - 1 ? -1 : uncompressedSize
         }
 
         try decode(&uncompressedSize)

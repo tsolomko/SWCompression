@@ -128,7 +128,9 @@ public class ZipEntry: ContainerEntry {
         case 14:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-                fileBytes = try LZMA.decompress(pointerData, uncompSize)
+                let lzmaDecoder = try LZMADecoder(pointerData)
+                try lzmaDecoder.decodeLZMA(uncompSize)
+                fileBytes = lzmaDecoder.out
             #else
                 throw ZipError.compressionNotSupported
             #endif

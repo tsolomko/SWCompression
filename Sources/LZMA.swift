@@ -27,14 +27,9 @@ public class LZMA: DecompressionAlgorithm {
         return Data(bytes: try decompress(pointerData))
     }
 
-    /**
-     - Parameter externalUncompressedSize: stream doesn't contain uncompressed size property,
-     and decoder should use externally specified uncompressed size.
-     Used in ZIP containers with LZMA compression.
-     */
-    static func decompress(_ pointerData: DataWithPointer, _ externalUncompressedSize: Int? = nil) throws -> [UInt8] {
+    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
         let lzmaDecoder = try LZMADecoder(pointerData)
-        try lzmaDecoder.decodeLZMA(externalUncompressedSize)
+        try lzmaDecoder.decodeLZMA()
         return lzmaDecoder.out
     }
 
