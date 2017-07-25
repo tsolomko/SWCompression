@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct SevenZipCodec {
+class SevenZipCoder {
 
     let idSize: Int
     let isComplex: Bool
@@ -26,6 +26,8 @@ struct SevenZipCodec {
         idSize = (flags & 0xF).toInt()
         isComplex = flags & 0x10 != 0
         hasAttributes = flags & 0x20 != 0
+
+        guard flags & 0x80 == 0 else { throw SevenZipError.altMethodsNotSupported }
 
         id = pointerData.bytes(count: idSize)
 

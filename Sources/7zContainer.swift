@@ -36,17 +36,18 @@ public class SevenZipContainer: Container {
         pointerData.index += nextHeaderOffset
         let headerStartIndex = pointerData.index
 
-        let headerType = pointerData.byte()
-        switch headerType {
-        case 0x01:
-            _ = try SevenZipHeader(pointerData)
-        case 0x17:
+        var type = pointerData.byte()
+
+        if type == 0x17 {
             _ = try SevenZipStreamInfo(pointerData)
-        default:
-            throw SevenZipError.wrongHeaderType
+            type = pointerData.byte()
+            // TODO: It is possible, to have here HeaderInfo instead
         }
 
-        // TODO: It is possible, to have here HeaderInfo instead
+        if type == 0x01 {
+            _ = try SevenZipHeader(pointerData)
+            type = pointerData.byte()
+        }
 
         // TODO: Header checks may be incorrect for packed headers.
         // Check header size
@@ -58,7 +59,6 @@ public class SevenZipContainer: Container {
         pointerData.index = headerStartIndex
         guard CheckSums.crc32(pointerData.bytes(count: nextHeaderSize)) == nextHeaderCRC
             else { throw SevenZipError.wrongHeaderCRC }
-
 
         return []
     }
@@ -86,5 +86,5 @@ extension DataWithPointer {
         }
         return (value, bytes)
     }
-    
+
 }

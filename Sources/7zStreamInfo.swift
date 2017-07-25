@@ -5,31 +5,35 @@
 
 import Foundation
 
-struct SevenZipStreamInfo {
+class SevenZipStreamInfo {
 
     var packInfo: SevenZipPackInfo?
-    var coderInfo: SevenZipCoderInfo?
+    var coderInfo: SevenZipCoderInfo
     var substreamInfo: SevenZipSubstreamInfo?
 
-    init(_ pointerData: DataWithPointer) throws  {
-        while true {
-            let structureType = pointerData.byte()
-            if structureType == 0x00 { // **StreamsInfo - End**
-                break
-            }
-            switch structureType {
-            case 0x06: // **StreamsInfo - PackInfo**
-                packInfo = try SevenZipPackInfo(pointerData)
-            case 0x07: // **StreamsInfo - CodersInfo**
-                coderInfo = try SevenZipCoderInfo(pointerData)
-            case 0x08: // **StreamsInfo - SubstreamsInfo**
-                guard let numFolders = coderInfo?.numFolders
-                    else { throw SevenZipError.unknownNumFolders }
-                substreamInfo = try SevenZipSubstreamInfo(pointerData, numFolders)
-            default:
-                throw SevenZipError.wrongPropertyID
-            }
+    init(_ pointerData: DataWithPointer) throws {
+        var type = pointerData.byte()
+
+        if type == 0x06 {
+            packInfo = try SevenZipPackInfo(pointerData)
+            type = pointerData.byte()
+        }
+
+        if type == 0x07 {
+            coderInfo = try SevenZipCoderInfo(pointerData)
+            type = pointerData.byte()
+        } else {
+            coderInfo = SevenZipCoderInfo()
+        }
+
+        if type == 0x08 {
+            substreamInfo = try SevenZipSubstreamInfo(pointerData, coderInfo)
+            type = pointerData.byte()
+        }
+
+        if type != 0x00 {
+            throw SevenZipError.wrongEnd
         }
     }
-    
+
 }

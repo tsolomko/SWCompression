@@ -16,5 +16,8 @@ public enum SevenZipError: Error {
     case wrongExternal
     case reservedCodecFlags
     case unknownNumFolders
-    case wrongHeaderType
+    case wrongEnd
+    case externalNotSupported
+    case altMethodsNotSupported
+    case wrongStreamsNumber
 }

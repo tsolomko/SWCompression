@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct SevenZipFileInfo {
+class SevenZipFileInfo {
 
     struct File {
         var isEmptyStream = false

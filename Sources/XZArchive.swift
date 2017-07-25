@@ -367,6 +367,7 @@ public class XZArchive: Archive {
 
 fileprivate extension DataWithPointer {
 
+    // TODO: Removed `bytesProcessed`.
     fileprivate func multiByteDecode() throws -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
         var i = 1
         var result = self.byte().toInt()
