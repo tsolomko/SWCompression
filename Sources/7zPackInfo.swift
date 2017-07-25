@@ -13,8 +13,8 @@ struct SevenZipPackInfo {
     var digests = [UInt32?]()
 
     init(_ pointerData: DataWithPointer) throws {
-        packPosition = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-        numPackStreams = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        packPosition = pointerData.szMbd().multiByteInteger
+        numPackStreams = pointerData.szMbd().multiByteInteger
         while true {
             let structureType = pointerData.byte()
             if structureType == 0x00 { // **PackInfo - End**
@@ -23,7 +23,7 @@ struct SevenZipPackInfo {
             switch structureType {
             case 0x09: // **PackInfo - PackSizes**
                 for _ in 0..<numPackStreams {
-                    packSizes.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                    packSizes.append(pointerData.szMbd().multiByteInteger)
                 }
             case 0x0A: // **PackInfo - PackStreamDigests**
                 let allDefined = pointerData.byte()

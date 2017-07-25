@@ -36,10 +36,19 @@ public class SevenZipContainer: Container {
         pointerData.index += nextHeaderOffset
         let headerStartIndex = pointerData.index
 
-        _ = try SevenZipHeader(pointerData)
+        let headerType = pointerData.byte()
+        switch headerType {
+        case 0x01:
+            _ = try SevenZipHeader(pointerData)
+        case 0x17:
+            _ = try SevenZipStreamInfo(pointerData)
+        default:
+            throw SevenZipError.wrongHeaderType
+        }
 
         // TODO: It is possible, to have here HeaderInfo instead
 
+        // TODO: Header checks may be incorrect for packed headers.
         // Check header size
         let headerEndIndex = pointerData.index
         guard headerEndIndex - headerStartIndex == nextHeaderSize
@@ -54,4 +63,28 @@ public class SevenZipContainer: Container {
         return []
     }
 
+}
+
+extension DataWithPointer {
+
+    // TODO: Do we need bytesProcessed?
+    /// Abbreviation for "sevenZipMultiByteDecode".
+    func szMbd() -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
+        let firstByte = self.byte().toInt()
+        var mask = 1
+        var bytes = [firstByte.toUInt8()]
+        var value = 0
+        for i in 0..<8 {
+            if firstByte & mask == 0 {
+                value |= ((firstByte & (mask &- 1)) << (8 * i))
+                break
+            }
+            let nextByte = self.byte().toInt()
+            bytes.append(nextByte.toUInt8())
+            value |= nextByte << (8 * i)
+            mask >>= 1
+        }
+        return (value, bytes)
+    }
+    
 }

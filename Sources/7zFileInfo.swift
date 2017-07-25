@@ -16,23 +16,14 @@ struct SevenZipFileInfo {
     let numFiles: Int
     var files = [File]()
 
-    var properties = [(Int, [UInt8])]()
+    var properties = [SevenZipProperty]()
 
     init(_ pointerData: DataWithPointer) throws {
-        numFiles = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        numFiles = pointerData.szMbd().multiByteInteger
         for _ in 0..<numFiles {
             files.append(File())
         }
-        while true {
-            let propertyType = pointerData.byte()
-            if propertyType == 0 {
-                break
-            }
-            let size = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-            properties.append((propertyType.toInt(), pointerData.bytes(count: size)))
-
-            // TODO: Add properties parsing.
-        }
+        properties = try SevenZipProperty.getProperties(pointerData)
     }
 
 }

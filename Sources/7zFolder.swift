@@ -13,8 +13,8 @@ struct SevenZipFolder {
         let outIndex: Int
 
         init(_ pointerData: DataWithPointer) throws {
-            inIndex = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-            outIndex = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+            inIndex = pointerData.szMbd().multiByteInteger
+            outIndex = pointerData.szMbd().multiByteInteger
         }
 
     }
@@ -30,7 +30,7 @@ struct SevenZipFolder {
     let packedIndices: [Int]
 
     init(_ pointerData: DataWithPointer) throws {
-        numCodecs = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        numCodecs = pointerData.szMbd().multiByteInteger
         var codecs = [SevenZipCodec]()
         var outStreamsTotal = 0
         var inStreamsTotal = 0
@@ -55,7 +55,7 @@ struct SevenZipFolder {
         var indices = [Int]()
         if numPackedStreams > 1 {
             for _ in 0..<numPackedStreams {
-                indices.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                indices.append(pointerData.szMbd().multiByteInteger)
             }
         }
         packedIndices = indices

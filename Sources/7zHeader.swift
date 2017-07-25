@@ -5,25 +5,36 @@
 
 import Foundation
 
-struct SevenZipHeader {
+struct SevenZipProperty {
 
-    struct ArchiveProperty {
+    let type: UInt8
+    let size: Int
+    let bytes: [UInt8]
 
-        let type: UInt8
-        let size: Int
-        let bytes: [UInt8]
-        
+    static func getProperties(_ pointerData: DataWithPointer) throws -> [SevenZipProperty] {
+        var properties = [SevenZipProperty]()
+        while true {
+            let propertyType = pointerData.byte()
+            if propertyType == 0 {
+                break
+            }
+            let propertySize = pointerData.szMbd().multiByteInteger
+            properties.append(SevenZipProperty(type: propertyType, size: propertySize,
+                                               bytes: pointerData.bytes(count: propertySize)))
+        }
+        return properties
     }
 
-    var archiveProperties: [ArchiveProperty]?
+}
+
+struct SevenZipHeader {
+
+    var archiveProperties: [SevenZipProperty]?
     var additionalStreams: SevenZipStreamInfo?
     var mainStreams: SevenZipStreamInfo?
     var fileInfo: SevenZipFileInfo?
 
     init(_ pointerData: DataWithPointer) throws {
-        guard pointerData.byte() == 0x01
-            else { throw SevenZipError.wrongPropertyID }
-
         while true {
             let structureType = pointerData.byte()
             if structureType == 0x00 { // **Header - End**
@@ -31,7 +42,7 @@ struct SevenZipHeader {
             }
             switch structureType {
             case 0x02: // **Header - ArchiveProperties**
-                archiveProperties = try SevenZipHeader.getArchiveProperties(pointerData)
+                archiveProperties = try SevenZipProperty.getProperties(pointerData)
             case 0x03: // **Header - AdditionalStreamsInfo**
                 additionalStreams = try SevenZipStreamInfo(pointerData) // TODO: Or it can be more than one?
             case 0x04: // **Header - MainStreamsInfo**
@@ -44,18 +55,7 @@ struct SevenZipHeader {
         }
     }
 
-    private static func getArchiveProperties(_ pointerData: DataWithPointer) throws -> [ArchiveProperty] {
-        var archiveProperties = [ArchiveProperty]()
-        while true {
-            let type = pointerData.byte()
-            if type == 0 {
-                break
-            }
-            let propertySize = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
-            archiveProperties.append(ArchiveProperty(type: type, size: propertySize,
-                                                     bytes: pointerData.bytes(count: propertySize)))
-        }
-        return archiveProperties
-    }
+    // TODO: Remove this function.
+
     
 }

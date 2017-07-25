@@ -18,7 +18,7 @@ struct SevenZipCoderInfo {
     init(_ pointerData: DataWithPointer) throws {
         guard pointerData.byte() == 0x0B
             else { throw SevenZipError.wrongPropertyID }
-        numFolders = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        numFolders = pointerData.szMbd().multiByteInteger
         external = pointerData.byte()
         switch external {
         case 0:
@@ -26,7 +26,7 @@ struct SevenZipCoderInfo {
                 folders.append(try SevenZipFolder(pointerData))
             }
         case 1:
-            dataStreamIndex = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+            dataStreamIndex = pointerData.szMbd().multiByteInteger
         default:
             throw SevenZipError.wrongExternal
         }
@@ -37,7 +37,7 @@ struct SevenZipCoderInfo {
         if external == 0 {
             for folder in folders {
                 for _ in 0..<folder.numPackedStreams { // TODO: ???
-                    sizes.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                    sizes.append(pointerData.szMbd().multiByteInteger)
                 }
             }
         }

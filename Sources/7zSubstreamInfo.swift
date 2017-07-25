@@ -20,13 +20,12 @@ struct SevenZipSubstreamInfo {
             switch structureType {
             case 0x0D: // **SubstreamsInfo - NumUnpackStreamsInFolders**
                 for _ in 0..<numFolders {
-                    numUnpackStreamsInFolders
-                        .append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                    numUnpackStreamsInFolders.append(pointerData.szMbd().multiByteInteger)
                 }
             case 0x09: // **SubstreamsInfo - Size**
                 let numStreams = numUnpackStreamsInFolders.reduce(0, { $0 + $1 })
                 for _ in 0..<numStreams {
-                    unpackSizes.append(try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger)
+                    unpackSizes.append(pointerData.szMbd().multiByteInteger)
                 }
             case 0x0A: // **SubstreamsInfo - CRC** // TODO: Unknown numStreams???
                 let allDefined = pointerData.byte()

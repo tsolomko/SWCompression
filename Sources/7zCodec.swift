@@ -9,7 +9,7 @@ struct SevenZipCodec {
 
     let idSize: Int
     let isComplex: Bool
-    let attributesExist: Bool
+    let hasAttributes: Bool
 
     let id: [UInt8]
 
@@ -25,18 +25,15 @@ struct SevenZipCodec {
             else { throw SevenZipError.reservedCodecFlags }
         idSize = (flags & 0xF).toInt()
         isComplex = flags & 0x10 != 0
-        attributesExist = flags & 0x20 != 0
+        hasAttributes = flags & 0x20 != 0
 
         id = pointerData.bytes(count: idSize)
 
-        // TODO: Introduce typealias for SevenZipError.multiByteIntegerError.
-        numInStreams = isComplex ? try pointerData
-            .multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger : 1
-        numOutStreams = isComplex ? try pointerData
-            .multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger : 1
+        numInStreams = isComplex ? pointerData.szMbd().multiByteInteger : 1
+        numOutStreams = isComplex ? pointerData.szMbd().multiByteInteger : 1
 
-        if attributesExist {
-            propertiesSize = try pointerData.multiByteDecode(SevenZipError.multiByteIntegerError).multiByteInteger
+        if hasAttributes {
+            propertiesSize = pointerData.szMbd().multiByteInteger
             properties = pointerData.bytes(count: propertiesSize!)
         }
     }
