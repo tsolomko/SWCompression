@@ -52,14 +52,8 @@ class SevenZipSubstreamInfo {
         }
 
         if type == 0x0A {
-            let allDefined = bitReader.byte()
-            let definedBits: [UInt8]
-            if allDefined == 0 {
-                definedBits = bitReader.bits(count: totalDigests)
-                bitReader.skipUntilNextByte()
-            } else {
-                definedBits = Array(repeating: 1, count: totalDigests)
-            }
+            let definedBits = bitReader.defBits(count: totalDigests)
+            bitReader.skipUntilNextByte()
 
             var missingCrcs = [UInt32?]()
             for i in 0..<totalDigests {

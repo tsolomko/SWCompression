@@ -26,14 +26,8 @@ class SevenZipPackInfo {
         }
 
         if type == 0x0A {
-            let allDefined = bitReader.byte()
-            let definedBits: [UInt8]
-            if allDefined == 0 {
-                definedBits = bitReader.bits(count: numPackStreams)
-                bitReader.skipUntilNextByte()
-            } else {
-                definedBits = Array(repeating: 1, count: numPackStreams)
-            }
+            let definedBits = bitReader.defBits(count: numPackStreams)
+            bitReader.skipUntilNextByte()
 
             for bit in definedBits {
                 if bit == 1 {

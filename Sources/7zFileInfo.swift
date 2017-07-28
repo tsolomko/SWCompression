@@ -75,15 +75,9 @@ class SevenZipFileInfo {
                 guard nextName == names.count && nextFile == numFiles
                     else { throw SevenZipError.wrongFileNames }
             case 0x12: // Creation time
-                // TODO: Extract following as a function.
-                let allDefined = bitReader.byte()
-                let timesDefined: [UInt8]
-                if allDefined == 0 {
-                    timesDefined = bitReader.bits(count: numFiles)
-                    bitReader.skipUntilNextByte()
-                } else {
-                    timesDefined = Array(repeating: 1, count: numFiles)
-                }
+                let timesDefined = bitReader.defBits(count: numFiles)
+                bitReader.skipUntilNextByte()
+
                 // TODO: Remove implicit call of skipUntilNextByte() in BitReader,
                 // instead make it check if bytes are aligned.
 
@@ -97,14 +91,8 @@ class SevenZipFileInfo {
                     }
                 }
             case 0x13: // Access time
-                let allDefined = bitReader.byte()
-                let timesDefined: [UInt8]
-                if allDefined == 0 {
-                    timesDefined = bitReader.bits(count: numFiles)
-                    bitReader.skipUntilNextByte()
-                } else {
-                    timesDefined = Array(repeating: 1, count: numFiles)
-                }
+                let timesDefined = bitReader.defBits(count: numFiles)
+                bitReader.skipUntilNextByte()
 
                 let external = bitReader.byte()
                 guard external == 0
@@ -116,14 +104,8 @@ class SevenZipFileInfo {
                     }
                 }
             case 0x14: // Modification time
-                let allDefined = bitReader.byte()
-                let timesDefined: [UInt8]
-                if allDefined == 0 {
-                    timesDefined = bitReader.bits(count: numFiles)
-                    bitReader.skipUntilNextByte()
-                } else {
-                    timesDefined = Array(repeating: 1, count: numFiles)
-                }
+                let timesDefined = bitReader.defBits(count: numFiles)
+                bitReader.skipUntilNextByte()
 
                 let external = bitReader.byte()
                 guard external == 0
@@ -135,14 +117,8 @@ class SevenZipFileInfo {
                     }
                 }
             case 0x15: // WinAttributes
-                let allDefined = bitReader.byte()
-                let attributesDefined: [UInt8]
-                if allDefined == 0 {
-                    attributesDefined = bitReader.bits(count: numFiles)
-                    bitReader.skipUntilNextByte()
-                } else {
-                    attributesDefined = Array(repeating: 1, count: numFiles)
-                }
+                let attributesDefined = bitReader.defBits(count: numFiles)
+                bitReader.skipUntilNextByte()
 
                 let external = bitReader.byte()
                 guard external == 0

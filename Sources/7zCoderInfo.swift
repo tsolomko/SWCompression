@@ -43,14 +43,8 @@ class SevenZipCoderInfo {
         type = bitReader.byte()
     
         if type == 0x0A {
-            let allDefined = bitReader.byte()
-            let definedBits: [UInt8]
-            if allDefined == 0 {
-                definedBits = bitReader.bits(count: numFolders)
-                bitReader.skipUntilNextByte()
-            } else {
-                definedBits = Array(repeating: 1, count: numFolders)
-            }
+            let definedBits = bitReader.defBits(count: numFolders)
+            bitReader.skipUntilNextByte()
 
             for i in 0..<numFolders {
                 if definedBits[i] == 1 {

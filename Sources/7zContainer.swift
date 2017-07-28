@@ -85,4 +85,15 @@ extension BitReader {
         return value
     }
 
+    func defBits(count: Int) -> [UInt8] {
+        let allDefined = self.byte()
+        let definedBits: [UInt8]
+        if allDefined == 0 {
+            definedBits = self.bits(count: count)
+        } else {
+            definedBits = Array(repeating: 1, count: count)
+        }
+        return definedBits
+    }
+
 }
