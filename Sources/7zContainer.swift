@@ -30,7 +30,7 @@ public class SevenZipContainer: Container {
                 }
             }
         }
-        
+
         return entryInfos
     }
 

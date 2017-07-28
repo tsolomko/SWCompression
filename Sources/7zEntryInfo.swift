@@ -27,22 +27,22 @@ public struct SevenZipEntryInfo {
         self.isAnti = file.isAntiFile
 
         self.name = file.name
-        self.isDirectory = !file.isEmptyStream || (file.isEmptyStream && file.isAntiFile)
+        self.isDirectory = file.isEmptyStream && !file.isEmptyFile
 
-        if let aTime = file.aTime {
-            self.accessTime = Date(timeIntervalSince1970: TimeInterval(aTime))
+        if let aTime = SevenZipEntryInfo.ntfsTimeToDate(file.aTime) {
+            self.accessTime = aTime
         } else {
             self.accessTime = nil
         }
 
-        if let cTime = file.cTime {
-            self.creationTime = Date(timeIntervalSince1970: TimeInterval(cTime))
+        if let cTime = SevenZipEntryInfo.ntfsTimeToDate(file.cTime) {
+            self.creationTime = cTime
         } else {
             self.creationTime = nil
         }
 
-        if let mTime = file.mTime {
-            self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mTime))
+        if let mTime = SevenZipEntryInfo.ntfsTimeToDate(file.mTime) {
+            self.modificationTime = mTime
         } else {
             self.modificationTime = nil
         }
@@ -51,6 +51,17 @@ public struct SevenZipEntryInfo {
 
         self.crc = crc
         self.size = size
+    }
+
+    private static func ntfsTimeToDate(_ time: UInt64?) -> Date? {
+        if let time = time { // TODO: Probably incorrect hours, minutes, seconds.
+            return DateComponents(calendar: Calendar(identifier: .iso8601),
+                                  timeZone: TimeZone(abbreviation: "UTC"),
+                                  year: 1601, month: 1, day: 1,
+                                  hour: 0, minute: 0, second: 0).date?.addingTimeInterval(TimeInterval(time) / 10_000_000)
+        } else {
+            return nil
+        }
     }
 
 }

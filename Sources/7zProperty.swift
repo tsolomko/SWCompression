@@ -29,5 +29,5 @@ class SevenZipProperty {
         }
         return properties
     }
-    
+
 }

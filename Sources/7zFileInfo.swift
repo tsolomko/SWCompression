@@ -46,12 +46,12 @@ class SevenZipFileInfo {
                 isEmptyStream = bitReader.bits(count: numFiles)
                 bitReader.skipUntilNextByte()
             case 0x0F: // EmptyFile
-                guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1} )
+                guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
                     else { throw SevenZipError.wrongFileProperty }
                 isEmptyFile = bitReader.bits(count: emptyStreamCount.toInt())
                 bitReader.skipUntilNextByte()
             case 0x10: // AntiFile (used in backups to indicate that file was removed)
-                guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1} )
+                guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
                     else { throw SevenZipError.wrongFileProperty }
                 isAntiFile = bitReader.bits(count: emptyStreamCount.toInt())
                 bitReader.skipUntilNextByte()

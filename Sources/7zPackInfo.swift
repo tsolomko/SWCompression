@@ -36,7 +36,7 @@ class SevenZipPackInfo {
                     digests.append(nil)
                 }
             }
-            
+
             type = bitReader.byte()
         }
 

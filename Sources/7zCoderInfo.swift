@@ -41,7 +41,7 @@ class SevenZipCoderInfo {
         }
 
         type = bitReader.byte()
-    
+
         if type == 0x0A {
             let definedBits = bitReader.defBits(count: numFolders)
             bitReader.skipUntilNextByte()
@@ -51,7 +51,7 @@ class SevenZipCoderInfo {
                     folders[i].crc = bitReader.uint32()
                 }
             }
-            
+
             type = bitReader.byte()
         }
 

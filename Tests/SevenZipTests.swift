@@ -21,10 +21,11 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+        guard let infos = try? SevenZipContainer.info(container: testData) else {
             XCTFail("Unable to open 7z archive.")
             return
         }
+        print(infos)
     }
 
     func test2() {
@@ -38,10 +39,11 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+        guard let infos = try? SevenZipContainer.info(container: testData) else {
             XCTFail("Unable to open 7z archive.")
             return
         }
+        print(infos)
     }
 
     func test3() {
@@ -55,10 +57,11 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        guard (try? SevenZipContainer.open(container: testData)) != nil else {
+        guard let infos = try? SevenZipContainer.info(container: testData) else {
             XCTFail("Unable to open 7z archive.")
             return
         }
+        print(infos)
     }
 
 }
