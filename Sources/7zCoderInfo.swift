@@ -24,10 +24,8 @@ class SevenZipCoderInfo {
         numFolders = pointerData.szMbd().multiByteInteger
         external = pointerData.byte()
 
-        if external != 0 {
-            // TODO: Do we support this?
-            throw SevenZipError.externalNotSupported
-        }
+        guard external == 0
+            else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
 
         for _ in 0..<numFolders {
             folders.append(try SevenZipFolder(pointerData))

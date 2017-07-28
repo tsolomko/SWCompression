@@ -26,4 +26,11 @@ public enum SevenZipError: Error {
     case wrongCRC
     case wrongCoderProperties
     case noPackInfo
+    case wrongFileProperty
+    case wrongFileNameLength
+    case wrongFileNames
+    case startPosNotSupported
+    case incompleteProperty
+    case additionalStreamsNotSupported
+    case noFileSize
 }
