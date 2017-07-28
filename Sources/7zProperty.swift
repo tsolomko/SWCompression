@@ -17,15 +17,15 @@ class SevenZipProperty {
         self.bytes = bytes
     }
 
-    static func getProperties(_ pointerData: DataWithPointer) throws -> [SevenZipProperty] {
+    static func getProperties(_ bitReader: BitReader) throws -> [SevenZipProperty] {
         var properties = [SevenZipProperty]()
         while true {
-            let propertyType = pointerData.byte()
+            let propertyType = bitReader.byte()
             if propertyType == 0 {
                 break
             }
-            let propertySize = pointerData.szMbd()
-            properties.append(SevenZipProperty(propertyType, propertySize, pointerData.bytes(count: propertySize)))
+            let propertySize = bitReader.szMbd()
+            properties.append(SevenZipProperty(propertyType, propertySize, bitReader.bytes(count: propertySize)))
         }
         return properties
     }

@@ -25,14 +25,11 @@ class SevenZipFileInfo {
     let numFiles: Int
     var files = [File]()
 
-    init(_ pointerData: DataWithPointer) throws {
-        numFiles = pointerData.szMbd()
+    init(_ bitReader: BitReader) throws {
+        numFiles = bitReader.szMbd()
         for _ in 0..<numFiles {
             files.append(File())
         }
-
-        let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
-        bitReader.index = pointerData.index
 
         var isEmptyStream: [UInt8]?
         var isEmptyFile: [UInt8]?
@@ -168,7 +165,6 @@ class SevenZipFileInfo {
                 bitReader.index += propertySize
             }
         }
-        pointerData.index = bitReader.index
 
         var emptyFileIndex = 0
         for i in 0..<numFiles {
@@ -177,8 +173,6 @@ class SevenZipFileInfo {
                 files[i].isEmptyFile = isEmptyFile?[emptyFileIndex] == 1
                 files[i].isAntiFile = isAntiFile?[emptyFileIndex] == 1
                 emptyFileIndex += 1
-            } else {
-
             }
         }
     }

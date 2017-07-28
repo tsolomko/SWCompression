@@ -11,44 +11,44 @@ public class SevenZipContainer: Container {
 
     public static func open(container data: Data) throws -> [ContainerEntry] {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let bitReader = BitReader(data: data, bitOrder: .straight)
 
         // **SignatureHeader**
 
         // Check signature.
-        guard pointerData.bytes(count: 6) == [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]
+        guard bitReader.bytes(count: 6) == [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]
             else { throw SevenZipError.wrongSignature }
 
         // Check archive version.
-        guard pointerData.bytes(count: 2) == [0, 4] // 7zFormat.txt says it should be [0, 2] instead.
+        guard bitReader.bytes(count: 2) == [0, 4] // 7zFormat.txt says it should be [0, 2] instead.
             else { throw SevenZipError.wrongVersion }
 
-        let startHeaderCRC = pointerData.uint32()
+        let startHeaderCRC = bitReader.uint32()
 
         /// - Note: Relative to SignatureHeader
-        let nextHeaderOffset = Int(pointerData.uint64())
-        let nextHeaderSize = Int(pointerData.uint64())
-        let nextHeaderCRC = pointerData.uint32()
+        let nextHeaderOffset = Int(bitReader.uint64())
+        let nextHeaderSize = Int(bitReader.uint64())
+        let nextHeaderCRC = bitReader.uint32()
 
-        pointerData.index = 12
-        guard CheckSums.crc32(pointerData.bytes(count: 20)) == startHeaderCRC
+        bitReader.index = 12
+        guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
             else { throw SevenZipError.wrongStartHeaderCRC }
 
         // **Header**
-        pointerData.index += nextHeaderOffset
-        let headerStartIndex = pointerData.index
+        bitReader.index += nextHeaderOffset
+        let headerStartIndex = bitReader.index
         let headerEndIndex: Int
 
-        let type = pointerData.byte()
+        let type = bitReader.byte()
         let header: SevenZipHeader
 
         if type == 0x17 {
-            let packedHeaderStreamInfo = try SevenZipStreamInfo(pointerData)
-            headerEndIndex = pointerData.index
-            header = try SevenZipHeader(pointerData, using: packedHeaderStreamInfo)
+            let packedHeaderStreamInfo = try SevenZipStreamInfo(bitReader)
+            headerEndIndex = bitReader.index
+            header = try SevenZipHeader(bitReader, using: packedHeaderStreamInfo)
         } else if type == 0x01 {
-            header = try SevenZipHeader(pointerData)
-            headerEndIndex = pointerData.index
+            header = try SevenZipHeader(bitReader)
+            headerEndIndex = bitReader.index
         } else {
             throw SevenZipError.wrongPropertyID
         }
@@ -58,8 +58,8 @@ public class SevenZipContainer: Container {
             else { throw SevenZipError.wrongHeaderSize }
 
         // Check header CRC
-        pointerData.index = headerStartIndex
-        guard CheckSums.crc32(pointerData.bytes(count: nextHeaderSize)) == nextHeaderCRC
+        bitReader.index = headerStartIndex
+        guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
             else { throw SevenZipError.wrongHeaderCRC }
 
         return []
@@ -67,7 +67,7 @@ public class SevenZipContainer: Container {
 
 }
 
-extension DataWithPointer {
+extension BitReader {
 
     /// Abbreviation for "sevenZipMultiByteDecode".
     func szMbd() -> Int {

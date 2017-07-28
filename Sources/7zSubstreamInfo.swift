@@ -11,19 +11,19 @@ class SevenZipSubstreamInfo {
     var unpackSizes = [Int]()
     var digests = [UInt32?]()
 
-    init(_ pointerData: DataWithPointer, _ coderInfo: SevenZipCoderInfo) throws {
+    init(_ bitReader: BitReader, _ coderInfo: SevenZipCoderInfo) throws {
         var totalUnpackStreams = coderInfo.folders.count
 
-        var type = pointerData.byte()
+        var type = bitReader.byte()
 
         if type == 0x0D {
             totalUnpackStreams = 0
             for folder in coderInfo.folders {
-                let numStreams = pointerData.szMbd()
+                let numStreams = bitReader.szMbd()
                 folder.numUnpackSubstreams = numStreams
                 totalUnpackStreams += numStreams
             }
-            type = pointerData.byte()
+            type = bitReader.byte()
         }
 
         for folder in coderInfo.folders {
@@ -33,7 +33,7 @@ class SevenZipSubstreamInfo {
             var sum = 0
             if type == 0x09 {
                 for _ in 0..<folder.numUnpackSubstreams - 1 {
-                    let size = pointerData.szMbd()
+                    let size = bitReader.szMbd()
                     unpackSizes.append(size)
                     sum += size
                 }
@@ -41,7 +41,7 @@ class SevenZipSubstreamInfo {
             unpackSizes.append(folder.unpackSize() - sum)
         }
         if type == 0x09 {
-            type = pointerData.byte()
+            type = bitReader.byte()
         }
 
         var totalDigests = 0
@@ -52,14 +52,11 @@ class SevenZipSubstreamInfo {
         }
 
         if type == 0x0A {
-            let allDefined = pointerData.byte()
+            let allDefined = bitReader.byte()
             let definedBits: [UInt8]
             if allDefined == 0 {
-                let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
-                bitReader.index = pointerData.index
                 definedBits = bitReader.bits(count: totalDigests)
                 bitReader.skipUntilNextByte()
-                pointerData.index = bitReader.index
             } else {
                 definedBits = Array(repeating: 1, count: totalDigests)
             }
@@ -67,7 +64,7 @@ class SevenZipSubstreamInfo {
             var missingCrcs = [UInt32?]()
             for i in 0..<totalDigests {
                 if definedBits[i] == 1 {
-                    missingCrcs.append(pointerData.uint32())
+                    missingCrcs.append(bitReader.uint32())
                 } else {
                     missingCrcs.append(nil)
                 }
@@ -82,7 +79,7 @@ class SevenZipSubstreamInfo {
                     }
                 }
 
-                type = pointerData.byte()
+                type = bitReader.byte()
             }
         }
 

@@ -12,30 +12,30 @@ class SevenZipHeader {
     var mainStreams: SevenZipStreamInfo?
     var fileInfo: SevenZipFileInfo?
 
-    init(_ pointerData: DataWithPointer) throws {
-        var type = pointerData.byte()
+    init(_ bitReader: BitReader) throws {
+        var type = bitReader.byte()
 
         if type == 0x02 {
-            archiveProperties = try SevenZipProperty.getProperties(pointerData)
-            type = pointerData.byte()
+            archiveProperties = try SevenZipProperty.getProperties(bitReader)
+            type = bitReader.byte()
         }
 
         if type == 0x03 {
             // TODO: Do we support this?
             // TODO: Or it can be more than one?
             throw SevenZipError.additionalStreamsNotSupported
-//            additionalStreams = try SevenZipStreamInfo(pointerData)
-//            type = pointerData.byte()
+//            additionalStreams = try SevenZipStreamInfo(bitReader)
+//            type = bitReader.byte()
         }
 
         if type == 0x04 {
-            mainStreams = try SevenZipStreamInfo(pointerData)
-            type = pointerData.byte()
+            mainStreams = try SevenZipStreamInfo(bitReader)
+            type = bitReader.byte()
         }
 
         if type == 0x05 {
-            fileInfo = try SevenZipFileInfo(pointerData)
-            type = pointerData.byte()
+            fileInfo = try SevenZipFileInfo(bitReader)
+            type = bitReader.byte()
         }
 
         if let fileInfo = fileInfo {
@@ -56,18 +56,18 @@ class SevenZipHeader {
         }
     }
 
-    convenience init(_ pointerData: DataWithPointer, using streamInfo: SevenZipStreamInfo) throws {
+    convenience init(_ bitReader: BitReader, using streamInfo: SevenZipStreamInfo) throws {
         let folder = streamInfo.coderInfo.folders[0]
         guard let packInfo = streamInfo.packInfo
             else { throw SevenZipError.noPackInfo }
 
         let folderOffset = SevenZipContainer.signatureHeaderSize + packInfo.packPosition
-        pointerData.index = folderOffset
+        bitReader.index = folderOffset
 
         var packedHeaderEndIndex: Int? = nil
 
-        var headerPointerData = DataWithPointer(data: pointerData.data)
-        headerPointerData.index = pointerData.index
+        var headerPointerData = BitReader(data: bitReader.data, bitOrder: .straight)
+        headerPointerData.index = bitReader.index
 
         for coder in folder.orderedCoders() {
             guard coder.numInStreams == 1 || coder.numOutStreams == 1
@@ -85,7 +85,7 @@ class SevenZipHeader {
                     else { throw SevenZipError.wrongCoderProperties }
 
                 decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
-                                                               pointerData))
+                                                               bitReader))
             } else if coder.id == SevenZipCoder.ID.lzma {
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
@@ -115,10 +115,10 @@ class SevenZipHeader {
                 packedHeaderEndIndex = headerPointerData.index
             }
 
-            headerPointerData = DataWithPointer(data: decodedData)
+            headerPointerData = BitReader(data: decodedData, bitOrder: .straight)
         }
 
-        guard packedHeaderEndIndex! - pointerData.index == packInfo.packSizes[0]
+        guard packedHeaderEndIndex! - bitReader.index == packInfo.packSizes[0]
             else { throw SevenZipError.wrongDataSize }
         guard headerPointerData.size == folder.unpackSize()
             else { throw SevenZipError.wrongDataSize }

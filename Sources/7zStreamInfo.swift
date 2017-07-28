@@ -11,24 +11,24 @@ class SevenZipStreamInfo {
     var coderInfo: SevenZipCoderInfo
     var substreamInfo: SevenZipSubstreamInfo?
 
-    init(_ pointerData: DataWithPointer) throws {
-        var type = pointerData.byte()
+    init(_ bitReader: BitReader) throws {
+        var type = bitReader.byte()
 
         if type == 0x06 {
-            packInfo = try SevenZipPackInfo(pointerData)
-            type = pointerData.byte()
+            packInfo = try SevenZipPackInfo(bitReader)
+            type = bitReader.byte()
         }
 
         if type == 0x07 {
-            coderInfo = try SevenZipCoderInfo(pointerData)
-            type = pointerData.byte()
+            coderInfo = try SevenZipCoderInfo(bitReader)
+            type = bitReader.byte()
         } else {
             coderInfo = SevenZipCoderInfo()
         }
 
         if type == 0x08 {
-            substreamInfo = try SevenZipSubstreamInfo(pointerData, coderInfo)
-            type = pointerData.byte()
+            substreamInfo = try SevenZipSubstreamInfo(bitReader, coderInfo)
+            type = bitReader.byte()
         }
 
         if type != 0x00 {

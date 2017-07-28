@@ -324,7 +324,7 @@
 		063DF1081DE1F07800F38082 /* HuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanTree.swift; path = Sources/HuffmanTree.swift; sourceTree = SOURCE_ROOT; };
 		063DF1091DE1F07800F38082 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocols.swift; path = Sources/Protocols.swift; sourceTree = SOURCE_ROOT; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
-		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zContainer.swift; sourceTree = "<group>"; };
+		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		064F722E1F1E63D800017297 /* test1.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.7z; sourceTree = "<group>"; };
 		064F72301F1E63E200017297 /* SevenZipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SevenZipTests.swift; sourceTree = "<group>"; };
@@ -332,7 +332,7 @@
 		0655694C1DC65A8000A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		065569591DC65A9400A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06595E0D1F1E8252006501C2 /* 7zFolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zFolder.swift; sourceTree = "<group>"; };
-		06595E121F1E90C2006501C2 /* 7zCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zCoder.swift; sourceTree = "<group>"; };
+		06595E121F1E90C2006501C2 /* 7zCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zCoder.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		067518351E2A86F700D16354 /* ZipContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipContainer.swift; sourceTree = "<group>"; };
 		0675183C1E2A883600D16354 /* ZipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipTests.swift; sourceTree = "<group>"; };
 		0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
@@ -375,12 +375,12 @@
 		069F276F1EDA0D5E00736269 /* TestUnicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = TestUnicode.zip; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A393421DE070B500182E12 /* SWCompression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SWCompression.h; sourceTree = "<group>"; };
-		06A960501F1E7D040078E6D1 /* 7zStreamInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zStreamInfo.swift; sourceTree = "<group>"; };
+		06A960501F1E7D040078E6D1 /* 7zStreamInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zStreamInfo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		06A960551F1E7D0B0078E6D1 /* 7zPackInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zPackInfo.swift; sourceTree = "<group>"; };
 		06A9605A1F1E7D990078E6D1 /* 7zHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zHeader.swift; sourceTree = "<group>"; };
 		06A9605F1F1E7DE20078E6D1 /* 7zFileInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zFileInfo.swift; sourceTree = "<group>"; };
-		06A960641F1E7DF60078E6D1 /* 7zCoderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zCoderInfo.swift; sourceTree = "<group>"; };
-		06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zSubstreamInfo.swift; sourceTree = "<group>"; };
+		06A960641F1E7DF60078E6D1 /* 7zCoderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zCoderInfo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zSubstreamInfo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		06ADB2D81EBCEFA60053A188 /* TarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarContainer.swift; sourceTree = "<group>"; };
 		06B374CA1E0EECD500064853 /* random_file.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = random_file.zlib; sourceTree = "<group>"; };
 		06B689571F278815007C9316 /* 7zProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zProperty.swift; sourceTree = "<group>"; };

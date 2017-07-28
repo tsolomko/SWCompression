@@ -12,9 +12,9 @@ class SevenZipFolder {
         let inIndex: Int
         let outIndex: Int
 
-        init(_ pointerData: DataWithPointer) throws {
-            inIndex = pointerData.szMbd()
-            outIndex = pointerData.szMbd()
+        init(_ bitReader: BitReader) throws {
+            inIndex = bitReader.szMbd()
+            outIndex = bitReader.szMbd()
         }
 
     }
@@ -38,10 +38,10 @@ class SevenZipFolder {
     // This property is stored in SubstreamInfo.
     var numUnpackSubstreams = 1
 
-    init(_ pointerData: DataWithPointer) throws {
-        numCoders = pointerData.szMbd()
+    init(_ bitReader: BitReader) throws {
+        numCoders = bitReader.szMbd()
         for _ in 0..<numCoders {
-            let coder = try SevenZipCoder(pointerData)
+            let coder = try SevenZipCoder(bitReader)
             coders.append(coder)
             totalOutputStreams += coder.numOutStreams
             totalInputStreams += coder.numInStreams
@@ -52,7 +52,7 @@ class SevenZipFolder {
         numBindPairs = totalOutputStreams - 1
         if numBindPairs > 0 {
             for _ in 0..<numBindPairs {
-                bindPairs.append(try BindPair(pointerData))
+                bindPairs.append(try BindPair(bitReader))
             }
         }
 
@@ -74,7 +74,7 @@ class SevenZipFolder {
             packedStreams[0] = i
         } else {
             for i in 0..<numPackedStreams {
-                packedStreams[i] = pointerData.szMbd()
+                packedStreams[i] = bitReader.szMbd()
             }
         }
     }

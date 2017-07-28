@@ -25,8 +25,8 @@ class SevenZipCoder {
     var propertiesSize: Int?
     var properties: [UInt8]?
 
-    init(_ pointerData: DataWithPointer) throws {
-        let flags = pointerData.byte()
+    init(_ bitReader: BitReader) throws {
+        let flags = bitReader.byte()
         guard flags & 0xC0 == 0
             else { throw SevenZipError.reservedCodecFlags }
         idSize = (flags & 0x0F).toInt()
@@ -35,14 +35,14 @@ class SevenZipCoder {
 
         guard flags & 0x80 == 0 else { throw SevenZipError.altMethodsNotSupported }
 
-        id = pointerData.bytes(count: idSize)
+        id = bitReader.bytes(count: idSize)
 
-        numInStreams = isComplex ? pointerData.szMbd() : 1
-        numOutStreams = isComplex ? pointerData.szMbd() : 1
+        numInStreams = isComplex ? bitReader.szMbd() : 1
+        numOutStreams = isComplex ? bitReader.szMbd() : 1
 
         if hasAttributes {
-            propertiesSize = pointerData.szMbd()
-            properties = pointerData.bytes(count: propertiesSize!)
+            propertiesSize = bitReader.szMbd()
+            properties = bitReader.bytes(count: propertiesSize!)
         }
     }
 
