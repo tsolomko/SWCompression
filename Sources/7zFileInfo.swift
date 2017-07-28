@@ -26,7 +26,7 @@ class SevenZipFileInfo {
     var files = [File]()
 
     init(_ pointerData: DataWithPointer) throws {
-        numFiles = pointerData.szMbd().multiByteInteger
+        numFiles = pointerData.szMbd()
         for _ in 0..<numFiles {
             files.append(File())
         }
@@ -43,7 +43,7 @@ class SevenZipFileInfo {
             if propertyType == 0 {
                 break
             }
-            let propertySize = bitReader.szMbd().multiByteInteger
+            let propertySize = bitReader.szMbd()
             switch propertyType {
             case 0x0E: // EmptyStream
                 isEmptyStream = bitReader.bits(count: numFiles)

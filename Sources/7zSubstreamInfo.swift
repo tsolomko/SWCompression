@@ -19,7 +19,7 @@ class SevenZipSubstreamInfo {
         if type == 0x0D {
             totalUnpackStreams = 0
             for folder in coderInfo.folders {
-                let numStreams = pointerData.szMbd().multiByteInteger
+                let numStreams = pointerData.szMbd()
                 folder.numUnpackSubstreams = numStreams
                 totalUnpackStreams += numStreams
             }
@@ -33,7 +33,7 @@ class SevenZipSubstreamInfo {
             var sum = 0
             if type == 0x09 {
                 for _ in 0..<folder.numUnpackSubstreams - 1 {
-                    let size = pointerData.szMbd().multiByteInteger
+                    let size = pointerData.szMbd()
                     unpackSizes.append(size)
                     sum += size
                 }

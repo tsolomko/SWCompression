@@ -24,7 +24,7 @@ class SevenZipProperty {
             if propertyType == 0 {
                 break
             }
-            let propertySize = pointerData.szMbd().multiByteInteger
+            let propertySize = pointerData.szMbd()
             properties.append(SevenZipProperty(propertyType, propertySize, pointerData.bytes(count: propertySize)))
         }
         return properties

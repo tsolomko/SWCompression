@@ -37,11 +37,11 @@ class SevenZipCoder {
 
         id = pointerData.bytes(count: idSize)
 
-        numInStreams = isComplex ? pointerData.szMbd().multiByteInteger : 1
-        numOutStreams = isComplex ? pointerData.szMbd().multiByteInteger : 1
+        numInStreams = isComplex ? pointerData.szMbd() : 1
+        numOutStreams = isComplex ? pointerData.szMbd() : 1
 
         if hasAttributes {
-            propertiesSize = pointerData.szMbd().multiByteInteger
+            propertiesSize = pointerData.szMbd()
             properties = pointerData.bytes(count: propertiesSize!)
         }
     }

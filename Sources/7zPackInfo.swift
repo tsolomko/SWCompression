@@ -13,14 +13,14 @@ class SevenZipPackInfo {
     private(set) var digests = [UInt32?]()
 
     init(_ pointerData: DataWithPointer) throws {
-        packPosition = pointerData.szMbd().multiByteInteger
-        numPackStreams = pointerData.szMbd().multiByteInteger
+        packPosition = pointerData.szMbd()
+        numPackStreams = pointerData.szMbd()
 
         var type = pointerData.byte()
 
         if type == 0x09 {
             for _ in 0..<numPackStreams {
-                packSizes.append(pointerData.szMbd().multiByteInteger)
+                packSizes.append(pointerData.szMbd())
             }
             type = pointerData.byte()
         }

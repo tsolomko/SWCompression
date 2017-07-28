@@ -21,7 +21,7 @@ class SevenZipCoderInfo {
         var type = pointerData.byte()
         guard type == 0x0B else { throw SevenZipError.wrongPropertyID }
 
-        numFolders = pointerData.szMbd().multiByteInteger
+        numFolders = pointerData.szMbd()
         external = pointerData.byte()
 
         guard external == 0
@@ -36,7 +36,7 @@ class SevenZipCoderInfo {
 
         for folder in folders {
             for _ in 0..<folder.totalOutputStreams {
-                folder.unpackSizes.append(pointerData.szMbd().multiByteInteger)
+                folder.unpackSizes.append(pointerData.szMbd())
             }
         }
 

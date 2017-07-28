@@ -69,24 +69,20 @@ public class SevenZipContainer: Container {
 
 extension DataWithPointer {
 
-    // TODO: Do we need bytesProcessed?
     /// Abbreviation for "sevenZipMultiByteDecode".
-    func szMbd() -> (multiByteInteger: Int, bytesProcessed: [UInt8]) {
+    func szMbd() -> Int {
         let firstByte = self.byte().toInt()
         var mask = 0x80
-        var bytes = [firstByte.toUInt8()]
         var value = 0
         for i in 0..<8 {
             if firstByte & mask == 0 {
                 value |= ((firstByte & (mask &- 1)) << (8 * i))
                 break
             }
-            let nextByte = self.byte().toInt()
-            bytes.append(nextByte.toUInt8())
-            value |= nextByte << (8 * i)
+            value |= self.byte().toInt() << (8 * i)
             mask >>= 1
         }
-        return (value, bytes)
+        return value
     }
 
 }
