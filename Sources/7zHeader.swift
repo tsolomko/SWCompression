@@ -23,8 +23,9 @@ class SevenZipHeader {
         if type == 0x03 {
             // TODO: Do we support this?
             // TODO: Or it can be more than one?
-            additionalStreams = try SevenZipStreamInfo(pointerData)
-            type = pointerData.byte()
+            throw SevenZipError.additionalStreamsNotSupported
+//            additionalStreams = try SevenZipStreamInfo(pointerData)
+//            type = pointerData.byte()
         }
 
         if type == 0x04 {
