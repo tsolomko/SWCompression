@@ -10,6 +10,31 @@ public class SevenZipContainer: Container {
     static let signatureHeaderSize = 32
 
     public static func open(container data: Data) throws -> [ContainerEntry] {
+        return []
+    }
+
+    public static func info(container data: Data) throws -> [SevenZipEntryInfo] {
+        var entryInfos = [SevenZipEntryInfo]()
+        let header = try readHeader(data)
+
+        if let files = header.fileInfo?.files, let substreamInfo = header.mainStreams?.substreamInfo {
+            var nonEmptyFileIndex = 0
+            for file in files {
+                if file.isEmptyStream {
+                    entryInfos.append(SevenZipEntryInfo(file))
+                } else {
+                    entryInfos.append(SevenZipEntryInfo(file,
+                                                        substreamInfo.unpackSizes[nonEmptyFileIndex],
+                                                        substreamInfo.digests[nonEmptyFileIndex]))
+                    nonEmptyFileIndex += 1
+                }
+            }
+        }
+        
+        return entryInfos
+    }
+
+    private static func readHeader(_ data: Data) throws -> SevenZipHeader {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = BitReader(data: data, bitOrder: .straight)
 
@@ -62,7 +87,7 @@ public class SevenZipContainer: Container {
         guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
             else { throw SevenZipError.wrongHeaderCRC }
 
-        return []
+        return header
     }
 
 }

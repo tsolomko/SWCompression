@@ -131,7 +131,7 @@ class SevenZipFileInfo {
                 }
             case 0x18: // StartPos // TODO: Do we support this?
                 throw SevenZipError.startPosNotSupported
-            case 0x19: // Dummy // TODO: Do we support this?
+            case 0x19: // "Dummy". Used for alignment.
                 guard bitReader.size - bitReader.index >= propertySize
                     else { throw SevenZipError.incompleteProperty }
                 bitReader.index += propertySize

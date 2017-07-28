@@ -38,19 +38,6 @@ class SevenZipHeader {
             type = bitReader.byte()
         }
 
-        if let fileInfo = fileInfo {
-            var nonEmptyFileIndex = 0
-            for i in 0..<fileInfo.files.count {
-                if !fileInfo.files[i].isEmptyStream {
-                    fileInfo.files[i].crc = mainStreams?.substreamInfo?.digests[nonEmptyFileIndex]
-                    guard let size = mainStreams?.substreamInfo?.unpackSizes[nonEmptyFileIndex]
-                        else { throw SevenZipError.noFileSize }
-                    fileInfo.files[i].size = size
-                    nonEmptyFileIndex += 1
-                }
-            }
-        }
-
         if type != 0x00 {
             throw SevenZipError.wrongEnd
         }
