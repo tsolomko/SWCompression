@@ -51,7 +51,7 @@ class SevenZipHeader {
         let folderOffset = SevenZipContainer.signatureHeaderSize + packInfo.packPosition
         bitReader.index = folderOffset
 
-        var packedHeaderEndIndex: Int? = nil
+        var packedHeaderEndIndex = -1
 
         var headerPointerData = BitReader(data: bitReader.data, bitOrder: .straight)
         headerPointerData.index = bitReader.index
@@ -63,7 +63,7 @@ class SevenZipHeader {
             let unpackSize = folder.unpackSize(for: coder)
 
             let decodedData: Data
-
+            // TODO: Copy filter.
             if coder.id == SevenZipCoder.ID.lzma2 {
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties
@@ -72,7 +72,7 @@ class SevenZipHeader {
                     else { throw SevenZipError.wrongCoderProperties }
 
                 decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
-                                                               bitReader))
+                                                               headerPointerData))
             } else if coder.id == SevenZipCoder.ID.lzma {
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
@@ -98,14 +98,14 @@ class SevenZipHeader {
 
             // Save header's data end index after first pass.
             // Necessary to calculate and check packed size later.
-            if packedHeaderEndIndex == nil {
+            if packedHeaderEndIndex == -1 {
                 packedHeaderEndIndex = headerPointerData.index
             }
 
             headerPointerData = BitReader(data: decodedData, bitOrder: .straight)
         }
 
-        guard packedHeaderEndIndex! - bitReader.index == packInfo.packSizes[0]
+        guard packedHeaderEndIndex - bitReader.index == packInfo.packSizes[0]
             else { throw SevenZipError.wrongDataSize }
         guard headerPointerData.size == folder.unpackSize()
             else { throw SevenZipError.wrongDataSize }
