@@ -16,10 +16,6 @@ class SevenZipFileInfo {
         var mTime: UInt64?
         var aTime: UInt64?
         var winAttributes: Int?
-
-        // Set in Header using SubstreamInfo.
-        var size = 0
-        var crc: UInt32?
     }
 
     let numFiles: Int
