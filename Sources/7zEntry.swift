@@ -25,9 +25,10 @@ public class SevenZipEntry: ContainerEntry {
 
     private let dataObject: Data
 
-    init(_ bitReader: BitReader, _ entryInfo: SevenZipEntryInfo) {
+    init(_ entryInfo: SevenZipEntryInfo, _ data: Data) {
+        // TODO: Make data decoding here?
         self.info = entryInfo
-        self.dataObject = Data()
+        self.dataObject = data
         self.entryAttributes = [:]
     }
 

@@ -33,4 +33,9 @@ public enum SevenZipError: Error {
     case incompleteProperty
     case additionalStreamsNotSupported
     case noFileSize
+    case notEnoughFolders
+    case notEnoughStreams
+    case noStreamFound
+    case noPackInfoFound
+    case streamOverread
 }
