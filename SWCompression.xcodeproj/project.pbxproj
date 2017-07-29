@@ -274,6 +274,7 @@
 		06D3456B1F102E740057173F /* test_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06D345661F102E740057173F /* test_pax.tar */; };
 		06D3456C1F102E740057173F /* test_ustar.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06D345671F102E740057173F /* test_ustar.tar */; };
 		06D3456D1F102E740057173F /* test_v7.tar in Resources */ = {isa = PBXBuildFile; fileRef = 06D345681F102E740057173F /* test_v7.tar */; };
+		06DD48A71F2D24EF00F45599 /* SWCompressionSourceCode.7z in Resources */ = {isa = PBXBuildFile; fileRef = 06DD48A61F2D24EF00F45599 /* SWCompressionSourceCode.7z */; };
 		06E2346C1E068E9600F18798 /* XZArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E2346B1E068E9600F18798 /* XZArchive.swift */; };
 		06E2346D1E068E9600F18798 /* XZArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E2346B1E068E9600F18798 /* XZArchive.swift */; };
 		06E2346E1E068E9600F18798 /* XZArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E2346B1E068E9600F18798 /* XZArchive.swift */; };
@@ -431,6 +432,7 @@
 		06D345661F102E740057173F /* test_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_pax.tar; sourceTree = "<group>"; };
 		06D345671F102E740057173F /* test_ustar.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_ustar.tar; sourceTree = "<group>"; };
 		06D345681F102E740057173F /* test_v7.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_v7.tar; sourceTree = "<group>"; };
+		06DD48A61F2D24EF00F45599 /* SWCompressionSourceCode.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = SWCompressionSourceCode.7z; sourceTree = "<group>"; };
 		06E2346B1E068E9600F18798 /* XZArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZArchive.swift; sourceTree = "<group>"; };
 		06E2347F1E069ABD00F18798 /* XzTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XzTests.swift; sourceTree = "<group>"; };
 		06E234811E06A6C200F18798 /* CheckSums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckSums.swift; path = Sources/CheckSums.swift; sourceTree = SOURCE_ROOT; };
@@ -564,6 +566,7 @@
 		064F722D1F1E63D800017297 /* 7z */ = {
 			isa = PBXGroup;
 			children = (
+				06DD48A61F2D24EF00F45599 /* SWCompressionSourceCode.7z */,
 				061358F91F274E080065BCEB /* test2.7z */,
 				061358FA1F274E080065BCEB /* test3.7z */,
 				064F722E1F1E63D800017297 /* test1.7z */,
@@ -1034,6 +1037,7 @@
 				06991C701E05A9F70030FF07 /* test9.lzma in Resources */,
 				06D3456A1F102E740057173F /* test_oldgnu.tar in Resources */,
 				06BD0D251E3D0C630054AA5C /* TestZip64.zip in Resources */,
+				06DD48A71F2D24EF00F45599 /* SWCompressionSourceCode.7z in Resources */,
 				06393DFF1F1A858000A647A0 /* long_test_pax.tar in Resources */,
 				069DCE8D1EB64B1500ADC374 /* test5.gz in Resources */,
 				069DCE911EB64B1500ADC374 /* test9.gz in Resources */,
