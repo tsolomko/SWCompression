@@ -15,7 +15,7 @@ class SevenZipFileInfo {
         var cTime: UInt64?
         var mTime: UInt64?
         var aTime: UInt64?
-        var winAttributes: Int?
+        var winAttributes: UInt32?
     }
 
     let numFiles: Int
@@ -122,7 +122,7 @@ class SevenZipFileInfo {
 
                 for i in 0..<numFiles {
                     if attributesDefined[i] == 1 {
-                        files[i].winAttributes = bitReader.uint32().toInt()
+                        files[i].winAttributes = bitReader.uint32()
                     }
                 }
             case 0x18: // StartPos // TODO: Do we support this?

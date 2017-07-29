@@ -13,7 +13,7 @@ public struct SevenZipEntryInfo {
     public let accessTime: Date?
     public let creationTime: Date?
     public let modificationTime: Date?
-    public let windowsAttributes: Int?
+    public let windowsAttributes: UInt32?
 
     public let hasStream: Bool
     public let isEmpty: Bool
@@ -58,7 +58,8 @@ public struct SevenZipEntryInfo {
             return DateComponents(calendar: Calendar(identifier: .iso8601),
                                   timeZone: TimeZone(abbreviation: "UTC"),
                                   year: 1601, month: 1, day: 1,
-                                  hour: 0, minute: 0, second: 0).date?.addingTimeInterval(TimeInterval(time) / 10_000_000)
+                                  hour: 0, minute: 0, second: 0).date?
+                .addingTimeInterval(TimeInterval(time) / 10_000_000)
         } else {
             return nil
         }
