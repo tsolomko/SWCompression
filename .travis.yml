@@ -1,4 +1,3 @@
-
 env:
   global:
   - FRAMEWORK_NAME=SWCompression
@@ -11,6 +10,8 @@ matrix:
       xcode_project: SWCompression.xcodeproj
       xcode_scheme: SWCompression
       before_install:
+      - rvm use $RVM_RUBY_VERSION
+      - gem install slather
       - brew update
       - brew outdated carthage || brew upgrade carthage
       - brew install git-lfs
@@ -28,7 +29,8 @@ matrix:
       script:
       - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
       after_success:
-      - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+      - slather coverage -x --scheme SWCompression SWCompression.xcodeproj/
+      - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
       deploy:
         provider: releases
         api_key:
