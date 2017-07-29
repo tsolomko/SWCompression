@@ -214,18 +214,18 @@ public class SevenZipContainer: Container {
         var entryInfos = [SevenZipEntryInfo]()
         let header = try readHeader(data)
 
-        guard let files = header.fileInfo?.files, let substreamInfo = header.mainStreams?.substreamInfo
+        guard let files = header.fileInfo?.files
             else { return [] }
 
         var nonEmptyFileIndex = 0
         for file in files {
-            if file.isEmptyStream {
-                entryInfos.append(SevenZipEntryInfo(file))
-            } else {
+            if !file.isEmptyStream, let substreamInfo = header.mainStreams?.substreamInfo {
                 entryInfos.append(SevenZipEntryInfo(file,
                                                     substreamInfo.unpackSizes[nonEmptyFileIndex],
                                                     substreamInfo.digests[nonEmptyFileIndex]))
                 nonEmptyFileIndex += 1
+            } else {
+                entryInfos.append(SevenZipEntryInfo(file))
             }
         }
 
