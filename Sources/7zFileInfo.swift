@@ -9,7 +9,7 @@ class SevenZipFileInfo {
 
     struct File {
         var isEmptyStream = false
-        var isEmptyFile = false // TODO: Does it mean directory?
+        var isEmptyFile = false
         var isAntiFile = false
         var name: String?
         var cTime: UInt64?
