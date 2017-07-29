@@ -114,7 +114,7 @@ public class Deflate: DecompressionAlgorithm {
                     let codeLengthsLength = bitReader.intFromBits(count: 4) + 4
 
                     // Read code lengths codes.
-                    // Moreover, they are stored in a very specific order, 
+                    // Moreover, they are stored in a very specific order,
                     //  defined by HuffmanTree.Constants.codeLengthOrders.
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
@@ -235,7 +235,9 @@ public class Deflate: DecompressionAlgorithm {
             }
 
             // End the cycle if it was the last block.
-            if isLastBit == 1 { break }
+            if isLastBit == 1 {
+                break
+            }
         }
 
         return out

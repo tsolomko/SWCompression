@@ -78,7 +78,7 @@ public class XZArchive: Archive {
         let pointerData = DataWithPointer(data: data)
 
         // Note: for multi-stream archives we don't check footer's magic bytes,
-        //  because it is impossible to determine the end of each stream 
+        //  because it is impossible to determine the end of each stream
         //  without processing them, and checking last stream's footer doesn't
         //  guarantee correctness of other streams.
 

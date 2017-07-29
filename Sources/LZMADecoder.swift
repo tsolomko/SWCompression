@@ -9,14 +9,14 @@ struct LZMAConstants {
     static let topValue = 1 << 24
     static let numBitModelTotalBits = 11
     static let numMoveBits = 5
-    static let probInitValue = ((1 << numBitModelTotalBits) / 2)
+    static let probInitValue = (1 << numBitModelTotalBits) / 2
     static let numPosBitsMax = 4
     static let numStates = 12
     static let numLenToPosStates = 4
     static let numAlignBits = 4
     static let startPosModelIndex = 4
     static let endPosModelIndex = 14
-    static let numFullDistances = (1 << (endPosModelIndex >> 1))
+    static let numFullDistances = 1 << (endPosModelIndex >> 1)
     static let matchMinLen = 2
     // LZMAConstants.numStates << LZMAConstants.numPosBitsMax = 192
 }
@@ -238,7 +238,9 @@ class LZMADecoder {
             let posState = out.count & ((1 << pb.toInt()) - 1)
             if rangeDecoder.decode(bitWithProb:
                 &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
-                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
+                if uncompressedSize == 0 {
+                    throw LZMAError.exceededUncompressedSize
+                }
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
@@ -293,8 +295,12 @@ class LZMADecoder {
             var len: Int
             if rangeDecoder.decode(bitWithProb: &probabilities[193 + state]) != 0 {
                 // REP MATCH CASE
-                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
-                if dictEnd == 0 { throw LZMAError.windowIsEmpty }
+                if uncompressedSize == 0 {
+                    throw LZMAError.exceededUncompressedSize
+                }
+                if dictEnd == 0 {
+                    throw LZMAError.windowIsEmpty
+                }
                 if rangeDecoder.decode(bitWithProb: &probabilities[205 + state]) == 0 {
                     // (We use last distance from 'distance history table').
                     if rangeDecoder.decode(bitWithProb:
@@ -350,7 +356,7 @@ class LZMADecoder {
                     rep0 = posSlot
                 } else {
                     let numDirectBits = (posSlot >> 1) - 1
-                    var dist = ((2 | (posSlot & 1)) << numDirectBits)
+                    var dist = (2 | (posSlot & 1)) << numDirectBits
                     if posSlot < LZMAConstants.endPosModelIndex {
                         // In this case we need a sequence of bits decoded with bit tree...
                         // ...(separate trees for different `posSlot` values)...
@@ -374,18 +380,23 @@ class LZMADecoder {
                 // Check if finish marker is encountered.
                 // Distance value of 2^32 is used to indicate 'End of Stream' marker.
                 if UInt32(rep0) == 0xFFFFFFFF {
-                    guard rangeDecoder.isFinishedOK else { throw LZMAError.rangeDecoderFinishError }
+                    guard rangeDecoder.isFinishedOK
+                        else { throw LZMAError.rangeDecoderFinishError }
                     break
                 }
 
-                if uncompressedSize == 0 { throw LZMAError.exceededUncompressedSize }
+                if uncompressedSize == 0 {
+                    throw LZMAError.exceededUncompressedSize
+                }
                 if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) {
                     throw LZMAError.notEnoughToRepeat
                 }
             }
             // Converting from zero-based length of the match to the real one.
             len += LZMAConstants.matchMinLen
-            if uncompressedSize > -1 && uncompressedSize < len { throw LZMAError.repeatWillExceed }
+            if uncompressedSize > -1 && uncompressedSize < len {
+                throw LZMAError.repeatWillExceed
+            }
             for _ in 0..<len {
                 let byte = self.byte(at: rep0 + 1)
                 self.put(byte)

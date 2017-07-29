@@ -363,7 +363,7 @@ public class TarEntry: ContainerEntry {
         pointerData.index += size.roundTo512()
     }
 
-    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String : String]) throws {
+    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String: String]) throws {
         if let headerString = header {
             let headerEntries = headerString.components(separatedBy: "\n")
             for headerEntry in headerEntries {

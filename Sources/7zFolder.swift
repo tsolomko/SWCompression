@@ -109,7 +109,7 @@ class SevenZipFolder {
     }
 
     func unpackSize() -> Int {
-         if (totalOutputStreams == 0) {
+         if totalOutputStreams == 0 {
              return 0
          }
         for i in stride(from: totalOutputStreams - 1, through: 0, by: -1) {

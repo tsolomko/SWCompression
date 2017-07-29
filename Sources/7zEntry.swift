@@ -34,6 +34,5 @@ public class SevenZipEntry: ContainerEntry {
     public func data() -> Data {
         return dataObject
     }
-    
 
 }

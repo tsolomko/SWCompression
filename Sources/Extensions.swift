@@ -44,7 +44,7 @@ extension UInt32 {
     func reverseBytes() -> UInt32 {
         var result: UInt32 = 0
         for i: UInt32 in 0..<4 {
-            let byte = ((self & (0xFF << (i * 8))) >> (i * 8))
+            let byte = (self & (0xFF << (i * 8))) >> (i * 8)
             result += byte << (8 * (3 - i))
         }
         return result
