@@ -10,7 +10,7 @@ class ZipTests: XCTestCase {
 
     static let testType: String = "zip"
 
-    func test() {
+    func testBigContainer() {
         guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
