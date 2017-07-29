@@ -705,11 +705,8 @@
 			isa = PBXGroup;
 			children = (
 				06A3931F1DE06FFE00182E12 /* Common */,
-				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
-				06CDFCA71F111D9700292758 /* DeflateError.swift */,
-				06CDFC9D1F111D2600292758 /* DeflateCompression.swift */,
-				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
-				06CDFCA21F111D6C00292758 /* BZip2Error.swift */,
+				06DD48A81F2D27CA00F45599 /* Deflate */,
+				06DD48A91F2D27D200F45599 /* BZip2 */,
 				069D0FFE1E0D6CF200D8AA87 /* LZMA */,
 				061C063B1F0E8A9500832F0C /* XZ */,
 				061C06391F0E8A8300832F0C /* GZip */,
@@ -802,6 +799,25 @@
 				06D345681F102E740057173F /* test_v7.tar */,
 			);
 			path = Formats;
+			sourceTree = "<group>";
+		};
+		06DD48A81F2D27CA00F45599 /* Deflate */ = {
+			isa = PBXGroup;
+			children = (
+				061FCE251DBCC4BE0052F7BE /* Deflate.swift */,
+				06CDFCA71F111D9700292758 /* DeflateError.swift */,
+				06CDFC9D1F111D2600292758 /* DeflateCompression.swift */,
+			);
+			name = Deflate;
+			sourceTree = "<group>";
+		};
+		06DD48A91F2D27D200F45599 /* BZip2 */ = {
+			isa = PBXGroup;
+			children = (
+				06FED40B1DD7717E0013DFB2 /* BZip2.swift */,
+				06CDFCA21F111D6C00292758 /* BZip2Error.swift */,
+			);
+			name = BZip2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
