@@ -13,7 +13,7 @@ public struct SevenZipEntryInfo {
     public let accessTime: Date?
     public let creationTime: Date?
     public let modificationTime: Date?
-    public let windowsAttributes: UInt32?
+    public let attributes: UInt32?
 
     public let hasStream: Bool
     public let isEmpty: Bool
@@ -47,14 +47,14 @@ public struct SevenZipEntryInfo {
             self.modificationTime = nil
         }
 
-        self.windowsAttributes = file.winAttributes
+        self.attributes = file.winAttributes
 
         self.crc = crc
         self.size = size
     }
 
     private static func ntfsTimeToDate(_ time: UInt64?) -> Date? {
-        if let time = time { // TODO: Probably incorrect hours, minutes, seconds.
+        if let time = time {
             return DateComponents(calendar: Calendar(identifier: .iso8601),
                                   timeZone: TimeZone(abbreviation: "UTC"),
                                   year: 1601, month: 1, day: 1,

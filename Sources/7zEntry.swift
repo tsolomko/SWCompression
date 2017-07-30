@@ -31,7 +31,28 @@ public class SevenZipEntry: ContainerEntry {
         self.info = entryInfo
         self.dataObject = data
         self.dataIsAvailable = data != nil
-        self.entryAttributes = [:]
+
+        var attributesDict = [FileAttributeKey: Any]()
+
+        if let mtime = entryInfo.modificationTime {
+            attributesDict[FileAttributeKey.modificationDate] = mtime
+        }
+
+        if let ctime = entryInfo.creationTime {
+            attributesDict[FileAttributeKey.creationDate] = ctime
+        }
+
+        if let size = entryInfo.size {
+            attributesDict[FileAttributeKey.size] = size
+        }
+
+        if entryInfo.isDirectory {
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+        } else {
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+        }
+
+        self.entryAttributes = attributesDict
     }
 
     public func data() throws -> Data {
