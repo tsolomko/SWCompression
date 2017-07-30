@@ -25,161 +25,132 @@ public class SevenZipContainer: Container {
         /// Index of currently read stream.
         var streamIndex = -1
 
-        var oldStreamIndex = -1
-
         /// Index of current stream for folder in `folder.packedStreams`.
         var folderStreamIndex = -1
 
         /// Total size of unpacked data for current folder. Used for consistency check.
         var folderUnpackSize = 0
 
-        /// Total size of read data for current stream. Used for consistency check.
-        var streamPackSize = 0
-
+        /// Combined calculated CRC of entire folder == all files in folder.
         var folderCRC = CheckSums.crc32(Data())
-        var streamCRC = CheckSums.crc32(Data())
+
+        /// `DataWithPointer` object with unpacked stream's data.
+        var rawFileData = DataWithPointer(data: Data())
+
+        /**
+         Total size of processed unpacked data for current stream.
+         Used to decide when to switch streams.
+        */
+        var rawUnpackSize = 0
 
         let pointerData = DataWithPointer(data: data)
 
         for fileIndex in 0..<files.count {
             let file = files[fileIndex]
             let info: SevenZipEntryInfo
-            let data: Data
+            let data: Data?
+
             if !file.isEmptyStream {
+                // TODO: Does empty files need all this?
+
                 // Without `SevenZipStreamInfo` and `SevenZipPackInfo` objects,
                 //  we cannot find file data location in container.
                 guard let streamInfo = header.mainStreams
                     else { throw SevenZipError.noStreamFound }
                 guard let packInfo = streamInfo.packInfo
                     else { throw SevenZipError.noPackInfoFound }
+
+                // SubstreamInfo is required to get files' data, and without it we can only return files' info.
+                // Additionally, `SevenZipEntry.data()` will throw `SevenZipError.dataIsUnavailable` 
+                //  for files which should have had data, but SubstreamInfo wasn't available.
+                guard let substreamInfo = streamInfo.substreamInfo else {
+                    info = SevenZipEntryInfo(file)
+                    data = nil
+                    continue
+                }
+
                 // Check if there is enough folders.
                 guard folderIndex < streamInfo.coderInfo.numFolders
                     else { throw SevenZipError.notEnoughFolders }
-
-                /// Offset to the beginning of all stored data.
-                let packOffset = signatureHeaderSize + packInfo.packPosition
 
                 /// Folder, which contains current file.
                 let folder = streamInfo.coderInfo.folders[folderIndex]
 
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
+                // Moreover, one stream can contain data of several files,
+                //  so we need to decode the stream first, then split it into files.
                 var streamChanged = false
                 if folderStreamIndex == -1 {
                     // We need to open (start) new folder.
                     folderStreamIndex += 1
-                    oldStreamIndex = streamIndex
                     streamIndex = folder.packedStreams[folderStreamIndex]
                     streamChanged = true
-                } else if streamPackSize >= packInfo.packSizes[streamIndex] {
+                } else if rawUnpackSize >= rawFileData.size {
                     // We already have opened folder, but we need to go to the next stream.
-                    guard streamPackSize == packInfo.packSizes[streamIndex]
+                    guard rawUnpackSize == rawFileData.size
                         else { throw SevenZipError.streamOverread }
                     folderStreamIndex += 1
                     guard folderStreamIndex < folder.numPackedStreams
                         else { throw SevenZipError.notEnoughStreams }
-                    oldStreamIndex = streamIndex
                     streamIndex = folder.packedStreams[folderStreamIndex]
                     streamChanged = true
                 }
 
-                if streamChanged { // We need to move to the stream's offset if we switched streams.
-                    pointerData.index = packOffset
-                    if oldStreamIndex > -1 {
-                        // If there was a processed stream already, we check its CRC.
-                        if oldStreamIndex < packInfo.digests.count,
-                            let storedStreamCRC = packInfo.digests[oldStreamIndex] {
-                            guard streamCRC == storedStreamCRC
-                                else { throw SevenZipError.wrongCRC }
-                        }
-                    }
-                    // Reset information about old CRC.
-                    oldStreamIndex = -1
-                    streamCRC = CheckSums.crc32(Data())
+                if streamChanged { // We need to load the new stream if we switched streams.
+                    // First, we move to the stream's offset.
+                    // We don't have any guarantees that streams will be enountered in the same order,
+                    //  as they are placed in the container. 
+                    // Thus, we have to start moving to stream's offset from the beginning.
+                    // (Maybe, this is incorrect and the order of streams is guaranteed).
+                    pointerData.index = signatureHeaderSize + packInfo.packPosition // Pack offset.
                     if streamIndex != 0 {
                         for i in 0..<streamIndex {
                             pointerData.index += packInfo.packSizes[i]
                         }
                     }
-                }
 
-                var filePointerData = DataWithPointer(data: pointerData.data)
-                filePointerData.index = pointerData.index
-                var fileEndIndex = -1
+                    // Load the stream.
+                    let streamData = Data(bytes: pointerData.bytes(count: packInfo.packSizes[streamIndex]))
 
-                for coder in folder.orderedCoders() {
-                    guard coder.numInStreams == 1 || coder.numOutStreams == 1
-                        else { throw SevenZipError.multiStreamNotSupported }
-
-                    let unpackSize = folder.unpackSize(for: coder)
-
-                    let decodedData: Data
-                    // TODO: Copy filter.
-                    if coder.id == SevenZipCoder.ID.lzma2 {
-                        // Dictionary size is stored in coder's properties.
-                        guard let properties = coder.properties
-                            else { throw SevenZipError.wrongCoderProperties }
-                        guard properties.count == 1
-                            else { throw SevenZipError.wrongCoderProperties }
-
-                        decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
-                                                                       filePointerData))
-                    } else if coder.id == SevenZipCoder.ID.lzma {
-                        // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
-                        guard let properties = coder.properties
-                            else { throw SevenZipError.wrongCoderProperties }
-                        guard properties.count == 5
-                            else { throw SevenZipError.wrongCoderProperties }
-
-                        let lzmaDecoder = try LZMADecoder(filePointerData)
-
-                        var dictionarySize = 0
-                        for i in 1..<4 {
-                            dictionarySize |= properties[i].toInt() << (8 * (i - 1))
-                        }
-
-                        try lzmaDecoder.decodeLZMA(unpackSize, properties[0], dictionarySize)
-                        decodedData = Data(bytes: lzmaDecoder.out)
-                    } else {
-                        throw SevenZipError.compressionNotSupported
+                    // Check stream's CRC, if it's available.
+                    if streamIndex < packInfo.digests.count,
+                        let storedStreamCRC = packInfo.digests[streamIndex] {
+                        guard CheckSums.crc32(streamData) == storedStreamCRC
+                            else { throw SevenZipError.wrongCRC }
                     }
 
-                    guard decodedData.count == unpackSize
-                        else { throw SevenZipError.wrongDataSize }
-
-                    // Save file's data end index after first pass.
-                    // Necessary to calculate and check packed size later.
-                    if fileEndIndex == -1 {
-                        fileEndIndex = filePointerData.index
-                    }
-
-                    filePointerData = DataWithPointer(data: decodedData)
+                    // Now we need to unpack stream.
+                    rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
+                    rawUnpackSize = 0
                 }
-                data = filePointerData.data
 
-                // Update calculated folder's unpacked and stream's packed sizes.
-                streamPackSize += fileEndIndex - pointerData.index
-                folderUnpackSize += data.count
+                // `SevenZipSubstreamInfo` object should contain information about file's size
+                //   and also may contain information about file's CRC32.
 
-                // Update calculated folder's and stream's CRCs.
-                folderCRC = CheckSums.crc32(data, prevValue: folderCRC)
-                streamCRC = CheckSums.crc32(pointerData.bytes(count: fileEndIndex - pointerData.index),
-                                            prevValue: streamCRC)
+                // File's unpack size is required to proceed. 
+                // Next check ensures that we don't `unpackSizes` array's boundaries.
+                guard fileIndex < substreamInfo.unpackSizes.count
+                    else { throw SevenZipError.noFileSize }
 
-                let calculatedFileCRC = CheckSums.crc32(data)
-                // `SevenZipSubstreamInfo` object may contain information about file's size and/or CRC32,
-                //   if SubstreamInfo is present at all.
-                if let substreamInfo = streamInfo.substreamInfo {
-                    guard fileIndex >= substreamInfo.unpackSizes.count ||
-                        data.count == substreamInfo.unpackSizes[fileIndex]
-                        else { throw SevenZipError.wrongDataSize }
-                    guard fileIndex >= substreamInfo.digests.count ||
-                        calculatedFileCRC == substreamInfo.digests[fileIndex]
+                let fileSize = substreamInfo.unpackSizes[fileIndex]
+                let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
+
+                let calculatedFileCRC = CheckSums.crc32(fileData)
+                if fileIndex < substreamInfo.digests.count {
+                    guard calculatedFileCRC == substreamInfo.digests[fileIndex]
                         else { throw SevenZipError.wrongCRC }
                 }
-                // Even if container doesn't have info about file's size and/or CRC32,
-                //  we still can calculate them and store in `SevenZipEntryInfo` object.
-                info = SevenZipEntryInfo(file, data.count, calculatedFileCRC)
+
+                info = SevenZipEntryInfo(file, fileSize, calculatedFileCRC)
+                data = fileData
+
+                // Update folder's crc and unpack size.
+                folderUnpackSize += fileSize
+                folderCRC = CheckSums.crc32(fileData, prevValue: folderCRC)
+
+                // Update unpackSize for stream.
+                rawUnpackSize += fileSize
 
                 fileInFolderCount += 1
 
@@ -191,11 +162,13 @@ public class SevenZipContainer: Container {
                         guard folderCRC == storedFolderCRC
                             else { throw SevenZipError.wrongCRC }
                     }
+                    // Resetting folder's crc and unpack size.
                     folderCRC = CheckSums.crc32(Data())
-                    // Moving to the next folder.
-                    folderIndex += 1
+                    folderUnpackSize = 0
                     // Resetting files count for the next folder.
                     fileInFolderCount = 0
+                    // Moving to the next folder.
+                    folderIndex += 1
                     // Next folder will have its own stream.
                     folderStreamIndex = -1
                 }
