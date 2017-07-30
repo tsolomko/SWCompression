@@ -8,26 +8,15 @@ import SWCompression
 
 class DeflateTests: XCTestCase {
 
-    func perform(compressionTest testName: String) {
+    func perform(compressionTest testName: String) throws {
         guard let answerURL = Constants.url(forAnswer: testName) else {
             XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let deflatedData = try? Deflate.compress(data: answerData) else {
-            XCTFail("Unable to deflate data")
-            return
-        }
-
-        guard let reUncompData = try? Deflate.decompress(data: deflatedData) else {
-            XCTFail("Unable to re-decompress data.")
-            return
-        }
+        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
+        let deflatedData = try Deflate.compress(data: answerData)
+        let reUncompData = try Deflate.decompress(data: deflatedData)
 
         XCTAssertEqual(answerData, reUncompData,
                        "Data before compression and after decompression of compressed data aren't equal.")
@@ -35,50 +24,50 @@ class DeflateTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for deflate.\(testName)")
             self.measure {
-                _ = try? Deflate.compress(data: answerData)
+                _ = try Deflate.compress(data: answerData)
             }
         #endif
 
     }
 
-    func testDeflate1() {
-        self.perform(compressionTest: "test1")
+    func testDeflate1() throws {
+        try self.perform(compressionTest: "test1")
     }
 
-    func testDeflate2() {
-        self.perform(compressionTest: "test2")
+    func testDeflate2() throws {
+        try self.perform(compressionTest: "test2")
     }
 
-    func testDeflate3() {
-        self.perform(compressionTest: "test3")
+    func testDeflate3() throws {
+        try self.perform(compressionTest: "test3")
     }
 
-    func testDeflate4() {
-        self.perform(compressionTest: "test4")
+    func testDeflate4() throws {
+        try self.perform(compressionTest: "test4")
     }
 
-    func testDeflate5() {
-        self.perform(compressionTest: "test5")
+    func testDeflate5() throws {
+        try self.perform(compressionTest: "test5")
     }
 
-    func testDeflate6() {
-        self.perform(compressionTest: "test6")
+    func testDeflate6() throws {
+        try self.perform(compressionTest: "test6")
     }
 
     #if LONG_TESTS
 
-    func testDeflate7() {
-        self.perform(compressionTest: "test7")
+    func testDeflate7() throws {
+        try self.perform(compressionTest: "test7")
     }
 
     #endif
 
-    func testDeflate8() {
-        self.perform(compressionTest: "test8")
+    func testDeflate8() throws {
+        try self.perform(compressionTest: "test8")
     }
 
-    func testDeflate9() {
-        self.perform(compressionTest: "test9")
+    func testDeflate9() throws {
+        try self.perform(compressionTest: "test9")
     }
 
 }
