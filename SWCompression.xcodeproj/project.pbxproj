@@ -130,6 +130,9 @@
 		0685E6241F123F0D008655AA /* test_zip_bzip2.zip in Resources */ = {isa = PBXBuildFile; fileRef = 0685E6231F123F0D008655AA /* test_zip_bzip2.zip */; };
 		068B36791ED0AC050016269E /* full_test.tar in Resources */ = {isa = PBXBuildFile; fileRef = 068B36781ED0AC050016269E /* full_test.tar */; };
 		0691B9401EBE3E100037EE58 /* test.tar in Resources */ = {isa = PBXBuildFile; fileRef = 0691B93F1EBE3E100037EE58 /* test.tar */; };
+		0693DF521F2E499F00602300 /* test_empty_dir.7z in Resources */ = {isa = PBXBuildFile; fileRef = 0693DF501F2E499F00602300 /* test_empty_dir.7z */; };
+		0693DF531F2E499F00602300 /* test_empty_file.7z in Resources */ = {isa = PBXBuildFile; fileRef = 0693DF511F2E499F00602300 /* test_empty_file.7z */; };
+		0693DF551F2E4AEE00602300 /* test_empty_cont.7z in Resources */ = {isa = PBXBuildFile; fileRef = 0693DF541F2E4AEE00602300 /* test_empty_cont.7z */; };
 		0696E5C61ED0B22F00921D4D /* TarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0696E5C51ED0B22F00921D4D /* TarTests.swift */; };
 		06991C701E05A9F70030FF07 /* test9.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6D1E05A9F70030FF07 /* test9.lzma */; };
 		06991C711E05A9F70030FF07 /* test10.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 06991C6E1E05A9F70030FF07 /* test10.lzma */; };
@@ -352,6 +355,9 @@
 		0685E6231F123F0D008655AA /* test_zip_bzip2.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_bzip2.zip; sourceTree = "<group>"; };
 		068B36781ED0AC050016269E /* full_test.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = full_test.tar; sourceTree = "<group>"; };
 		0691B93F1EBE3E100037EE58 /* test.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test.tar; sourceTree = "<group>"; };
+		0693DF501F2E499F00602300 /* test_empty_dir.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_dir.7z; sourceTree = "<group>"; };
+		0693DF511F2E499F00602300 /* test_empty_file.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_file.7z; sourceTree = "<group>"; };
+		0693DF541F2E4AEE00602300 /* test_empty_cont.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_cont.7z; sourceTree = "<group>"; };
 		0696E5C51ED0B22F00921D4D /* TarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarTests.swift; sourceTree = "<group>"; };
 		06991C6D1E05A9F70030FF07 /* test9.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.lzma; sourceTree = "<group>"; };
 		06991C6E1E05A9F70030FF07 /* test10.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test10.lzma; sourceTree = "<group>"; };
@@ -567,6 +573,9 @@
 			isa = PBXGroup;
 			children = (
 				06DD48A61F2D24EF00F45599 /* SWCompressionSourceCode.7z */,
+				0693DF501F2E499F00602300 /* test_empty_dir.7z */,
+				0693DF511F2E499F00602300 /* test_empty_file.7z */,
+				0693DF541F2E4AEE00602300 /* test_empty_cont.7z */,
 				061358F91F274E080065BCEB /* test2.7z */,
 				061358FA1F274E080065BCEB /* test3.7z */,
 				064F722E1F1E63D800017297 /* test1.7z */,
@@ -1045,10 +1054,12 @@
 				06D07AB01EB64EE800BC8C65 /* test5.xz in Resources */,
 				06BD0D241E3D0C630054AA5C /* TestDataDescriptor.zip in Resources */,
 				0691B9401EBE3E100037EE58 /* test.tar in Resources */,
+				0693DF531F2E499F00602300 /* test_empty_file.7z in Resources */,
 				06D07A9E1EB64E7A00BC8C65 /* test6.bz2 in Resources */,
 				06D07A9C1EB64E7A00BC8C65 /* test4.bz2 in Resources */,
 				06D07AA01EB64E7A00BC8C65 /* test8.bz2 in Resources */,
 				069DCE8C1EB64B1500ADC374 /* test4.gz in Resources */,
+				0693DF551F2E4AEE00602300 /* test_empty_cont.7z in Resources */,
 				06D07AB41EB64EE800BC8C65 /* test9.xz in Resources */,
 				06991C701E05A9F70030FF07 /* test9.lzma in Resources */,
 				06D3456A1F102E740057173F /* test_oldgnu.tar in Resources */,
@@ -1070,6 +1081,7 @@
 				061358FC1F274E080065BCEB /* test3.7z in Resources */,
 				06BD0D231E3D0C630054AA5C /* SWCompressionSourceCode.zip in Resources */,
 				06D07AB11EB64EE800BC8C65 /* test6.xz in Resources */,
+				0693DF521F2E499F00602300 /* test_empty_dir.7z in Resources */,
 				061358FB1F274E080065BCEB /* test2.7z in Resources */,
 				06B374CB1E0EECD500064853 /* random_file.zlib in Resources */,
 				06393DFE1F1A858000A647A0 /* long_test_oldgnu.tar in Resources */,

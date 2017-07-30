@@ -72,7 +72,7 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].name, "текстовый файл")
         XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertNotNil(try? entries[0].data())
+        XCTAssertNotNil(try entries[0].data())
     }
 
     func testZipLZMA() throws {
@@ -95,9 +95,9 @@ class ZipTests: XCTestCase {
 
         let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
 
-        XCTAssertEqual(try? entries[0].data(), answerData)
+        XCTAssertEqual(try entries[0].data(), answerData)
         // Test repeat of getting entry data (there was a problem with it).
-        XCTAssertEqual(try? entries[0].data(), answerData)
+        XCTAssertEqual(try entries[0].data(), answerData)
     }
 
     func testZipBZip2() throws {
@@ -120,7 +120,7 @@ class ZipTests: XCTestCase {
 
         let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
 
-        XCTAssertEqual(try? entries[0].data(), answerData)
+        XCTAssertEqual(try entries[0].data(), answerData)
     }
 
 }

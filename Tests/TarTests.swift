@@ -23,7 +23,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result[0].name, "test5.answer")
         XCTAssertEqual(result[0].size, 0)
         XCTAssertEqual(result[0].isDirectory, false)
-        XCTAssertEqual(try? result[0].data(), Data())
+        XCTAssertEqual(try result[0].data(), Data())
     }
 
     func testPax() throws {
@@ -79,7 +79,7 @@ class TarTests: XCTestCase {
             XCTAssertEqual(result[0].name, "test1.answer")
             XCTAssertEqual(result[0].size, 14)
             XCTAssertEqual(result[0].isDirectory, false)
-            XCTAssertEqual(try? result[0].data(), answerData)
+            XCTAssertEqual(try result[0].data(), answerData)
         }
     }
 

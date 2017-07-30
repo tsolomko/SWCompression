@@ -10,6 +10,50 @@ class SevenZipTests: XCTestCase {
 
     static let testType: String = "7z"
 
+    func testEmptyFile() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_file", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "empty_file")
+        XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertEqual(entries[0].size, 0)
+        XCTAssertEqual(try entries[0].data(), Data())
+    }
+
+    func testEmptyDirectory() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_dir", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "empty_dir")
+        XCTAssertEqual(entries[0].isDirectory, true)
+        XCTAssertEqual(entries[0].size, 0)
+        XCTAssertEqual(try entries[0].data(), Data())
+    }
+
+    func testEmptyContainer() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_cont", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.isEmpty, true)
+    }
+
     func test1() throws {
         guard let testURL = Constants.url(forTest: "test1", withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
@@ -30,7 +74,7 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].name, "test1.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
         XCTAssertEqual(entries[0].size, answerData.count)
-        XCTAssertEqual(try? entries[0].data(), answerData)
+        XCTAssertEqual(try entries[0].data(), answerData)
     }
 
     func test2() throws {
@@ -54,7 +98,7 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].name, "test1.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
         XCTAssertEqual(entries[0].size, answerData.count)
-        XCTAssertEqual(try? entries[0].data(), answerData)
+        XCTAssertEqual(try entries[0].data(), answerData)
 
         guard let answer4URL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -66,7 +110,7 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[1].name, "test4.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
         XCTAssertEqual(entries[1].size, answerData.count)
-        XCTAssertEqual(try? entries[1].data(), answerData)
+        XCTAssertEqual(try entries[1].data(), answerData)
     }
 
     func test3() throws {
@@ -78,9 +122,9 @@ class SevenZipTests: XCTestCase {
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
 
         #if LONG_TESTS
-            XCTAssertNotNil(try? SevenZipContainer.open(container: testData))
+            _ = try SevenZipContainer.open(container: testData)
         #else
-            XCTAssertNotNil(try? SevenZipContainer.info(container: testData))
+            _ = try SevenZipContainer.info(container: testData)
         #endif
     }
 
@@ -93,9 +137,9 @@ class SevenZipTests: XCTestCase {
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
 
         #if LONG_TESTS
-            XCTAssertNotNil(try? SevenZipContainer.open(container: testData))
+            _ = try SevenZipContainer.open(container: testData)
         #else
-            XCTAssertNotNil(try? SevenZipContainer.info(container: testData))
+            _ = try SevenZipContainer.info(container: testData)
         #endif
     }
 
