@@ -23,17 +23,23 @@ public class SevenZipEntry: ContainerEntry {
 
     public var entryAttributes: [FileAttributeKey: Any]
 
-    private let dataObject: Data
+    public let dataIsAvailable: Bool
 
-    init(_ entryInfo: SevenZipEntryInfo, _ data: Data) {
-        // TODO: Make data decoding here?
+    private let dataObject: Data?
+
+    init(_ entryInfo: SevenZipEntryInfo, _ data: Data?) {
         self.info = entryInfo
         self.dataObject = data
+        self.dataIsAvailable = data != nil
         self.entryAttributes = [:]
     }
 
-    public func data() -> Data {
-        return dataObject
+    public func data() throws -> Data {
+        if let data = dataObject {
+            return data
+        } else {
+            throw SevenZipError.dataIsUnavailable
+        }
     }
 
 }

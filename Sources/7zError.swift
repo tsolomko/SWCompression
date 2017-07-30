@@ -38,4 +38,5 @@ public enum SevenZipError: Error {
     case noStreamFound
     case noPackInfoFound
     case streamOverread
+    case dataIsUnavailable
 }
