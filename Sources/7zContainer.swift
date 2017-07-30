@@ -11,7 +11,8 @@ public class SevenZipContainer: Container {
 
     public static func open(container data: Data) throws -> [ContainerEntry] {
         var entries = [SevenZipEntry]()
-        let header = try readHeader(data)
+        guard let header = try readHeader(data)
+            else { return [] }
 
         guard let files = header.fileInfo?.files
             else { return [] }
@@ -185,7 +186,8 @@ public class SevenZipContainer: Container {
 
     public static func info(container data: Data) throws -> [SevenZipEntryInfo] {
         var entryInfos = [SevenZipEntryInfo]()
-        let header = try readHeader(data)
+        guard let header = try readHeader(data)
+            else { return [] }
 
         guard let files = header.fileInfo?.files
             else { return [] }
@@ -205,7 +207,7 @@ public class SevenZipContainer: Container {
         return entryInfos
     }
 
-    private static func readHeader(_ data: Data) throws -> SevenZipHeader {
+    private static func readHeader(_ data: Data) throws -> SevenZipHeader? {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = BitReader(data: data, bitOrder: .straight)
 
@@ -234,6 +236,10 @@ public class SevenZipContainer: Container {
         bitReader.index += nextHeaderOffset
         let headerStartIndex = bitReader.index
         let headerEndIndex: Int
+
+        if bitReader.isAtTheEnd {
+            return nil // In case of completely empty container.
+        }
 
         let type = bitReader.byte()
         let header: SevenZipHeader
