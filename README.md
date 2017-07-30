@@ -213,3 +213,4 @@ References
 - [Wikipedia article about TAR](https://en.wikipedia.org/wiki/Tar_(computing))
 - [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
+- [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
