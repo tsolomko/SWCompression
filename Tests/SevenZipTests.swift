@@ -76,7 +76,6 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].size, answer1Data.count)
         XCTAssertEqual(try? entries[0].data(), answer1Data)
 
-
         guard let answer4URL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
             return
@@ -87,10 +86,10 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(entries[0].name, "test4.answer")
+        XCTAssertEqual(entries[1].name, "test4.answer")
         XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertEqual(entries[0].size, answer4Data.count)
-        XCTAssertEqual(try? entries[0].data(), answer4Data)
+        XCTAssertEqual(entries[1].size, answer4Data.count)
+        XCTAssertEqual(try? entries[1].data(), answer4Data)
     }
 
     func test3() {
