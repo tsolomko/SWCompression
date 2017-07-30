@@ -129,4 +129,50 @@ class SevenZipFolder {
         return 0
     }
 
+    func unpack(data: Data) throws -> Data {
+        var decodedData = data
+        for coder in self.orderedCoders() {
+            guard coder.numInStreams == 1 || coder.numOutStreams == 1
+                else { throw SevenZipError.multiStreamNotSupported }
+
+            let unpackSize = self.unpackSize(for: coder)
+
+            // TODO: Copy filter.
+            if coder.id == SevenZipCoder.ID.lzma2 {
+                // Dictionary size is stored in coder's properties.
+                guard let properties = coder.properties
+                    else { throw SevenZipError.wrongCoderProperties }
+                guard properties.count == 1
+                    else { throw SevenZipError.wrongCoderProperties }
+
+                let pointerData = DataWithPointer(data: decodedData)
+                decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
+                                                               pointerData))
+            } else if coder.id == SevenZipCoder.ID.lzma {
+                // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
+                guard let properties = coder.properties
+                    else { throw SevenZipError.wrongCoderProperties }
+                guard properties.count == 5
+                    else { throw SevenZipError.wrongCoderProperties }
+
+                let pointerData = DataWithPointer(data: decodedData)
+                let lzmaDecoder = try LZMADecoder(pointerData)
+
+                var dictionarySize = 0
+                for i in 1..<4 {
+                    dictionarySize |= properties[i].toInt() << (8 * (i - 1))
+                }
+
+                try lzmaDecoder.decodeLZMA(unpackSize, properties[0], dictionarySize)
+                decodedData = Data(bytes: lzmaDecoder.out)
+            } else {
+                throw SevenZipError.compressionNotSupported
+            }
+
+            guard decodedData.count == unpackSize
+                else { throw SevenZipError.wrongDataSize }
+        }
+        return decodedData
+    }
+
 }
