@@ -166,7 +166,11 @@ class SevenZipFolder {
                 try lzmaDecoder.decodeLZMA(unpackSize, properties[0], dictionarySize)
                 decodedData = Data(bytes: lzmaDecoder.out)
             } else {
-                throw SevenZipError.compressionNotSupported
+                if coder.id[0] == 0x06 {
+                    throw SevenZipError.encryptionNotSupported
+                } else {
+                    throw SevenZipError.compressionNotSupported
+                }
             }
 
             guard decodedData.count == unpackSize
