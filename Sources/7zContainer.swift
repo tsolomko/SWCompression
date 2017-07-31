@@ -17,6 +17,8 @@ public class SevenZipContainer: Container {
         guard let files = header.fileInfo?.files
             else { return [] }
 
+        var nonEmptyFileIndex = 0
+
         /// Index of currently opened folder in `streamInfo.coderInfo.folders`.
         var folderIndex = 0
 
@@ -52,8 +54,6 @@ public class SevenZipContainer: Container {
             let data: Data?
 
             if !file.isEmptyStream {
-                // TODO: Does empty files need all this?
-
                 // Without `SevenZipStreamInfo` and `SevenZipPackInfo` objects,
                 //  we cannot find file data location in container.
                 guard let streamInfo = header.mainStreams
@@ -131,15 +131,15 @@ public class SevenZipContainer: Container {
 
                 // File's unpack size is required to proceed. 
                 // Next check ensures that we don't `unpackSizes` array's boundaries.
-                guard fileIndex < substreamInfo.unpackSizes.count
+                guard nonEmptyFileIndex < substreamInfo.unpackSizes.count
                     else { throw SevenZipError.noFileSize }
 
-                let fileSize = substreamInfo.unpackSizes[fileIndex]
+                let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
 
                 let calculatedFileCRC = CheckSums.crc32(fileData)
-                if fileIndex < substreamInfo.digests.count {
-                    guard calculatedFileCRC == substreamInfo.digests[fileIndex]
+                if nonEmptyFileIndex < substreamInfo.digests.count {
+                    guard calculatedFileCRC == substreamInfo.digests[nonEmptyFileIndex]
                         else { throw SevenZipError.wrongCRC }
                 }
 
@@ -154,6 +154,7 @@ public class SevenZipContainer: Container {
                 rawUnpackSize += fileSize
 
                 fileInFolderCount += 1
+                nonEmptyFileIndex += 1
 
                 if fileInFolderCount > folder.numUnpackSubstreams { // If we read all files in folder...
                     // We need to check folder's unpacked size as well as its CRC32 (if it is available).
