@@ -21,6 +21,9 @@ public class SevenZipEntry: ContainerEntry {
         return info.isDirectory
     }
 
+    public let isLink: Bool
+    public let linkPath: String?
+
     public var entryAttributes: [FileAttributeKey: Any]
 
     public let dataIsAvailable: Bool
@@ -46,10 +49,53 @@ public class SevenZipEntry: ContainerEntry {
             attributesDict[FileAttributeKey.size] = size
         }
 
-        if entryInfo.isDirectory {
+        if let permissions = entryInfo.permissions {
+            attributesDict[FileAttributeKey.posixPermissions] = permissions.rawValue
+        }
+
+        if let unixType = entryInfo.unixType {
+            switch unixType {
+            case .characterSpecial:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeCharacterSpecial
+            case .directory:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+            case .blockSpecial:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeBlockSpecial
+            case .regular:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+            case .symbolicLink:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeSymbolicLink
+            case .socket:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeSocket
+            default:
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeUnknown
+            }
+        }
+
+        if let dosAttrbutes = entryInfo.dosAttributes {
+            if dosAttrbutes.contains(.readOnly) {
+                attributesDict[FileAttributeKey.appendOnly] = true
+            }
+
+            if dosAttrbutes.contains(.directory) && attributesDict[FileAttributeKey.type] == nil {
+                attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+            }
+        }
+
+        if entryInfo.isDirectory && attributesDict[FileAttributeKey.type] == nil {
             attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+        }
+
+        if attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink {
+            self.isLink = true
+            if let data = data {
+                self.linkPath = String(data: data, encoding: .utf8)
+            } else {
+                self.linkPath = nil
+            }
         } else {
-            attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
+            self.isLink = false
+            self.linkPath = nil
         }
 
         self.entryAttributes = attributesDict
