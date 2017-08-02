@@ -8,7 +8,7 @@ import Foundation
 public struct SevenZipEntryInfo {
 
     public struct Permissions: OptionSet {
-        
+
         public let rawValue: UInt32
 
         public init(rawValue: UInt32) {
@@ -66,7 +66,11 @@ public struct SevenZipEntryInfo {
     public let accessTime: Date?
     public let creationTime: Date?
     public let modificationTime: Date?
-    public let attributes: UInt32?
+    public let winAttributes: UInt32?
+
+    public let permissions: Permissions?
+    public let dosAttributes: DosAttributes?
+    public let unixType: UnixType?
 
     public let hasStream: Bool
     public let isEmpty: Bool
@@ -80,7 +84,7 @@ public struct SevenZipEntryInfo {
         self.isAnti = file.isAntiFile
 
         self.name = file.name
-        self.isDirectory = file.isEmptyStream && !file.isEmptyFile
+        self.isDirectory = file.isEmptyStream && !file.isEmptyFile // TODO: Do we need this???
 
         if let aTime = SevenZipEntryInfo.ntfsTimeToDate(file.aTime) {
             self.accessTime = aTime
@@ -100,7 +104,17 @@ public struct SevenZipEntryInfo {
             self.modificationTime = nil
         }
 
-        self.attributes = file.winAttributes
+        if let attributes = file.winAttributes {
+            self.winAttributes = attributes
+            self.permissions = Permissions(rawValue: (0x0FFF0000 & attributes) >> 16)
+            self.unixType = UnixType(rawValue: (0xF0000000 & attributes) >> 16)
+            self.dosAttributes = DosAttributes(rawValue: 0xFF & attributes)
+        } else {
+            self.winAttributes = nil
+            self.permissions = nil
+            self.unixType = nil
+            self.dosAttributes = nil
+        }
 
         self.crc = crc
         self.size = size
