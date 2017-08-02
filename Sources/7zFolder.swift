@@ -137,8 +137,13 @@ class SevenZipFolder {
 
             let unpackSize = self.unpackSize(for: coder)
 
-            // TODO: Copy filter.
-            if coder.id == SevenZipCoder.ID.lzma2 {
+            if coder.id == SevenZipCoder.ID.copy || coder.id == SevenZipCoder.ID.zipCopy {
+                continue
+            } else if coder.id == SevenZipCoder.ID.deflate {
+                decodedData = try Deflate.decompress(data: decodedData)
+            } else if coder.id == SevenZipCoder.ID.bzip2 || coder.id == SevenZipCoder.ID.zipBzip2 {
+                decodedData = try BZip2.decompress(data: decodedData)
+            } else if coder.id == SevenZipCoder.ID.lzma2 {
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties
                     else { throw SevenZipError.wrongCoderProperties }
