@@ -14,3 +14,7 @@ opt_in_rules:
   - operator_usage_whitespace
   - redundant_nil_coalescing
   - switch_case_on_newline
+  - strict_fileprivate
+  - trailing_closure
+  - block_based_kvo
+  - discouraged_direct_init
