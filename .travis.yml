@@ -10,10 +10,9 @@ matrix:
       xcode_project: SWCompression.xcodeproj
       xcode_scheme: SWCompression
       before_install:
-      - rvm use $RVM_RUBY_VERSION
       - gem install slather
       - brew update
-      - brew outdated carthage || brew upgrade carthage
+      - brew upgrade carthage
       - brew install git-lfs
       - git lfs install
       before_script:
