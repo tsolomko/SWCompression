@@ -10,50 +10,6 @@ class SevenZipTests: XCTestCase {
 
     static let testType: String = "7z"
 
-    func testEmptyFile() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_file", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
-        }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try SevenZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_file")
-        XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
-    }
-
-    func testEmptyDirectory() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_dir", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
-        }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try SevenZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_dir")
-        XCTAssertEqual(entries[0].isDirectory, true)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
-    }
-
-    func testEmptyContainer() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_cont", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
-        }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try SevenZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.isEmpty, true)
-    }
-
     func test1() throws {
         guard let testURL = Constants.url(forTest: "test1", withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
@@ -108,7 +64,7 @@ class SevenZipTests: XCTestCase {
         answerData = try Data(contentsOf: answer4URL, options: .mappedIfSafe)
 
         XCTAssertEqual(entries[1].name, "test4.answer")
-        XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertEqual(entries[1].isDirectory, false)
         XCTAssertEqual(entries[1].size, answerData.count)
         XCTAssertEqual(try entries[1].data(), answerData)
     }
@@ -142,5 +98,72 @@ class SevenZipTests: XCTestCase {
             _ = try SevenZipContainer.info(container: testData)
         #endif
     }
+
+    func testWinContainer() throws {
+        guard let testURL = Constants.url(forTest: "test_win", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 2)
+
+        XCTAssertEqual(entries[0].name, "dir")
+        XCTAssertEqual(entries[0].isDirectory, true)
+        XCTAssertEqual(entries[0].size, 0)
+        XCTAssertEqual(try entries[0].data(), Data())
+
+        XCTAssertEqual(entries[1].name, "text_win.txt")
+        XCTAssertEqual(entries[1].isDirectory, false)
+        XCTAssertEqual(entries[1].size, 15)
+        XCTAssertEqual(try entries[1].data(), "Hello, Windows!".data(using: .utf8))
+    }
+
+    func testEmptyFile() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_file", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "empty_file")
+        XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertEqual(entries[0].size, 0)
+        XCTAssertEqual(try entries[0].data(), Data())
+    }
+
+    func testEmptyDirectory() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_dir", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "empty_dir")
+        XCTAssertEqual(entries[0].isDirectory, true)
+        XCTAssertEqual(entries[0].size, 0)
+        XCTAssertEqual(try entries[0].data(), Data())
+    }
+
+    func testEmptyContainer() throws {
+        guard let testURL = Constants.url(forTest: "test_empty_cont", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+        
+        XCTAssertEqual(entries.isEmpty, true)
+    }
+
 
 }
