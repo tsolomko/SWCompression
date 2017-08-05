@@ -72,9 +72,9 @@ class SevenZipSubstreamInfo {
                         digests.append(missingCrcs[i])
                     }
                 }
-
-                type = bitReader.byte()
             }
+
+            type = bitReader.byte()
         }
 
         if type != 0x00 {
