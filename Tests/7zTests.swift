@@ -104,9 +104,9 @@ class SevenZipTests: XCTestCase {
             let entries = try SevenZipContainer.info(container: testData)
 
             XCTAssertEqual(entries.count, 6)
-            
+
             for entry in entries where entry.name == "test_create/test4.answer" {
-                XCTAssertEqual((entry as? SevenZipEntryInfo)?.isAnti, true)
+                XCTAssertEqual(entry.isAnti, true)
             }
         #endif
     }
@@ -157,10 +157,10 @@ class SevenZipTests: XCTestCase {
             XCTAssertEqual(entries.count, 6)
 
             for entry in entries {
-                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.creationTime)
-                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.accessTime)
+                XCTAssertNotNil(entry.creationTime)
+                XCTAssertNotNil(entry.accessTime)
                 // Just in case...
-                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.modificationTime)
+                XCTAssertNotNil(entry.modificationTime)
             }
         #endif
     }
@@ -300,9 +300,8 @@ class SevenZipTests: XCTestCase {
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try SevenZipContainer.open(container: testData)
-        
+
         XCTAssertEqual(entries.isEmpty, true)
     }
-
 
 }

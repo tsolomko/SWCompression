@@ -60,7 +60,10 @@ class SevenZipFileInfo {
                 let names = bitReader.bytes(count: propertySize - 1)
                 var nextFile = 0
                 var nextName = 0
-                for i in stride(from: 0, to: names.count, by: 2) { // TODO: Understand what is going on here.
+                for i in stride(from: 0, to: names.count, by: 2) {
+                    // End of file name is identified by two consequent NULL bytes.
+                    // TODO: In Swift 4.0 we may try to convert dat to UTF16LE first,
+                    //  and then split it into strings?
                     if names[i] == 0 && names[i + 1] == 0 {
                         files[nextFile].name = String(data: Data(bytes: names[nextName..<i]),
                                                       encoding: .utf16LittleEndian)

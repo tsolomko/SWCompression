@@ -161,7 +161,7 @@ class TarTests: XCTestCase {
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try TarContainer.open(container: testData)
-        
+
         XCTAssertEqual(entries.isEmpty, true)
     }
 
