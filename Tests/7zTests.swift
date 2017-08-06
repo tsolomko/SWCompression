@@ -84,6 +84,145 @@ class SevenZipTests: XCTestCase {
         #endif
     }
 
+    func testAntiFile() throws {
+        guard let testURL = Constants.url(forTest: "test_anti_file", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        #if LONG_TESTS
+            let entries = try SevenZipContainer.open(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+
+            for entry in entries where entry.name == "test_create/test4.answer" {
+                XCTAssertEqual((entry as? SevenZipEntry)?.info.isAnti, true)
+            }
+        #else
+            let entries = try SevenZipContainer.info(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+            
+            for entry in entries where entry.name == "test_create/test4.answer" {
+                XCTAssertEqual((entry as? SevenZipEntryInfo)?.isAnti, true)
+            }
+        #endif
+    }
+
+    func testMultiBlocks() throws {
+        // Container was created with "solid" options set to "off" (-ms=off).
+        guard let testURL = Constants.url(forTest: "test_multi_blocks", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        #if LONG_TESTS
+            let entries = try SevenZipContainer.open(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+        #else
+            let entries = try SevenZipContainer.info(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+        #endif
+    }
+
+    func testAllTimestamps() throws {
+        // Container was created with "-mtc=on" and "-mta=on" options.
+        guard let testURL = Constants.url(forTest: "test_all_timestamps", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        #if LONG_TESTS
+            let entries = try SevenZipContainer.open(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+
+            for entry in entries {
+                XCTAssertNotNil((entry as? SevenZipEntry)?.info.creationTime)
+                XCTAssertNotNil((entry as? SevenZipEntry)?.info.accessTime)
+                // Just in case...
+                XCTAssertNotNil((entry as? SevenZipEntry)?.info.modificationTime)
+            }
+        #else
+            let entries = try SevenZipContainer.info(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+
+            for entry in entries {
+                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.creationTime)
+                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.accessTime)
+                // Just in case...
+                XCTAssertNotNil((entry as? SevenZipEntryInfo)?.modificationTime)
+            }
+        #endif
+    }
+
+    func testComplicatedCodingScheme() throws {
+        // Container was created with these options: "-mf=BCJ -m0=Copy -m1=Deflate -m2=Delta -m3=LZMA -m4=LZMA2"
+        guard let testURL = Constants.url(forTest: "test_complicated_coding_scheme", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        // In these test case the most important thing is that information about entries must be read correctly.
+        _ = try SevenZipContainer.info(container: testData)
+
+        // It is expected for `open(container:) function to throw `SevenZipError.compressionNotSupported`,
+        //  because of the coders used.
+        #if LONG_TESTS
+            XCTAssertThrowsError(try SevenZipContainer.open(container: testData)) { error in
+                XCTAssertEqual(error as? SevenZipError, SevenZipError.compressionNotSupported)
+            }
+        #endif
+    }
+
+    func testEncryptedHeader() throws {
+        // Container was created with "-mhe=on".
+        guard let testURL = Constants.url(forTest: "test_encrypted_header", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        XCTAssertThrowsError(try SevenZipContainer.info(container: testData)) { error in
+            XCTAssertEqual(error as? SevenZipError, SevenZipError.encryptionNotSupported)
+        }
+
+        // There is no point in testing `open(container:)` function, because we are unable to get even files' info.
+    }
+
+    func testSingleThread() throws {
+        // Container was created with disabled multithreading options.
+        // We check this just in case.
+        guard let testURL = Constants.url(forTest: "test_single_thread", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        #if LONG_TESTS
+            let entries = try SevenZipContainer.open(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+        #else
+            let entries = try SevenZipContainer.info(container: testData)
+
+            XCTAssertEqual(entries.count, 6)
+        #endif
+    }
+
     func testBigContainer() throws {
         guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
