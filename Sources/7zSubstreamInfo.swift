@@ -64,12 +64,14 @@ class SevenZipSubstreamInfo {
                 }
             }
 
+            var nextMissingCrc = 0
             for folder in coderInfo.folders {
                 if folder.numUnpackSubstreams == 1 && folder.crc != nil {
                     digests.append(folder.crc)
                 } else {
-                    for i in 0..<folder.numUnpackSubstreams {
-                        digests.append(missingCrcs[i])
+                    for _ in 0..<folder.numUnpackSubstreams {
+                        digests.append(missingCrcs[nextMissingCrc])
+                        nextMissingCrc += 1
                     }
                 }
             }
