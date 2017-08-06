@@ -17,6 +17,7 @@ public class SevenZipContainer: Container {
         guard let files = header.fileInfo?.files
             else { return [] }
 
+        /// Total count of non-empty files. Used to iterate over SubstreamInfo.
         var nonEmptyFileIndex = 0
 
         /// Index of currently opened folder in `streamInfo.coderInfo.folders`.
@@ -27,9 +28,6 @@ public class SevenZipContainer: Container {
 
         /// Index of currently read stream.
         var streamIndex = -1
-
-        /// Index of current stream for folder in `folder.packedStreams`.
-        var folderStreamIndex = -1
 
         /// Total size of unpacked data for current folder. Used for consistency check.
         var folderUnpackSize = 0
@@ -74,36 +72,24 @@ public class SevenZipContainer: Container {
                 guard folderIndex < streamInfo.coderInfo.numFolders
                     else { throw SevenZipError.notEnoughFolders }
 
+                // Check, if we haven't read to much from a stream. // TODO: Is it even possible?
+                guard rawUnpackSize <= rawFileData.size
+                    else { throw SevenZipError.streamOverread }
+
                 /// Folder, which contains current file.
                 let folder = streamInfo.coderInfo.folders[folderIndex]
 
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
-                // Moreover, one stream can contain data of several files,
-                //  so we need to decode the stream first, then split it into files.
-                var streamChanged = false
-                if folderStreamIndex == -1 {
-                    // We need to open (start) new folder.
-                    folderStreamIndex += 1
-                    streamIndex = folder.packedStreams[folderStreamIndex]
-                    streamChanged = true
-                } else if rawUnpackSize >= rawFileData.size {
-                    // We already have opened folder, but we need to go to the next stream.
-                    guard rawUnpackSize == rawFileData.size
-                        else { throw SevenZipError.streamOverread }
-                    folderStreamIndex += 1
-                    guard folderStreamIndex < folder.numPackedStreams
-                        else { throw SevenZipError.notEnoughStreams }
-                    streamIndex = folder.packedStreams[folderStreamIndex]
-                    streamChanged = true
-                }
+                // If we switched folders or completed reading of a stream we need to move to the next stream.
+                if fileInFolderCount == 0 || rawUnpackSize == rawFileData.size {
+                    streamIndex += 1
 
-                if streamChanged { // We need to load the new stream if we switched streams.
                     // First, we move to the stream's offset.
                     // We don't have any guarantees that streams will be enountered in the same order,
-                    //  as they are placed in the container. 
+                    //  as they are placed in the container.
                     // Thus, we have to start moving to stream's offset from the beginning.
-                    // (Maybe, this is incorrect and the order of streams is guaranteed).
+                    // (Or, maybe, this is incorrect and the order of streams is guaranteed).
                     pointerData.index = signatureHeaderSize + packInfo.packPosition // Pack offset.
                     if streamIndex != 0 {
                         for i in 0..<streamIndex {
@@ -121,13 +107,14 @@ public class SevenZipContainer: Container {
                             else { throw SevenZipError.wrongCRC }
                     }
 
-                    // Now we need to unpack stream.
+                    // One stream can contain data of several files,
+                    //  so we need to decode the stream first, then split it into files.
                     rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
                     rawUnpackSize = 0
                 }
 
-                // `SevenZipSubstreamInfo` object should contain information about file's size
-                //   and also may contain information about file's CRC32.
+                // `SevenZipSubstreamInfo` object must contain information about file's size
+                //   and may also contain information about file's CRC32.
 
                 // File's unpack size is required to proceed. 
                 // Next check ensures that we don't `unpackSizes` array's boundaries.
@@ -156,7 +143,7 @@ public class SevenZipContainer: Container {
                 fileInFolderCount += 1
                 nonEmptyFileIndex += 1
 
-                if fileInFolderCount > folder.numUnpackSubstreams { // If we read all files in folder...
+                if fileInFolderCount >= folder.numUnpackSubstreams { // If we read all files in folder...
                     // We need to check folder's unpacked size as well as its CRC32 (if it is available).
                     guard folderUnpackSize == folder.unpackSize()
                         else { throw SevenZipError.wrongDataSize }
@@ -171,8 +158,6 @@ public class SevenZipContainer: Container {
                     fileInFolderCount = 0
                     // Moving to the next folder.
                     folderIndex += 1
-                    // Next folder will have its own stream.
-                    folderStreamIndex = -1
                 }
             } else {
                 info = SevenZipEntryInfo(file)

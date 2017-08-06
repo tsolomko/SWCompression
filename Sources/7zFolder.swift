@@ -59,7 +59,6 @@ class SevenZipFolder {
         guard totalInputStreams >= numBindPairs else { throw SevenZipError.wrongStreamsNumber }
 
         numPackedStreams = totalInputStreams - numBindPairs
-        packedStreams = Array(repeating: 0, count: numPackedStreams)
         if numPackedStreams == 1 {
             var i = 0
             while i < totalInputStreams {
@@ -71,10 +70,10 @@ class SevenZipFolder {
             if i == totalInputStreams {
                 throw SevenZipError.wrongStreamsNumber
             }
-            packedStreams[0] = i
+            packedStreams.append(i)
         } else {
-            for i in 0..<numPackedStreams {
-                packedStreams[i] = bitReader.szMbd()
+            for _ in 0..<numPackedStreams {
+                packedStreams.append(bitReader.szMbd())
             }
         }
     }
