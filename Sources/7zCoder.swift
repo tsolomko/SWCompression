@@ -10,16 +10,16 @@ class SevenZipCoder {
     /// Possible coder IDs.
     struct ID {
     // TODO: Left comments column indicates whether coder has been implemented or not (I/NI) and tested (T/NT).
-    /*  I/NT */static let copy: [UInt8] = [0x00]
+    /*  I/T  */static let copy: [UInt8] = [0x00]
         /// Shouldn't be used, added for compatibility, `ID.copy` should be used instead.
-    /*  I/NT */static let zipCopy: [UInt8] = [0x04, 0x01, 0x00]
-    /*  I/NT */static let deflate: [UInt8] = [0x04, 0x01, 0x08]
+    /*  I/T  */static let zipCopy: [UInt8] = [0x04, 0x01, 0x00]
+    /*  I/T  */static let deflate: [UInt8] = [0x04, 0x01, 0x08]
         /// Shouldn't be used, added for compatibility, `ID.bzip2` should be used instead.
-    /*  I/NT */static let zipBzip2: [UInt8] = [0x04, 0x01, 0x0C]
+    /*  I/T  */static let zipBzip2: [UInt8] = [0x04, 0x01, 0x0C]
     /* NI/NT */static let zipLzma: [UInt8] = [0x04, 0x01, 0x0E]
         /// For some reason, this method is specified in ZIP section of Methods.txt.
     /* NI/NT */static let xz: [UInt8] = [0x04, 0x01, 0x5F]
-    /*  I/NT */static let bzip2: [UInt8] = [0x04, 0x02, 0x02]
+    /*  I/T  */static let bzip2: [UInt8] = [0x04, 0x02, 0x02]
     /*  I/T  */static let lzma2: [UInt8] = [0x21]
     /*  I/T  */static let lzma: [UInt8] = [0x03, 0x01, 0x01]
     }

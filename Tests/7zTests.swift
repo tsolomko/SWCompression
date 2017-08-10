@@ -238,6 +238,78 @@ class SevenZipTests: XCTestCase {
         #endif
     }
 
+    func test7zBZip2() throws {
+        // File in container compressed with BZip2.
+        guard let testURL = Constants.url(forTest: "test_7z_bzip2", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "test4.answer")
+        XCTAssertEqual(entries[0].isDirectory, false)
+
+        guard let answerURL = Constants.url(forAnswer: "test4") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
+
+        XCTAssertEqual(try entries[0].data(), answerData)
+    }
+
+    func test7zDeflate() throws {
+        // File in container compressed with Deflate.
+        guard let testURL = Constants.url(forTest: "test_7z_deflate", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "test4.answer")
+        XCTAssertEqual(entries[0].isDirectory, false)
+
+        guard let answerURL = Constants.url(forAnswer: "test4") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
+
+        XCTAssertEqual(try entries[0].data(), answerData)
+    }
+
+    func test7zCopy() throws {
+        // File in container is explicitly uncompressed.
+        guard let testURL = Constants.url(forTest: "test_7z_copy", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "test4.answer")
+        XCTAssertEqual(entries[0].isDirectory, false)
+
+        guard let answerURL = Constants.url(forAnswer: "test4") else {
+            XCTFail("Unable to get answer's URL.")
+            return
+        }
+
+        let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
+
+        XCTAssertEqual(try entries[0].data(), answerData)
+    }
+
     func testWinContainer() throws {
         guard let testURL = Constants.url(forTest: "test_win", withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
