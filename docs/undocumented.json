@@ -1,6 +1,593 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zContainer.swift",
+      "line": 8,
+      "symbol": "SevenZipContainer",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zContainer.swift",
+      "line": 173,
+      "symbol": "SevenZipContainer.info(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntry.swift",
+      "line": 8,
+      "symbol": "SevenZipEntry",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntry.swift",
+      "line": 10,
+      "symbol": "SevenZipEntry.info",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntry.swift",
+      "line": 24,
+      "symbol": "SevenZipEntry.isLink",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntry.swift",
+      "line": 25,
+      "symbol": "SevenZipEntry.linkPath",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntry.swift",
+      "line": 29,
+      "symbol": "SevenZipEntry.dataIsAvailable",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 8,
+      "symbol": "SevenZipEntryInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 10,
+      "symbol": "SevenZipEntryInfo.Permissions",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 18,
+      "symbol": "SevenZipEntryInfo.Permissions.setuid",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 19,
+      "symbol": "SevenZipEntryInfo.Permissions.setgid",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 20,
+      "symbol": "SevenZipEntryInfo.Permissions.sticky",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 22,
+      "symbol": "SevenZipEntryInfo.Permissions.readOwner",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 23,
+      "symbol": "SevenZipEntryInfo.Permissions.writeOwner",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 24,
+      "symbol": "SevenZipEntryInfo.Permissions.executeOwner",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 26,
+      "symbol": "SevenZipEntryInfo.Permissions.readGroup",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 27,
+      "symbol": "SevenZipEntryInfo.Permissions.writeGroup",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 28,
+      "symbol": "SevenZipEntryInfo.Permissions.executeGroup",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 30,
+      "symbol": "SevenZipEntryInfo.Permissions.readOther",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 31,
+      "symbol": "SevenZipEntryInfo.Permissions.writeOther",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 32,
+      "symbol": "SevenZipEntryInfo.Permissions.executeOther",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 36,
+      "symbol": "SevenZipEntryInfo.DosAttributes",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 44,
+      "symbol": "SevenZipEntryInfo.DosAttributes.archive",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 45,
+      "symbol": "SevenZipEntryInfo.DosAttributes.directory",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 46,
+      "symbol": "SevenZipEntryInfo.DosAttributes.volume",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 47,
+      "symbol": "SevenZipEntryInfo.DosAttributes.system",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 48,
+      "symbol": "SevenZipEntryInfo.DosAttributes.hidden",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 49,
+      "symbol": "SevenZipEntryInfo.DosAttributes.readOnly",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 53,
+      "symbol": "SevenZipEntryInfo.UnixType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 54,
+      "symbol": "SevenZipEntryInfo.UnixType.fifo",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 55,
+      "symbol": "SevenZipEntryInfo.UnixType.characterSpecial",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 56,
+      "symbol": "SevenZipEntryInfo.UnixType.directory",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 57,
+      "symbol": "SevenZipEntryInfo.UnixType.blockSpecial",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 58,
+      "symbol": "SevenZipEntryInfo.UnixType.regular",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 59,
+      "symbol": "SevenZipEntryInfo.UnixType.symbolicLink",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 60,
+      "symbol": "SevenZipEntryInfo.UnixType.socket",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 63,
+      "symbol": "SevenZipEntryInfo.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 64,
+      "symbol": "SevenZipEntryInfo.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 65,
+      "symbol": "SevenZipEntryInfo.isDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 66,
+      "symbol": "SevenZipEntryInfo.accessTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 67,
+      "symbol": "SevenZipEntryInfo.creationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 68,
+      "symbol": "SevenZipEntryInfo.modificationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 69,
+      "symbol": "SevenZipEntryInfo.winAttributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 71,
+      "symbol": "SevenZipEntryInfo.permissions",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 72,
+      "symbol": "SevenZipEntryInfo.dosAttributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 73,
+      "symbol": "SevenZipEntryInfo.unixType",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 75,
+      "symbol": "SevenZipEntryInfo.hasStream",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 76,
+      "symbol": "SevenZipEntryInfo.isEmpty",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 77,
+      "symbol": "SevenZipEntryInfo.isAnti",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zEntryInfo.swift",
+      "line": 79,
+      "symbol": "SevenZipEntryInfo.crc",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 9,
+      "symbol": "SevenZipError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 10,
+      "symbol": "SevenZipError.wrongSignature",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 11,
+      "symbol": "SevenZipError.wrongVersion",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 12,
+      "symbol": "SevenZipError.wrongStartHeaderCRC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 13,
+      "symbol": "SevenZipError.wrongHeaderSize",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 14,
+      "symbol": "SevenZipError.wrongPropertyID",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 15,
+      "symbol": "SevenZipError.wrongHeaderCRC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 16,
+      "symbol": "SevenZipError.wrongExternal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 17,
+      "symbol": "SevenZipError.reservedCodecFlags",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 18,
+      "symbol": "SevenZipError.unknownNumFolders",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 19,
+      "symbol": "SevenZipError.wrongEnd",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 20,
+      "symbol": "SevenZipError.externalNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 21,
+      "symbol": "SevenZipError.altMethodsNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 22,
+      "symbol": "SevenZipError.wrongStreamsNumber",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 23,
+      "symbol": "SevenZipError.multiStreamNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 24,
+      "symbol": "SevenZipError.compressionNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 25,
+      "symbol": "SevenZipError.wrongDataSize",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 26,
+      "symbol": "SevenZipError.wrongCRC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 27,
+      "symbol": "SevenZipError.wrongCoderProperties",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 28,
+      "symbol": "SevenZipError.noPackInfo",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 29,
+      "symbol": "SevenZipError.wrongFileProperty",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 30,
+      "symbol": "SevenZipError.wrongFileNameLength",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 31,
+      "symbol": "SevenZipError.wrongFileNames",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 32,
+      "symbol": "SevenZipError.startPosNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 33,
+      "symbol": "SevenZipError.incompleteProperty",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 34,
+      "symbol": "SevenZipError.additionalStreamsNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 35,
+      "symbol": "SevenZipError.noFileSize",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 36,
+      "symbol": "SevenZipError.notEnoughFolders",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 37,
+      "symbol": "SevenZipError.notEnoughStreams",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 38,
+      "symbol": "SevenZipError.noStreamFound",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 39,
+      "symbol": "SevenZipError.noPackInfoFound",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 40,
+      "symbol": "SevenZipError.streamOverread",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 41,
+      "symbol": "SevenZipError.dataIsUnavailable",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7zError.swift",
+      "line": 42,
+      "symbol": "SevenZipError.encryptionNotSupported",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/timofeysolomko/Developer/Compression/SWCompression"
 }

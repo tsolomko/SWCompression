@@ -1,4 +1,8 @@
 # Changelog
+v3.3.0-test.1
+----------------
+- Introduced support for 7-Zip containers.
+
 v3.2.0
 ----------------
 - Split source files.
