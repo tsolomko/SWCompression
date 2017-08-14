@@ -84,6 +84,9 @@ public class SevenZipEntry: ContainerEntry {
 
         if entryInfo.isDirectory && attributesDict[FileAttributeKey.type] == nil {
             attributesDict[FileAttributeKey.type] = FileAttributeType.typeDirectory
+        } else if attributesDict[FileAttributeKey.type] == nil {
+            // We still need some type for an entry.
+            attributesDict[FileAttributeKey.type] = FileAttributeType.typeRegular
         }
 
         if attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink {
