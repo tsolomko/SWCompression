@@ -51,38 +51,37 @@ public struct ZlibHeader {
     }
 
     init(_ bitReader: BitReader) throws {
+        // compressionMethod and compressionInfo combined are needed later for integrity check.
+        let cmf = bitReader.byte()
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
-        let compressionMethod = bitReader.intFromBits(count: 4)
+        let compressionMethod = cmf & 0xF
         guard compressionMethod == 8 else { throw ZlibError.wrongCompressionMethod }
 
         self.compressionMethod = .deflate
 
         // Remaining four bits indicate window size.
         // For Deflate it must not be more than 7.
-        let compressionInfo = bitReader.intFromBits(count: 4)
+        let compressionInfo = (cmf & 0xF0) >> 4
         guard compressionInfo <= 7 else { throw ZlibError.wrongCompressionInfo }
-        let windowSize = 1 << (compressionInfo + 8)
 
+        let windowSize = 1 << (compressionInfo.toInt() + 8)
         self.windowSize = windowSize
 
-        // compressionMethod and compressionInfo combined are needed later for integrity check.
-        let cmf = compressionInfo << 4 + compressionMethod
+        // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check.
+        let flags = bitReader.byte()
 
-        // Next five bits are fcheck bits which are supposed to be integrity check.
-        let fcheck = bitReader.intFromBits(count: 5)
+        // First five bits are fcheck bits which are supposed to be integrity check:
+        //  let fcheck = flags & 0x1F
 
         // Sixth bit indicate if archive contain Adler-32 checksum of preset dictionary.
-        let fdict = bitReader.intFromBits(count: 1)
+        let fdict = (flags & 0x20) >> 5
 
         // Remaining bits indicate compression level.
-        guard let compressionLevel = ZlibHeader.CompressionLevel(rawValue:
-            bitReader.intFromBits(count: 2)) else { throw ZlibError.wrongCompressionLevel }
-
+        guard let compressionLevel = ZlibHeader.CompressionLevel(rawValue: (flags.toInt() & 0xC0) >> 6)
+            else { throw ZlibError.wrongCompressionLevel }
         self.compressionLevel = compressionLevel
 
-        // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check.
-        let flags = compressionLevel.rawValue << 6 + fdict << 5 + fcheck
         guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.wrongFcheck }
 
         // If preset dictionary is present 4 bytes will be skipped.
