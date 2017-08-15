@@ -112,7 +112,7 @@ public class ZipEntry: ContainerEntry {
             fileBytes = try Deflate.decompress(bitReader)
             // Sometimes pointerData stays in not-aligned state after deflate decompression.
             // Following line ensures that this is not the case.
-            bitReader.skipUntilNextByte()
+            bitReader.align()
             pointerData.index = bitReader.index
         case 12:
             #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
@@ -120,7 +120,7 @@ public class ZipEntry: ContainerEntry {
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
                 fileBytes = try BZip2.decompress(bitReader)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
                 pointerData.index = bitReader.index
             #else
                 throw ZipError.compressionNotSupported

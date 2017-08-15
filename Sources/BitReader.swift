@@ -15,6 +15,15 @@ class BitReader: DataWithPointer {
     let bitOrder: BitOrder
     private(set) var bitMask: UInt8
 
+    var isAligned: Bool {
+        switch self.bitOrder {
+        case .reversed:
+            return self.bitMask == 1
+        case .straight:
+            return self.bitMask == 128
+        }
+    }
+
     convenience init(array: inout [UInt8], bitOrder: BitOrder) {
         self.init(data: Data(bytes: array), bitOrder: bitOrder)
     }
@@ -122,7 +131,7 @@ class BitReader: DataWithPointer {
         return bit
     }
 
-    func skipUntilNextByte() {
+    func align() {
         switch self.bitOrder {
         case .reversed:
             guard self.bitMask != 1 else {
@@ -139,27 +148,27 @@ class BitReader: DataWithPointer {
     }
 
     override func byte() -> UInt8 {
-        self.skipUntilNextByte()
+        precondition(isAligned, "BitReader is not aligned.")
         return super.byte()
     }
 
     override func bytes(count: Int) -> [UInt8] {
-        self.skipUntilNextByte()
+        precondition(isAligned, "BitReader is not aligned.")
         return super.bytes(count: count)
     }
 
     override func uint64(count: UInt64 = 8) -> UInt64 {
-        self.skipUntilNextByte()
+        precondition(isAligned, "BitReader is not aligned.")
         return super.uint64(count: count)
     }
 
     override func uint32(count: UInt32 = 4) -> UInt32 {
-        self.skipUntilNextByte()
+        precondition(isAligned, "BitReader is not aligned.")
         return super.uint32(count: count)
     }
 
     override func uint16(count: UInt16 = 2) -> UInt16 {
-        self.skipUntilNextByte()
+        precondition(isAligned, "BitReader is not aligned.")
         return super.uint16(count: count)
     }
 

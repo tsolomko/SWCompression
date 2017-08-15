@@ -72,7 +72,7 @@ public class Deflate: DecompressionAlgorithm {
             let blockType = [UInt8](bitReader.bits(count: 2).reversed())
 
             if blockType == [0, 0] { // Uncompressed block.
-                bitReader.skipUntilNextByte()
+                bitReader.align()
                 /// Length of the uncompressed data.
                 let length = bitReader.intFromBits(count: 16)
                 /// 1-complement of the length.
