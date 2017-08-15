@@ -259,6 +259,7 @@ extension BitReader {
 
     /// Abbreviation for "sevenZipMultiByteDecode".
     func szMbd() -> Int {
+        self.align()
         let firstByte = self.byte().toInt()
         var mask = 0x80
         var value = 0
@@ -274,6 +275,7 @@ extension BitReader {
     }
 
     func defBits(count: Int) -> [UInt8] {
+        self.align()
         let allDefined = self.byte()
         let definedBits: [UInt8]
         if allDefined == 0 {
