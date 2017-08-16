@@ -84,25 +84,11 @@ public struct SevenZipEntryInfo {
         self.isAnti = file.isAntiFile
 
         self.name = file.name
-        self.isDirectory = file.isEmptyStream && !file.isEmptyFile // TODO: Do we need this???
+        self.isDirectory = file.isEmptyStream && !file.isEmptyFile
 
-        if let aTime = SevenZipEntryInfo.ntfsTimeToDate(file.aTime) {
-            self.accessTime = aTime
-        } else {
-            self.accessTime = nil
-        }
-
-        if let cTime = SevenZipEntryInfo.ntfsTimeToDate(file.cTime) {
-            self.creationTime = cTime
-        } else {
-            self.creationTime = nil
-        }
-
-        if let mTime = SevenZipEntryInfo.ntfsTimeToDate(file.mTime) {
-            self.modificationTime = mTime
-        } else {
-            self.modificationTime = nil
-        }
+        self.accessTime = Date(from: file.aTime)
+        self.creationTime = Date(from: file.cTime)
+        self.modificationTime = Date(from: file.mTime)
 
         if let attributes = file.winAttributes {
             self.winAttributes = attributes
@@ -118,18 +104,6 @@ public struct SevenZipEntryInfo {
 
         self.crc = crc
         self.size = size
-    }
-
-    private static func ntfsTimeToDate(_ time: UInt64?) -> Date? {
-        if let time = time {
-            return DateComponents(calendar: Calendar(identifier: .iso8601),
-                                  timeZone: TimeZone(abbreviation: "UTC"),
-                                  year: 1601, month: 1, day: 1,
-                                  hour: 0, minute: 0, second: 0).date?
-                .addingTimeInterval(TimeInterval(time) / 10_000_000)
-        } else {
-            return nil
-        }
     }
 
 }
