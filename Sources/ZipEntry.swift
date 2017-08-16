@@ -50,6 +50,14 @@ public class ZipEntry: ContainerEntry {
         }
     }
 
+    public let isLink: Bool
+
+    public lazy var linkPath: String? = {
+        guard self.isLink else { return nil }
+        guard let entryData = try? self.data() else { return nil }
+        return String(data: entryData, encoding: .utf8)
+    }()
+
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
@@ -240,6 +248,7 @@ public class ZipEntry: ContainerEntry {
         }
 
         self.entryAttributes = attributesDict
+        self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
     }
 
 }
