@@ -151,6 +151,8 @@ public class TarEntry: ContainerEntry {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
+    public let isLink: Bool
+
     /// Path to a linked file.
     public var linkPath: String? {
         return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
@@ -355,6 +357,7 @@ public class TarEntry: ContainerEntry {
         }
 
         self.entryAttributes = attributesDict
+        self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
 
         // File data
         pointerData.index = blockStartIndex + 512
