@@ -10,7 +10,7 @@ public class ZipEntry: ContainerEntry {
 
     private let cdEntry: ZipCentralDirectoryEntry
     private var localHeader: ZipLocalHeader?
-    private var pointerData: DataWithPointer
+    private let containerData: Data
 
     /// Name of the file or directory.
     public var name: String {
@@ -83,6 +83,7 @@ public class ZipEntry: ContainerEntry {
      */
     public func data() throws -> Data {
         // Now, let's move to the location of local header.
+        let pointerData = DataWithPointer(data: self.containerData)
         pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
 
         if localHeader == nil {
@@ -171,7 +172,7 @@ public class ZipEntry: ContainerEntry {
 
     init(_ cdEntry: ZipCentralDirectoryEntry, _ pointerData: DataWithPointer) {
         self.cdEntry = cdEntry
-        self.pointerData = pointerData
+        self.containerData = pointerData.data
 
         var attributesDict = [FileAttributeKey: Any]()
 
