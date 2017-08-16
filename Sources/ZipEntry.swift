@@ -58,6 +58,10 @@ public class ZipEntry: ContainerEntry {
         return String(data: entryData, encoding: .utf8)
     }()
 
+    public var isTextFile: Bool {
+        return cdEntry.internalFileAttributes & 0x1 != 0
+    }
+
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
