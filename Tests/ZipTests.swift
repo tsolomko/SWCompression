@@ -28,6 +28,24 @@ class ZipTests: XCTestCase {
         #endif
     }
 
+    func testMultiThreading() throws {
+        guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let entries = try ZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 211)
+
+        for entry in entries {
+            DispatchQueue.global(qos: .userInitiated).async {
+                XCTAssertNotNil(try? entry.data())
+            }
+        }
+    }
+
     func testZip64() throws {
         guard let testURL = Constants.url(forTest: "TestZip64", withType: ZipTests.testType) else {
             XCTFail("Unable to get test's URL.")
