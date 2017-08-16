@@ -38,12 +38,6 @@ public class SevenZipContainer: Container {
         /// `DataWithPointer` object with unpacked stream's data.
         var rawFileData = DataWithPointer(data: Data())
 
-        /**
-         Total size of processed unpacked data for current stream.
-         Used to decide when to switch streams.
-        */
-        var rawUnpackSize = 0
-
         let pointerData = DataWithPointer(data: data)
 
         for fileIndex in 0..<files.count {
@@ -72,17 +66,13 @@ public class SevenZipContainer: Container {
                 guard folderIndex < streamInfo.coderInfo.numFolders
                     else { throw SevenZipError.notEnoughFolders }
 
-                // Check, if we haven't read to much from a stream. // TODO: Is it even possible?
-                guard rawUnpackSize <= rawFileData.size
-                    else { throw SevenZipError.streamOverread }
-
                 /// Folder, which contains current file.
                 let folder = streamInfo.coderInfo.folders[folderIndex]
 
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
                 // If we switched folders or completed reading of a stream we need to move to the next stream.
-                if fileInFolderCount == 0 || rawUnpackSize == rawFileData.size {
+                if fileInFolderCount == 0 || rawFileData.isAtTheEnd {
                     streamIndex += 1
 
                     // First, we move to the stream's offset.
@@ -110,7 +100,6 @@ public class SevenZipContainer: Container {
                     // One stream can contain data of several files,
                     //  so we need to decode the stream first, then split it into files.
                     rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
-                    rawUnpackSize = 0
                 }
 
                 // `SevenZipSubstreamInfo` object must contain information about file's size
@@ -122,6 +111,11 @@ public class SevenZipContainer: Container {
                     else { throw SevenZipError.noFileSize }
 
                 let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
+
+                // Check, if we aren't about to read too much from a stream.
+                guard rawFileData.index + fileSize <= rawFileData.size
+                    else { throw SevenZipError.streamOverread }
+
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
 
                 let calculatedFileCRC = CheckSums.crc32(fileData)
@@ -136,9 +130,6 @@ public class SevenZipContainer: Container {
                 // Update folder's crc and unpack size.
                 folderUnpackSize += fileSize
                 folderCRC = CheckSums.crc32(fileData, prevValue: folderCRC)
-
-                // Update unpackSize for stream.
-                rawUnpackSize += fileSize
 
                 fileInFolderCount += 1
                 nonEmptyFileIndex += 1
