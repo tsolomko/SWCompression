@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Deflate' do |sp|
     sp.source_files = 'Sources/{Deflate,DeflateCompression,DeflateError,Extensions,Protocols,DataWithPointer,BitReader,HuffmanTree,BitWriter,CheckSums}.swift'
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_DEFLATE' }
   end
 
   s.subspec 'GZip' do |sp|
