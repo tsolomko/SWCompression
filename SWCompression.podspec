@@ -67,4 +67,10 @@ Pod::Spec.new do |s|
     sp.source_files = 'Sources/{Tar*,Extensions,Protocols,DataWithPointer}.swift'
   end
 
+  s.subspec 'SevenZip' do |sp|
+    sp.dependency 'SWCompression/LZMA'
+    sp.source_files = 'Sources/{7z*,CheckSums,}.swift'
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_SEVENZIP' }
+  end
+
 end
