@@ -139,9 +139,17 @@ class SevenZipFolder {
             if coder.id == SevenZipCoder.ID.copy || coder.id == SevenZipCoder.ID.zipCopy {
                 continue
             } else if coder.id == SevenZipCoder.ID.deflate {
-                decodedData = try Deflate.decompress(data: decodedData)
+                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_DEFLATE)
+                    decodedData = try Deflate.decompress(data: decodedData)
+                #else
+                    throw SevenZipError.compressionNotSupported
+                #endif
             } else if coder.id == SevenZipCoder.ID.bzip2 || coder.id == SevenZipCoder.ID.zipBzip2 {
-                decodedData = try BZip2.decompress(data: decodedData)
+                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_BZ2)
+                    decodedData = try BZip2.decompress(data: decodedData)
+                #else
+                    throw SevenZipError.compressionNotSupported
+                #endif
             } else if coder.id == SevenZipCoder.ID.lzma2 {
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties
