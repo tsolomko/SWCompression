@@ -203,7 +203,7 @@ public class XZArchive: Archive {
          Bit values 00, 01, 10, 11 indicate filters number from 1 to 4,
          so we actually need to add 1 to get filters' number.
          */
-        let numberOfFilters = blockFlags & 0x03 + 1
+        let filtersCount = blockFlags & 0x03 + 1
         guard blockFlags & 0x3C == 0
             else { throw XZError.fieldReservedValue }
 
@@ -214,13 +214,12 @@ public class XZArchive: Archive {
         let uncompressedSize = blockFlags & 0x80 != 0 ? try pointerData.multiByteDecode() : -1
 
         var filters: [(DataWithPointer) throws -> [UInt8]] = []
-        for _ in 0..<numberOfFilters {
+        for _ in 0..<filtersCount {
             let filterID = try pointerData.multiByteDecode()
             guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
-            switch filterID {
-            case 0x21: // LZMA2
+            if filterID == 0x21 {
                 // First, we need to skip byte with the size of filter's properties
                 _ = try pointerData.multiByteDecode()
                 /// In case of LZMA2 filters property is a dicitonary size.
@@ -229,7 +228,7 @@ public class XZArchive: Archive {
                     try LZMA2.decompress(LZMA2.dictionarySize(filterPropeties), dwp)
                 }
                 filters.append(closure)
-            default:
+            } else {
                 throw XZError.wrongFilterID
             }
         }

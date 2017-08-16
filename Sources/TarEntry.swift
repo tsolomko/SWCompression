@@ -175,6 +175,7 @@ public class TarEntry: ContainerEntry {
         // File mode
         guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
+        // Sometime file mode also contains unix type, so we need to filter it out.
         let posixPermissions = octalPosixPermissions.octalToDecimal() & 0xFFF
         attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
         mode = posixPermissions
