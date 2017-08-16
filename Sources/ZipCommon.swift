@@ -20,8 +20,11 @@ class ZipCommon {
     #endif
 
     static func getStringField(_ pointerData: DataWithPointer, _ length: Int, _ useUtf8: Bool) -> String? {
+        if length == 0 {
+            return ""
+        }
         let bytes = pointerData.bytes(count: length)
-        let bytesAreUtf8 = ZipCommon.isUtf8(bytes)
+        let bytesAreUtf8 = ZipCommon.needsUtf8(bytes)
         if !useUtf8 && ZipCommon.cp437Available && !bytesAreUtf8 {
             return String(data: Data(bytes: bytes), encoding: String.Encoding(rawValue:
                 CFStringConvertEncodingToNSStringEncoding(ZipCommon.cp437Encoding)))
@@ -30,17 +33,25 @@ class ZipCommon {
         }
     }
 
-    static func isUtf8(_ bytes: [UInt8]) -> Bool {
+    static func needsUtf8(_ bytes: [UInt8]) -> Bool {
+        // UTF-8 can have BOM.
+        if bytes.count >= 3 {
+            if bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF {
+                return true
+            }
+        }
         var codeLength = 0
         var index = 0
         var ch: UInt32 = 0
         while index < bytes.count {
             let byte = bytes[index]
-            if byte <= 0x7F {
+            if byte <= 0x7F { // This simple bytes can both exist in CP437 and UTF-8.
                 index += 1
                 continue
             }
 
+            // Otherwise, it has to be correct code sequence in case of UTF-8.
+            // If code sequence is incorrect, then it is CP437.
             if byte >= 0xC2 && byte <= 0xDF {
                 codeLength = 2
             } else if byte >= 0xE0 && byte <= 0xEF {
@@ -77,8 +88,11 @@ class ZipCommon {
                 }
             }
             index += codeLength
+            return true
         }
-        return true
+        // All bytes were in range 0...0x7F, which can be both in CP437 and UTF-8.
+        // We solve this ambiguity in favor of CP437.
+        return false
     }
 
 }
