@@ -38,7 +38,7 @@ public class ZipEntry: ContainerEntry {
     }
 
     /**
-     True, if an entry is a directory.
+     True, if entry is a directory.
      For MS-DOS and UNIX-like container creator's OS, the result is based on 'external file attributes'.
      Otherwise, it is true if size of data is 0 AND last character of entry's name is '/'.
      */

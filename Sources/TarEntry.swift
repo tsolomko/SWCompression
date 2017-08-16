@@ -44,7 +44,7 @@ public class TarEntry: ContainerEntry {
         return (paxPath ?? gnuLongName) ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
     }
 
-    /// True, if an entry is a directory.
+    /// True, if entry is a directory.
     public var isDirectory: Bool {
         return (type == .directory) || (type == .normal && size == 0 && name.characters.last == "/")
     }
@@ -77,57 +77,36 @@ public class TarEntry: ContainerEntry {
 
     /**
      File mode.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public let mode: Int?
 
     /**
      Owner's ID.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerID: Int?
 
     /**
      Owner's group ID.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var groupID: Int?
 
     /**
      The most recent modification time of the original file or directory.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var modificationTime: Date
 
     /**
      Type of entry.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public let type: EntryType
 
     /**
      Owner's user name.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerUserName: String?
 
     /**
      Owner's group name.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerGroupName: String?
 
