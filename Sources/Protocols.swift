@@ -41,6 +41,9 @@ public protocol ContainerEntry {
     /// Check if entry is a directory.
     var isDirectory: Bool { get }
 
+    var isLink: Bool { get }
+    var linkPath: String? { get }
+
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
