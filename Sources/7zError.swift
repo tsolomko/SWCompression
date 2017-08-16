@@ -5,7 +5,6 @@
 
 import Foundation
 
-// TODO: Check if every error is used.
 public enum SevenZipError: Error {
     case wrongSignature
     case wrongVersion

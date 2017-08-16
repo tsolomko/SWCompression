@@ -213,7 +213,6 @@ public class XZArchive: Archive {
         /// Should match the size of data after decompression.
         let uncompressedSize = blockFlags & 0x80 != 0 ? try pointerData.multiByteDecode() : -1
 
-        // TODO: First parse, then use.
         var filters: [(DataWithPointer) throws -> [UInt8]] = []
         for _ in 0..<numberOfFilters {
             let filterID = try pointerData.multiByteDecode()

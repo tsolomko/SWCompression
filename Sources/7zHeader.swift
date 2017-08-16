@@ -21,11 +21,7 @@ class SevenZipHeader {
         }
 
         if type == 0x03 {
-            // TODO: Do we support this?
-            // TODO: Or it can be more than one?
             throw SevenZipError.additionalStreamsNotSupported
-//            additionalStreams = try SevenZipStreamInfo(bitReader)
-//            type = bitReader.byte()
         }
 
         if type == 0x04 {
