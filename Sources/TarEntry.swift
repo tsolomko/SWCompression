@@ -168,13 +168,14 @@ public class TarEntry: ContainerEntry {
         var attributesDict = [FileAttributeKey: Any]()
 
         let blockStartIndex = pointerData.index
+
         // File name
         fileName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
         guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
-        let posixPermissions = octalPosixPermissions.octalToDecimal()
+        let posixPermissions = octalPosixPermissions.octalToDecimal() & 0xFFF
         attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
         mode = posixPermissions
 
