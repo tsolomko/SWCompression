@@ -44,12 +44,12 @@ Pod::Spec.new do |s|
 
   s.subspec 'BZip2' do |sp|
     sp.source_files = 'Sources/{BZip2,BZip2Error,Extensions,Protocols,CheckSums,DataWithPointer,BitReader,HuffmanTree,BitWriter}.swift'
-    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BZ2' }
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_BZ2' }
   end
 
   s.subspec 'LZMA' do |sp|
     sp.source_files = 'Sources/{LZMA*,Extensions,Protocols,DataWithPointer}.swift'
-    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_LZMA' }
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_LZMA' }
   end
 
   s.subspec 'XZ' do |sp|
@@ -60,7 +60,7 @@ Pod::Spec.new do |s|
   s.subspec 'ZIP' do |sp|
     sp.dependency 'SWCompression/Deflate'
     sp.source_files = 'Sources/{Zip*,CheckSums}.swift'
-    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMP_ZIP_POD_BUILD' }
+    sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_ZIP' }
   end
 
   s.subspec 'TAR' do |sp|

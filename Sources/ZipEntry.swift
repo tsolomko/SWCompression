@@ -128,7 +128,7 @@ public class ZipEntry: ContainerEntry {
             bitReader.align()
             pointerData.index = bitReader.index
         case 12:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
@@ -139,7 +139,7 @@ public class ZipEntry: ContainerEntry {
                 throw ZipError.compressionNotSupported
             #endif
         case 14:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
                 let lzmaDecoder = try LZMADecoder(pointerData)
                 try lzmaDecoder.decodeLZMA(uncompSize)
