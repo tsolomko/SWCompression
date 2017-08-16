@@ -205,6 +205,14 @@ public class ZipEntry: ContainerEntry {
             attributesDict[FileAttributeKey.modificationDate] = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
         }
 
+        // NTFS Extra Fields
+        if let mtime = Date(from: cdEntry.ntfsMtime) {
+            attributesDict[FileAttributeKey.modificationDate] = mtime
+        }
+        if let ctime = Date(from: cdEntry.ntfsCtime) {
+            attributesDict[FileAttributeKey.creationDate] = ctime
+        }
+
         // Size
         attributesDict[FileAttributeKey.size] = cdEntry.uncompSize
 
