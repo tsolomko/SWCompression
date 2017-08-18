@@ -248,14 +248,14 @@ public class XZArchive: Archive {
 
         var intResult = pointerData
         let compressedDataStart = pointerData.index
-        for filterIndex in 0..<numberOfFilters - 1 {
-            var arrayResult = try filters[numberOfFilters.toInt() - filterIndex.toInt() - 1](intResult)
+        for filterIndex in 0..<filtersCount - 1 {
+            var arrayResult = try filters[filtersCount.toInt() - filterIndex.toInt() - 1](intResult)
             intResult = DataWithPointer(array: &arrayResult)
         }
         guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart
             else { throw XZError.wrongDataSize }
 
-        let out = try filters[numberOfFilters.toInt() - 1](intResult)
+        let out = try filters[filtersCount.toInt() - 1](intResult)
         guard uncompressedSize < 0 || uncompressedSize == out.count
             else { throw XZError.wrongDataSize }
 
