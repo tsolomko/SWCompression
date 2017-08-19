@@ -35,14 +35,14 @@ class SevenZipHeader {
         }
 
         if type != 0x00 {
-            throw SevenZipError.wrongEnd
+            throw SevenZipError.internalStructureError
         }
     }
 
     convenience init(_ bitReader: BitReader, using streamInfo: SevenZipStreamInfo) throws {
         let folder = streamInfo.coderInfo.folders[0]
         guard let packInfo = streamInfo.packInfo
-            else { throw SevenZipError.noPackInfo }
+            else { throw SevenZipError.internalStructureError }
 
         let folderOffset = SevenZipContainer.signatureHeaderSize + packInfo.packPosition
         bitReader.index = folderOffset
@@ -51,7 +51,7 @@ class SevenZipHeader {
         let headerData = try folder.unpack(data: packedHeaderData)
 
         guard headerData.count == folder.unpackSize()
-            else { throw SevenZipError.wrongDataSize }
+            else { throw SevenZipError.wrongSize }
         if let crc = folder.crc {
             guard CheckSums.crc32(headerData) == crc
                 else { throw SevenZipError.wrongCRC }
@@ -60,7 +60,7 @@ class SevenZipHeader {
         let headerBitReader = BitReader(data: headerData, bitOrder: .straight)
 
         guard headerBitReader.byte() == 0x01
-            else { throw SevenZipError.wrongPropertyID }
+            else { throw SevenZipError.internalStructureError }
         try self.init(headerBitReader)
     }
 

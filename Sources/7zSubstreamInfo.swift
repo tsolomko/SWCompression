@@ -80,7 +80,7 @@ class SevenZipSubstreamInfo {
         }
 
         if type != 0x00 {
-            throw SevenZipError.wrongEnd
+            throw SevenZipError.internalStructureError
         }
     }
 

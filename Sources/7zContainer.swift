@@ -49,9 +49,9 @@ public class SevenZipContainer: Container {
                 // Without `SevenZipStreamInfo` and `SevenZipPackInfo` objects,
                 //  we cannot find file data location in container.
                 guard let streamInfo = header.mainStreams
-                    else { throw SevenZipError.noStreamFound }
+                    else { throw SevenZipError.internalStructureError }
                 guard let packInfo = streamInfo.packInfo
-                    else { throw SevenZipError.noPackInfoFound }
+                    else { throw SevenZipError.internalStructureError }
 
                 // SubstreamInfo is required to get files' data, and without it we can only return files' info.
                 // Additionally, `SevenZipEntry.data()` will throw `SevenZipError.dataIsUnavailable` 
@@ -64,7 +64,7 @@ public class SevenZipContainer: Container {
 
                 // Check if there is enough folders.
                 guard folderIndex < streamInfo.coderInfo.numFolders
-                    else { throw SevenZipError.notEnoughFolders }
+                    else { throw SevenZipError.internalStructureError }
 
                 /// Folder, which contains current file.
                 let folder = streamInfo.coderInfo.folders[folderIndex]
@@ -108,13 +108,13 @@ public class SevenZipContainer: Container {
                 // File's unpack size is required to proceed. 
                 // Next check ensures that we don't `unpackSizes` array's boundaries.
                 guard nonEmptyFileIndex < substreamInfo.unpackSizes.count
-                    else { throw SevenZipError.noFileSize }
+                    else { throw SevenZipError.internalStructureError }
 
                 let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
 
                 // Check, if we aren't about to read too much from a stream.
                 guard rawFileData.index + fileSize <= rawFileData.size
-                    else { throw SevenZipError.streamOverread }
+                    else { throw SevenZipError.internalStructureError }
 
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
 
@@ -137,7 +137,7 @@ public class SevenZipContainer: Container {
                 if fileInFolderCount >= folder.numUnpackSubstreams { // If we read all files in folder...
                     // We need to check folder's unpacked size as well as its CRC32 (if it is available).
                     guard folderUnpackSize == folder.unpackSize()
-                        else { throw SevenZipError.wrongDataSize }
+                        else { throw SevenZipError.wrongSize }
                     if let storedFolderCRC = folder.crc {
                         guard folderCRC == storedFolderCRC
                             else { throw SevenZipError.wrongCRC }
@@ -196,7 +196,7 @@ public class SevenZipContainer: Container {
 
         // Check archive version.
         guard bitReader.bytes(count: 2) == [0, 4] // 7zFormat.txt says it should be [0, 2] instead.
-            else { throw SevenZipError.wrongVersion }
+            else { throw SevenZipError.wrongFormatVersion }
 
         let startHeaderCRC = bitReader.uint32()
 
@@ -207,7 +207,7 @@ public class SevenZipContainer: Container {
 
         bitReader.index = 12
         guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
-            else { throw SevenZipError.wrongStartHeaderCRC }
+            else { throw SevenZipError.wrongCRC }
 
         // **Header**
         bitReader.index += nextHeaderOffset
@@ -229,17 +229,17 @@ public class SevenZipContainer: Container {
             header = try SevenZipHeader(bitReader)
             headerEndIndex = bitReader.index
         } else {
-            throw SevenZipError.wrongPropertyID
+            throw SevenZipError.internalStructureError
         }
 
         // Check header size
         guard headerEndIndex - headerStartIndex == nextHeaderSize
-            else { throw SevenZipError.wrongHeaderSize }
+            else { throw SevenZipError.wrongSize }
 
         // Check header CRC
         bitReader.index = headerStartIndex
         guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
-            else { throw SevenZipError.wrongHeaderCRC }
+            else { throw SevenZipError.wrongCRC }
 
         return header
     }

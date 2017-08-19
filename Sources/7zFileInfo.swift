@@ -45,12 +45,12 @@ class SevenZipFileInfo {
                 bitReader.align()
             case 0x0F: // EmptyFile
                 guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
-                    else { throw SevenZipError.wrongFileProperty }
+                    else { throw SevenZipError.internalStructureError }
                 isEmptyFile = bitReader.bits(count: emptyStreamCount.toInt())
                 bitReader.align()
             case 0x10: // AntiFile (used in backups to indicate that file was removed)
                 guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
-                    else { throw SevenZipError.wrongFileProperty }
+                    else { throw SevenZipError.internalStructureError }
                 isAntiFile = bitReader.bits(count: emptyStreamCount.toInt())
                 bitReader.align()
             case 0x11: // File name
@@ -58,7 +58,7 @@ class SevenZipFileInfo {
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
                 guard (propertySize - 1) & 1 == 0
-                    else { throw SevenZipError.wrongFileNameLength }
+                    else { throw SevenZipError.internalStructureError }
                 let names = bitReader.bytes(count: propertySize - 1)
                 var nextFile = 0
                 var nextName = 0
@@ -74,7 +74,7 @@ class SevenZipFileInfo {
                     }
                 }
                 guard nextName == names.count && nextFile == numFiles
-                    else { throw SevenZipError.wrongFileNames }
+                    else { throw SevenZipError.internalStructureError }
             case 0x12: // Creation time
                 let timesDefined = bitReader.defBits(count: numFiles)
                 bitReader.align()
@@ -130,11 +130,11 @@ class SevenZipFileInfo {
                 throw SevenZipError.startPosNotSupported
             case 0x19: // "Dummy". Used for alignment/padding.
                 guard bitReader.size - bitReader.index >= propertySize
-                    else { throw SevenZipError.incompleteProperty }
+                    else { throw SevenZipError.internalStructureError }
                 bitReader.index += propertySize
             default: // Unknown property
                 guard bitReader.size - bitReader.index >= propertySize
-                    else { throw SevenZipError.incompleteProperty }
+                    else { throw SevenZipError.internalStructureError }
                 unknownProperties.append(SevenZipProperty(propertyType, propertySize,
                                                           bitReader.bytes(count: propertySize)))
             }

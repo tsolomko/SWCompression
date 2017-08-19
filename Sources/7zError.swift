@@ -7,36 +7,19 @@ import Foundation
 
 public enum SevenZipError: Error {
     case wrongSignature
-    case wrongVersion
-    case wrongStartHeaderCRC
-    case wrongHeaderSize
-    case wrongPropertyID
-    case wrongHeaderCRC
-    case wrongExternal
-    case reservedCodecFlags
-    case unknownNumFolders
-    case wrongEnd
-    case externalNotSupported
-    case altMethodsNotSupported
-    case wrongStreamsNumber
-    case multiStreamNotSupported
-    case compressionNotSupported
-    case wrongDataSize
+    case wrongFormatVersion
+
     case wrongCRC
-    case wrongCoderProperties
-    case noPackInfo
-    case wrongFileProperty
-    case wrongFileNameLength
-    case wrongFileNames
+    case wrongSize
+
     case startPosNotSupported
-    case incompleteProperty
+    case externalNotSupported
+    case multiStreamNotSupported
     case additionalStreamsNotSupported
-    case noFileSize
-    case notEnoughFolders
-    case notEnoughStreams
-    case noStreamFound
-    case noPackInfoFound
-    case streamOverread
-    case dataIsUnavailable
+    case compressionNotSupported
     case encryptionNotSupported
+
+    case dataIsUnavailable
+
+    case internalStructureError
 }
