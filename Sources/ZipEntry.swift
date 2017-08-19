@@ -22,12 +22,7 @@ public class ZipEntry: ContainerEntry {
         return self.cdEntry.fileComment
     }
 
-    /**
-     File or directory attributes related to the file system of the container's creator.
-
-     - Note:
-     Will be renamed to `externalFileAttributes` in 4.0.
-     */
+    /// File or directory attributes related to the file system of the container's creator.
     public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
@@ -50,14 +45,17 @@ public class ZipEntry: ContainerEntry {
         }
     }
 
+    /// True, if entry is a symbolic link.
     public let isLink: Bool
 
+    /// Path to a linked file for symbolic link entry.
     public lazy var linkPath: String? = {
         guard self.isLink else { return nil }
         guard let entryData = try? self.data() else { return nil }
         return String(data: entryData, encoding: .utf8)
     }()
 
+    /// True if entry is likely to be text or ASCII file.
     public var isTextFile: Bool {
         return cdEntry.internalFileAttributes & 0x1 != 0
     }
@@ -65,9 +63,6 @@ public class ZipEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-
-     - Note:
-     Will be renamed in 4.0.
 
      ## Possible attributes:
 

@@ -8,12 +8,7 @@ import Foundation
 /// Represents either a file or directory entry in TAR container.
 public class TarEntry: ContainerEntry {
 
-    /**
-     Represents a type of an entry.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. `FileAttributeType` values will be used instead.
-     */
+    /// Represents a type of an entry.
     public enum EntryType: String {
         /// Normal file.
         case normal = "0"
@@ -55,9 +50,6 @@ public class TarEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-
-     - Note:
-     Will be renamed in 4.0.
 
      ## Possible attributes:
 
@@ -130,9 +122,10 @@ public class TarEntry: ContainerEntry {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
+    /// True if entry is a symbolic link.
     public let isLink: Bool
 
-    /// Path to a linked file.
+    /// Path to a linked file for symbolic link entry.
     public var linkPath: String? {
         return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
     }
