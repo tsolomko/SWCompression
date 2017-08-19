@@ -5,27 +5,54 @@
 
 import Foundation
 
+/// Represents an entry in 7-Zip container.
 public class SevenZipEntry: ContainerEntry {
 
+    /// Various information about entry.
     public let info: SevenZipEntryInfo
 
+    /// Entry's name.
     public var name: String {
         return info.name ?? ""
     }
 
+    /// Entry's data size.
     public var size: Int {
         return info.size ?? 0
     }
 
+    /// True, if entry is a directory.
     public var isDirectory: Bool {
         return info.isDirectory
     }
 
+    /// True, if entry is a symbolic link.
     public let isLink: Bool
+
+    /// Path to a linked file for symbolic link entry.
     public let linkPath: String?
 
+    /**
+     Provides a dictionary with various attributes of the entry.
+     `FileAttributeKey` values are used as dictionary keys.
+
+     ## Possible attributes:
+
+     - `FileAttributeKey.posixPermissions`,
+     - `FileAttributeKey.size`,
+     - `FileAttributeKey.modificationDate`,
+     - `FileAttributeKey.creationDate`,
+     - `FileAttributeKey.type`,
+     - `FileAttributeKey.appendOnly`.
+
+     Most modern TAR containers are in UStar format.
+     */
     public var entryAttributes: [FileAttributeKey: Any]
 
+    /**
+     True, if data for entry is available. 
+     It might not be depending on the content of the container.
+     */
     public let dataIsAvailable: Bool
 
     private let dataObject: Data?
@@ -104,6 +131,11 @@ public class SevenZipEntry: ContainerEntry {
         self.entryAttributes = attributesDict
     }
 
+    /**
+     Returns data associated with this entry.
+     
+     - Throws: `SevenZipError.dataIsUnavailable` if data for entry isn't available.
+     */
     public func data() throws -> Data {
         if let data = dataObject {
             return data

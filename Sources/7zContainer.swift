@@ -5,10 +5,27 @@
 
 import Foundation
 
+/// Provides open functions for 7-Zip containers.
 public class SevenZipContainer: Container {
 
     static let signatureHeaderSize = 32
 
+    /**
+     Processes 7-Zip container and returns an array of `ContainerEntry` (which are actually `SevenZipEntry`).
+
+     - Important: The order of entries is defined by 7-Zip container and,
+     particularly, by the creator of a given 7-Zip container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: 7-Zip container's data.
+
+     - Throws: `SevenZipError` or any other error associated with compression type,
+     depending on the type of the problem.
+     It may indicate that either container is damaged or it might not be 7-Zip container at all.
+
+     - Returns: Array of `SevenZipEntry` as an array of `ContainerEntry`.
+     */
     public static func open(container data: Data) throws -> [ContainerEntry] {
         var entries = [SevenZipEntry]()
         guard let header = try readHeader(data)
@@ -60,6 +77,7 @@ public class SevenZipContainer: Container {
                     info = SevenZipEntryInfo(file)
                     data = nil
                     continue
+                    // FIXME: Possible problems, because we didn't update counters for folders and files.
                 }
 
                 // Check if there is enough folders.
@@ -161,6 +179,24 @@ public class SevenZipContainer: Container {
         return entries
     }
 
+    /**
+     Processes ZIP container and returns an array of `SevenZipEntryInfo`,
+     which contain various information about container's entry.
+     This is performed without decompressing entries' data.
+
+     - Important: The order of entries is defined by 7-Zip container and,
+     particularly, by the creator of a given 7-Zip container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: 7-Zip container's data.
+
+     - Throws: `SevenZipError` or any other error associated with compression type,
+     depending on the type of the problem.
+     It may indicate that either container is damaged or it might not be 7-Zip container at all.
+
+     - Returns: Array of `SevenZipEntryInfo`.
+     */
     public static func info(container data: Data) throws -> [SevenZipEntryInfo] {
         var entryInfos = [SevenZipEntryInfo]()
         guard let header = try readHeader(data)
