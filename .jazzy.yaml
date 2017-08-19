@@ -21,25 +21,29 @@ custom_categories:
       children:
       - GzipArchive
       - GzipHeader
+      - XZArchive
       - ZlibArchive
       - ZlibHeader
-      - XZArchive
     - name: Containers
       children:
-      - ZipContainer
-      - ZipEntry
+      - SevenZipContainer
+      - SevenZipEntry
+      - SevenZipEntryInfo
       - TarContainer
       - TarEntry
+      - ZipContainer
+      - ZipEntry
     - name: Errors
       children:
       - BZip2Error
       - DeflateError
-      - GzipError
-      - LZMA2Error
       - LZMAError
+      - LZMA2Error
+      - SevenZipError
       - TarError
-      - XZError
       - ZipError
+      - GzipError
+      - XZError
       - ZlibError
     - name: Protocols
       children:
