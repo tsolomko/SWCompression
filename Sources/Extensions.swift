@@ -44,7 +44,7 @@ extension UInt32 {
     func reverseBytes() -> UInt32 {
         var result: UInt32 = 0
         for i: UInt32 in 0..<4 {
-            let byte = ((self & (0xFF << (i * 8))) >> (i * 8))
+            let byte = (self & (0xFF << (i * 8))) >> (i * 8)
             result += byte << (8 * (3 - i))
         }
         return result
@@ -64,6 +64,22 @@ extension Int {
 
     func toUInt8() -> UInt8 {
         return UInt8(truncatingBitPattern: UInt(self))
+    }
+
+}
+
+extension Date {
+
+    init?(from ntfsTime: UInt64?) {
+        if let time = ntfsTime,
+            let ntfsStartDate = DateComponents(calendar: Calendar(identifier: .iso8601),
+                                               timeZone: TimeZone(abbreviation: "UTC"),
+                                               year: 1601, month: 1, day: 1,
+                                               hour: 0, minute: 0, second: 0).date {
+            self.init(timeInterval: TimeInterval(time) / 10_000_000, since: ntfsStartDate)
+        } else {
+            return nil
+        }
     }
 
 }

@@ -85,6 +85,9 @@
                 <a class="nav-group-task-link" href="Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/XZArchive.html">XZArchive</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/ZlibArchive.html">ZlibArchive</a>
               </li>
               <li class="nav-group-task">
@@ -96,19 +99,28 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader/CompressionLevel.html">– CompressionLevel</a>
               </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/XZArchive.html">XZArchive</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Containers.html">Containers</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/ZipContainer.html">ZipContainer</a>
+                <a class="nav-group-task-link" href="Classes/SevenZipContainer.html">SevenZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/ZipEntry.html">ZipEntry</a>
+                <a class="nav-group-task-link" href="Classes/SevenZipEntry.html">SevenZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SevenZipEntryInfo/Permissions.html">– Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SevenZipEntryInfo/DosAttributes.html">– DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SevenZipEntryInfo/UnixType.html">– UnixType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/TarContainer.html">TarContainer</a>
@@ -118,6 +130,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/ZipEntry.html">ZipEntry</a>
               </li>
             </ul>
           </li>
@@ -131,22 +149,25 @@
                 <a class="nav-group-task-link" href="Enums/DeflateError.html">DeflateError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/GzipError.html">GzipError</a>
+                <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/LZMA2Error.html">LZMA2Error</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
+                <a class="nav-group-task-link" href="Enums/SevenZipError.html">SevenZipError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/TarError.html">TarError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
+                <a class="nav-group-task-link" href="Enums/ZipError.html">ZipError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/ZipError.html">ZipError</a>
+                <a class="nav-group-task-link" href="Enums/GzipError.html">GzipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/ZlibError.html">ZlibError</a>
@@ -183,7 +204,7 @@
 <a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a>
 <a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg" alt="Swift 3"></a>
 <a href="https://travis-ci.org/tsolomko/SWCompression"><img src="https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop" alt="Build Status"></a>
-<a href="https://codecov.io/gh/tsolomko/SWCompression"><img src="https://codecov.io/gh/tsolomko/SWCompression/branch/develop/graph/badge.svg" alt="codecov"></a></p>
+<a href="https://codeclimate.com/github/tsolomko/SWCompression/coverage"><img src="https://codeclimate.com/github/tsolomko/SWCompression/badges/coverage.svg" alt="Test Coverage"></a></p>
 
 <p><a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/v/SWCompression.svg" alt="CocoaPods"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
@@ -213,6 +234,7 @@ And yes, it is also in Objective-C.</p>
 <ul>
 <li>ZIP</li>
 <li>TAR</li>
+<li>7-Zip</li>
 </ul></li>
 <li>Decompression algorithms:
 
@@ -257,6 +279,7 @@ Available subspecs:</p>
 <li>SWCompression/BZip2</li>
 <li>SWCompression/ZIP</li>
 <li>SWCompression/TAR</li>
+<li>SWCompression/SevenZip</li>
 </ul>
 
 <p>You can add some or all of them instead of <code>pod &#39;SWCompression&#39;</code></p>
@@ -285,17 +308,41 @@ Available subspecs:</p>
 </code></pre>
 
 <p>More info about SPM you can find at <a href="https://github.com/apple/swift-package-manager/tree/master/Documentation">Swift Package Manager&rsquo;s Documentation</a>.</p>
-<h2 id='swcompression-zip-and-compression-methods' class='heading'>SWCompression/ZIP and compression methods</h2>
+<h2 id='options-for-cocoapods-users' class='heading'>Options for CocoaPods users</h2>
 
-<p>Deflate is a default compression method of ZIP containers.</p>
+<p>Both ZIP and 7-Zip containers have compression method
+which is most likely to be used when compressing files into them.
+This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
+Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
+and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.</p>
 
-<p>This means, that if you use CocoaPods, when installing SWCompression/ZIP it will install SWCompression/Deflate as a dependency.</p>
+<p>But both these containers support other compression methods,
+some of them are implemented in SWCompression.
+For CocoaPods configurations some sort of &lsquo;optional dependecies&rsquo; are provided for such compression methods.</p>
 
-<p>However, ZIP containers can also support LZMA and BZip2.
-So if you want to enable them in your Pods configuration you need to include SWCompression/LZMA and/or SWCompression/Deflate.</p>
+<p>&lsquo;Optional dependency&rsquo; in this context means
+that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
+only if a corresponding subspec is expicitly specified in your Podfile and installed.</p>
 
-<p>If you use Carthage or Swift Package Manager you always have the full package,
-and ZIP will be built with both BZip2 and LZMA support.</p>
+<p><strong>List of &lsquo;optional dependecies&rsquo;.</strong></p>
+
+<p>For SWCompression/ZIP:</p>
+
+<ul>
+<li>SWCompression/BZip2</li>
+<li>SWCompression/LZMA</li>
+</ul>
+
+<p>For SWCompression/SevenZip:</p>
+
+<ul>
+<li>SWCompression/BZip2</li>
+<li>SWCompression/Deflate</li>
+</ul>
+
+<p><strong>Note:</strong> If you use Carthage or Swift Package Manager you always have the full package,
+and ZIP will be built with both additional BZip2 and LZMA support
+as well as 7-Zip will be build with both additional Deflate and BZip2 support.</p>
 <h2 id='usage' class='heading'>Usage</h2>
 <h4 id='basics' class='heading'>Basics</h4>
 
@@ -322,7 +369,7 @@ This documentation can be found at its own <a href="http://tsolomko.github.io/SW
 <h4 id='handling-errors' class='heading'>Handling Errors</h4>
 
 <p>If you look at list of available error types and their cases, you may be frightened by their number.
-However, most of these cases (such as <code>XZError.WrongMagic</code>) exist for diagnostic purposes.</p>
+However, most of these cases (such as <code>XZError.wrongMagic</code>) exist for diagnostic purposes.</p>
 
 <p>Thus, you only need to handle the most common type of error for your archive/algorithm.
 For example:</p>
@@ -374,9 +421,9 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 <h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>
-<li>Better Deflate compression.</li>
-<li>7zip containers.</li>
 <li>BZip2 compression.</li>
+<li>Container API rework.</li>
+<li>Better Deflate compression.</li>
 <li>Something else&hellip;</li>
 </ul>
 <h2 id='references' class='heading'>References</h2>
@@ -395,6 +442,7 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 <li><a href="https://en.wikipedia.org/wiki/Tar_(computing)">Wikipedia article about TAR</a></li>
 <li><a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html">Pax specification</a></li>
 <li><a href="https://www.gnu.org/software/tar/manual/html_node/Standard.html">Basic TAR specification</a></li>
+<li><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a></li>
 </ul>
 
           </div>

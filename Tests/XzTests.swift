@@ -10,31 +10,21 @@ class XZTests: XCTestCase {
 
     static let testType: String = "xz"
 
-    func perform(test testName: String) {
+    func perform(test testName: String) throws {
         guard let testURL = Constants.url(forTest: testName, withType: XZTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let decompressedData = try? XZArchive.unarchive(archive: testData) else {
-            XCTFail("Unable to decompress.")
-            return
-        }
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let decompressedData = try XZArchive.unarchive(archive: testData)
 
         guard let answerURL = Constants.url(forAnswer: testName) else {
             XCTFail("Unable to get answer's URL.")
             return
         }
 
-        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load answer.")
-            return
-        }
+        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
 
@@ -46,59 +36,52 @@ class XZTests: XCTestCase {
         #endif
     }
 
-    func testXz1() {
-        self.perform(test: "test1")
+    func testXz1() throws {
+        try self.perform(test: "test1")
     }
 
-    func testXz2() {
-        self.perform(test: "test2")
+    func testXz2() throws {
+        try self.perform(test: "test2")
     }
 
-    func testXz3() {
-        self.perform(test: "test3")
+    func testXz3() throws {
+        try self.perform(test: "test3")
     }
 
-    func testXz4() {
+    func testXz4() throws {
         // This test contains padding!
-        self.perform(test: "test4")
+        try self.perform(test: "test4")
     }
 
-    func testXz5() {
-        self.perform(test: "test5")
+    func testXz5() throws {
+        try self.perform(test: "test5")
     }
 
-    func testXz6() {
-        self.perform(test: "test6")
+    func testXz6() throws {
+        try self.perform(test: "test6")
     }
 
-    func testXz7() {
-        self.perform(test: "test7")
+    func testXz7() throws {
+        try self.perform(test: "test7")
     }
 
-    func testXz8() {
-        self.perform(test: "test8")
+    func testXz8() throws {
+        try self.perform(test: "test8")
     }
 
-    func testXz9() {
-        self.perform(test: "test9")
+    func testXz9() throws {
+        try self.perform(test: "test9")
     }
 
-    func testMultiUnarchive() {
+    func testMultiUnarchive() throws {
         // Doesn't contain any padding.
         guard let testURL = Constants.url(forTest: "test_multi", withType: XZTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let members = try? XZArchive.multiUnarchive(archive: testData) else {
-            XCTFail("Unable to unarchive.")
-            return
-        }
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let members = try XZArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 4)
 
@@ -108,16 +91,13 @@ class XZTests: XCTestCase {
                 return
             }
 
-            guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-                XCTFail("Unable to load answer.")
-                return
-            }
+            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(members[i - 1], answerData)
         }
     }
 
-    func testMultiUnarchiveWithPadding() {
+    func testMultiUnarchiveWithPadding() throws {
         // After first stream - no padding.
         // After second - 4 bytes of padding.
         // Third - 8 bytes.
@@ -128,15 +108,8 @@ class XZTests: XCTestCase {
             return
         }
 
-        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let members = try? XZArchive.multiUnarchive(archive: testData) else {
-            XCTFail("Unable to unarchive.")
-            return
-        }
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let members = try XZArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 4)
 
@@ -146,30 +119,20 @@ class XZTests: XCTestCase {
                 return
             }
 
-            guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-                XCTFail("Unable to load answer.")
-                return
-            }
+            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(members[i - 1], answerData)
         }
     }
 
-    func testMultiUnarchiveRedundant1() {
+    func testMultiUnarchiveRedundant1() throws {
         guard let testURL = Constants.url(forTest: "test4", withType: XZTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let members = try? XZArchive.multiUnarchive(archive: testData) else {
-            XCTFail("Unable to unarchive.")
-            return
-        }
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let members = try XZArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 1)
 
@@ -178,29 +141,19 @@ class XZTests: XCTestCase {
             return
         }
 
-        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load answer.")
-            return
-        }
+        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(members[0], answerData)
     }
 
-    func testMultiUnarchiveRedundant2() {
+    func testMultiUnarchiveRedundant2() throws {
         guard let testURL = Constants.url(forTest: "test1", withType: XZTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }
 
-        guard let testData = try? Data(contentsOf: testURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load test archive.")
-            return
-        }
-
-        guard let members = try? XZArchive.multiUnarchive(archive: testData) else {
-            XCTFail("Unable to unarchive.")
-            return
-        }
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+        let members = try XZArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 1)
 
@@ -209,10 +162,7 @@ class XZTests: XCTestCase {
             return
         }
 
-        guard let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe) else {
-            XCTFail("Unable to load answer.")
-            return
-        }
+        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(members[0], answerData)
     }

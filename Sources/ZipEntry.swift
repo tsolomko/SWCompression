@@ -10,7 +10,7 @@ public class ZipEntry: ContainerEntry {
 
     private let cdEntry: ZipCentralDirectoryEntry
     private var localHeader: ZipLocalHeader?
-    private var pointerData: DataWithPointer
+    private let containerData: Data
 
     /// Name of the file or directory.
     public var name: String {
@@ -22,12 +22,7 @@ public class ZipEntry: ContainerEntry {
         return self.cdEntry.fileComment
     }
 
-    /**
-     File or directory attributes related to the file system of the container's creator.
-
-     - Note:
-     Will be renamed to `externalFileAttributes` in 4.0.
-     */
+    /// File or directory attributes related to the file system of the container's creator.
     public var attributes: UInt32 {
         return self.cdEntry.externalFileAttributes
     }
@@ -38,7 +33,7 @@ public class ZipEntry: ContainerEntry {
     }
 
     /**
-     True, if an entry is a directory.
+     True, if entry is a directory.
      For MS-DOS and UNIX-like container creator's OS, the result is based on 'external file attributes'.
      Otherwise, it is true if size of data is 0 AND last character of entry's name is '/'.
      */
@@ -50,12 +45,24 @@ public class ZipEntry: ContainerEntry {
         }
     }
 
+    /// True, if entry is a symbolic link.
+    public let isLink: Bool
+
+    /// Path to a linked file for symbolic link entry.
+    public lazy var linkPath: String? = {
+        guard self.isLink else { return nil }
+        guard let entryData = try? self.data() else { return nil }
+        return String(data: entryData, encoding: .utf8)
+    }()
+
+    /// True if entry is likely to be text or ASCII file.
+    public var isTextFile: Bool {
+        return cdEntry.internalFileAttributes & 0x1 != 0
+    }
+
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-
-     - Note:
-     Will be renamed in 4.0.
 
      ## Possible attributes:
 
@@ -75,6 +82,7 @@ public class ZipEntry: ContainerEntry {
      */
     public func data() throws -> Data {
         // Now, let's move to the location of local header.
+        let pointerData = DataWithPointer(data: self.containerData)
         pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
 
         if localHeader == nil {
@@ -112,23 +120,25 @@ public class ZipEntry: ContainerEntry {
             fileBytes = try Deflate.decompress(bitReader)
             // Sometimes pointerData stays in not-aligned state after deflate decompression.
             // Following line ensures that this is not the case.
-            bitReader.skipUntilNextByte()
+            bitReader.align()
             pointerData.index = bitReader.index
         case 12:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_BZ2)
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
                 fileBytes = try BZip2.decompress(bitReader)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
                 pointerData.index = bitReader.index
             #else
                 throw ZipError.compressionNotSupported
             #endif
         case 14:
-            #if (!SWCOMP_ZIP_POD_BUILD) || (SWCOMP_ZIP_POD_BUILD && SWCOMP_ZIP_POD_LZMA)
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-                fileBytes = try LZMA.decompress(pointerData, uncompSize)
+                let lzmaDecoder = try LZMADecoder(pointerData)
+                try lzmaDecoder.decodeLZMA(uncompSize)
+                fileBytes = lzmaDecoder.out
             #else
                 throw ZipError.compressionNotSupported
             #endif
@@ -161,7 +171,7 @@ public class ZipEntry: ContainerEntry {
 
     init(_ cdEntry: ZipCentralDirectoryEntry, _ pointerData: DataWithPointer) {
         self.cdEntry = cdEntry
-        self.pointerData = pointerData
+        self.containerData = pointerData.data
 
         var attributesDict = [FileAttributeKey: Any]()
 
@@ -188,6 +198,14 @@ public class ZipEntry: ContainerEntry {
         // Extended Timestamp
         if let mtimestamp = cdEntry.modificationTimestamp {
             attributesDict[FileAttributeKey.modificationDate] = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
+        }
+
+        // NTFS Extra Fields
+        if let mtime = Date(from: cdEntry.ntfsMtime) {
+            attributesDict[FileAttributeKey.modificationDate] = mtime
+        }
+        if let ctime = Date(from: cdEntry.ntfsCtime) {
+            attributesDict[FileAttributeKey.creationDate] = ctime
         }
 
         // Size
@@ -238,6 +256,7 @@ public class ZipEntry: ContainerEntry {
         }
 
         self.entryAttributes = attributesDict
+        self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
     }
 
 }

@@ -1,4 +1,17 @@
 # Changelog
+v3.3.0
+----------------
+- Introduced support for 7-Zip containers.
+- Added `TarEntry.isLink`.
+- Added `ZipEntry.isLink` and `ZipEntry.linkPath`.
+- Added `ZipEntry.isTextFile`.
+- Added `ContainerEntry.isLink` and `ContainerEntry.linkPath`.
+- Added support for NTFS extra fields in ZIP containers.
+- Detection of UTF-8 in ZIP string fields now favors Code Page 437 more.
+- Renamed build flags included in Cocoapods configurations.
+- Fixed multithreading problems for `ZipEntry.data()`.
+- Fixed `posixPermissions` in `TarEntry.entryAttributes` containing UNIX type byte in some cases.
+
 v3.2.0
 ----------------
 - Split source files.

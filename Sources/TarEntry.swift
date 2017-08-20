@@ -8,12 +8,7 @@ import Foundation
 /// Represents either a file or directory entry in TAR container.
 public class TarEntry: ContainerEntry {
 
-    /**
-     Represents a type of an entry.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. `FileAttributeType` values will be used instead.
-     */
+    /// Represents a type of an entry.
     public enum EntryType: String {
         /// Normal file.
         case normal = "0"
@@ -44,7 +39,7 @@ public class TarEntry: ContainerEntry {
         return (paxPath ?? gnuLongName) ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
     }
 
-    /// True, if an entry is a directory.
+    /// True, if entry is a directory.
     public var isDirectory: Bool {
         return (type == .directory) || (type == .normal && size == 0 && name.characters.last == "/")
     }
@@ -55,9 +50,6 @@ public class TarEntry: ContainerEntry {
     /**
      Provides a dictionary with various attributes of the entry.
      `FileAttributeKey` values are used as dictionary keys.
-
-     - Note:
-     Will be renamed in 4.0.
 
      ## Possible attributes:
 
@@ -77,57 +69,36 @@ public class TarEntry: ContainerEntry {
 
     /**
      File mode.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public let mode: Int?
 
     /**
      Owner's ID.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerID: Int?
 
     /**
      Owner's group ID.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var groupID: Int?
 
     /**
      The most recent modification time of the original file or directory.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var modificationTime: Date
 
     /**
      Type of entry.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public let type: EntryType
 
     /**
      Owner's user name.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerUserName: String?
 
     /**
      Owner's group name.
-
-     - Warning:
-     Deprecated and will be removed in 4.0. Use `entryAttributes` instead.
      */
     public private(set) var ownerGroupName: String?
 
@@ -151,7 +122,10 @@ public class TarEntry: ContainerEntry {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
-    /// Path to a linked file.
+    /// True if entry is a symbolic link.
+    public let isLink: Bool
+
+    /// Path to a linked file for symbolic link entry.
     public var linkPath: String? {
         return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
     }
@@ -187,13 +161,15 @@ public class TarEntry: ContainerEntry {
         var attributesDict = [FileAttributeKey: Any]()
 
         let blockStartIndex = pointerData.index
+
         // File name
         fileName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
         guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
-        let posixPermissions = octalPosixPermissions.octalToDecimal()
+        // Sometime file mode also contains unix type, so we need to filter it out.
+        let posixPermissions = octalPosixPermissions.octalToDecimal() & 0xFFF
         attributesDict[FileAttributeKey.posixPermissions] = posixPermissions
         mode = posixPermissions
 
@@ -355,6 +331,7 @@ public class TarEntry: ContainerEntry {
         }
 
         self.entryAttributes = attributesDict
+        self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
 
         // File data
         pointerData.index = blockStartIndex + 512
@@ -363,7 +340,7 @@ public class TarEntry: ContainerEntry {
         pointerData.index += size.roundTo512()
     }
 
-    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String : String]) throws {
+    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String: String]) throws {
         if let headerString = header {
             let headerEntries = headerString.components(separatedBy: "\n")
             for headerEntry in headerEntries {

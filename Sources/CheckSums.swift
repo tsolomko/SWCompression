@@ -18,8 +18,8 @@ struct CheckSums {
         return ~crc
     }
 
-    static func crc32(_ data: Data) -> UInt32 {
-        var crc: UInt32 = ~0
+    static func crc32(_ data: Data, prevValue: UInt32 = 0) -> UInt32 {
+        var crc = ~prevValue
         for i in 0..<data.count {
             let index = (crc & 0xFF) ^ (UInt32(data[i]))
             crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)

@@ -25,6 +25,10 @@ struct ZipLocalHeader {
     private(set) var accessTimestamp: UInt32?
     private(set) var creationTimestamp: UInt32?
 
+    private(set) var ntfsMtime: UInt64?
+    private(set) var ntfsAtime: UInt64?
+    private(set) var ntfsCtime: UInt64?
+
     let headerSize: Int
 
     init(_ pointerData: DataWithPointer) throws {
@@ -78,6 +82,21 @@ struct ZipLocalHeader {
                 }
                 if flags & 0x04 != 0 {
                     self.creationTimestamp = pointerData.uint32()
+                }
+            case 0x000a: // NTFS Extra Fields
+                let ntfsExtraFieldsStartIndex = pointerData.index
+                pointerData.index += 4 // Skipping reserved bytes.
+                while pointerData.index - ntfsExtraFieldsStartIndex < size {
+                    let tag = pointerData.uint16()
+                    pointerData.index += 2 // Skipping size of attributes for this tag.
+                    switch tag {
+                    case 0x0001:
+                        self.ntfsMtime = pointerData.uint64()
+                        self.ntfsAtime = pointerData.uint64()
+                        self.ntfsCtime = pointerData.uint64()
+                    default:
+                        break
+                    }
                 }
             default:
                 pointerData.index += size

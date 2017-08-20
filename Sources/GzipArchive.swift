@@ -48,7 +48,7 @@ public class GzipArchive: Archive {
      Multi-member GZip archives are essentially several GZip archives following each other in a single file.
 
      - Note: `wrongCRC` error contains only last processed member's data as their associated value
-     instead of all successfully processed members. 
+     instead of all successfully processed members.
      This is a known issue and it will be fixed in future major version
      because solution requires backwards-incompatible API changes.
 
@@ -77,6 +77,8 @@ public class GzipArchive: Archive {
 
         let memberData = Data(bytes: try Deflate.decompress(bitReader))
 
+        bitReader.align()
+
         let crc32 = bitReader.uint32()
         guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
 
@@ -90,7 +92,7 @@ public class GzipArchive: Archive {
      Archives `data` into GZip archive, using various specified options.
      Data will be also compressed with Deflate algorithm.
      It will be also specified in archive's header that the compressor used the slowest Deflate algorithm.
-     
+
      If during compression something goes wrong `DeflateError` will be thrown.
      If either `fileName` or `comment` cannot be encoded with ISO Latin-1 encoding,
      then `GzipError.cannotEncodeISOLatin1` will be thrown.

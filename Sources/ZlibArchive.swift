@@ -14,7 +14,7 @@ public class ZlibArchive: Archive {
      If data passed is not actually a Zlib archive, `ZlibError` will be thrown.
 
      If data in archive is not actually compressed with Deflate algorithm, `DeflateError` will be thrown.
-    
+
      - Note: This function is specification compliant.
 
      - Parameter archive: Data archived with Zlib.
@@ -40,7 +40,7 @@ public class ZlibArchive: Archive {
     }
 
     /**
-     Archives `data` into Zlib archive. 
+     Archives `data` into Zlib archive.
      Data will be also compressed with Deflate algorithm.
      It will also be specified in archive's header that the compressor used the slowest Deflate algorithm.
 

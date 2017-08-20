@@ -29,6 +29,10 @@ struct ZipCentralDirectoryEntry {
 
     private(set) var modificationTimestamp: UInt32?
 
+    private(set) var ntfsMtime: UInt64?
+    private(set) var ntfsAtime: UInt64?
+    private(set) var ntfsCtime: UInt64?
+
     init(_ pointerData: DataWithPointer, _ currentDiskNumber: UInt32) throws {
         // Check signature.
         guard pointerData.uint32() == 0x02014b50
@@ -89,6 +93,21 @@ struct ZipCentralDirectoryEntry {
                 guard flags & 0xF8 == 0 else { break }
                 if flags & 0x01 != 0 {
                     self.modificationTimestamp = pointerData.uint32()
+                }
+            case 0x000a: // NTFS Extra Fields
+                let ntfsExtraFieldsStartIndex = pointerData.index
+                pointerData.index += 4 // Skipping reserved bytes.
+                while pointerData.index - ntfsExtraFieldsStartIndex < size {
+                    let tag = pointerData.uint16()
+                    pointerData.index += 2 // Skipping size of attributes for this tag.
+                    switch tag {
+                    case 0x0001:
+                        self.ntfsMtime = pointerData.uint64()
+                        self.ntfsAtime = pointerData.uint64()
+                        self.ntfsCtime = pointerData.uint64()
+                    default:
+                        break
+                    }
                 }
             default:
                 pointerData.index += size

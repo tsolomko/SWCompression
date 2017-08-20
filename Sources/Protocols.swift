@@ -38,8 +38,14 @@ public protocol ContainerEntry {
     /// Retrieve size of the entry's data from the container.
     var size: Int { get }
 
-    /// Check if entry is a directory.
+    /// True, if entry is a directory.
     var isDirectory: Bool { get }
+
+    /// True, if entry is a symbolic link.
+    var isLink: Bool { get }
+
+    /// Path to a linked file for symbolic link entry.
+    var linkPath: String? { get }
 
     /**
      Provides a dictionary with various attributes of the entry.
