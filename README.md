@@ -32,6 +32,7 @@ Features
 - Containers:
   - ZIP
   - TAR
+  - 7-Zip
 - Decompression algorithms:
   - LZMA/LZMA2
   - Deflate
@@ -66,6 +67,7 @@ Available subspecs:
   - SWCompression/BZip2
   - SWCompression/ZIP
   - SWCompression/TAR
+  - SWCompression/SevenZip
 
 You can add some or all of them instead of `pod 'SWCompression'`
 
@@ -96,17 +98,33 @@ let package = Package(
 
 More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
-SWCompression/ZIP and compression methods
------------------------------------------
-Deflate is a default compression method of ZIP containers.
+Options for CocoaPods users
+---------------------------
+Both ZIP and 7-Zip containers have compression method
+which is most likely to be used when compressing files into them.
+This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
+Thus, 'SWCompression/ZIP' subspec have 'SWCompression/Deflate' subspec as a dependency
+and 'SWCompression/LZMA' subspec is a dependency for 'SWCompression/SevenZip'.
 
-This means, that if you use CocoaPods, when installing SWCompression/ZIP it will install SWCompression/Deflate as a dependency.
+But both these containers support other compression methods,
+some of them are implemented in SWCompression.
+For CocoaPods configurations some sort of 'optional dependecies' are provided for such compression methods.
 
-However, ZIP containers can also support LZMA and BZip2.
-So if you want to enable them in your Pods configuration you need to include SWCompression/LZMA and/or SWCompression/Deflate.
+'Optional dependency' in this context means
+that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
+only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
-If you use Carthage or Swift Package Manager you always have the full package,
-and ZIP will be built with both BZip2 and LZMA support.
+__List of 'optional dependecies'.__
+For SWCompression/ZIP:
+  - SWCompression/BZip2
+  - SWCompression/LZMA
+For SWCompression/SevenZip:
+  - SWCompression/BZip2
+  - SWCompression/Deflate
+
+__Note:__ If you use Carthage or Swift Package Manager you always have the full package,
+and ZIP will be built with both additional BZip2 and LZMA support
+as well as 7-Zip will be build with both additional Deflate and BZip2 support.
 
 Usage
 -----
@@ -138,7 +156,7 @@ This documentation can be found at its own [website](http://tsolomko.github.io/S
 
 #### Handling Errors
 If you look at list of available error types and their cases, you may be frightened by their number.
-However, most of these cases (such as `XZError.WrongMagic`) exist for diagnostic purposes.
+However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
 
 Thus, you only need to handle the most common type of error for your archive/algorithm.
 For example:
@@ -193,9 +211,9 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 
 Future plans
 -------------
-- Better Deflate compression.
-- 7zip containers.
 - BZip2 compression.
+- Container API rework.
+- Better Deflate compression.
 - Something else...
 
 References
