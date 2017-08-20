@@ -30,13 +30,13 @@ public class BZip2: DecompressionAlgorithm {
         /// An array for storing output data
         var out = [UInt8]()
 
-        let magic = bitReader.intFromBits(count: 16)
-        guard magic == 0x425a else { throw BZip2Error.wrongMagic }
+        let magic = bitReader.uint16()
+        guard magic == 0x5a42 else { throw BZip2Error.wrongMagic }
 
-        let method = bitReader.intFromBits(count: 8)
+        let method = bitReader.byte()
         guard method == 104 else { throw BZip2Error.wrongCompressionMethod }
 
-        var blockSize = bitReader.intFromBits(count: 8)
+        var blockSize = bitReader.byte()
         if blockSize >= 49 && blockSize <= 57 {
             blockSize -= 48
         } else {

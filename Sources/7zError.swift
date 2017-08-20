@@ -5,39 +5,42 @@
 
 import Foundation
 
-// TODO: Check if every error is used.
+/**
+ Represents an error, which happened during processing 7-Zip container.
+ It may indicate that either container is damaged or it might not be 7-Zip container at all.
+ */
 public enum SevenZipError: Error {
+    /// Wrong container's signature.
     case wrongSignature
-    case wrongVersion
-    case wrongStartHeaderCRC
-    case wrongHeaderSize
-    case wrongPropertyID
-    case wrongHeaderCRC
-    case wrongExternal
-    case reservedCodecFlags
-    case unknownNumFolders
-    case wrongEnd
-    case externalNotSupported
-    case altMethodsNotSupported
-    case wrongStreamsNumber
-    case multiStreamNotSupported
-    case compressionNotSupported
-    case wrongDataSize
+    /// Unsupporte version of container's format.
+    case wrongFormatVersion
+    /** 
+     CRC either of one of the files from the container
+     or one of the container's strucutures is incorrect.
+     */
     case wrongCRC
-    case wrongCoderProperties
-    case noPackInfo
-    case wrongFileProperty
-    case wrongFileNameLength
-    case wrongFileNames
+    /**
+     Size either of one of the files from the container
+     or one of the container's strucutures is incorrect.
+     */
+    case wrongSize
+    /// Files have StartPos property. This feature isn't supported.
     case startPosNotSupported
-    case incompleteProperty
+    /// External feature isn't supported.
+    case externalNotSupported
+    /// Coders with multiple in and/or out streams aren't supported.
+    case multiStreamNotSupported
+    /// Additional streams feature isn't supported.
     case additionalStreamsNotSupported
-    case noFileSize
-    case notEnoughFolders
-    case notEnoughStreams
-    case noStreamFound
-    case noPackInfoFound
-    case streamOverread
-    case dataIsUnavailable
+    /// Entry is compressed using unsupported compression method.
+    case compressionNotSupported
+    /// Entry or container's header is encrypted. This feature isn't supported.
     case encryptionNotSupported
+    /// Entry's data isn't available.
+    case dataIsUnavailable
+    /** 
+     Unknown/incorrect internal 7-Zip structure was encountered or 
+     no internal structure was found where it must be.
+     */
+    case internalStructureError
 }

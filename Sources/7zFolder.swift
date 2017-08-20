@@ -47,7 +47,7 @@ class SevenZipFolder {
             totalInputStreams += coder.numInStreams
         }
 
-        guard totalOutputStreams != 0 else { throw SevenZipError.wrongStreamsNumber }
+        guard totalOutputStreams != 0 else { throw SevenZipError.internalStructureError }
 
         numBindPairs = totalOutputStreams - 1
         if numBindPairs > 0 {
@@ -56,7 +56,7 @@ class SevenZipFolder {
             }
         }
 
-        guard totalInputStreams >= numBindPairs else { throw SevenZipError.wrongStreamsNumber }
+        guard totalInputStreams >= numBindPairs else { throw SevenZipError.internalStructureError }
 
         numPackedStreams = totalInputStreams - numBindPairs
         if numPackedStreams == 1 {
@@ -68,7 +68,7 @@ class SevenZipFolder {
                 i += 1
             }
             if i == totalInputStreams {
-                throw SevenZipError.wrongStreamsNumber
+                throw SevenZipError.internalStructureError
             }
             packedStreams.append(i)
         } else {
@@ -139,15 +139,23 @@ class SevenZipFolder {
             if coder.id == SevenZipCoder.ID.copy || coder.id == SevenZipCoder.ID.zipCopy {
                 continue
             } else if coder.id == SevenZipCoder.ID.deflate {
-                decodedData = try Deflate.decompress(data: decodedData)
+                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_DEFLATE)
+                    decodedData = try Deflate.decompress(data: decodedData)
+                #else
+                    throw SevenZipError.compressionNotSupported
+                #endif
             } else if coder.id == SevenZipCoder.ID.bzip2 || coder.id == SevenZipCoder.ID.zipBzip2 {
-                decodedData = try BZip2.decompress(data: decodedData)
+                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_BZ2)
+                    decodedData = try BZip2.decompress(data: decodedData)
+                #else
+                    throw SevenZipError.compressionNotSupported
+                #endif
             } else if coder.id == SevenZipCoder.ID.lzma2 {
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties
-                    else { throw SevenZipError.wrongCoderProperties }
+                    else { throw LZMA2Error.wrongProperties }
                 guard properties.count == 1
-                    else { throw SevenZipError.wrongCoderProperties }
+                    else { throw LZMA2Error.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
                 decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
@@ -155,9 +163,9 @@ class SevenZipFolder {
             } else if coder.id == SevenZipCoder.ID.lzma {
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
-                    else { throw SevenZipError.wrongCoderProperties }
+                    else { throw LZMAError.wrongProperties }
                 guard properties.count == 5
-                    else { throw SevenZipError.wrongCoderProperties }
+                    else { throw LZMAError.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
                 let lzmaDecoder = try LZMADecoder(pointerData)
@@ -178,7 +186,7 @@ class SevenZipFolder {
             }
 
             guard decodedData.count == unpackSize
-                else { throw SevenZipError.wrongDataSize }
+                else { throw SevenZipError.wrongSize }
         }
         return decodedData
     }

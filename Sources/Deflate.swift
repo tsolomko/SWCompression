@@ -69,21 +69,21 @@ public class Deflate: DecompressionAlgorithm {
             /// Is this a last block?
             let isLastBit = bitReader.bit()
             /// Type of the current block.
-            let blockType = [UInt8](bitReader.bits(count: 2).reversed())
+            let blockType = bitReader.intFromBits(count: 2)
 
-            if blockType == [0, 0] { // Uncompressed block.
-                bitReader.skipUntilNextByte()
+            if blockType == 0 { // Uncompressed block.
+                bitReader.align()
                 /// Length of the uncompressed data.
-                let length = bitReader.intFromBits(count: 16)
+                let length = bitReader.uint16()
                 /// 1-complement of the length.
-                let nlength = bitReader.intFromBits(count: 16)
+                let nlength = bitReader.uint16()
                 // Check if lengths are OK (nlength should be a 1-complement of length).
                 guard length & nlength == 0 else { throw DeflateError.wrongUncompressedBlockLengths }
                 // Process uncompressed data into the output
                 for _ in 0..<length {
                     out.append(bitReader.byte())
                 }
-            } else if blockType == [1, 0] || blockType == [0, 1] {
+            } else if blockType == 1 || blockType == 2 {
                 // Block with Huffman coding (either static or dynamic)
 
                 // Declaration of Huffman trees which will be populated and used later.
@@ -94,7 +94,7 @@ public class Deflate: DecompressionAlgorithm {
                 /// Huffman tree for backward distance symbols/codes.
                 var mainDistances: HuffmanTree
 
-                if blockType == [0, 1] { // Static Huffman
+                if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
                     // Bootstraps for trees (first element in pair is code, second is number of bits).
                     let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]

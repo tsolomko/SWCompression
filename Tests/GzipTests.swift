@@ -48,7 +48,7 @@ class GzipTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for gz.\(testName)")
             self.measure {
-                _ = try GzipArchive.unarchive(archive: testData)
+                _ = try? GzipArchive.unarchive(archive: testData)
             }
         #endif
     }

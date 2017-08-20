@@ -86,6 +86,9 @@
                 <a class="nav-group-task-link" href="../Structs/GzipHeader/FileSystemType.html">– FileSystemType</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
               </li>
               <li class="nav-group-task">
@@ -97,19 +100,28 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ZlibHeader/CompressionLevel.html">– CompressionLevel</a>
               </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Containers.html">Containers</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+                <a class="nav-group-task-link" href="../Classes/SevenZipContainer.html">SevenZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
+                <a class="nav-group-task-link" href="../Classes/SevenZipEntry.html">SevenZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/Permissions.html">– Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/DosAttributes.html">– DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/UnixType.html">– UnixType</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
@@ -119,6 +131,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
               </li>
             </ul>
           </li>
@@ -132,22 +150,25 @@
                 <a class="nav-group-task-link" href="../Enums/DeflateError.html">DeflateError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/GzipError.html">GzipError</a>
+                <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/LZMA2Error.html">LZMA2Error</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
+                <a class="nav-group-task-link" href="../Enums/SevenZipError.html">SevenZipError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
+                <a class="nav-group-task-link" href="../Enums/ZipError.html">ZipError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/ZipError.html">ZipError</a>
+                <a class="nav-group-task-link" href="../Enums/GzipError.html">GzipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Enums/ZlibError.html">ZlibError</a>
@@ -218,7 +239,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L16-L18">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L16-L18">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -248,7 +269,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L21-L23">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L21-L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -267,11 +288,6 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>File or directory attributes related to the file system of the container&rsquo;s creator.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    Will be renamed to <code>externalFileAttributes</code> in 4.0.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -283,7 +299,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L31-L33">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L26-L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -313,7 +329,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L36-L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L31-L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -331,7 +347,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>True, if an entry is a directory.
+                        <p>True, if entry is a directory.
 For MS-DOS and UNIX-like container creator&rsquo;s OS, the result is based on &lsquo;external file attributes&rsquo;.
 Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s name is &lsquo;/&rsquo;.</p>
 
@@ -345,7 +361,97 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L45-L51">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L40-L46">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC13SWCompression8ZipEntry6isLinkSb"></a>
+                    <a name="//apple_ref/swift/Property/isLink" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC13SWCompression8ZipEntry6isLinkSb">isLink</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>True, if entry is a symbolic link.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isLink</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L49">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC13SWCompression8ZipEntry8linkPathGSqSS_"></a>
+                    <a name="//apple_ref/swift/Property/linkPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC13SWCompression8ZipEntry8linkPathGSqSS_">linkPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Path to a linked file for symbolic link entry.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">linkPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L52">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC13SWCompression8ZipEntry10isTextFileSb"></a>
+                    <a name="//apple_ref/swift/Property/isTextFile" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC13SWCompression8ZipEntry10isTextFileSb">isTextFile</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>True if entry is likely to be text or ASCII file.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isTextFile</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L59-L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -365,11 +471,6 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                       <div class="abstract">
                         <p>Provides a dictionary with various attributes of the entry.
 <code>FileAttributeKey</code> values are used as dictionary keys.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    Will be renamed in 4.0.
-
-</div>
 <h2 id='possible-attributes' class='heading'>Possible attributes:</h2>
 
 <ul>
@@ -390,7 +491,7 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L68">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L75">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -426,7 +527,7 @@ depending on the type of the problem. An error can indicate that container is da
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.2.0/Sources/ZipEntry.swift#L76-L160">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.3.0/Sources/ZipEntry.swift#L83-L170">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

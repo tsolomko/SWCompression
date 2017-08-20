@@ -35,12 +35,10 @@ class SevenZipCoder {
     init(_ bitReader: BitReader) throws {
         let flags = bitReader.byte()
         guard flags & 0xC0 == 0
-            else { throw SevenZipError.reservedCodecFlags }
+            else { throw SevenZipError.internalStructureError }
         idSize = (flags & 0x0F).toInt()
         isComplex = flags & 0x10 != 0
         hasAttributes = flags & 0x20 != 0
-
-        guard flags & 0x80 == 0 else { throw SevenZipError.altMethodsNotSupported }
 
         id = bitReader.bytes(count: idSize)
 

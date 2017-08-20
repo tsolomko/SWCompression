@@ -9,10 +9,10 @@ import Foundation
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP container and returns an array of `ContainerEntries` (which are actually `ZipEntries`).
+     Processes ZIP container and returns an array of `ContainerEntry` (which are actually `ZipEntry`).
 
      - Important: The order of entries is defined by ZIP container and,
-     particularly, by a creator of a given ZIP container.
+     particularly, by the creator of a given ZIP container.
      It is likely that directories will be encountered earlier than files stored in those directories,
      but one SHOULD NOT rely on any particular order.
 

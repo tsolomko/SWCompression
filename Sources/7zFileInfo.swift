@@ -21,6 +21,8 @@ class SevenZipFileInfo {
     let numFiles: Int
     var files = [File]()
 
+    var unknownProperties = [SevenZipProperty]()
+
     init(_ bitReader: BitReader) throws {
         numFiles = bitReader.szMbd()
         for _ in 0..<numFiles {
@@ -40,23 +42,23 @@ class SevenZipFileInfo {
             switch propertyType {
             case 0x0E: // EmptyStream
                 isEmptyStream = bitReader.bits(count: numFiles)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
             case 0x0F: // EmptyFile
                 guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
-                    else { throw SevenZipError.wrongFileProperty }
+                    else { throw SevenZipError.internalStructureError }
                 isEmptyFile = bitReader.bits(count: emptyStreamCount.toInt())
-                bitReader.skipUntilNextByte()
+                bitReader.align()
             case 0x10: // AntiFile (used in backups to indicate that file was removed)
                 guard let emptyStreamCount = isEmptyStream?.reduce(0, { $0 + $1})
-                    else { throw SevenZipError.wrongFileProperty }
+                    else { throw SevenZipError.internalStructureError }
                 isAntiFile = bitReader.bits(count: emptyStreamCount.toInt())
-                bitReader.skipUntilNextByte()
+                bitReader.align()
             case 0x11: // File name
                 let external = bitReader.byte()
                 guard external == 0
-                    else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+                    else { throw SevenZipError.externalNotSupported }
                 guard (propertySize - 1) & 1 == 0
-                    else { throw SevenZipError.wrongFileNameLength }
+                    else { throw SevenZipError.internalStructureError }
                 let names = bitReader.bytes(count: propertySize - 1)
                 var nextFile = 0
                 var nextName = 0
@@ -72,17 +74,13 @@ class SevenZipFileInfo {
                     }
                 }
                 guard nextName == names.count && nextFile == numFiles
-                    else { throw SevenZipError.wrongFileNames }
+                    else { throw SevenZipError.internalStructureError }
             case 0x12: // Creation time
                 let timesDefined = bitReader.defBits(count: numFiles)
-                bitReader.skipUntilNextByte()
-
-                // TODO: Remove implicit call of skipUntilNextByte() in BitReader,
-                // instead make it check if bytes are aligned.
-
+                bitReader.align()
                 let external = bitReader.byte()
                 guard external == 0
-                    else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+                    else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles {
                     if timesDefined[i] == 1 {
@@ -91,11 +89,11 @@ class SevenZipFileInfo {
                 }
             case 0x13: // Access time
                 let timesDefined = bitReader.defBits(count: numFiles)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
 
                 let external = bitReader.byte()
                 guard external == 0
-                    else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+                    else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles {
                     if timesDefined[i] == 1 {
@@ -104,11 +102,11 @@ class SevenZipFileInfo {
                 }
             case 0x14: // Modification time
                 let timesDefined = bitReader.defBits(count: numFiles)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
 
                 let external = bitReader.byte()
                 guard external == 0
-                    else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+                    else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles {
                     if timesDefined[i] == 1 {
@@ -117,27 +115,28 @@ class SevenZipFileInfo {
                 }
             case 0x15: // WinAttributes
                 let attributesDefined = bitReader.defBits(count: numFiles)
-                bitReader.skipUntilNextByte()
+                bitReader.align()
 
                 let external = bitReader.byte()
                 guard external == 0
-                    else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+                    else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles {
                     if attributesDefined[i] == 1 {
                         files[i].winAttributes = bitReader.uint32()
                     }
                 }
-            case 0x18: // StartPos // TODO: Do we support this?
+            case 0x18: // StartPos
                 throw SevenZipError.startPosNotSupported
-            case 0x19: // "Dummy". Used for alignment.
+            case 0x19: // "Dummy". Used for alignment/padding.
                 guard bitReader.size - bitReader.index >= propertySize
-                    else { throw SevenZipError.incompleteProperty }
+                    else { throw SevenZipError.internalStructureError }
                 bitReader.index += propertySize
-            default: // Unknown property // TODO: Maybe we should store it for testing.
+            default: // Unknown property
                 guard bitReader.size - bitReader.index >= propertySize
-                    else { throw SevenZipError.incompleteProperty }
-                bitReader.index += propertySize
+                    else { throw SevenZipError.internalStructureError }
+                unknownProperties.append(SevenZipProperty(propertyType, propertySize,
+                                                          bitReader.bytes(count: propertySize)))
             }
         }
 

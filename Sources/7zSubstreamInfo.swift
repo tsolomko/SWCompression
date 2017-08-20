@@ -53,7 +53,7 @@ class SevenZipSubstreamInfo {
 
         if type == 0x0A {
             let definedBits = bitReader.defBits(count: totalDigests)
-            bitReader.skipUntilNextByte()
+            bitReader.align()
 
             var missingCrcs = [UInt32?]()
             for i in 0..<totalDigests {
@@ -80,7 +80,7 @@ class SevenZipSubstreamInfo {
         }
 
         if type != 0x00 {
-            throw SevenZipError.wrongEnd
+            throw SevenZipError.internalStructureError
         }
     }
 

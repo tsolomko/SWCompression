@@ -5,10 +5,27 @@
 
 import Foundation
 
+/// Provides open functions for 7-Zip containers.
 public class SevenZipContainer: Container {
 
     static let signatureHeaderSize = 32
 
+    /**
+     Processes 7-Zip container and returns an array of `ContainerEntry` (which are actually `SevenZipEntry`).
+
+     - Important: The order of entries is defined by 7-Zip container and,
+     particularly, by the creator of a given 7-Zip container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: 7-Zip container's data.
+
+     - Throws: `SevenZipError` or any other error associated with compression type,
+     depending on the type of the problem.
+     It may indicate that either container is damaged or it might not be 7-Zip container at all.
+
+     - Returns: Array of `SevenZipEntry` as an array of `ContainerEntry`.
+     */
     public static func open(container data: Data) throws -> [ContainerEntry] {
         var entries = [SevenZipEntry]()
         guard let header = try readHeader(data)
@@ -38,12 +55,6 @@ public class SevenZipContainer: Container {
         /// `DataWithPointer` object with unpacked stream's data.
         var rawFileData = DataWithPointer(data: Data())
 
-        /**
-         Total size of processed unpacked data for current stream.
-         Used to decide when to switch streams.
-        */
-        var rawUnpackSize = 0
-
         let pointerData = DataWithPointer(data: data)
 
         for fileIndex in 0..<files.count {
@@ -55,9 +66,9 @@ public class SevenZipContainer: Container {
                 // Without `SevenZipStreamInfo` and `SevenZipPackInfo` objects,
                 //  we cannot find file data location in container.
                 guard let streamInfo = header.mainStreams
-                    else { throw SevenZipError.noStreamFound }
+                    else { throw SevenZipError.internalStructureError }
                 guard let packInfo = streamInfo.packInfo
-                    else { throw SevenZipError.noPackInfoFound }
+                    else { throw SevenZipError.internalStructureError }
 
                 // SubstreamInfo is required to get files' data, and without it we can only return files' info.
                 // Additionally, `SevenZipEntry.data()` will throw `SevenZipError.dataIsUnavailable` 
@@ -66,15 +77,12 @@ public class SevenZipContainer: Container {
                     info = SevenZipEntryInfo(file)
                     data = nil
                     continue
+                    // FIXME: Possible problems, because we didn't update counters for folders and files.
                 }
 
                 // Check if there is enough folders.
                 guard folderIndex < streamInfo.coderInfo.numFolders
-                    else { throw SevenZipError.notEnoughFolders }
-
-                // Check, if we haven't read to much from a stream. // TODO: Is it even possible?
-                guard rawUnpackSize <= rawFileData.size
-                    else { throw SevenZipError.streamOverread }
+                    else { throw SevenZipError.internalStructureError }
 
                 /// Folder, which contains current file.
                 let folder = streamInfo.coderInfo.folders[folderIndex]
@@ -82,7 +90,7 @@ public class SevenZipContainer: Container {
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
                 // If we switched folders or completed reading of a stream we need to move to the next stream.
-                if fileInFolderCount == 0 || rawUnpackSize == rawFileData.size {
+                if fileInFolderCount == 0 || rawFileData.isAtTheEnd {
                     streamIndex += 1
 
                     // First, we move to the stream's offset.
@@ -110,7 +118,6 @@ public class SevenZipContainer: Container {
                     // One stream can contain data of several files,
                     //  so we need to decode the stream first, then split it into files.
                     rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
-                    rawUnpackSize = 0
                 }
 
                 // `SevenZipSubstreamInfo` object must contain information about file's size
@@ -119,9 +126,14 @@ public class SevenZipContainer: Container {
                 // File's unpack size is required to proceed. 
                 // Next check ensures that we don't `unpackSizes` array's boundaries.
                 guard nonEmptyFileIndex < substreamInfo.unpackSizes.count
-                    else { throw SevenZipError.noFileSize }
+                    else { throw SevenZipError.internalStructureError }
 
                 let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
+
+                // Check, if we aren't about to read too much from a stream.
+                guard rawFileData.index + fileSize <= rawFileData.size
+                    else { throw SevenZipError.internalStructureError }
+
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
 
                 let calculatedFileCRC = CheckSums.crc32(fileData)
@@ -137,16 +149,13 @@ public class SevenZipContainer: Container {
                 folderUnpackSize += fileSize
                 folderCRC = CheckSums.crc32(fileData, prevValue: folderCRC)
 
-                // Update unpackSize for stream.
-                rawUnpackSize += fileSize
-
                 fileInFolderCount += 1
                 nonEmptyFileIndex += 1
 
                 if fileInFolderCount >= folder.numUnpackSubstreams { // If we read all files in folder...
                     // We need to check folder's unpacked size as well as its CRC32 (if it is available).
                     guard folderUnpackSize == folder.unpackSize()
-                        else { throw SevenZipError.wrongDataSize }
+                        else { throw SevenZipError.wrongSize }
                     if let storedFolderCRC = folder.crc {
                         guard folderCRC == storedFolderCRC
                             else { throw SevenZipError.wrongCRC }
@@ -170,6 +179,24 @@ public class SevenZipContainer: Container {
         return entries
     }
 
+    /**
+     Processes ZIP container and returns an array of `SevenZipEntryInfo`,
+     which contain various information about container's entry.
+     This is performed without decompressing entries' data.
+
+     - Important: The order of entries is defined by 7-Zip container and,
+     particularly, by the creator of a given 7-Zip container.
+     It is likely that directories will be encountered earlier than files stored in those directories,
+     but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: 7-Zip container's data.
+
+     - Throws: `SevenZipError` or any other error associated with compression type,
+     depending on the type of the problem.
+     It may indicate that either container is damaged or it might not be 7-Zip container at all.
+
+     - Returns: Array of `SevenZipEntryInfo`.
+     */
     public static func info(container data: Data) throws -> [SevenZipEntryInfo] {
         var entryInfos = [SevenZipEntryInfo]()
         guard let header = try readHeader(data)
@@ -205,7 +232,7 @@ public class SevenZipContainer: Container {
 
         // Check archive version.
         guard bitReader.bytes(count: 2) == [0, 4] // 7zFormat.txt says it should be [0, 2] instead.
-            else { throw SevenZipError.wrongVersion }
+            else { throw SevenZipError.wrongFormatVersion }
 
         let startHeaderCRC = bitReader.uint32()
 
@@ -216,7 +243,7 @@ public class SevenZipContainer: Container {
 
         bitReader.index = 12
         guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
-            else { throw SevenZipError.wrongStartHeaderCRC }
+            else { throw SevenZipError.wrongCRC }
 
         // **Header**
         bitReader.index += nextHeaderOffset
@@ -238,17 +265,17 @@ public class SevenZipContainer: Container {
             header = try SevenZipHeader(bitReader)
             headerEndIndex = bitReader.index
         } else {
-            throw SevenZipError.wrongPropertyID
+            throw SevenZipError.internalStructureError
         }
 
         // Check header size
         guard headerEndIndex - headerStartIndex == nextHeaderSize
-            else { throw SevenZipError.wrongHeaderSize }
+            else { throw SevenZipError.wrongSize }
 
         // Check header CRC
         bitReader.index = headerStartIndex
         guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
-            else { throw SevenZipError.wrongHeaderCRC }
+            else { throw SevenZipError.wrongCRC }
 
         return header
     }
@@ -259,6 +286,7 @@ extension BitReader {
 
     /// Abbreviation for "sevenZipMultiByteDecode".
     func szMbd() -> Int {
+        self.align()
         let firstByte = self.byte().toInt()
         var mask = 0x80
         var value = 0
@@ -274,6 +302,7 @@ extension BitReader {
     }
 
     func defBits(count: Int) -> [UInt8] {
+        self.align()
         let allDefined = self.byte()
         let definedBits: [UInt8]
         if allDefined == 0 {

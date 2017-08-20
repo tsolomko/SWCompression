@@ -9,10 +9,10 @@ import Foundation
 public class TarContainer: Container {
 
     /**
-     Processes TAR container and returns an array of `ContainerEntries` (which are actually `TarEntries`).
+     Processes TAR container and returns an array of `ContainerEntry` (which are actually `TarEntry`).
 
      - Important: The order of entries is defined by TAR container and,
-     particularly, by a creator of a given TAR container.
+     particularly, by the creator of a given TAR container.
      It is likely that directories will be encountered earlier than files stored in those directories,
      but one SHOULD NOT rely on any particular order.
 

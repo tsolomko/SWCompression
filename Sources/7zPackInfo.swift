@@ -27,7 +27,7 @@ class SevenZipPackInfo {
 
         if type == 0x0A {
             let definedBits = bitReader.defBits(count: numPackStreams)
-            bitReader.skipUntilNextByte()
+            bitReader.align()
 
             for bit in definedBits {
                 if bit == 1 {
@@ -41,7 +41,7 @@ class SevenZipPackInfo {
         }
 
         if type != 0x00 {
-            throw SevenZipError.wrongEnd
+            throw SevenZipError.internalStructureError
         }
     }
 

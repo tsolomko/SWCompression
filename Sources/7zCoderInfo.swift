@@ -19,20 +19,20 @@ class SevenZipCoderInfo {
 
     init(_ bitReader: BitReader) throws {
         var type = bitReader.byte()
-        guard type == 0x0B else { throw SevenZipError.wrongPropertyID }
+        guard type == 0x0B else { throw SevenZipError.internalStructureError }
 
         numFolders = bitReader.szMbd()
         external = bitReader.byte()
 
         guard external == 0
-            else { throw SevenZipError.externalNotSupported } // TODO: Do we support this?
+            else { throw SevenZipError.externalNotSupported }
 
         for _ in 0..<numFolders {
             folders.append(try SevenZipFolder(bitReader))
         }
 
         type = bitReader.byte()
-        guard type == 0x0C else { throw SevenZipError.wrongPropertyID }
+        guard type == 0x0C else { throw SevenZipError.internalStructureError }
 
         for folder in folders {
             for _ in 0..<folder.totalOutputStreams {
@@ -44,7 +44,7 @@ class SevenZipCoderInfo {
 
         if type == 0x0A {
             let definedBits = bitReader.defBits(count: numFolders)
-            bitReader.skipUntilNextByte()
+            bitReader.align()
 
             for i in 0..<numFolders where definedBits[i] == 1 {
                 folders[i].crc = bitReader.uint32()
@@ -54,7 +54,7 @@ class SevenZipCoderInfo {
         }
 
         if type != 0x00 {
-            throw SevenZipError.wrongEnd
+            throw SevenZipError.internalStructureError
         }
     }
 }
