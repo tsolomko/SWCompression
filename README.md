@@ -103,8 +103,8 @@ Options for CocoaPods users
 Both ZIP and 7-Zip containers have compression method
 which is most likely to be used when compressing files into them.
 This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
-Thus, 'SWCompression/ZIP' subspec have 'SWCompression/Deflate' subspec as a dependency
-and 'SWCompression/LZMA' subspec is a dependency for 'SWCompression/SevenZip'.
+Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
+and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.
 
 But both these containers support other compression methods,
 some of them are implemented in SWCompression.
@@ -115,9 +115,11 @@ that SWCompression/ZIP or SWCompression/7-Zip will support particular compressio
 only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
 __List of 'optional dependecies'.__
+
 For SWCompression/ZIP:
   - SWCompression/BZip2
   - SWCompression/LZMA
+
 For SWCompression/SevenZip:
   - SWCompression/BZip2
   - SWCompression/Deflate
