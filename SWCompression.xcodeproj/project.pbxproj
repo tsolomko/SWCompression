@@ -712,10 +712,10 @@
 			isa = PBXGroup;
 			children = (
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
-				06CDFCB61F111E6900292758 /* BitReader.swift */,
-				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
+				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
+				06CDFCB61F111E6900292758 /* BitReader.swift */,
 				0681B3DD1E44F674001A9D79 /* BitWriter.swift */,
 				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
 				06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */,
