@@ -128,8 +128,8 @@ public class BZip2: DecompressionAlgorithm {
         let selectorsList = try computeSelectorsList()
         let symbolsInUse = used.filter { $0 }.count + 2
 
-        func computeTables() throws -> [HuffmanTree] {
-            var tables: [HuffmanTree] = []
+        func computeTables() throws -> [DecodingHuffmanTree] {
+            var tables: [DecodingHuffmanTree] = []
             for _ in 0..<huffmanGroups {
                 var length = bitReader.intFromBits(count: 5)
                 var lengths: [Int] = []
@@ -140,7 +140,7 @@ public class BZip2: DecompressionAlgorithm {
                     }
                     lengths.append(length)
                 }
-                let codes = HuffmanTree(lengthsToOrder: lengths, bitReader)
+                let codes = DecodingHuffmanTree(lengthsToOrder: lengths, bitReader)
                 tables.append(codes)
             }
 
@@ -161,10 +161,10 @@ public class BZip2: DecompressionAlgorithm {
 
         var selectorPointer = 0
         var decoded = 0
-        var repeat_ = 0
+        var runLength = 0
         var repeatPower = 0
         var buffer: [UInt8] = []
-        var t: HuffmanTree?
+        var t: DecodingHuffmanTree?
 
         while true {
             decoded -= 1
@@ -176,29 +176,28 @@ public class BZip2: DecompressionAlgorithm {
                 }
             }
 
-            guard let symbol = t?.findNextSymbol() else { throw BZip2Error.symbolNotFound }
-            guard symbol != -1 else { throw BZip2Error.symbolNotFound }
+            guard let symbol = t?.findNextSymbol(), symbol != -1
+                else { throw BZip2Error.symbolNotFound }
 
-            if symbol == 1 || symbol == 0 {
-                if repeat_ == 0 {
+            if symbol == 0 || symbol == 1 { // RUNA and RUNB symbols.
+                if runLength == 0 {
                     repeatPower = 1
                 }
-                repeat_ += repeatPower << symbol
+                runLength += repeatPower << symbol
                 repeatPower <<= 1
                 continue
-            } else if repeat_ > 0 {
-                for _ in 0..<repeat_ {
+            } else if runLength > 0 {
+                for _ in 0..<runLength {
                     buffer.append(favourites[0])
                 }
-                repeat_ = 0
+                runLength = 0
             }
-            if symbol == symbolsInUse - 1 {
+            if symbol == symbolsInUse - 1 { // End of stream symbol.
                 break
-            } else {
-                let o = favourites[symbol - 1]
-                let el = favourites.remove(at: symbol - 1)
-                favourites.insert(el, at: 0)
-                buffer.append(o)
+            } else { // Move to front inverse.
+                let element = favourites.remove(at: symbol - 1)
+                favourites.insert(element, at: 0)
+                buffer.append(element)
             }
         }
 
@@ -237,12 +236,14 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         let nt = bwt(reverse: buffer, pointer)
+
+        // Run Length Decoding
         var i = 0
         var out: [UInt8] = []
         while i < nt.count {
             if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
-                let sCount = nt[i + 4].toInt() + 4
-                for _ in 0..<sCount {
+                let runLength = nt[i + 4] + 4
+                for _ in 0..<runLength {
                     out.append(nt[i])
                 }
                 i += 5

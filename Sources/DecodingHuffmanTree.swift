@@ -5,7 +5,7 @@
 
 import Foundation
 
-class HuffmanTree {
+class DecodingHuffmanTree {
 
     private var bitReader: BitReader
 
