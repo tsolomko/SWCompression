@@ -108,19 +108,15 @@ public extension Deflate {
         bitWriter.write(bit: 1)
         bitWriter.write(bits: [1, 0])
 
-        /// Empty DWP object for creating Huffman trees.
-        /// TODO: Separate reading and writing trees, and make so this pointerData is not necessary.
-        let pointerData = BitReader(data: Data(), bitOrder: .reversed)
-
         // Constructing Huffman trees for the case of block with preset alphabets.
         // In this case codes for literals and distances are fixed.
         // Bootstraps for trees (first element in pair is code, second is number of bits).
         let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
         let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
         /// Huffman tree for literal and length symbols/codes.
-        let mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, pointerData, true)
+        let mainLiterals = EncodingHuffmanTree(bootstrap: staticHuffmanBootstrap)
         /// Huffman tree for backward distance symbols/codes.
-        let mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, pointerData, true)
+        let mainDistances = EncodingHuffmanTree(bootstrap: staticHuffmanLengthsBootstrap)
 
         for code in bldCodes {
             switch code {

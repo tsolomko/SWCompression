@@ -5,16 +5,11 @@
 
 import Foundation
 
-class HuffmanTree {
+class EncodingHuffmanTree {
 
-    private var bitReader: BitReader
+    private var codingIndices: [[Int]]
 
-    private var tree: [Int]
-    private let leafCount: Int
-
-    init(bootstrap: [[Int]], _ bitReader: BitReader) {
-        self.bitReader = bitReader
-
+    init(bootstrap: [[Int]]) {
         // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
         var lengths: [[Int]] = []
         var start = bootstrap[0][0]
@@ -53,9 +48,7 @@ class HuffmanTree {
             return z
         }
 
-        // Calculate maximum amount of leaves possible in a tree.
-        self.leafCount = 1 << (lengths.last![1] + 1)
-        self.tree = Array(repeating: -1, count: leafCount)
+        self.codingIndices = Array(repeating: [-1, -1], count: lengths.count)
 
         // Calculates symbols for each length in 'lengths' array and put them in the tree.
         var loopBits = -1
@@ -69,39 +62,36 @@ class HuffmanTree {
                 loopBits = bits
             }
             // Then we need to reverse bit order of the symbol.
-            var treeCode = reverse(bits: loopBits, in: symbol)
-
-            // Finally, we put it at its place in the tree.
-            var index = 0
-            for _ in 0..<bits {
-                let bit = treeCode & 1
-                index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-                treeCode >>= 1
-            }
-            self.tree[index] = length[0]
+            let treeCode = reverse(bits: loopBits, in: symbol)
+            self.codingIndices[length[0]] = [treeCode, bits]
         }
     }
 
-    convenience init(lengthsToOrder: [Int], _ bitReader: BitReader) {
+    convenience init(lengthsToOrder: [Int]) {
         var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, bitReader)
+        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] })
     }
 
-    func findNextSymbol() -> Int {
-        var index = 0
-        while true {
-            let bit = bitReader.bit()
-            index = bit == 0 ? 2 * index + 1 : 2 * index + 2
-            guard index < self.leafCount else {
-                return -1
-            }
-            if self.tree[index] > -1 {
-                return self.tree[index]
-            }
+    func code(symbol: Int, _ bitWriter: BitWriter, _ symbolNotFoundError: Error) throws {
+        guard symbol < self.codingIndices.count
+            else { throw symbolNotFoundError }
+
+        let codingIndex = self.codingIndices[symbol]
+
+        guard codingIndex[0] > -1
+            else { throw symbolNotFoundError }
+
+        var treeCode = codingIndex[0]
+        let bits = codingIndex[1]
+
+        for _ in 0..<bits {
+            let bit = treeCode & 1
+            bitWriter.write(bit: bit == 0 ? 0 : 1)
+            treeCode >>= 1
         }
     }
-
+    
 }
