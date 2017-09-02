@@ -72,14 +72,14 @@ public class BZip2: DecompressionAlgorithm {
 
     private static func decode(_ bitReader: BitReader) throws -> [UInt8] {
         let isRandomized = bitReader.bit()
-        guard isRandomized != 1 else { throw BZip2Error.randomizedBlock }
+        guard isRandomized == 0 else { throw BZip2Error.randomizedBlock }
 
         var pointer = bitReader.intFromBits(count: 24)
 
         func computeUsed() -> [Bool] {
             let huffmanUsedMap = bitReader.intFromBits(count: 16)
             var mapMask = 1 << 15
-            var used: [Bool] = []
+            var used = [Bool]()
             while mapMask > 0 {
                 if huffmanUsedMap & mapMask > 0 {
                     let huffmanUsedBitmap = bitReader.intFromBits(count: 16)
@@ -106,8 +106,8 @@ public class BZip2: DecompressionAlgorithm {
         func computeSelectorsList() throws -> [Int] {
             let selectorsUsed = bitReader.intFromBits(count: 15)
 
-            var mtf: [Int] = Array(0..<huffmanGroups)
-            var selectorsList: [Int] = []
+            var mtf = Array(0..<huffmanGroups)
+            var selectorsList = [Int]()
 
             for _ in 0..<selectorsUsed {
                 var c = 0
@@ -132,7 +132,7 @@ public class BZip2: DecompressionAlgorithm {
             var tables: [DecodingHuffmanTree] = []
             for _ in 0..<huffmanGroups {
                 var length = bitReader.intFromBits(count: 5)
-                var lengths: [Int] = []
+                var lengths = [Int]()
                 for _ in 0..<symbolsInUse {
                     guard length >= 0 && length <= 20 else { throw BZip2Error.wrongHuffmanLengthCode }
                     while bitReader.bit() > 0 {
@@ -140,8 +140,8 @@ public class BZip2: DecompressionAlgorithm {
                     }
                     lengths.append(length)
                 }
-                let codes = DecodingHuffmanTree(lengthsToOrder: lengths, bitReader)
-                tables.append(codes)
+                let table = DecodingHuffmanTree(lengthsToOrder: lengths, bitReader)
+                tables.append(table)
             }
 
             return tables
