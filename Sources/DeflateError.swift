@@ -16,7 +16,6 @@ public enum DeflateError: Error {
     case wrongBlockType
     /// Decoded symbol was found in Huffman tree but is unknown.
     case wrongSymbol
-    // TODO: Remove in 4.0.
     /// Symbol wasn't found in Huffman tree.
     case symbolNotFound
 }
