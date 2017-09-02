@@ -52,7 +52,7 @@ class ZlibTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let archiveData = try ZlibArchive.archive(data: testData)
+        let archiveData = ZlibArchive.archive(data: testData)
         let reextractedData = try ZlibArchive.unarchive(archive: archiveData)
 
         XCTAssertEqual(testData, reextractedData, "Re-extracted data is not equal to initial data.")

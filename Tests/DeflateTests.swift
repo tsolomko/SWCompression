@@ -15,7 +15,7 @@ class DeflateTests: XCTestCase {
         }
 
         let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-        let deflatedData = try Deflate.compress(data: answerData)
+        let deflatedData = Deflate.compress(data: answerData)
         let reUncompData = try Deflate.decompress(data: deflatedData)
 
         XCTAssertEqual(answerData, reUncompData,

@@ -107,7 +107,7 @@ public class GzipArchive: Archive {
      - Parameter osType: Type of the system on which this archive will be created.
      - Parameter modificationTime: Last time the file was modified.
 
-     - Throws: `DeflateError` or `GzipError.cannotEncodeISOLatin1` depending on the type of of the problem.
+     - Throws: `GzipError.cannotEncodeISOLatin1` if file name of comment cannot be encoded with ISO-Latin-1 encoding.
 
      - Returns: Resulting archive's data.
      */
@@ -186,7 +186,7 @@ public class GzipArchive: Archive {
             }
         }
 
-        outData.append(try Deflate.compress(data: data))
+        outData.append(Deflate.compress(data: data))
 
         let crc32 = CheckSums.crc32(data)
         var crcBytes = [UInt8]()

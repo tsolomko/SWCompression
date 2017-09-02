@@ -10,8 +10,6 @@ public extension Deflate {
     /**
      Compresses `data` with Deflate algortihm.
 
-     If during compression something goes wrong `DeflateError` will be thrown.
-
      - Parameter data: Data to compress.
 
      - Note: Currently, SWCompression creates only one block for all data
@@ -20,7 +18,7 @@ public extension Deflate {
      However, if data size is greater than 65535 (the maximum value stored in 2 bytes),
      then static Huffman block will be created.
      */
-    public static func compress(data: Data) throws -> Data {
+    public static func compress(data: Data) -> Data {
         let bytes = data.toArray(type: UInt8.self)
 
         let bldCodes = Deflate.lengthEncode(bytes)
@@ -53,7 +51,7 @@ public extension Deflate {
                 codeSize = 5
                 extraBitsCount = symbol == 286 || symbol == 287 ? 0 : (((symbol - 286) >> 1) - 1)
             default:
-                throw DeflateError.symbolNotFound
+                fatalError("Symbol is not found.")
             }
             bitsCount += (symbolCount * (codeSize + extraBitsCount))
         }
@@ -69,7 +67,7 @@ public extension Deflate {
             // TODO: Implement dynamic Huffman code!
             return Data(bytes: Deflate.createUncompressedBlock(bytes))
         } else {
-            return Data(bytes: try Deflate.encodeHuffmanBlock(bldCodes.codes))
+            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
         }
     }
 
@@ -99,7 +97,7 @@ public extension Deflate {
         return out
     }
 
-    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) throws -> [UInt8] {
+    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> [UInt8] {
         let bitWriter = BitWriter(bitOrder: .reversed)
 
         // Write block header.
@@ -120,25 +118,25 @@ public extension Deflate {
         for code in bldCodes {
             switch code {
             case .byte(let byte):
-                try mainLiterals.code(symbol: byte.toInt())
+                mainLiterals.code(symbol: byte.toInt())
             case .lengthDistance(let length, let distance):
                 let lengthSymbol = Constants.lengthCode[Int(length) - 3]
                 let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
                 let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                     0 : (((lengthSymbol - 257) >> 2) - 1)
-                try mainLiterals.code(symbol: lengthSymbol)
+                mainLiterals.code(symbol: lengthSymbol)
                 bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
 
                 let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
                 let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
                 let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
-                try mainDistances.code(symbol: distanceSymbol)
+                mainDistances.code(symbol: distanceSymbol)
                 bitWriter.write(number: distanceExtraBits, bitsCount: distanceExtraBitsCount)
             }
         }
 
         // End data symbol.
-        try mainLiterals.code(symbol: 256)
+        mainLiterals.code(symbol: 256)
         bitWriter.finish()
 
         return bitWriter.buffer
