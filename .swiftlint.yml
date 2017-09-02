@@ -4,6 +4,10 @@ disabled_rules:
   - function_body_length
   - type_body_length
 opt_in_rules:
+  - no_grouping_extension
+  - pattern_matching_keywords
+  - single_test_class
+  - joined_default_parameter
   - conditional_returns_on_newline
   - explicit_init
   - fatal_error_message
