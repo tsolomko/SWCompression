@@ -12,16 +12,16 @@ class DecodingHuffmanTree {
     private var tree: [Int]
     private let leafCount: Int
 
-    init(bootstrap: [[Int]], _ bitReader: BitReader) {
+    init(bootstrap: [(symbol: Int, codeLength: Int)], _ bitReader: BitReader) {
         self.bitReader = bitReader
 
-        // Fills the 'lengths' array with numerous HuffmanLengths from a 'bootstrap'.
+        // Fills the 'lengths' array with pairs of (symbol, codeLength) from a 'bootstrap'.
         var lengths: [[Int]] = []
-        var start = bootstrap[0][0]
-        var bits = bootstrap[0][1]
+        var start = bootstrap[0].symbol
+        var bits = bootstrap[0].codeLength
         for pair in bootstrap[1..<bootstrap.count] {
-            let finish = pair[0]
-            let endbits = pair[1]
+            let finish = pair.symbol
+            let endbits = pair.codeLength
             if bits > 0 {
                 for i in start..<finish {
                     lengths.append([i, bits])
@@ -87,7 +87,7 @@ class DecodingHuffmanTree {
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: (zip(range, addedLengths)).map { [$0, $1] }, bitReader)
+        self.init(bootstrap: Array(zip(range, addedLengths)), bitReader)
     }
 
     func findNextSymbol() -> Int {
