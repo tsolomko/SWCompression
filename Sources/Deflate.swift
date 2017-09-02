@@ -9,6 +9,10 @@ import Foundation
 public class Deflate: DecompressionAlgorithm {
 
     struct Constants {
+        // Bootstraps for Static Huffman trees (first element in tuple is code, second is number of bits).
+        static let staticHuffmanBootstrap = [(0, 8), (144, 9), (256, 7), (280, 8), (288, -1)]
+        static let staticHuffmanDistancesBootstrap = [(0, 5), (32, -1)]
+
         static let codeLengthOrders: [Int] =
             [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
 
@@ -96,12 +100,9 @@ public class Deflate: DecompressionAlgorithm {
 
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
-                    // Bootstraps for trees (first element in pair is code, second is number of bits).
-                    let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
-                    let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
-                    // Initialize trees from these bootstraps.
-                    mainLiterals = DecodingHuffmanTree(bootstrap: staticHuffmanBootstrap, bitReader)
-                    mainDistances = DecodingHuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, bitReader)
+                    // Initialize trees from bootstraps.
+                    mainLiterals = DecodingHuffmanTree(bootstrap: Constants.staticHuffmanBootstrap, bitReader)
+                    mainDistances = DecodingHuffmanTree(bootstrap: Constants.staticHuffmanDistancesBootstrap, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
