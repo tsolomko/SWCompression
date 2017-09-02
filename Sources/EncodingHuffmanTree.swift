@@ -8,13 +8,12 @@ import Foundation
 class EncodingHuffmanTree {
 
     private var bitWriter: BitWriter
-    private let symbolNotFoundError: Error
 
     private var codingIndices: [[Int]]
 
-    init(bootstrap: [(symbol: Int, codeLength: Int)], throw symbolNotFoundError: Error, _ bitWriter: BitWriter) {
+    init(bootstrap: [(symbol: Int, codeLength: Int)], _ bitWriter: BitWriter) {
         self.bitWriter = bitWriter
-        self.symbolNotFoundError = symbolNotFoundError
+        
         // Fills the 'lengths' array with pairs of (symbol, codeLength) from a 'bootstrap'.
         var lengths: [[Int]] = []
         var start = bootstrap[0].symbol
@@ -72,22 +71,22 @@ class EncodingHuffmanTree {
         }
     }
 
-    convenience init(lengthsToOrder: [Int], throw symbolNotFoundError: Error, _ bitWriter: BitWriter) {
+    convenience init(lengthsToOrder: [Int], _ bitWriter: BitWriter) {
         var addedLengths = lengthsToOrder
         addedLengths.append(-1)
         let lengthsCount = addedLengths.count
         let range = Array(0...lengthsCount)
-        self.init(bootstrap: Array(zip(range, addedLengths)), throw: symbolNotFoundError, bitWriter)
+        self.init(bootstrap: Array(zip(range, addedLengths)), bitWriter)
     }
 
     func code(symbol: Int) throws {
         guard symbol < self.codingIndices.count
-            else { throw self.symbolNotFoundError }
+            else { fatalError("Symbol is not found.") }
 
         let codingIndex = self.codingIndices[symbol]
 
         guard codingIndex[0] > -1
-            else { throw self.symbolNotFoundError }
+            else { fatalError("Symbol is not found.") }
 
         var treeCode = codingIndex[0]
         let bits = codingIndex[1]

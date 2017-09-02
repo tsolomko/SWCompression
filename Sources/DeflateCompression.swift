@@ -112,11 +112,9 @@ public extension Deflate {
         // In this case codes for literals and distances are fixed.
         /// Huffman tree for literal and length symbols/codes.
         let mainLiterals = EncodingHuffmanTree(bootstrap: Constants.staticHuffmanBootstrap,
-                                               throw: DeflateError.symbolNotFound,
                                                bitWriter)
         /// Huffman tree for backward distance symbols/codes.
         let mainDistances = EncodingHuffmanTree(bootstrap: Constants.staticHuffmanDistancesBootstrap,
-                                                throw: DeflateError.symbolNotFound,
                                                 bitWriter)
 
         for code in bldCodes {
