@@ -13,7 +13,7 @@ class EncodingHuffmanTree {
 
     init(bootstrap: [(symbol: Int, codeLength: Int)], _ bitWriter: BitWriter) {
         self.bitWriter = bitWriter
-        
+
         // Fills the 'lengths' array with pairs of (symbol, codeLength) from a 'bootstrap'.
         var lengths: [[Int]] = []
         var start = bootstrap[0].symbol
@@ -97,5 +97,19 @@ class EncodingHuffmanTree {
             treeCode >>= 1
         }
     }
-    
+
+    func bitSize(for stats: [(Int, Int)]) throws -> Int {
+        var totalSize = 0
+        for (symbol, count) in stats {
+            guard symbol < self.codingIndices.count
+                else { fatalError("Symbol is not found.") }
+            let codingIndex = self.codingIndices[symbol]
+            guard codingIndex[0] > -1
+                else { fatalError("Symbol is not found.") }
+
+            totalSize += count * codingIndex[1]
+        }
+        return totalSize
+    }
+
 }
