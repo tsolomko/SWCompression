@@ -135,16 +135,16 @@ public class BZip2: DecompressionAlgorithm {
             var tables = [DecodingHuffmanTree]()
             for _ in 0..<huffmanGroups {
                 var length = bitReader.intFromBits(count: 5)
-                var lengths = [Int]()
-                for _ in 0..<symbolsInUse {
+                var lengths = [HuffmanLength]()
+                for i in 0..<symbolsInUse {
                     guard length >= 0 && length <= 20
                         else { throw BZip2Error.wrongHuffmanLengthCode }
                     while bitReader.bit() > 0 {
                         length -= (Int(bitReader.bit() * 2) - 1)
                     }
-                    lengths.append(length)
+                    lengths.append(HuffmanLength(symbol: i, codeLength: length))
                 }
-                let table = DecodingHuffmanTree(lengthsToOrder: lengths, bitReader)
+                let table = DecodingHuffmanTree(lengths: lengths, bitReader)
                 tables.append(table)
             }
 
