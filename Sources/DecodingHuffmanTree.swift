@@ -17,13 +17,7 @@ class DecodingHuffmanTree {
         self.bitReader = bitReader
 
         // Sort `lengths` array to calculate canonical Huffman code.
-        let sortedLengths = lengths.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
-            if left.codeLength == right.codeLength {
-                return left.symbol < right.symbol
-            } else {
-                return left.codeLength < right.codeLength
-            }
-        }
+        let sortedLengths = lengths.sorted()
 
         func reverse(bits: Int, in symbol: Int) -> Int {
             // Auxiliarly function, which generates reversed order of bits in a number.

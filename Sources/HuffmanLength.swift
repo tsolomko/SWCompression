@@ -39,3 +39,19 @@ struct HuffmanLength {
     }
 
 }
+
+extension HuffmanLength: Comparable {
+
+    static func <(left: HuffmanLength, right: HuffmanLength) -> Bool {
+        if left.codeLength == right.codeLength {
+            return left.symbol < right.symbol
+        } else {
+            return left.codeLength < right.codeLength
+        }
+    }
+
+    static func ==(left: HuffmanLength, right: HuffmanLength) -> Bool {
+        return left.codeLength == right.codeLength && left.symbol == right.symbol
+    }
+
+}
