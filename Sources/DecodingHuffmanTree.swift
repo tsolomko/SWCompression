@@ -17,7 +17,7 @@ class DecodingHuffmanTree {
         self.bitReader = bitReader
 
         // Sort `lengths` array to calculate canonical Huffman code.
-        let sortedLengths = lengths.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
+        let sortedLengths = lengths.filter { $0.codeLength > 0 }.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
             if left.codeLength == right.codeLength {
                 return left.symbol < right.symbol
             } else {

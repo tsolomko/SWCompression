@@ -16,7 +16,7 @@ class EncodingHuffmanTree {
         self.bitWriter = bitWriter
 
         // Sort `lengths` array to calculate canonical Huffman code.
-        let sortedLengths = lengths.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
+        let sortedLengths = lengths.filter { $0.codeLength > 0 }.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
             if left.codeLength == right.codeLength {
                 return left.symbol < right.symbol
             } else {
@@ -146,7 +146,7 @@ class EncodingHuffmanTree {
 
     func bitSize(for stats: [(Int, Int)]) -> Int {
         var totalSize = 0
-        for (symbol, count) in stats {
+        for (symbol, count) in stats where count > 0 {
             guard symbol < self.codingIndices.count
                 else { fatalError("Symbol is not found.") }
             let codingIndex = self.codingIndices[symbol]
