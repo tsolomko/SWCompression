@@ -72,7 +72,8 @@ public class BZip2: DecompressionAlgorithm {
 
     private static func decode(_ bitReader: BitReader) throws -> [UInt8] {
         let isRandomized = bitReader.bit()
-        guard isRandomized == 0 else { throw BZip2Error.randomizedBlock }
+        guard isRandomized == 0
+            else { throw BZip2Error.randomizedBlock }
 
         var pointer = bitReader.intFromBits(count: 24)
 
@@ -101,7 +102,8 @@ public class BZip2: DecompressionAlgorithm {
         let used = computeUsed()
 
         let huffmanGroups = bitReader.intFromBits(count: 3)
-        guard huffmanGroups >= 2 && huffmanGroups <= 6 else { throw BZip2Error.wrongHuffmanGroups }
+        guard huffmanGroups >= 2 && huffmanGroups <= 6
+            else { throw BZip2Error.wrongHuffmanGroups }
 
         func computeSelectorsList() throws -> [Int] {
             let selectorsUsed = bitReader.intFromBits(count: 15)
@@ -113,7 +115,8 @@ public class BZip2: DecompressionAlgorithm {
                 var c = 0
                 while bitReader.bit() > 0 {
                     c += 1
-                    guard c < huffmanGroups else { throw BZip2Error.wrongSelector }
+                    guard c < huffmanGroups
+                        else { throw BZip2Error.wrongSelector }
                 }
                 if c >= 0 {
                     let el = mtf.remove(at: c)
@@ -129,12 +132,13 @@ public class BZip2: DecompressionAlgorithm {
         let symbolsInUse = used.filter { $0 }.count + 2
 
         func computeTables() throws -> [DecodingHuffmanTree] {
-            var tables: [DecodingHuffmanTree] = []
+            var tables = [DecodingHuffmanTree]()
             for _ in 0..<huffmanGroups {
                 var length = bitReader.intFromBits(count: 5)
                 var lengths = [Int]()
                 for _ in 0..<symbolsInUse {
-                    guard length >= 0 && length <= 20 else { throw BZip2Error.wrongHuffmanLengthCode }
+                    guard length >= 0 && length <= 20
+                        else { throw BZip2Error.wrongHuffmanLengthCode }
                     while bitReader.bit() > 0 {
                         length -= (Int(bitReader.bit() * 2) - 1)
                     }
