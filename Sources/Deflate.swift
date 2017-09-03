@@ -122,7 +122,7 @@ public class Deflate: DecompressionAlgorithm {
                         lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.intFromBits(count: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodes = DecodingHuffmanTree(lengthsToOrder: lengthsForOrder, bitReader)
+                    let dynamicCodes = DecodingHuffmanTree(lengths: HuffmanLength.lengths(from: lengthsForOrder), bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
                     var codeLengths: [Int] = []
@@ -163,10 +163,10 @@ public class Deflate: DecompressionAlgorithm {
                     }
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
-                    mainLiterals = DecodingHuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]),
-                                               bitReader)
-                    mainDistances = DecodingHuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]),
-                                                bitReader)
+                    mainLiterals = DecodingHuffmanTree(lengths:
+                        HuffmanLength.lengths(from: Array(codeLengths[0..<literals])), bitReader)
+                    mainDistances = DecodingHuffmanTree(lengths:
+                        HuffmanLength.lengths(from: Array(codeLengths[literals..<codeLengths.count])), bitReader)
                 }
 
                 // Main loop of data decompression.
