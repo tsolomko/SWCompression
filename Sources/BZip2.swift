@@ -170,19 +170,19 @@ public class BZip2: DecompressionAlgorithm {
         var runLength = 0
         var repeatPower = 0
         var buffer: [UInt8] = []
-        var t: DecodingHuffmanTree?
+        var currentTable: DecodingHuffmanTree?
 
         while true {
             decoded -= 1
             if decoded <= 0 {
                 decoded = 50
                 if selectorPointer <= selectorsList.count {
-                    t = tables[selectorsList[selectorPointer]]
+                    currentTable = tables[selectorsList[selectorPointer]]
                     selectorPointer += 1
                 }
             }
 
-            guard let symbol = t?.findNextSymbol(), symbol != -1
+            guard let symbol = currentTable?.findNextSymbol(), symbol != -1
                 else { throw BZip2Error.symbolNotFound }
 
             if symbol == 0 || symbol == 1 { // RUNA and RUNB symbols.

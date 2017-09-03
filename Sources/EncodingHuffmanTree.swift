@@ -71,9 +71,9 @@ class EncodingHuffmanTree {
         }
     }
 
-    func bitSize(for stats: [(Int, Int)]) -> Int {
+    func bitSize(for stats: [Int]) -> Int {
         var totalSize = 0
-        for (symbol, count) in stats where count > 0 {
+        for (symbol, count) in stats.enumerated() where count > 0 {
             guard symbol < self.codingIndices.count
                 else { fatalError("Symbol is not found.") }
             let codingIndex = self.codingIndices[symbol]

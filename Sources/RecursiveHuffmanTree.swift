@@ -5,6 +5,7 @@
 
 import Foundation
 
+// TODO: Combine with EncodingHuffmanTree?
 enum RecursiveHuffmanTree {
     case leaf(Int)
     indirect case node(RecursiveHuffmanTree, RecursiveHuffmanTree)
