@@ -109,10 +109,10 @@ public extension Deflate {
         // Constructing Huffman trees for the case of block with preset alphabets.
         // In this case codes for literals and distances are fixed.
         /// Huffman tree for literal and length symbols/codes.
-        let mainLiterals = EncodingHuffmanTree(bootstrap: Constants.staticHuffmanBootstrap,
+        let mainLiterals = EncodingHuffmanTree(lengths: Constants.staticHuffmanBootstrap,
                                                bitWriter)
         /// Huffman tree for backward distance symbols/codes.
-        let mainDistances = EncodingHuffmanTree(bootstrap: Constants.staticHuffmanDistancesBootstrap,
+        let mainDistances = EncodingHuffmanTree(lengths: Constants.staticHuffmanDistancesBootstrap,
                                                 bitWriter)
 
         for code in bldCodes {
