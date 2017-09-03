@@ -29,10 +29,11 @@ struct HuffmanLength {
         return lengths
     }
 
+    /// - Note: Skips zero codeLengths.
     static func lengths(from orderedCodeLengths: [Int]) -> [HuffmanLength] {
         var lengths = [HuffmanLength]()
-        for i in 0..<orderedCodeLengths.count {
-            lengths.append(HuffmanLength(symbol: i, codeLength: orderedCodeLengths[i]))
+        for (i, codeLength) in orderedCodeLengths.enumerated() where codeLength > 0 {
+            lengths.append(HuffmanLength(symbol: i, codeLength: codeLength))
         }
         return lengths
     }

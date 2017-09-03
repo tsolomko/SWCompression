@@ -12,12 +12,12 @@ class DecodingHuffmanTree {
     private var tree: [Int]
     private let leafCount: Int
 
-    /// `lengths` don't have to be properly sorted.
+    /// `lengths` don't have to be properly sorted, but there must not be any 0 code lengths.
     init(lengths: [HuffmanLength], _ bitReader: BitReader) {
         self.bitReader = bitReader
 
         // Sort `lengths` array to calculate canonical Huffman code.
-        let sortedLengths = lengths.filter { $0.codeLength > 0 }.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
+        let sortedLengths = lengths.sorted { (left: HuffmanLength, right: HuffmanLength) -> Bool in
             if left.codeLength == right.codeLength {
                 return left.symbol < right.symbol
             } else {
@@ -47,6 +47,7 @@ class DecodingHuffmanTree {
         var loopBits = -1
         var symbol = -1
         for length in sortedLengths {
+            precondition(length.codeLength > 0, "Code length must not be 0 during HuffmanTree construction.")
             symbol += 1
             // We sometimes need to make symbol to have length.bits bit length.
             let bits = length.codeLength
