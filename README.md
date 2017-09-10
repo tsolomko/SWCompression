@@ -234,3 +234,4 @@ References
 - [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
+- [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
