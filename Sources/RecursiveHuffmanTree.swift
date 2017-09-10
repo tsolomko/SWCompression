@@ -6,6 +6,7 @@
 import Foundation
 
 // TODO: Combine with EncodingHuffmanTree?
+// TODO: Limit tree height.
 enum RecursiveHuffmanTree {
     case leaf(Int)
     indirect case node(RecursiveHuffmanTree, RecursiveHuffmanTree)
