@@ -1,9 +1,10 @@
 # About performance
+
 Details about current state of SWCompression's performance are discussed here
 as well as what is going to be done in the future to improve it.
 
-General comments
-----------------
+## General comments
+
 First, overall lower performance is expected compared to highly optimized low-level
 C implementations of corresponding algorithms.
 This is the nature of low-level implementations.
@@ -29,41 +30,40 @@ Another example of how language improves performance is compiler optimizations.
 Swift compiler uses 'whole module optimization' for Release configurations and
 this makes a big difference. You can check this out in [tests results](Tests/Results.md).
 
-Deflate Decompression
-----------------------
+## Deflate Decompression
+
 Current state of perfomance is __good__.
 
 Fun fact: there were at least two times in history of development of SWCompression,
 when performance increase was achived by reimplementing Huffman encoding in a smarter way.
 
-Deflate Compression
---------------------
+## Deflate Compression
+
 Current state of performance is __mediocre__.
 This is caused by incomplete implementation of some parts of algorithm.
 Moreover, there are slight overusage of memory during duplicate string elimination,
 which is caused by not really limiting size of a dictionary.
 
-BZip2 Decompression
---------------------
+## BZip2 Decompression
+
 Current state of performance is __average__.
 Most inefficient part of algorithm is BW transormation.
 Though theoretically current implementanion of this transfrom should be fast,
 there are still two problems causing performance issues:
 
 1. Not very fast built-in `indexOf(:)` function.
-This was fixed in 3.1.0 of SWCompression in a way which doesn't use this function
-and trades some performance for small data sizes in favor of better scaling.
-
+    This was fixed in 3.1.0 of SWCompression in a way which doesn't use this function
+    and trades some performance for small data sizes in favor of better scaling.
 2. Not really fast built-in `sorted()` function.
-Apart from that, Swift doesn't contain stable sorting alogrithms
-which is somewhat important for efficiency.
+    Apart from that, Swift doesn't contain stable sorting alogrithms
+    which is somewhat important for efficiency.
 
-XZ/LZMA/LZMA2 Decompression
----------------------------
+## XZ/LZMA/LZMA2 Decompression
+
 Current state of perfomance is __good__.
 
-TAR Parsing
------------
+## TAR Parsing
+
 There are some scaling problems
 (problems which manifest themselves when opening big TAR archives).
 These problems are partially caused by Swift's `String` performance,
