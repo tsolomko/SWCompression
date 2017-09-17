@@ -36,10 +36,6 @@ class BZip2CompressTests: XCTestCase {
         XCTAssertEqual(redecompressedData, stringData)
     }
 
-    func test1BZip2Compress() throws {
-        try stringTest("Hello, World!\n")
-    }
-
     func test2BZip2Compress() throws {
         try stringTest("AAAAAAABBBBCCCD")
     }
@@ -50,6 +46,50 @@ class BZip2CompressTests: XCTestCase {
 
     func test4BZip2Compress() throws {
         try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
+    }
+
+    func test5BZip2Compress() throws {
+        var bytes = [UInt8]()
+        for i: UInt8 in 0...255 {
+            bytes.append(i)
+        }
+        try stringTest(String(data: Data(bytes: bytes), encoding: .ascii)!)
+    }
+
+    func testWithAnswer1BZip2Compress() throws {
+        try answerTest("test1")
+    }
+
+    func testWithAnswer2BZip2Compress() throws {
+        try answerTest("test2")
+    }
+
+    func testWithAnswer3BZip2Compress() throws {
+        try answerTest("test3")
+    }
+
+    func testWithAnswer4BZip2Compress() throws {
+        try answerTest("test4")
+    }
+
+    func testWithAnswer5BZip2Compress() throws {
+        try answerTest("test5")
+    }
+
+//    func testWithAnswer6BZip2Compress() throws {
+//        try answerTest("test6")
+//    }
+//
+//    func testWithAnswer7BZip2Compress() throws {
+//        try answerTest("test7")
+//    }
+
+    func testWithAnswer8BZip2Compress() throws {
+        try answerTest("test8")
+    }
+
+    func testWithAnswer9BZip2Compress() throws {
+        try answerTest("test9")
     }
 
 }
