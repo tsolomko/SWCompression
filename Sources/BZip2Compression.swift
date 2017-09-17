@@ -281,7 +281,9 @@ public extension BZip2 {
             encoded -= 1
             if encoded <= 0 {
                 encoded = 50
-                if selectorPointer <= selectorList.count {
+                if selectorPointer == selectorList.count {
+                    fatalError("Incorrect selector.")
+                } else if selectorPointer < selectorList.count {
                     t = tables[selectorList[selectorPointer]]
                     selectorPointer += 1
                 }

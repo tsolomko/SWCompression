@@ -176,7 +176,9 @@ public class BZip2: DecompressionAlgorithm {
             decoded -= 1
             if decoded <= 0 {
                 decoded = 50
-                if selectorPointer <= selectorsList.count {
+                if selectorPointer == selectorsList.count {
+                    throw BZip2Error.wrongSelector
+                } else if selectorPointer < selectorsList.count {
                     currentTable = tables[selectorsList[selectorPointer]]
                     selectorPointer += 1
                 }
