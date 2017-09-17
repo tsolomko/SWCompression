@@ -117,7 +117,11 @@ public extension BZip2 {
         var tablesLengths = [[Int]]()
         var selectorsUsed = 0
         var selectorList = [Int]()
-        var stats = Array(repeating: 0, count: maxSymbol + 2)
+
+        // Algorithm for code lengths calculations skips any symbol with frequency equal to 0.
+        // Unfortunately, we need such unused symbols in tree creation, so we cannot skip them.
+        // To prevent skipping, we set default value of 1 for every symbol's frequency.
+        var stats = Array(repeating: 1, count: maxSymbol + 2)
 
         for i in 0..<symbolOut.count {
             let symbol = symbolOut[i]
@@ -126,7 +130,7 @@ public extension BZip2 {
             if processed <= 0 || i == symbolOut.count - 1 {
                 processed = 50
                 // We need to calculate code lengths for our current stats.
-                let lengths = RecursiveHuffmanTree.build(stats).calculateLengths()
+                let lengths = BZip2.lengths(from: stats)
                 // Using these code lengths we can create new Huffman tree, which we may use.
                 let table = EncodingHuffmanTree(lengths: lengths, bitWriter)
                 // Let's compute possible sizes for our stats using new tree and existing trees.
@@ -150,7 +154,7 @@ public extension BZip2 {
                 }
 
                 // Clear stats.
-                stats = Array(repeating: 0, count: maxSymbol + 2)
+                stats = Array(repeating: 1, count: maxSymbol + 2)
             }
         }
 
