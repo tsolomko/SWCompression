@@ -32,18 +32,8 @@ public extension BZip2 {
         }
 
         // BWT
-        let suffixArray = SuffixArray.make(from: out, with: 256)
-        var bwt = [UInt8]()
         var pointer = 0
-        for i in 1..<suffixArray.count {
-            if suffixArray[i] > 0 {
-                bwt.append(out[suffixArray[i] - 1])
-            } else {
-                bwt.append(out.last!)
-                pointer = i - 1
-            }
-        }
-        out = bwt
+        (out, pointer) = BurrowsWheeler.transform(bytes: out)
 
         // Move to front
         var usedBytes = Set(out).sorted()
