@@ -306,7 +306,7 @@ extension BZip2 {
         }
     }
 
-    static func mtf(_ array: [Int]) -> [Int] {
+    private static func mtf(_ array: [Int]) -> [Int] {
         var result = [Int]()
         var mtf = Array(0..<array.count)
         for i in 0..<array.count {
