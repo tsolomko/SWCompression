@@ -19,11 +19,13 @@ extension BZip2 {
             return [HuffmanLength(symbol: 0, codeLength: 1)]
         }
 
+        let symbolsCount = stats.count
+
         /// Mutable copy of input `stats`.
         var stats = stats
 
-        var codeSizes = Array(repeating: 0, count: 259)
-        var others = Array(repeating: -1, count: 259)
+        var codeSizes = Array(repeating: 0, count: symbolsCount)
+        var others = Array(repeating: -1, count: symbolsCount)
 
         while true {
             var c1 = -1
@@ -66,15 +68,14 @@ extension BZip2 {
         }
 
         // Now we count code lengths.
-        // In worst case scenario the maximum code length is 258.
-        var bits = Array(repeating: 0, count: 259)
+        var bits = Array(repeating: 0, count: symbolsCount)
         for i in 0..<bits.count {
             // We don't check for zero code length because we have unused element in `bits` array for them.
             bits[codeSizes[i]] += 1
         }
 
         // Adjust_bits
-        for i in stride(from: 258, to: 20, by: -1) {
+        for i in stride(from: symbolsCount - 1, to: 20, by: -1) {
             while bits[i] > 0 {
                 var j = i - 2
                 while bits[j] == 0 {
@@ -90,7 +91,7 @@ extension BZip2 {
         // Generate_size_table
         var symbol = 0
         var lengths = [HuffmanLength]()
-        for i in 1...20 {
+        for i in 1...min(20, bits.count - 1) {
             var j = 1
             while j <= bits[i] {
                 lengths.append(HuffmanLength(symbol: symbol, codeLength: i))
