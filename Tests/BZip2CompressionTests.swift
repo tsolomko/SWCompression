@@ -56,6 +56,13 @@ class BZip2CompressTests: XCTestCase {
         try stringTest(String(data: Data(bytes: bytes), encoding: .ascii)!)
     }
 
+    func test6BZip2Compress() throws {
+        try stringTest("abaaba")
+        try stringTest("abracadabra")
+        try stringTest("cabbage")
+        try stringTest("baabaabac")
+    }
+
     func testWithAnswer1BZip2Compress() throws {
         try answerTest("test1")
     }
