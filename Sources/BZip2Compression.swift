@@ -8,8 +8,41 @@ import Foundation
 public extension BZip2 {
 
     public static func compress(data: Data) -> Data {
-        var out = [UInt8]()
+        let bitWriter = BitWriter(bitOrder: .straight)
+        let blockSize = 9 * 100 * 1024
+        // BZip2 Header.
+        bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
+        bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
+        bitWriter.write(number: 0x39, bitsCount: 8) // Block size. We use '9' = 900 KB for now.
 
+        var totalCRC: UInt32 = 0
+        for i in stride(from: 0, to: data.count, by: blockSize) {
+            let blockData = data.subdata(in: i..<min(data.count, i + blockSize))
+            let blockCRC = CheckSums.bzip2CRC32(blockData)
+            totalCRC = (totalCRC << 1) | (totalCRC >> 31)
+            totalCRC ^= blockCRC
+            // Start block header.
+            bitWriter.write(number: 0x314159265359, bitsCount: 48) // Block magic number.
+            bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
+
+            process(block: blockData, bitWriter)
+        }
+
+        // EOS magic number.
+        bitWriter.write(number: 0x177245385090, bitsCount: 48)
+        // Total crc32.
+        bitWriter.write(number: totalCRC.toInt(), bitsCount: 32)
+
+        bitWriter.finish()
+        return Data(bytes: bitWriter.buffer)
+    }
+}
+
+extension BZip2 {
+
+    static func process(block data: Data, _ bitWriter: BitWriter) {
+        var out = [UInt8]()
+        
         // Run Length Encoding
         var index = 0
         while index < data.count {
@@ -34,7 +67,7 @@ public extension BZip2 {
         // BWT
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
-
+        print(out)
         // Move to front
         var usedBytes = Set(out).sorted()
         for i in 0..<out.count {
@@ -95,9 +128,6 @@ public extension BZip2 {
         // Add 'end of stream' symbol.
         symbolOut.append(maxSymbol + 1)
 
-        // Huffman Coding
-        let bitWriter = BitWriter(bitOrder: .straight)
-
         // First, we analyze data and create Huffman trees and selectors.
         // Then we will perform encoding itself.
         // These are separate stages because all information about trees is stored at the beginning of the block,
@@ -133,7 +163,7 @@ public extension BZip2 {
                         minimumSelector = tableIndex
                     }
                 }
-                if table.bitSize(for: stats) < minimumSize {
+                if table.bitSize(for: stats) < minimumSize && tables.count < 6 {
                     tables.append(table)
                     tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
                     selectorList.append(tables.count - 1)
@@ -156,13 +186,7 @@ public extension BZip2 {
         }
 
         // Now, we perform encoding itself.
-        // But first, we need to create block header.
-
-        bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
-        bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
-        bitWriter.write(number: 0x39, bitsCount: 8) // Block size. We use '9' = 900 KB for now.
-        bitWriter.write(number: 0x314159265359, bitsCount: 48) // Block magic number.
-        bitWriter.write(number: CheckSums.bzip2CRC32(data).toInt(), bitsCount: 32) // Block crc32.
+        // But first, we need to finish block header.
         bitWriter.write(number: 0, bitsCount: 1) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
@@ -280,15 +304,6 @@ public extension BZip2 {
             }
             t?.code(symbol: symbol)
         }
-
-        // EOS magic number.
-        bitWriter.write(number: 0x177245385090, bitsCount: 48)
-        // Total crc32.
-        bitWriter.write(number: CheckSums.bzip2CRC32(data).toInt(), bitsCount: 32)
-
-        bitWriter.finish()
-
-        return Data(bytes: bitWriter.buffer)
     }
 
     static func mtf(_ array: [Int]) -> [Int] {
@@ -304,3 +319,4 @@ public extension BZip2 {
     }
 
 }
+
