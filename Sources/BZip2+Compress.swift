@@ -67,7 +67,7 @@ extension BZip2 {
         // BWT
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
-        print(out)
+
         // Move to front
         var usedBytes = Set(out).sorted()
         for i in 0..<out.count {
