@@ -36,31 +36,22 @@ class BZip2CompressTests: XCTestCase {
         XCTAssertEqual(redecompressedData, stringData)
     }
 
-    func test2BZip2Compress() throws {
+    func testBZip2CompressStrings() throws {
+        try stringTest("abaaba")
+        try stringTest("abracadabra")
+        try stringTest("cabbage")
+        try stringTest("baabaabac")
         try stringTest("AAAAAAABBBBCCCD")
-    }
-
-    func test3BZip2Compress() throws {
         try stringTest("AAAAAAA")
-    }
-
-    func test4BZip2Compress() throws {
         try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
     }
 
-    func test5BZip2Compress() throws {
+    func testBZip2CompressBytes() throws {
         var bytes = [UInt8]()
         for i: UInt8 in 0...255 {
             bytes.append(i)
         }
         try stringTest(String(data: Data(bytes: bytes), encoding: .ascii)!)
-    }
-
-    func test6BZip2Compress() throws {
-        try stringTest("abaaba")
-        try stringTest("abracadabra")
-        try stringTest("cabbage")
-        try stringTest("baabaabac")
     }
 
     func testWithAnswer1BZip2Compress() throws {
