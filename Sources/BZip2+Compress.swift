@@ -136,7 +136,7 @@ extension BZip2 {
         var tables = [EncodingHuffmanTree]()
         var tablesLengths = [[Int]]()
         var selectorsUsed = 0
-        var selectorList = [Int]()
+        var selectors = [Int]()
 
         // Algorithm for code lengths calculations skips any symbol with frequency equal to 0.
         // Unfortunately, we need such unused symbols in tree creation, so we cannot skip them.
@@ -166,10 +166,10 @@ extension BZip2 {
                 if table.bitSize(for: stats) < minimumSize && tables.count < 6 {
                     tables.append(table)
                     tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
-                    selectorList.append(tables.count - 1)
+                    selectors.append(tables.count - 1)
                     selectorsUsed += 1
                 } else {
-                    selectorList.append(minimumSelector)
+                    selectors.append(minimumSelector)
                     selectorsUsed += 1
                 }
 
@@ -248,8 +248,8 @@ extension BZip2 {
         bitWriter.write(number: tables.count, bitsCount: 3)
         bitWriter.write(number: selectorsUsed, bitsCount: 15)
 
-        let mtfSelectorList = mtf(selectorList)
-        for selector in mtfSelectorList {
+        let mtfSelectors = mtf(selectors)
+        for selector in mtfSelectors {
             if selector == 0 {
                 bitWriter.write(bit: 0)
             } else if selector == 1 {
@@ -295,10 +295,10 @@ extension BZip2 {
             encoded -= 1
             if encoded <= 0 {
                 encoded = 50
-                if selectorPointer == selectorList.count {
+                if selectorPointer == selectors.count {
                     fatalError("Incorrect selector.")
-                } else if selectorPointer < selectorList.count {
-                    t = tables[selectorList[selectorPointer]]
+                } else if selectorPointer < selectors.count {
+                    t = tables[selectors[selectorPointer]]
                     selectorPointer += 1
                 }
             }

@@ -105,7 +105,7 @@ public class BZip2: DecompressionAlgorithm {
         guard huffmanGroups >= 2 && huffmanGroups <= 6
             else { throw BZip2Error.wrongHuffmanGroups }
 
-        func computeSelectorsList() throws -> [Int] {
+        func computeSelectors() throws -> [Int] {
             let selectorsUsed = bitReader.intFromBits(count: 15)
 
             var mtf = Array(0..<huffmanGroups)
@@ -128,7 +128,7 @@ public class BZip2: DecompressionAlgorithm {
             return selectorsList
         }
 
-        let selectorsList = try computeSelectorsList()
+        let selectors = try computeSelectors()
         let symbolsInUse = used.filter { $0 }.count + 2
 
         func computeTables() throws -> [DecodingHuffmanTree] {
@@ -176,10 +176,10 @@ public class BZip2: DecompressionAlgorithm {
             decoded -= 1
             if decoded <= 0 {
                 decoded = 50
-                if selectorPointer == selectorsList.count {
+                if selectorPointer == selectors.count {
                     throw BZip2Error.wrongSelector
-                } else if selectorPointer < selectorsList.count {
-                    currentTable = tables[selectorsList[selectorPointer]]
+                } else if selectorPointer < selectors.count {
+                    currentTable = tables[selectors[selectorPointer]]
                     selectorPointer += 1
                 }
             }
