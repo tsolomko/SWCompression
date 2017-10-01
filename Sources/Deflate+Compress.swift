@@ -5,7 +5,7 @@
 
 import Foundation
 
-public extension Deflate {
+extension Deflate: CompressionAlgorithm {
 
     /**
      Compresses `data` with Deflate algortihm.

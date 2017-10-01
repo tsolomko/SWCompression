@@ -5,9 +5,13 @@
 
 import Foundation
 
-public extension BZip2 {
-
-    public static func compress(data: Data, blockSize: BlockSize = .one) -> Data {
+extension BZip2: CompressionAlgorithm {
+    
+    public static func compress(data: Data) -> Data {
+        return compress(data: data, blockSize: .one)
+    }
+    
+    public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = BitWriter(bitOrder: .straight)
         let rawBlockSize = blockSize.rawValue * 100 * 1024
         // BZip2 Header.
@@ -38,6 +42,7 @@ public extension BZip2 {
         bitWriter.finish()
         return Data(bytes: bitWriter.buffer)
     }
+
 }
 
 extension BZip2 {
