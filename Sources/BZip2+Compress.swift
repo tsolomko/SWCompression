@@ -44,7 +44,7 @@ extension BZip2: CompressionAlgorithm {
     }
 
     private static func process(block data: Data, _ bitWriter: BitWriter) {
-        var out = [UInt8]()
+        var out = [Int]()
         
         // Run Length Encoding
         var index = 0
@@ -56,12 +56,12 @@ extension BZip2: CompressionAlgorithm {
             }
             if runLength >= 4 {
                 for _ in 0..<4 {
-                    out.append(data[index])
+                    out.append(data[index].toInt())
                 }
-                out.append((runLength - 4).toUInt8())
+                out.append(runLength - 4)
             } else {
                 for _ in 0..<runLength {
-                    out.append(data[index])
+                    out.append(data[index].toInt())
                 }
             }
             index += 1
@@ -75,7 +75,7 @@ extension BZip2: CompressionAlgorithm {
         var usedBytes = Set(out).sorted()
         for i in 0..<out.count {
             let index = usedBytes.index(of: out[i])!
-            out[i] = index.toUInt8()
+            out[i] = index
             let oldByte = usedBytes.remove(at: index)
             usedBytes.insert(oldByte, at: 0)
         }
@@ -103,7 +103,7 @@ extension BZip2: CompressionAlgorithm {
                     }
                     zeroRunLength = 0
                 }
-                let newSymbol = byte.toInt() + 1
+                let newSymbol = byte + 1
                 // We add one because, 1 is used as RUNB.
                 // We don't add two instead, because 0 is never encountered as separate symbol,
                 //  without RUNA meaning.
@@ -239,7 +239,7 @@ extension BZip2: CompressionAlgorithm {
         for i in 0..<16 {
             guard usedMap[i] == 1 else { continue }
             for j in 0..<16 {
-                if usedBytesIndex < usedBytes.count && i * 16 + j == usedBytes[usedBytesIndex].toInt() {
+                if usedBytesIndex < usedBytes.count && i * 16 + j == usedBytes[usedBytesIndex] {
                     bitWriter.write(bit: 1)
                     usedBytesIndex += 1
                 } else {

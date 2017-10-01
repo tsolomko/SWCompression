@@ -7,10 +7,10 @@ import Foundation
 
 class BurrowsWheeler {
 
-    static func transform(bytes: [UInt8]) -> ([UInt8], Int) {
+    static func transform(bytes: [Int]) -> ([Int], Int) {
         let doubleBytes = bytes + bytes
-        let suffixArray = SuffixArray.make(from: doubleBytes.map { $0.toInt() }, with: 256)
-        var bwt = [UInt8]()
+        let suffixArray = SuffixArray.make(from: doubleBytes, with: 256)
+        var bwt = [Int]()
         var pointer = 0
         for i in 1..<suffixArray.count {
             if suffixArray[i] < bytes.count {
