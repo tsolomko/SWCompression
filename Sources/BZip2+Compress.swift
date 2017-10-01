@@ -47,7 +47,7 @@ extension BZip2 {
         var index = 0
         while index < data.count {
             var runLength = 1
-            while index + 1 < data.count && data[index] == data[index + 1] && runLength <= 255 {
+            while index + 1 < data.count && data[index] == data[index + 1] && runLength < 255 {
                 runLength += 1
                 index += 1
             }
@@ -55,7 +55,7 @@ extension BZip2 {
                 for _ in 0..<4 {
                     out.append(data[index])
                 }
-                out.append(runLength.toUInt8() - 4)
+                out.append((runLength - 4).toUInt8())
             } else {
                 for _ in 0..<runLength {
                     out.append(data[index])
