@@ -22,6 +22,13 @@ class BZip2CompressTests: XCTestCase {
         let redecompressedData = try BZip2.decompress(data: compressedData)
 
         XCTAssertEqual(redecompressedData, answerData)
+
+        #if PERF_TESTS
+            print("Performing performance tests for cbzip2.\(testName)")
+            self.measure {
+                _ = try? BZip2.compress(data: answerData)
+            }
+        #endif
     }
 
     func stringTest(_ string: String) throws {
