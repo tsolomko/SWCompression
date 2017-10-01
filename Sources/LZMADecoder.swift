@@ -182,7 +182,7 @@ class LZMADecoder {
                 throw LZMA2Error.wrongControlByte
             case 0x80...0xFF:
                 try self.dispatch(controlByte, lzma2DictionarySize)
-            default:
+            default: // TODO: Maybe it is exhaustive without default in Swift 4?
                 throw LZMA2Error.wrongControlByte
             }
         }
