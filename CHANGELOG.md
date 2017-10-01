@@ -1,4 +1,9 @@
 # Changelog
+
+## 3.3.1
+
+- Fixed out of range index crash in BitReader.
+
 v3.3.0
 ----------------
 - Introduced support for 7-Zip containers.
