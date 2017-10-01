@@ -7,6 +7,13 @@ import Foundation
 
 /// Provides unarchive function for XZ archives.
 public class XZArchive: Archive {
+    
+    enum CheckType: Int {
+        case none = 0x00
+        case crc32 = 0x01
+        case crc64 = 0x04
+        case sha256 = 0x0A
+    }
 
     /**
      Unarchives XZ archive.
@@ -134,23 +141,21 @@ public class XZArchive: Archive {
                 out.append(contentsOf: blockInfo.blockData)
                 let checkSize: Int
                 switch streamHeader.checkType {
-                case 0x00:
+                case .none:
                     checkSize = 0
                     break
-                case 0x01:
+                case .crc32:
                     checkSize = 4
                     let check = pointerData.uint32()
                     guard CheckSums.crc32(blockInfo.blockData) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
-                case 0x04:
+                case .crc64:
                     checkSize = 8
                     let check = pointerData.uint64()
                     guard CheckSums.crc64(blockInfo.blockData) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
-                case 0x0A:
+                case .sha256:
                     throw XZError.checkTypeSHA256
-                default:
-                    throw XZError.fieldReservedValue
                 }
                 blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
             }
@@ -162,7 +167,7 @@ public class XZArchive: Archive {
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: DataWithPointer) throws -> (checkType: Int, flagsCRC: UInt32) {
+    private static func processStreamHeader(_ pointerData: DataWithPointer) throws -> (checkType: CheckType, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
             else { throw XZError.wrongMagic }
@@ -180,13 +185,8 @@ public class XZArchive: Archive {
             else { throw XZError.fieldReservedValue }
 
         // Four bits of second flags byte indicate type of redundancy check.
-        let checkType = flagsBytes[1].toInt() & 0xF
-        switch checkType {
-        case 0x00, 0x01, 0x04, 0x0A:
-            break
-        default:
-            throw XZError.fieldReservedValue
-        }
+        guard let checkType = CheckType(rawValue: flagsBytes[1].toInt() & 0xF)
+            else { throw XZError.fieldReservedValue }
 
         return (checkType, flagsCRC)
     }
@@ -310,7 +310,7 @@ public class XZArchive: Archive {
         return indexSize + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: Int, flagsCRC: UInt32),
+    private static func processFooter(_ streamHeader: (checkType: CheckType, flagsCRC: UInt32),
                                       _ indexSize: Int,
                                       _ pointerData: DataWithPointer) throws {
         let footerCRC = pointerData.uint32()
@@ -328,7 +328,7 @@ public class XZArchive: Archive {
         // Flags in the footer should be the same as in the header.
         guard streamFooterFlags & 0xFF == 0
             else { throw XZError.fieldReservedValue }
-        guard (streamFooterFlags & 0xF00) >> 8 == streamHeader.checkType
+        guard (streamFooterFlags & 0xF00) >> 8 == streamHeader.checkType.rawValue
             else { throw XZError.wrongFieldValue }
         guard streamFooterFlags & 0xF000 == 0
             else { throw XZError.fieldReservedValue }
