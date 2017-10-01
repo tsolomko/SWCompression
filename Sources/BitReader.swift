@@ -45,15 +45,13 @@ class BitReader: DataWithPointer {
         }
 
         var array: [UInt8] = Array(repeating: 0, count: count)
-        var byte = self.data[self.index]
         for i in 0..<count {
-            array[i] = byte & self.bitMask > 0 ? 1 : 0
+            array[i] = self.data[self.index] & self.bitMask > 0 ? 1 : 0
 
             switch self.bitOrder {
             case .reversed:
                 if self.bitMask == 128 {
                     self.index += 1
-                    byte = self.data[self.index]
                     self.bitMask = 1
                 } else {
                     self.bitMask <<= 1
@@ -61,7 +59,6 @@ class BitReader: DataWithPointer {
             case .straight:
                 if self.bitMask == 1 {
                     self.index += 1
-                    byte = self.data[self.index]
                     self.bitMask = 128
                 } else {
                     self.bitMask >>= 1
@@ -78,7 +75,6 @@ class BitReader: DataWithPointer {
         }
 
         var result = 0
-        var byte = self.data[self.index]
         for i in 0..<count {
             let power: Int
             switch self.bitOrder {
@@ -88,14 +84,13 @@ class BitReader: DataWithPointer {
                 power = i
             }
 
-            let bit = byte & self.bitMask > 0 ? 1 : 0
+            let bit = self.data[self.index] & self.bitMask > 0 ? 1 : 0
             result += (1 << power) * bit
 
             switch self.bitOrder {
             case .reversed:
                 if self.bitMask == 128 {
                     self.index += 1
-                    byte = self.data[self.index]
                     self.bitMask = 1
                 } else {
                     self.bitMask <<= 1
@@ -103,7 +98,6 @@ class BitReader: DataWithPointer {
             case .straight:
                 if self.bitMask == 1 {
                     self.index += 1
-                    byte = self.data[self.index]
                     self.bitMask = 128
                 } else {
                     self.bitMask >>= 1
