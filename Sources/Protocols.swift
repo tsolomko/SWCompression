@@ -23,10 +23,10 @@ public protocol DecompressionAlgorithm {
 
 /// A type that provides an implementation of a particular compression algorithm.
 public protocol CompressionAlgorithm {
-    
+
     /// Cmpress data with particular algorithm.
     static func compress(data: Data) throws -> Data
-    
+
 }
 
 /// A type that represents a container of files, directories and/or other data.

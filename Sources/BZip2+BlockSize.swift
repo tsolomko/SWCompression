@@ -6,7 +6,7 @@
 import Foundation
 
 public extension BZip2 {
-    
+
     public enum BlockSize: Int {
         case one = 1
         case two = 2
@@ -21,7 +21,7 @@ public extension BZip2 {
 }
 
 extension BZip2.BlockSize {
-    
+
     func headerByte() -> Int {
         switch self {
         case .one:
@@ -44,5 +44,5 @@ extension BZip2.BlockSize {
             return 0x39
         }
     }
-    
+
 }

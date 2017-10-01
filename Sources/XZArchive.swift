@@ -7,7 +7,7 @@ import Foundation
 
 /// Provides unarchive function for XZ archives.
 public class XZArchive: Archive {
-    
+
     enum CheckType: Int {
         case none = 0x00
         case crc32 = 0x01

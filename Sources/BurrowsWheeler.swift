@@ -60,5 +60,4 @@ class BurrowsWheeler {
         return pointers
     }
 
-
 }

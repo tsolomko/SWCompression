@@ -6,11 +6,11 @@
 import Foundation
 
 extension BZip2: CompressionAlgorithm {
-    
+
     public static func compress(data: Data) -> Data {
         return compress(data: data, blockSize: .one)
     }
-    
+
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = BitWriter(bitOrder: .straight)
         let rawBlockSize = blockSize.rawValue * 100 * 1024
@@ -23,10 +23,10 @@ extension BZip2: CompressionAlgorithm {
         for i in stride(from: 0, to: data.count, by: rawBlockSize) {
             let blockData = data.subdata(in: i..<min(data.count, i + rawBlockSize))
             let blockCRC = CheckSums.bzip2CRC32(blockData)
-            
+
             totalCRC = (totalCRC << 1) | (totalCRC >> 31)
             totalCRC ^= blockCRC
-            
+
             // Start block header.
             bitWriter.write(number: 0x314159265359, bitsCount: 48) // Block magic number.
             bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
@@ -45,7 +45,7 @@ extension BZip2: CompressionAlgorithm {
 
     private static func process(block data: Data, _ bitWriter: BitWriter) {
         var out = [Int]()
-        
+
         // Run Length Encoding
         var index = 0
         while index < data.count {
@@ -322,4 +322,3 @@ extension BZip2: CompressionAlgorithm {
     }
 
 }
-

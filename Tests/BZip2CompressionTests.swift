@@ -93,7 +93,7 @@ class BZip2CompressTests: XCTestCase {
     }
 
     #endif
-    
+
     func testWithAnswer8BZip2Compress() throws {
         try answerTest("test8")
     }
