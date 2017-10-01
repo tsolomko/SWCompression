@@ -43,11 +43,7 @@ extension BZip2: CompressionAlgorithm {
         return Data(bytes: bitWriter.buffer)
     }
 
-}
-
-extension BZip2 {
-
-    static func process(block data: Data, _ bitWriter: BitWriter) {
+    private static func process(block data: Data, _ bitWriter: BitWriter) {
         var out = [UInt8]()
         
         // Run Length Encoding
