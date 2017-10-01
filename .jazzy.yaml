@@ -51,3 +51,4 @@ custom_categories:
       - Container
       - ContainerEntry
       - DecompressionAlgorithm
+      - CompressionAlgorithm
