@@ -15,13 +15,13 @@ class SuffixArray {
 
     private struct State {
 
-        let input: [UInt8]
+        let input: [Int]
         let typemap: [SuffixType]
         let bucketSizes: [Int]
         let bucketHeads: [Int]
         let bucketTails: [Int]
 
-        init(bytes: [UInt8], alphabetSize: Int) {
+        init(bytes: [Int], alphabetSize: Int) {
             self.input = bytes
 
             var typemap = Array(repeating: SuffixType.lType, count: bytes.count + 1) // Extra one for empty suffix.
@@ -30,7 +30,7 @@ class SuffixArray {
             typemap[bytes.count] = .sType // The empty suffix is S type.
 
             if bytes.count != 0 {
-                bucketSizes[bytes[bytes.count - 1].toInt()] += 1
+                bucketSizes[bytes[bytes.count - 1]] += 1
                 // The suffix containing only the last character must be "larger" than the empty suffix.
                 typemap[bytes.count - 1] = .lType
             }
@@ -44,7 +44,7 @@ class SuffixArray {
                     typemap[i] = .sType
                 }
 
-                bucketSizes[bytes[i].toInt()] += 1
+                bucketSizes[bytes[i]] += 1
             }
 
             self.typemap = typemap
@@ -67,7 +67,7 @@ class SuffixArray {
 
     private struct Summary {
 
-        let bytes: [UInt8]
+        let bytes: [Int]
         let alphabetSize: Int
         let suffixOffsets: [Int]
 
@@ -92,12 +92,12 @@ class SuffixArray {
             }
 
             var summarySuffixOffsets = [Int]()
-            var summaryBytes = [UInt8]()
+            var summaryBytes = [Int]()
             for (index, name) in lmsNames.enumerated() {
                 guard name != -1
                     else { continue }
                 summarySuffixOffsets.append(index)
-                summaryBytes.append(name.toUInt8())
+                summaryBytes.append(name)
             }
 
             self.suffixOffsets = summarySuffixOffsets
@@ -112,7 +112,7 @@ class SuffixArray {
 
                 for i in 0..<self.bytes.count {
                     let y = self.bytes[i]
-                    summarySuffixArray[y.toInt() + 1] = i
+                    summarySuffixArray[y + 1] = i
                 }
 
                 return summarySuffixArray
@@ -123,7 +123,7 @@ class SuffixArray {
 
     }
 
-    static func make(from bytes: [UInt8], with alphabetSize: Int) -> [Int] {
+    static func make(from bytes: [Int], with alphabetSize: Int) -> [Int] {
         let state = State(bytes: bytes, alphabetSize: alphabetSize)
 
         var guessedSuffixArray = guessLMSSort(state)
@@ -180,7 +180,7 @@ class SuffixArray {
                 continue
             }
 
-            let bucketIndex = state.input[i].toInt()
+            let bucketIndex = state.input[i]
             result[bucketTails[bucketIndex]] = i
             bucketTails[bucketIndex] -= 1
         }
@@ -196,7 +196,7 @@ class SuffixArray {
 
         for i in stride(from: summarySuffixArray.count - 1, to: 1, by: -1) {
             let bytesIndex = summary.suffixOffsets[summarySuffixArray[i]]
-            let bucketIndex = state.input[bytesIndex].toInt()
+            let bucketIndex = state.input[bytesIndex]
             suffixOffsets[bucketTails[bucketIndex]] = bytesIndex
             bucketTails[bucketIndex] -= 1
         }
@@ -215,7 +215,7 @@ class SuffixArray {
             guard j >= 0 && state.typemap[j] == .lType
                 else { continue }
 
-            let bucketIndex = state.input[j].toInt()
+            let bucketIndex = state.input[j]
             guessedSuffixArray[bucketHeads[bucketIndex]] = j
             bucketHeads[bucketIndex] += 1
         }
@@ -225,7 +225,7 @@ class SuffixArray {
             guard j >= 0 && state.typemap[j] == .sType
                 else { continue }
 
-            let bucketIndex = state.input[j].toInt()
+            let bucketIndex = state.input[j]
             guessedSuffixArray[bucketTails[bucketIndex]] = j
             bucketTails[bucketIndex] -= 1
         }
