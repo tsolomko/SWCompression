@@ -29,22 +29,22 @@ Pod::Spec.new do |s|
   # It should not be included directly in Podfile.
 
   s.subspec 'Deflate' do |sp|
-    sp.source_files = 'Sources/{Deflate,DeflateCompression,DeflateError,Extensions,Protocols,DataWithPointer,BitReader,HuffmanTree,BitWriter,CheckSums}.swift'
+    sp.source_files = 'Sources/{Deflate*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength,CheckSums}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_DEFLATE' }
   end
 
   s.subspec 'GZip' do |sp|
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{GzipArchive,GzipHeader,GzipError,CheckSums}.swift'
+    sp.source_files = 'Sources/{Gzip*,CheckSums}.swift'
   end
 
   s.subspec 'Zlib' do |sp|
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{ZlibArchive,ZlibHeader,ZlibError,CheckSums}.swift'
+    sp.source_files = 'Sources/{Zlib*,CheckSums}.swift'
   end
 
   s.subspec 'BZip2' do |sp|
-    sp.source_files = 'Sources/{BZip2,BZip2Error,Extensions,Protocols,CheckSums,DataWithPointer,BitReader,HuffmanTree,BitWriter}.swift'
+    sp.source_files = 'Sources/{BZip2*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength,CheckSums}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_BZ2' }
   end
 
@@ -55,7 +55,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'XZ' do |sp|
     sp.dependency 'SWCompression/LZMA'
-    sp.source_files = 'Sources/{XZArchive,XZError,CheckSums}.swift'
+    sp.source_files = 'Sources/{XZ*,CheckSums}.swift'
   end
 
   s.subspec 'ZIP' do |sp|
