@@ -7,20 +7,22 @@ import Foundation
 
 public extension BZip2 {
 
-    public static func compress(data: Data) -> Data {
+    public static func compress(data: Data, blockSize: BlockSize = .one) -> Data {
         let bitWriter = BitWriter(bitOrder: .straight)
-        let blockSize = 9 * 100 * 1024
+        let rawBlockSize = blockSize.rawValue * 100 * 1024
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
         bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
-        bitWriter.write(number: 0x39, bitsCount: 8) // Block size. We use '9' = 900 KB for now.
+        bitWriter.write(number: blockSize.headerByte(), bitsCount: 8) // Block size. We use '9' = 900 KB for now.
 
         var totalCRC: UInt32 = 0
-        for i in stride(from: 0, to: data.count, by: blockSize) {
-            let blockData = data.subdata(in: i..<min(data.count, i + blockSize))
+        for i in stride(from: 0, to: data.count, by: rawBlockSize) {
+            let blockData = data.subdata(in: i..<min(data.count, i + rawBlockSize))
             let blockCRC = CheckSums.bzip2CRC32(blockData)
+            
             totalCRC = (totalCRC << 1) | (totalCRC >> 31)
             totalCRC ^= blockCRC
+            
             // Start block header.
             bitWriter.write(number: 0x314159265359, bitsCount: 48) // Block magic number.
             bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
