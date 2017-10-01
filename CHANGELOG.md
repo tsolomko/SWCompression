@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.0-test
+
+- Added BZip2 compression.
+- Added `CompressionAlgorithm` protocol.
+- Deflate now conforms to `CompressionAlgorithm` protocol.
+
 ## 3.3.1
 
 - Fixed out of range index crash in BitReader.

@@ -1,6 +1,82 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 10,
+      "symbol": "BZip2.BlockSize",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 11,
+      "symbol": "BZip2.BlockSize.one",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 12,
+      "symbol": "BZip2.BlockSize.two",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 13,
+      "symbol": "BZip2.BlockSize.three",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 14,
+      "symbol": "BZip2.BlockSize.four",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 15,
+      "symbol": "BZip2.BlockSize.five",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 16,
+      "symbol": "BZip2.BlockSize.six",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 17,
+      "symbol": "BZip2.BlockSize.seven",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 18,
+      "symbol": "BZip2.BlockSize.eight",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+BlockSize.swift",
+      "line": 19,
+      "symbol": "BZip2.BlockSize.nine",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+Compress.swift",
+      "line": 14,
+      "symbol": "BZip2.compress(data:blockSize:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/timofeysolomko/Developer/Compression/SWCompression"
 }

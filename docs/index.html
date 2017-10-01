@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (96% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -54,6 +54,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/BZip2.html">BZip2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/BZip2/BlockSize.html">– BlockSize</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/Deflate.html">Deflate</a>
@@ -189,6 +192,9 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/CompressionAlgorithm.html">CompressionAlgorithm</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -212,11 +218,11 @@
 <p>A framework which contains implementations of (de)compression algorithms and functions which parse various archives and containers.</p>
 
 <p><strong>Developed with Swift.</strong></p>
-<h2 id='why-have-you-made-this-framework' class='heading'>Why have you made this framework?</h2>
+<h2 id='motivation' class='heading'>Motivation</h2>
 
-<p>There are a couple of reasons for this.</p>
+<p>There are a couple of reasons for the project&rsquo;s development.</p>
 
-<p>The main reason is that it is very educational and somewhat fun.</p>
+<p>The main reason is that it is very educational.</p>
 
 <p>Secondly, if you are a Swift developer and you want to compress/decompress something in your project
 you have to use either wrapper around system libraries (which is probably written in Objective-C)
@@ -263,7 +269,7 @@ And yes, it is also in Objective-C.</p>
 <h2 id='installation' class='heading'>Installation</h2>
 
 <p>SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.</p>
-<h5 id='cocoapods' class='heading'>CocoaPods</h5>
+<h3 id='cocoapods' class='heading'>CocoaPods</h3>
 
 <p>Add to your Podfile <code>pod &#39;SWCompression&#39;</code>.</p>
 
@@ -287,16 +293,18 @@ Available subspecs:</p>
 <p>Also, do not forget to include <code>use_frameworks!</code> line in your Podfile.</p>
 
 <p>To complete installation, run <code>pod install</code>.</p>
-<h5 id='carthage' class='heading'>Carthage</h5>
+<h3 id='carthage' class='heading'>Carthage</h3>
 
 <p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
 
 <p>Then run <code>carthage update</code>.</p>
 
-<p>Finally, drag and drop <code>SWCompression.framework</code> from <code>Carthage/Build</code> folder into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> tab.</p>
-<h5 id='swift-package-manager' class='heading'>Swift Package Manager</h5>
+<p>Finally, drag and drop <code>SWCompression.framework</code> from <code>Carthage/Build</code> folder
+into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> tab.</p>
+<h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
 
-<p>Add to you package dependecies <code>.Package(url: &quot;https://github.com/tsolomko/SWCompression.git&quot;)</code>, for example like this:</p>
+<p>Add to you package dependecies <code>.Package(url: &quot;https://github.com/tsolomko/SWCompression.git&quot;)</code>,
+for example like this:</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">PackageDescription</span>
 
 <span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
@@ -344,7 +352,7 @@ only if a corresponding subspec is expicitly specified in your Podfile and insta
 and ZIP will be built with both additional BZip2 and LZMA support
 as well as 7-Zip will be build with both additional Deflate and BZip2 support.</p>
 <h2 id='usage' class='heading'>Usage</h2>
-<h4 id='basics' class='heading'>Basics</h4>
+<h3 id='basics' class='heading'>Basics</h3>
 
 <p>If you&rsquo;d like to decompress <q>deflated</q> data just use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
@@ -362,11 +370,11 @@ So, in case of GZip archive you should use:</p>
 
 <p>One final note: every SWCompression function can throw an error and
 you are responsible for handling them.</p>
-<h4 id='documentation' class='heading'>Documentation</h4>
+<h3 id='documentation' class='heading'>Documentation</h3>
 
 <p>Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own <a href="http://tsolomko.github.io/SWCompression">website</a>.</p>
-<h4 id='handling-errors' class='heading'>Handling Errors</h4>
+<h3 id='handling-errors' class='heading'>Handling Errors</h3>
 
 <p>If you look at list of available error types and their cases, you may be frightened by their number.
 However, most of these cases (such as <code><a href="Enums/XZError.html#/s:13SWCompression7XZErrorO10wrongMagicA2CmF">XZError.wrongMagic</a></code>) exist for diagnostic purposes.</p>
@@ -383,7 +391,7 @@ For example:</p>
   <span class="o">&lt;</span><span class="n">handle</span> <span class="n">all</span> <span class="n">other</span> <span class="n">errors</span> <span class="n">here</span><span class="o">&gt;</span>
 <span class="p">}</span>
 </code></pre>
-<h4 id='sophisticated-example' class='heading'>Sophisticated example</h4>
+<h3 id='sophisticated-example' class='heading'>Sophisticated example</h3>
 
 <p>There is a small program, <a href="https://github.com/tsolomko/swcomp">swcomp</a>,
 which uses SWCompression for unarchiving several types of archives.</p>
@@ -398,9 +406,9 @@ use whole module optimizations, which are enabled by default for Release configu
 <h2 id='running-tests-locally' class='heading'>Running tests locally</h2>
 
 <p>If you want to run tests locally you need to clone this repository and do some additional steps:</p>
-<pre class="highlight shell"><code><span class="gp">$ </span>git submodule update --init --recursive
-<span class="gp">$ </span><span class="nb">cd </span>Tests/Test<span class="se">\ </span>Files
-<span class="gp">$ </span>git lfs pull
+<pre class="highlight shell"><code>git submodule update --init --recursive
+<span class="nb">cd </span>Tests/Test<span class="se">\ </span>Files
+git lfs pull
 </code></pre>
 
 <p>These commands fetch example archives and other files which are used for testing.
@@ -443,6 +451,7 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 <li><a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html">Pax specification</a></li>
 <li><a href="https://www.gnu.org/software/tar/manual/html_node/Standard.html">Basic TAR specification</a></li>
 <li><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a></li>
+<li><a href="http://zork.net/%7Est/jottings/sais.html">A walk through the SA-IS Suffix Array Construction Algorithm</a></li>
 </ul>
 
           </div>
