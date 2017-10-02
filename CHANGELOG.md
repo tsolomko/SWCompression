@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0-test.2
+
+- Fix compile issues on some platforms.
+
 ## 3.4.0-test
 
 - Added BZip2 compression.

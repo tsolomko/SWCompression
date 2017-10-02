@@ -72,7 +72,7 @@
     },
     {
       "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/BZip2+Compress.swift",
-      "line": 14,
+      "line": 26,
       "symbol": "BZip2.compress(data:blockSize:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
