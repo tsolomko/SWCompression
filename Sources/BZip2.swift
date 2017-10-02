@@ -155,14 +155,13 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         let tables = try computeTables()
-        var favourites = try used.enumerated().reduce([]) {
-            (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
-            if next.element {
-                var newResult = partialResult
-                newResult.append(next.offset.toUInt8())
+        var favourites = used.enumerated().reduce([UInt8]()) {
+            if $1.element {
+                var newResult = $0
+                newResult.append($1.offset.toUInt8())
                 return newResult
             } else {
-                return partialResult
+                return $0
             }
         }
 

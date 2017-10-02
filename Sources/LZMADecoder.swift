@@ -195,7 +195,8 @@ class LZMADecoder {
      and decoder should use externally specified uncompressed size.
      Used in ZIP containers with LZMA compression.
      */
-    func decodeLZMA(_ externalUncompressedSize: Int? = nil, _ propertiesByte: UInt8? = nil, _ dSize: Int? = nil) throws {
+    func decodeLZMA(_ externalUncompressedSize: Int? = nil,
+                    _ propertiesByte: UInt8? = nil, _ dSize: Int? = nil) throws {
         // Firstly, we need to parse LZMA properties.
         try self.resetProperties(propertiesByte ?? pointerData.byte())
         let dictSize = dSize ?? pointerData.uint32().toInt()

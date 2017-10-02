@@ -50,8 +50,10 @@ public class ZipEntry: ContainerEntry {
 
     /// Path to a linked file for symbolic link entry.
     public lazy var linkPath: String? = {
-        guard self.isLink else { return nil }
-        guard let entryData = try? self.data() else { return nil }
+        guard self.isLink
+            else { return nil }
+        guard let entryData = try? self.data()
+            else { return nil }
         return String(data: entryData, encoding: .utf8)
     }()
 

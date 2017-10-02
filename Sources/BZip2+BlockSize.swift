@@ -17,32 +17,29 @@ public extension BZip2 {
         case seven = 7
         case eight = 8
         case nine = 9
-    }
-}
 
-extension BZip2.BlockSize {
-
-    func headerByte() -> Int {
-        switch self {
-        case .one:
-            return 0x31
-        case .two:
-            return 0x32
-        case .three:
-            return 0x33
-        case .four:
-            return 0x34
-        case .five:
-            return 0x35
-        case .six:
-            return 0x36
-        case .seven:
-            return 0x37
-        case .eight:
-            return 0x38
-        case .nine:
-            return 0x39
+        internal func headerByte() -> Int {
+            switch self {
+            case .one:
+                return 0x31
+            case .two:
+                return 0x32
+            case .three:
+                return 0x33
+            case .four:
+                return 0x34
+            case .five:
+                return 0x35
+            case .six:
+                return 0x36
+            case .seven:
+                return 0x37
+            case .eight:
+                return 0x38
+            case .nine:
+                return 0x39
+            }
         }
-    }
 
+    }
 }

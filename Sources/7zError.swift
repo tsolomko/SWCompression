@@ -14,7 +14,7 @@ public enum SevenZipError: Error {
     case wrongSignature
     /// Unsupporte version of container's format.
     case wrongFormatVersion
-    /** 
+    /**
      CRC either of one of the files from the container
      or one of the container's strucutures is incorrect.
      */
@@ -38,8 +38,8 @@ public enum SevenZipError: Error {
     case encryptionNotSupported
     /// Entry's data isn't available.
     case dataIsUnavailable
-    /** 
-     Unknown/incorrect internal 7-Zip structure was encountered or 
+    /**
+     Unknown/incorrect internal 7-Zip structure was encountered or
      no internal structure was found where it must be.
      */
     case internalStructureError

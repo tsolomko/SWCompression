@@ -102,6 +102,10 @@
 		063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
 		063DF11C1DE1F2E200F38082 /* DecodingHuffmanTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */; };
 		063DF11D1DE1F2E200F38082 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1091DE1F07800F38082 /* Protocols.swift */; };
+		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
+		064512881F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
+		064512891F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
+		0645128A1F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
 		064F72241F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
 		064F72251F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
 		064F72261F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
@@ -334,6 +338,10 @@
 		06E234831E06A6C200F18798 /* CheckSums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E234811E06A6C200F18798 /* CheckSums.swift */; };
 		06E234841E06A6C200F18798 /* CheckSums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E234811E06A6C200F18798 /* CheckSums.swift */; };
 		06E234851E06A6C200F18798 /* CheckSums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E234811E06A6C200F18798 /* CheckSums.swift */; };
+		06E30F391F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */; };
+		06E30F3A1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */; };
+		06E30F3B1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */; };
+		06E30F3C1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */; };
 		06E6A6391F5C0FBB00D04856 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */; };
 		06E6A63A1F5C0FBB00D04856 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */; };
 		06E6A63B1F5C0FBB00D04856 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */; };
@@ -403,6 +411,7 @@
 		063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DecodingHuffmanTree.swift; path = Sources/DecodingHuffmanTree.swift; sourceTree = SOURCE_ROOT; };
 		063DF1091DE1F07800F38082 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocols.swift; path = Sources/Protocols.swift; sourceTree = SOURCE_ROOT; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
+		064512861F82CE63006490BA /* 7zCoder+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "7zCoder+Equatable.swift"; sourceTree = "<group>"; };
 		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		064F722E1F1E63D800017297 /* test1.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.7z; sourceTree = "<group>"; };
@@ -523,6 +532,7 @@
 		06E2346B1E068E9600F18798 /* XZArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZArchive.swift; sourceTree = "<group>"; };
 		06E2347F1E069ABD00F18798 /* XzTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XzTests.swift; sourceTree = "<group>"; };
 		06E234811E06A6C200F18798 /* CheckSums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckSums.swift; path = Sources/CheckSums.swift; sourceTree = SOURCE_ROOT; };
+		06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "HuffmanLength+Comparable.swift"; path = "Sources/HuffmanLength+Comparable.swift"; sourceTree = SOURCE_ROOT; };
 		06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanLength.swift; path = Sources/HuffmanLength.swift; sourceTree = SOURCE_ROOT; };
 		06F276DE1F2BAB4900E67335 /* 7zEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntry.swift; sourceTree = "<group>"; };
 		06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingHuffmanTree.swift; path = Sources/EncodingHuffmanTree.swift; sourceTree = SOURCE_ROOT; };
@@ -643,6 +653,7 @@
 				06A960641F1E7DF60078E6D1 /* 7zCoderInfo.swift */,
 				06595E0D1F1E8252006501C2 /* 7zFolder.swift */,
 				06595E121F1E90C2006501C2 /* 7zCoder.swift */,
+				064512861F82CE63006490BA /* 7zCoder+Equatable.swift */,
 				06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */,
 				06A9605F1F1E7DE20078E6D1 /* 7zFileInfo.swift */,
 				064F72281F1E638A00017297 /* 7zError.swift */,
@@ -760,6 +771,7 @@
 				06CDFCB61F111E6900292758 /* BitReader.swift */,
 				0681B3DD1E44F674001A9D79 /* BitWriter.swift */,
 				06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */,
+				06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */,
 				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
 				06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */,
 			);
@@ -1280,8 +1292,10 @@
 				061C06311F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFB1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234831E06A6C200F18798 /* CheckSums.swift in Sources */,
+				064512881F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */,
 				069AC20E1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				0655696A1DC65C2A00A47E66 /* Deflate.swift in Sources */,
+				06E30F3A1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
 				0681B3DF1E44F674001A9D79 /* BitWriter.swift in Sources */,
 				061C063E1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				0631CB071F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,
@@ -1347,8 +1361,10 @@
 				061C06321F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFC1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234841E06A6C200F18798 /* CheckSums.swift in Sources */,
+				064512891F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */,
 				069AC20F1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569701DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
+				06E30F3B1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
 				0681B3E01E44F674001A9D79 /* BitWriter.swift in Sources */,
 				061C063F1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				0631CB081F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,
@@ -1414,8 +1430,10 @@
 				061C06331F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFD1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234851E06A6C200F18798 /* CheckSums.swift in Sources */,
+				0645128A1F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */,
 				069AC2101E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				065569781DC65C2B00A47E66 /* Deflate.swift in Sources */,
+				06E30F3C1F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
 				0681B3E11E44F674001A9D79 /* BitWriter.swift in Sources */,
 				061C06401F0E8AB700832F0C /* ZipError.swift in Sources */,
 				0631CB091F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,
@@ -1481,8 +1499,10 @@
 				061C06301F0E8A4900832F0C /* ZlibError.swift in Sources */,
 				069D0FFA1E0D6CE900D8AA87 /* LZMALenDecoder.swift in Sources */,
 				06E234821E06A6C200F18798 /* CheckSums.swift in Sources */,
+				064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */,
 				069AC20D1E02DB1D0041AC13 /* LZMA.swift in Sources */,
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
+				06E30F391F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
 				0681B3DE1E44F674001A9D79 /* BitWriter.swift in Sources */,
 				061C063D1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,

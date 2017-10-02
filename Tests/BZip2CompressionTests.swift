@@ -55,11 +55,11 @@ class BZip2CompressTests: XCTestCase {
     }
 
     func testBZip2CompressBytes() throws {
-        var bytes = [UInt8]()
+        var bytes = ""
         for i: UInt8 in 0...255 {
-            bytes.append(i)
+            bytes += String(format: "%c", i)
         }
-        try stringTest(String(data: Data(bytes: bytes), encoding: .ascii)!)
+        try stringTest(bytes)
     }
 
     func testWithAnswer1BZip2Compress() throws {
