@@ -50,5 +50,5 @@ custom_categories:
       - Archive
       - Container
       - ContainerEntry
-      - DecompressionAlgorithm
       - CompressionAlgorithm
+      - DecompressionAlgorithm
