@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   # It should not be included directly in Podfile.
 
   s.subspec 'Deflate' do |sp|
-    sp.source_files = 'Sources/{Deflate*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength,CheckSums}.swift'
+    sp.source_files = 'Sources/{Deflate*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength*,CheckSums}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_DEFLATE' }
   end
 
@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'BZip2' do |sp|
-    sp.source_files = 'Sources/{BZip2*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength,CheckSums}.swift'
+    sp.source_files = 'Sources/{BZip2*,Extensions,Protocols,DataWithPointer,BitReader,BitWriter,*HuffmanTree,HuffmanLength*,CheckSums}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_BZ2' }
   end
 
