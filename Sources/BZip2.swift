@@ -45,7 +45,8 @@ public class BZip2: DecompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         while true {
-            let blockType = bitReader.intFromBits(count: 48)
+            // Using `Int64` because 48 bits may not fit into `Int` on some platforms.
+            let blockType = Int64(bitReader.intFromBits(count: 48))
 
             let blockCRC32 = UInt32(truncatingBitPattern: bitReader.intFromBits(count: 32))
 
