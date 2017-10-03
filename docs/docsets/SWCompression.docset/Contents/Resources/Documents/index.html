@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (96% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -253,6 +253,7 @@ And yes, it is also in Objective-C.</p>
 
 <ul>
 <li>Deflate</li>
+<li>BZip2</li>
 </ul></li>
 <li>Archives:
 
@@ -397,10 +398,8 @@ For example:</p>
 which uses SWCompression for unarchiving several types of archives.</p>
 <h2 id='performace' class='heading'>Performace</h2>
 
-<p><strong>TL;DR</strong> Constantly trying to improve performance;
-use whole module optimizations, which are enabled by default for Release configurations.</p>
-
-<p>Further thoughts, details and notes about performance you can read in a <a href="Performance.md">separate document</a>.</p>
+<p>Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.</p>
 
 <p><a href="Tests/Results.md">Tests Results</a> document contains results of performance testing of various algorithms.</p>
 <h2 id='running-tests-locally' class='heading'>Running tests locally</h2>
@@ -429,7 +428,6 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 <h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>
-<li>BZip2 compression.</li>
 <li>Container API rework.</li>
 <li>Better Deflate compression.</li>
 <li>Something else&hellip;</li>
@@ -452,6 +450,7 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 <li><a href="https://www.gnu.org/software/tar/manual/html_node/Standard.html">Basic TAR specification</a></li>
 <li><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a></li>
 <li><a href="http://zork.net/%7Est/jottings/sais.html">A walk through the SA-IS Suffix Array Construction Algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bzip2">Wikipedia article about BZip2</a></li>
 </ul>
 
           </div>
