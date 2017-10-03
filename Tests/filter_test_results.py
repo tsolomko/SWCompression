@@ -21,7 +21,7 @@ for i, match in enumerate(matches):
                 perf_tests_output += "\n"
 
 # Supported tests.
-tests = ["bz2", "deflate", "gz", "xz"]
+tests = ["cbzip2", "bz2", "deflate", "gz", "xz"]
 
 # We prepend every final string output with version number from args.
 version = sys.argv[2]

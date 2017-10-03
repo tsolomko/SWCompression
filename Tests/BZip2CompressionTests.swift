@@ -24,9 +24,9 @@ class BZip2CompressTests: XCTestCase {
         XCTAssertEqual(redecompressedData, answerData)
 
         #if PERF_TESTS
-            print("Performing performance tests for cbzip2.\(testName)")
+            print("Performing performance tests for cbzip2.\(answerName)")
             self.measure {
-                _ = try? BZip2.compress(data: answerData)
+                _ = BZip2.compress(data: answerData)
             }
         #endif
     }
