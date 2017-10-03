@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Provides compression and decompression functions for Deflate algorithm.
+/// Provides functions for compression and decompression for Deflate algorithm.
 public class Deflate: DecompressionAlgorithm {
 
     /**

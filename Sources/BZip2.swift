@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Provides decompression function for BZip2 algorithm.
+/// Provides functions for compression and decompression for BZip2 algorithm.
 public class BZip2: DecompressionAlgorithm {
 
     /**

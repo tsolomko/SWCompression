@@ -7,15 +7,27 @@ import Foundation
 
 public extension BZip2 {
 
+    /**
+     Represents size of blocks in which data is split during BZip2 compression.
+     */
     public enum BlockSize: Int {
+        /// 100 KB.
         case one = 1
+        /// 200 KB.
         case two = 2
+        /// 300 KB.
         case three = 3
+        /// 400 KB.
         case four = 4
+        /// 500 KB.
         case five = 5
+        /// 600 KB.
         case six = 6
+        /// 700 KB.
         case seven = 7
+        /// 800 KB.
         case eight = 8
+        /// 900 KB.
         case nine = 9
 
         internal func headerByte() -> Int {
