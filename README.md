@@ -40,6 +40,7 @@ And here comes SWCompression: no Objective-C, pure Swift.
     - BZip2
 - Compression algorithms:
     - Deflate
+    - BZip2
 - Archives:
     - XZ
     - GZip
@@ -224,7 +225,6 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 
 ## Future plans
 
-- BZip2 compression.
 - Container API rework.
 - Better Deflate compression.
 - Something else...
@@ -246,3 +246,4 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 - [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
+- [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)
