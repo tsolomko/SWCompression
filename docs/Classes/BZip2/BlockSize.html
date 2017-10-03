@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Permissions Structure Reference</title>
+    <title>BlockSize Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Struct/Permissions" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/BlockSize" class="dashAnchor"></a>
 
-    <a title="Permissions Structure Reference"></a>
+    <a title="BlockSize Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../../index.html">SWCompression Reference</a>
       <img class="carat" src="../../img/carat.png" />
-      Permissions Structure Reference
+      BlockSize Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -204,14 +204,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>Permissions</h1>
+            <h1>BlockSize</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Permissions</span><span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BlockSize</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                 </div>
               </div>
-            <p>Represents file access permissions in UNIX format.</p>
+            <p>Represents size of blocks in which data is split during BZip2 compression.</p>
 
           </div>
         </section>
@@ -223,9 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV8rawValues6UInt32Vv"></a>
-                    <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV8rawValues6UInt32Vv">rawValue</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO3oneA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/one" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO3oneA2EmF">one</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -233,29 +233,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Raw bit flags value (in decimal).</p>
+                        <p>100 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">one</span> <span class="o">=</span> <span class="mi">1</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L15">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L15">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsVAEs6UInt32V8rawValue_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(rawValue:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsVAEs6UInt32V8rawValue_tcfc">init(rawValue:)</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO3twoA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/two" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO3twoA2EmF">two</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -263,29 +267,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Initializes permissions with bit flags in decimal.</p>
+                        <p>200 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="kt">UInt32</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">two</span> <span class="o">=</span> <span class="mi">2</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L18-L20">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6setuidAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/setuid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6setuidAEvZ">setuid</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO5threeA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/three" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO5threeA2EmF">three</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -293,29 +301,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set UID.</p>
+                        <p>300 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">setuid</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o4000</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">three</span> <span class="o">=</span> <span class="mi">3</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L23">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L19">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6setgidAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/setgid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6setgidAEvZ">setgid</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO4fourA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/four" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO4fourA2EmF">four</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -323,29 +335,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Set GID.</p>
+                        <p>400 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">setgid</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o2000</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">four</span> <span class="o">=</span> <span class="mi">4</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L26">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L21">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6stickyAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/sticky" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV6stickyAEvZ">sticky</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO4fiveA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/five" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO4fiveA2EmF">five</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,29 +369,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sticky bit.</p>
+                        <p>500 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">sticky</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o1000</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">five</span> <span class="o">=</span> <span class="mi">5</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L29">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readOwnerAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/readOwner" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readOwnerAEvZ">readOwner</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO3sixA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/six" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO3sixA2EmF">six</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -383,29 +403,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Owner can read.</p>
+                        <p>600 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">readOwner</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0400</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">six</span> <span class="o">=</span> <span class="mi">6</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L25">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeOwnerAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/writeOwner" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeOwnerAEvZ">writeOwner</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO5sevenA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/seven" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO5sevenA2EmF">seven</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -413,29 +437,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Owner can write.</p>
+                        <p>700 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">writeOwner</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0200</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">seven</span> <span class="o">=</span> <span class="mi">7</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L27">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeOwnerAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/executeOwner" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeOwnerAEvZ">executeOwner</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO5eightA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/eight" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO5eightA2EmF">eight</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -443,29 +471,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Owner can execute.</p>
+                        <p>800 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">executeOwner</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0100</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">eight</span> <span class="o">=</span> <span class="mi">8</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readGroupAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/readGroup" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readGroupAEvZ">readGroup</a>
+                    <a name="/s:13SWCompression5BZip2C9BlockSizeO4nineA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/nine" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO4nineA2EmF">nine</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -473,169 +505,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Group can read.</p>
+                        <p>900 KB.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">readGroup</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0040</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">nine</span> <span class="o">=</span> <span class="mi">9</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L41">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeGroupAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/writeGroup" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeGroupAEvZ">writeGroup</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Group can write.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">writeGroup</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0020</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L44">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeGroupAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/executeGroup" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeGroupAEvZ">executeGroup</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Group can execute.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">executeGroup</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0010</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L47">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readOtherAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/readOther" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV9readOtherAEvZ">readOther</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Others can read.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">readOther</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0004</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L50">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeOtherAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/writeOther" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV10writeOtherAEvZ">writeOther</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Others can write.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">writeOther</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0002</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L53">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeOtherAEvZ"></a>
-                    <a name="//apple_ref/swift/Variable/executeOther" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression17SevenZipEntryInfoV11PermissionsV12executeOtherAEvZ">executeOther</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Others can execute.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">executeOther</span> <span class="o">=</span> <span class="kt">Permissions</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">0</span><span class="n">o0001</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/7zEntryInfo.swift#L56">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L31">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

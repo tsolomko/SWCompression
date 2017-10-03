@@ -7,10 +7,36 @@ import Foundation
 
 extension BZip2: CompressionAlgorithm {
 
+    /**
+     Compresses `data` with BZip2 algortihm.
+
+     - Parameter data: Data to compress.
+
+     - Note: Input data will be split into blocks of size 100 KB.
+     Use `BZip2.compress(data:blockSize:)` function to specify size of a block.
+     */
     public static func compress(data: Data) -> Data {
         return compress(data: data, blockSize: .one)
     }
 
+    private static let blockMarker: [UInt8] = [
+        0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0,
+        0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1
+    ]
+
+    private static let eosMarker: [UInt8] = [
+        0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+        0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0,
+        0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0
+    ]
+
+    /**
+     Compresses `data` with BZip2 algortihm, splitting data into blocks of specified `blockSize`.
+
+     - Parameter data: Data to compress.
+     - Parameter blockSize: Size of blocks in which `data` will be split.
+     */
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = BitWriter(bitOrder: .straight)
         let rawBlockSize = blockSize.rawValue * 100 * 1024
@@ -28,14 +54,14 @@ extension BZip2: CompressionAlgorithm {
             totalCRC ^= blockCRC
 
             // Start block header.
-            bitWriter.write(number: 0x314159265359, bitsCount: 48) // Block magic number.
+            bitWriter.write(bits: blockMarker) // Block magic number.
             bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
 
             process(block: blockData, bitWriter)
         }
 
         // EOS magic number.
-        bitWriter.write(number: 0x177245385090, bitsCount: 48)
+        bitWriter.write(bits: eosMarker)
         // Total crc32.
         bitWriter.write(number: totalCRC.toInt(), bitsCount: 32)
 

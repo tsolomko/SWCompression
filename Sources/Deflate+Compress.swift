@@ -117,9 +117,9 @@ extension Deflate: CompressionAlgorithm {
 
         for code in bldCodes {
             switch code {
-            case .byte(let byte):
+            case let .byte(byte):
                 mainLiterals.code(symbol: byte.toInt())
-            case .lengthDistance(let length, let distance):
+            case let .lengthDistance(length, distance):
                 let lengthSymbol = Constants.lengthCode[Int(length) - 3]
                 let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
                 let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
@@ -129,7 +129,8 @@ extension Deflate: CompressionAlgorithm {
 
                 let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
                 let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
-                let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ? 0 : ((distanceSymbol >> 1) - 1)
+                let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ?
+                    0 : ((distanceSymbol >> 1) - 1)
                 mainDistances.code(symbol: distanceSymbol)
                 bitWriter.write(number: distanceExtraBits, bitsCount: distanceExtraBitsCount)
             }
@@ -186,7 +187,8 @@ extension Deflate: CompressionAlgorithm {
                                 repeatIndex = matchStartIndex + 1
                             }
                     }
-                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingBitPattern: matchLength), UInt16(truncatingBitPattern: distance)))
+                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingBitPattern: matchLength),
+                                                         UInt16(truncatingBitPattern: distance)))
                     stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
                     stats[286 + ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
                     inputIndex += matchLength

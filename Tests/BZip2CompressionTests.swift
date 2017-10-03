@@ -24,9 +24,9 @@ class BZip2CompressTests: XCTestCase {
         XCTAssertEqual(redecompressedData, answerData)
 
         #if PERF_TESTS
-            print("Performing performance tests for cbzip2.\(testName)")
+            print("Performing performance tests for cbzip2.\(answerName)")
             self.measure {
-                _ = try? BZip2.compress(data: answerData)
+                _ = BZip2.compress(data: answerData)
             }
         #endif
     }
@@ -55,11 +55,11 @@ class BZip2CompressTests: XCTestCase {
     }
 
     func testBZip2CompressBytes() throws {
-        var bytes = [UInt8]()
+        var bytes = ""
         for i: UInt8 in 0...255 {
-            bytes.append(i)
+            bytes += String(format: "%c", i)
         }
-        try stringTest(String(data: Data(bytes: bytes), encoding: .ascii)!)
+        try stringTest(bytes)
     }
 
     func testWithAnswer1BZip2Compress() throws {

@@ -40,6 +40,7 @@ And here comes SWCompression: no Objective-C, pure Swift.
     - BZip2
 - Compression algorithms:
     - Deflate
+    - BZip2
 - Archives:
     - XZ
     - GZip
@@ -192,10 +193,8 @@ which uses SWCompression for unarchiving several types of archives.
 
 ## Performace
 
-__TL;DR__ Constantly trying to improve performance;
-use whole module optimizations, which are enabled by default for Release configurations.
-
-Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
+Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.
 
 [Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
 
@@ -226,7 +225,6 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 
 ## Future plans
 
-- BZip2 compression.
 - Container API rework.
 - Better Deflate compression.
 - Something else...
@@ -248,3 +246,4 @@ It is intended to fix this problem, but solution requires backwards-incompatible
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 - [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
+- [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)

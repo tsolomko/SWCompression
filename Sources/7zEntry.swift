@@ -50,7 +50,7 @@ public class SevenZipEntry: ContainerEntry {
     public var entryAttributes: [FileAttributeKey: Any]
 
     /**
-     True, if data for entry is available. 
+     True, if data for entry is available.
      It might not be depending on the content of the container.
      */
     public let dataIsAvailable: Bool
@@ -133,7 +133,7 @@ public class SevenZipEntry: ContainerEntry {
 
     /**
      Returns data associated with this entry.
-     
+
      - Throws: `SevenZipError.dataIsUnavailable` if data for entry isn't available.
      */
     public func data() throws -> Data {

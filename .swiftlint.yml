@@ -4,21 +4,20 @@ disabled_rules:
   - function_body_length
   - type_body_length
 opt_in_rules:
-  - no_grouping_extension
-  - pattern_matching_keywords
-  - single_test_class
-  - joined_default_parameter
+  - block_based_kvo
   - conditional_returns_on_newline
+  - discouraged_direct_init
   - explicit_init
   - fatal_error_message
   - first_where
-  - force_unwrapping
   - implicit_return
   - implicitly_unwrapped_optional
+  - joined_default_parameter
+  - no_grouping_extension
   - operator_usage_whitespace
+  - pattern_matching_keywords
   - redundant_nil_coalescing
-  - switch_case_on_newline
+  - single_test_class
   - strict_fileprivate
+  - switch_case_on_newline
   - trailing_closure
-  - block_based_kvo
-  - discouraged_direct_init

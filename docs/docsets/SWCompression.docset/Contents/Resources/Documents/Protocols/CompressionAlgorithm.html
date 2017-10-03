@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>BZip2 Class Reference</title>
+    <title>CompressionAlgorithm Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Class/BZip2" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/CompressionAlgorithm" class="dashAnchor"></a>
 
-    <a title="BZip2 Class Reference"></a>
+    <a title="CompressionAlgorithm Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SWCompression Reference</a>
       <img class="carat" src="../img/carat.png" />
-      BZip2 Class Reference
+      CompressionAlgorithm Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -204,14 +204,14 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>BZip2</h1>
+            <h1>CompressionAlgorithm</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">BZip2</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CompressionAlgorithm</span></code></pre>
 
                 </div>
               </div>
-            <p>Provides functions for compression and decompression for BZip2 algorithm.</p>
+            <p>A type that provides an implementation of a particular compression algorithm.</p>
 
           </div>
         </section>
@@ -223,74 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression5BZip2C10decompress10Foundation4DataVAG4data_tKFZ"></a>
-                    <a name="//apple_ref/swift/Method/decompress(data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression5BZip2C10decompress10Foundation4DataVAG4data_tKFZ">decompress(data:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Decompresses <code>data</code> using BZip2 algortihm.</p>
-
-<p>If <code>data</code> is not actually compressed with BZip2, <code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> will be thrown.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <p><code><a href="../Enums/BZip2Error.html">BZip2Error</a></code> if unexpected byte (bit) sequence was encountered in <code>data</code>.
-It may indicate that either data is damaged or it might not be compressed with BZip2 at all.</p>
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decompress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>data</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Data compressed with BZip2.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>Decompressed data.</p>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2.swift#L23-L27">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression5BZip2C8compress10Foundation4DataVAG4data_tFZ"></a>
+                    <a name="/s:13SWCompression20CompressionAlgorithmP8compress10Foundation4DataVAG4data_tKFZ"></a>
                     <a name="//apple_ref/swift/Method/compress(data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression5BZip2C8compress10Foundation4DataVAG4data_tFZ">compress(data:)</a>
+                    <a class="token" href="#/s:13SWCompression20CompressionAlgorithmP8compress10Foundation4DataVAG4data_tKFZ">compress(data:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -298,140 +233,19 @@ It may indicate that either data is damaged or it might not be compressed with B
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Compresses <code>data</code> with BZip2 algortihm.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>Input data will be split into blocks of size 100 KB.
-Use <code><a href="../Classes/BZip2.html#/s:13SWCompression5BZip2C8compress10Foundation4DataVAG4data_AC9BlockSizeO05blockH0tFZ">BZip2.compress(data:blockSize:)</a></code> function to specify size of a block.</p>
-
-</div>
+                        <p>Cmpress data with particular algorithm.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">compress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>data</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Data to compress.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+Compress.swift#L18-L20">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression5BZip2C8compress10Foundation4DataVAG4data_AC9BlockSizeO05blockH0tFZ"></a>
-                    <a name="//apple_ref/swift/Method/compress(data:blockSize:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression5BZip2C8compress10Foundation4DataVAG4data_AC9BlockSizeO05blockH0tFZ">compress(data:blockSize:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Compresses <code>data</code> with BZip2 algortihm, splitting data into blocks of specified <code>blockSize</code>.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">compress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">,</span> <span class="nv">blockSize</span><span class="p">:</span> <span class="kt"><a href="../Classes/BZip2/BlockSize.html">BlockSize</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>data</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Data to compress.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>blockSize</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>Size of blocks in which <code>data</code> will be split.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+Compress.swift#L40-L70">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression5BZip2C9BlockSizeO"></a>
-                    <a name="//apple_ref/swift/Enum/BlockSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression5BZip2C9BlockSizeO">BlockSize</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Represents size of blocks in which data is split during BZip2 compression.</p>
-
-                        <a href="../Classes/BZip2/BlockSize.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BlockSize</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">compress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/BZip2+BlockSize.swift#L13-L56">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/Protocols.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

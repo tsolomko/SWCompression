@@ -24,7 +24,7 @@ class DeflateTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for deflate.\(testName)")
             self.measure {
-                _ = try? Deflate.compress(data: answerData)
+                _ = Deflate.compress(data: answerData)
             }
         #endif
 

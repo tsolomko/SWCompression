@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Provides decompression function for BZip2 algorithm.
+/// Provides functions for compression and decompression for BZip2 algorithm.
 public class BZip2: DecompressionAlgorithm {
 
     /**
@@ -45,7 +45,8 @@ public class BZip2: DecompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         while true {
-            let blockType = bitReader.intFromBits(count: 48)
+            // Using `Int64` because 48 bits may not fit into `Int` on some platforms.
+            let blockType = Int64(bitReader.intFromBits(count: 48))
 
             let blockCRC32 = UInt32(truncatingBitPattern: bitReader.intFromBits(count: 32))
 
@@ -154,14 +155,13 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         let tables = try computeTables()
-        var favourites = try used.enumerated().reduce([]) {
-            (partialResult: [UInt8], next: (offset: Int, element: Bool)) throws -> [UInt8] in
-            if next.element {
-                var newResult = partialResult
-                newResult.append(next.offset.toUInt8())
+        var favourites = used.enumerated().reduce([UInt8]()) {
+            if $1.element {
+                var newResult = $0
+                newResult.append($1.offset.toUInt8())
                 return newResult
             } else {
-                return partialResult
+                return $0
             }
         }
 

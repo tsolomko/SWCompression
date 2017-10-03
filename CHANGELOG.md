@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.4.0
+
+- Added support for BZip2 compression.
+- Added `CompressionAlgorithm` protocol.
+- `Deflate` now conforms to `CompressionAlgorithm` protocol (as well as `BZip2`).
+- `Deflate.compress(data:)` no longer throws.
+- `ZlibArchive.archive(data:)` no longer throws.
+- Fixed crash in some rare cases for corrupted BZip2 archives (but throws `BZip2Error` instead).
+
 ## 3.3.1
 
 - Fixed out of range index crash in BitReader.

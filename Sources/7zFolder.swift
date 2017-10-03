@@ -90,40 +90,32 @@ class SevenZipFolder {
     }
 
     func bindPairForInStream(_ index: Int) -> Int {
-        for i in 0..<bindPairs.count {
-            if bindPairs[i].inIndex == index {
-                return i
-            }
+        for i in 0..<bindPairs.count where bindPairs[i].inIndex == index {
+            return i
         }
         return -1
     }
 
     func bindPairForOutStream(_ index: Int) -> Int {
-        for i in 0..<bindPairs.count {
-            if bindPairs[i].outIndex == index {
-                return i
-            }
+        for i in 0..<bindPairs.count where bindPairs[i].outIndex == index {
+            return i
         }
         return -1
     }
 
     func unpackSize() -> Int {
-         if totalOutputStreams == 0 {
-             return 0
-         }
-        for i in stride(from: totalOutputStreams - 1, through: 0, by: -1) {
-             if bindPairForOutStream(i) < 0 {
-                 return unpackSizes[i]
-             }
-         }
-         return 0
+        if totalOutputStreams == 0 {
+            return 0
+        }
+        for i in stride(from: totalOutputStreams - 1, through: 0, by: -1) where bindPairForOutStream(i) < 0 {
+            return unpackSizes[i]
+        }
+        return 0
     }
 
     func unpackSize(for coder: SevenZipCoder) -> Int {
-        for i in 0..<coders.count {
-            if coders[i] == coder {
-                return unpackSizes[i]
-            }
+        for i in 0..<coders.count where coders[i] == coder {
+            return unpackSizes[i]
         }
         return 0
     }

@@ -15,6 +15,17 @@ public class XZArchive: Archive {
         case sha256 = 0x0A
     }
 
+    private struct Block {
+
+        let bytes: [UInt8]
+        let unpaddedSize: Int
+
+        var uncompressedSize: Int {
+            return bytes.count
+        }
+
+    }
+
     /**
      Unarchives XZ archive.
 
@@ -137,8 +148,8 @@ public class XZArchive: Archive {
                 indexSize = try processIndex(blockInfos, pointerData)
                 break
             } else {
-                let blockInfo = try processBlock(blockHeaderSize, pointerData)
-                out.append(contentsOf: blockInfo.blockData)
+                let block = try processBlock(blockHeaderSize, pointerData)
+                out.append(contentsOf: block.bytes)
                 let checkSize: Int
                 switch streamHeader.checkType {
                 case .none:
@@ -147,17 +158,17 @@ public class XZArchive: Archive {
                 case .crc32:
                     checkSize = 4
                     let check = pointerData.uint32()
-                    guard CheckSums.crc32(blockInfo.blockData) == check
+                    guard CheckSums.crc32(block.bytes) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
                 case .crc64:
                     checkSize = 8
                     let check = pointerData.uint64()
-                    guard CheckSums.crc64(blockInfo.blockData) == check
+                    guard CheckSums.crc64(block.bytes) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
                 case .sha256:
                     throw XZError.checkTypeSHA256
                 }
-                blockInfos.append((blockInfo.unpaddedSize + checkSize, blockInfo.uncompressedSize))
+                blockInfos.append((block.unpaddedSize + checkSize, block.uncompressedSize))
             }
         }
 
@@ -167,7 +178,8 @@ public class XZArchive: Archive {
         return Data(bytes: out)
     }
 
-    private static func processStreamHeader(_ pointerData: DataWithPointer) throws -> (checkType: CheckType, flagsCRC: UInt32) {
+    private static func processStreamHeader(_ pointerData: DataWithPointer) throws
+        -> (checkType: CheckType, flagsCRC: UInt32) {
         // Check magic number.
         guard pointerData.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
             else { throw XZError.wrongMagic }
@@ -191,8 +203,7 @@ public class XZArchive: Archive {
         return (checkType, flagsCRC)
     }
 
-    private static func processBlock(_ blockHeaderSize: Int,
-                                     _ pointerData: DataWithPointer) throws -> (blockData: [UInt8], unpaddedSize: Int, uncompressedSize: Int) {
+    private static func processBlock(_ blockHeaderSize: Int, _ pointerData: DataWithPointer) throws -> Block {
         let blockHeaderStartIndex = pointerData.index - 1
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
             else { throw XZError.wrongFieldValue }
@@ -270,7 +281,7 @@ public class XZArchive: Archive {
             }
         }
 
-        return (out, unpaddedSize, out.count)
+        return Block(bytes: out, unpaddedSize: unpaddedSize)
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
@@ -315,7 +326,7 @@ public class XZArchive: Archive {
                                       _ pointerData: DataWithPointer) throws {
         let footerCRC = pointerData.uint32()
         /// Indicates the size of Index field. Should match its real size.
-        let backwardSize = (pointerData.uint32().toInt() + 1 ) * 4
+        let backwardSize = (pointerData.uint32().toInt() + 1) * 4
         let streamFooterFlags = pointerData.uint16().toInt()
 
         pointerData.index -= 6
@@ -340,9 +351,9 @@ public class XZArchive: Archive {
 
 }
 
-fileprivate extension DataWithPointer {
+extension DataWithPointer {
 
-    fileprivate func multiByteDecode() throws -> Int {
+    func multiByteDecode() throws -> Int {
         var i = 1
         var result = self.byte().toInt()
         if result <= 127 {
