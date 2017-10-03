@@ -15,7 +15,7 @@ class DeflateTests: XCTestCase {
         }
 
         let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-        let deflatedData = try Deflate.compress(data: answerData)
+        let deflatedData = Deflate.compress(data: answerData)
         let reUncompData = try Deflate.decompress(data: deflatedData)
 
         XCTAssertEqual(answerData, reUncompData,
@@ -24,7 +24,7 @@ class DeflateTests: XCTestCase {
         #if PERF_TESTS
             print("Performing performance tests for deflate.\(testName)")
             self.measure {
-                _ = try? Deflate.compress(data: answerData)
+                _ = Deflate.compress(data: answerData)
             }
         #endif
 

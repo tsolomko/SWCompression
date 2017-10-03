@@ -1,11 +1,20 @@
 # Changelog
 
+## 3.4.0
+
+- Added support for BZip2 compression.
+- Added `CompressionAlgorithm` protocol.
+- `Deflate` now conforms to `CompressionAlgorithm` protocol (as well as `BZip2`).
+- `Deflate.compress(data:)` no longer throws.
+- `ZlibArchive.archive(data:)` no longer throws.
+- Fixed crash in some rare cases for corrupted BZip2 archives (but throws `BZip2Error` instead).
+
 ## 3.3.1
 
 - Fixed out of range index crash in BitReader.
 
-v3.3.0
-----------------
+## v3.3.0
+
 - Introduced support for 7-Zip containers.
 - Added `TarEntry.isLink`.
 - Added `ZipEntry.isLink` and `ZipEntry.linkPath`.
@@ -17,8 +26,8 @@ v3.3.0
 - Fixed multithreading problems for `ZipEntry.data()`.
 - Fixed `posixPermissions` in `TarEntry.entryAttributes` containing UNIX type byte in some cases.
 
-v3.2.0
-----------------
+## v3.2.0
+
 - Split source files.
 - Removed SWCompression/Common subpodspec.
 - Moved test files into separate repository as a submodule.
@@ -33,23 +42,23 @@ v3.2.0
 - Fixed problem with accessing data of BZip2 compressed `ZipEntry`.
 - Fixed problem with reading zip64 data descriptor.
 
-v3.1.3
-----------------
+## v3.1.3
+
 - Added support for GNU LongLinkName and LongName extensions of TAR format.
 - Added support for modification timestamp from extended timestamps ZIP extra field.
 
-v3.1.2
-----------------
+## v3.1.2
+
 - `wrongUstarVersion` error is no longer incorrectly thrown for GNU tar containers.
 
-v3.1.1
-----------------
+## v3.1.1
+
 - Permissions attributes for TarEntry are now base-10.
 - Now throws `fieldIsNotNumber` error when encounters non-number required field in TAR header.
 - Slightly improved documentation.
 
-v3.1.0
-----------------
+## v3.1.0
+
 - Added support for multi-member GZip archives.
 - Added support for multi-stream XZ archives.
 - Added property which allows access various entry's attributes for both Tar and ZIP.
@@ -64,12 +73,12 @@ v3.1.0
 - Improved Deflate comrpession rate for some corner cases.
 - Improved BZip2 performance for cases of big data sizes.
 
-v3.0.1
-----------------
+## v3.0.1
+
 - Significanty reduced memory usage and improved speed of Deflate compression.
 
-v3.0.0
-----------------
+## v3.0.0
+
 - All errors have been renamed, so they conform to Swift Naming Conventions (lowerCamelCase).
 - Added `Container` and `ContainerEntry` protocols.
 - Most methods have their arguments' labels renamed to make usage shorter.
@@ -94,57 +103,57 @@ v3.0.0
 - BZip2 now performs CRC32 check for decompressed data.
 - Removed internal `LZMAOutWindow` auxiliary class.
 
-v2.4.3
-----------------
+## v2.4.3
+
 - Fixed incorrect calculation of header's checksum for GZip archives.
 
-v2.4.2
-----------------
+## v2.4.2
+
 - Fixed a problem, where ZipEntry.fileName was returning fileComment instead.
 
-v2.4.1
-----------------
+## v2.4.1
+
 - Lowered deployment targets versions for all (supported) Apple platforms.
 
-v2.4.0
-----------------
+## v2.4.0
+
 - Reduced memory usage in some cases.
 - Added Zlib archiving function.
 
-v2.3.0
-----------------
+## v2.3.0
+
 - Improved Deflate compression performance.
 - Added GZip archiving function.
 - Fixed a problem when Deflate uncompressed blocks were created with one extra byte.
 
-v2.2.2
-----------------
+## v2.2.2
+
 - Fixed problem with zero-length uncompressed blocks.
 
-v2.2.1
-----------------
+## v2.2.1
+
 - Now creates uncompressed block instead of huffman if it will provide better results (in terms of "compression").
 - Small internal changes.
 
-v2.2.0
-----------------
+## v2.2.0
+
 - Somewhat limited support for Deflate compression.
 - API for parsing ZIP entries.
 
-v2.1.0
-----------------
+## v2.1.0
+
 - ZIP containers support.
 - HuffmanTree is no longer part of SWCompression/Common.
 - Updated documentation.
 
-v2.0.1
-----------------
+## v2.0.1
+
 - Fixed incorrect reading adler32 checksum from zlib archives.
 - Removed LZMA_INFO and LZMA_DIAG build options.
 - (2.0.0) GZip archives with multiple 'members' are now parsed correctly.
 
-v2.0.0
-----------------
+## v2.0.0
+
 - LZMA decompression.
 - XZ unarchiving.
 - Once again performance improvement (this time for real).
@@ -155,54 +164,54 @@ v2.0.0
 - Added two build options for diagnostical use.
 - Rephrased comments to public API.
 
-v1.2.2
-----------------
+## v1.2.2
+
 - Small performance improvement.
 
-v1.2.1
-----------------
+## v1.2.1
+
 - Removed HuffmanLength.
 - Rewritten DataWithPointer.
 - Added performance tests.
 
-v1.2.0
-----------------
+## v1.2.0
+
 - Reimplemented Huffman Coding using a tree-like structure.
 - Now only DataWithPointer is used during the processing.
 
-v1.1.2
-----------------
+## v1.1.2
+
 - Fixed memory problem in Deflate.
 - Improved overall performance.
 
-v1.1.1
-----------------
+## v1.1.1
+
 - Fixed problems when building with Swift Package Manager.
 - Added missing files to watchOS scheme.
 - Every release on github now will have an archive with pre-built framework.
 - Added info about performance to README.
 
-v1.1.0
-----------------
+## v1.1.0
+
 - Added BZip2 decompression.
 - Introduced subspecs with parts of functionality.
 - Additional performance improvements.
 - Fixed potential memory problems.
 - Added a lot of (educational) comments for Deflate
 
-v1.0.3
-----------------
+## v1.0.3
+
 Great performance improvements (but there is still room for more improvements).
 
-v1.0.2
-----------------
+## v1.0.2
+
 - Fixed a problem when decompressed amount of data was greater than expected.
 - Performance improvement.
 
-v1.0.1
-----------------
+## v1.0.1
+
 Fixed several crashes caused by mistyping and shift 'overflow' (when it becomes greater than 15).
 
-v1.0.0
-----------------
+## v1.0.0
+
 Initial release, which features support for Deflate, Gzip and Zlib decompression.

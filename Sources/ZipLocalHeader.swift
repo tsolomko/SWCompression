@@ -89,13 +89,10 @@ struct ZipLocalHeader {
                 while pointerData.index - ntfsExtraFieldsStartIndex < size {
                     let tag = pointerData.uint16()
                     pointerData.index += 2 // Skipping size of attributes for this tag.
-                    switch tag {
-                    case 0x0001:
+                    if tag == 0x0001 {
                         self.ntfsMtime = pointerData.uint64()
                         self.ntfsAtime = pointerData.uint64()
                         self.ntfsCtime = pointerData.uint64()
-                    default:
-                        break
                     }
                 }
             default:

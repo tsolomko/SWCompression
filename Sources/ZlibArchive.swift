@@ -50,17 +50,15 @@ public class ZlibArchive: Archive {
 
      - Parameter data: Data to compress and archive.
 
-     - Throws: `DeflateError` if an error was encountered during compression.
-
      - Returns: Resulting archive's data.
      */
-    public static func archive(data: Data) throws -> Data {
+    public static func archive(data: Data) -> Data {
         let out: [UInt8] = [
             120, // CM (Compression Method) = 8 (DEFLATE), CINFO (Compression Info) = 7 (32K window size).
             218 // Flags: slowest algorithm, no preset dictionary.
         ]
         var outData = Data(bytes: out)
-        outData.append(try Deflate.compress(data: data))
+        outData.append(Deflate.compress(data: data))
 
         let adler32 = CheckSums.adler32(data)
         var adlerBytes = [UInt8]()

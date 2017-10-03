@@ -12,6 +12,7 @@ import Foundation
 public enum BZip2Error: Error {
     /// 'Magic' number is not 0x425a.
     case wrongMagic
+    // TODO: Rename to `wrongVersion` in 4.0.
     /// Compression method is not type 'h' (not Huffman).
     case wrongCompressionMethod
     /// Unsupported block size (not from '0' to '9').

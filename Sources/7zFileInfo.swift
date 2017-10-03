@@ -82,10 +82,8 @@ class SevenZipFileInfo {
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
 
-                for i in 0..<numFiles {
-                    if timesDefined[i] == 1 {
-                        files[i].cTime = bitReader.uint64()
-                    }
+                for i in 0..<numFiles where timesDefined[i] == 1 {
+                    files[i].cTime = bitReader.uint64()
                 }
             case 0x13: // Access time
                 let timesDefined = bitReader.defBits(count: numFiles)
@@ -95,10 +93,8 @@ class SevenZipFileInfo {
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
 
-                for i in 0..<numFiles {
-                    if timesDefined[i] == 1 {
-                        files[i].aTime = bitReader.uint64()
-                    }
+                for i in 0..<numFiles where timesDefined[i] == 1 {
+                    files[i].aTime = bitReader.uint64()
                 }
             case 0x14: // Modification time
                 let timesDefined = bitReader.defBits(count: numFiles)
@@ -108,10 +104,8 @@ class SevenZipFileInfo {
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
 
-                for i in 0..<numFiles {
-                    if timesDefined[i] == 1 {
-                        files[i].mTime = bitReader.uint64()
-                    }
+                for i in 0..<numFiles where timesDefined[i] == 1 {
+                    files[i].mTime = bitReader.uint64()
                 }
             case 0x15: // WinAttributes
                 let attributesDefined = bitReader.defBits(count: numFiles)
@@ -121,10 +115,8 @@ class SevenZipFileInfo {
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
 
-                for i in 0..<numFiles {
-                    if attributesDefined[i] == 1 {
-                        files[i].winAttributes = bitReader.uint32()
-                    }
+                for i in 0..<numFiles where attributesDefined[i] == 1 {
+                    files[i].winAttributes = bitReader.uint32()
                 }
             case 0x18: // StartPos
                 throw SevenZipError.startPosNotSupported

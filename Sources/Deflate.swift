@@ -5,41 +5,8 @@
 
 import Foundation
 
-/// Provides compression and decompression functions for Deflate algorithm.
+/// Provides functions for compression and decompression for Deflate algorithm.
 public class Deflate: DecompressionAlgorithm {
-
-    struct Constants {
-        static let codeLengthOrders: [Int] =
-            [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
-
-        /// - Warning: Substract 257 from index!
-        static let lengthBase: [Int] =
-            [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35,
-             43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258]
-
-        static let distanceBase: [Int] =
-            [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
-             257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
-             8193, 12289, 16385, 24577]
-
-        static let lengthCode: [Int] =
-            [257, 258, 259, 260, 261, 262, 263, 264, 265, 265, 266, 266, 267, 267, 268, 268,
-             269, 269, 269, 269, 270, 270, 270, 270, 271, 271, 271, 271, 272, 272, 272, 272,
-             273, 273, 273, 273, 273, 273, 273, 273, 274, 274, 274, 274, 274, 274, 274, 274,
-             275, 275, 275, 275, 275, 275, 275, 275, 276, 276, 276, 276, 276, 276, 276, 276,
-             277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277, 277,
-             278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278, 278,
-             279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279, 279,
-             280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280, 280,
-             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
-             281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281, 281,
-             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
-             282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282, 282,
-             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
-             283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283, 283,
-             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284,
-             284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 284, 285]
-    }
 
     /**
      Decompresses `data` using Deflate algortihm.
@@ -90,18 +57,15 @@ public class Deflate: DecompressionAlgorithm {
                 // There are two alphabets in use and each one needs a Huffman tree.
 
                 /// Huffman tree for literal and length symbols/codes.
-                var mainLiterals: HuffmanTree
+                var mainLiterals: DecodingHuffmanTree
                 /// Huffman tree for backward distance symbols/codes.
-                var mainDistances: HuffmanTree
+                var mainDistances: DecodingHuffmanTree
 
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
-                    // Bootstraps for trees (first element in pair is code, second is number of bits).
-                    let staticHuffmanBootstrap = [[0, 8], [144, 9], [256, 7], [280, 8], [288, -1]]
-                    let staticHuffmanLengthsBootstrap = [[0, 5], [32, -1]]
-                    // Initialize trees from these bootstraps.
-                    mainLiterals = HuffmanTree(bootstrap: staticHuffmanBootstrap, bitReader)
-                    mainDistances = HuffmanTree(bootstrap: staticHuffmanLengthsBootstrap, bitReader)
+                    // Initialize trees from bootstraps.
+                    mainLiterals = DecodingHuffmanTree(lengths: Constants.staticHuffmanBootstrap, bitReader)
+                    mainDistances = DecodingHuffmanTree(lengths: Constants.staticHuffmanDistancesBootstrap, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
@@ -121,7 +85,7 @@ public class Deflate: DecompressionAlgorithm {
                         lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.intFromBits(count: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodes = HuffmanTree(lengthsToOrder: lengthsForOrder, bitReader)
+                    let dynamicCodes = DecodingHuffmanTree(lengths: Deflate.lengths(from: lengthsForOrder), bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
                     var codeLengths: [Int] = []
@@ -162,10 +126,10 @@ public class Deflate: DecompressionAlgorithm {
                     }
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
-                    mainLiterals = HuffmanTree(lengthsToOrder: Array(codeLengths[0..<literals]),
-                                               bitReader)
-                    mainDistances = HuffmanTree(lengthsToOrder: Array(codeLengths[literals..<codeLengths.count]),
-                                                bitReader)
+                    mainLiterals = DecodingHuffmanTree(lengths:
+                        Deflate.lengths(from: Array(codeLengths[0..<literals])), bitReader)
+                    mainDistances = DecodingHuffmanTree(lengths:
+                        Deflate.lengths(from: Array(codeLengths[literals..<codeLengths.count])), bitReader)
                 }
 
                 // Main loop of data decompression.

@@ -71,13 +71,12 @@ public class SevenZipContainer: Container {
                     else { throw SevenZipError.internalStructureError }
 
                 // SubstreamInfo is required to get files' data, and without it we can only return files' info.
-                // Additionally, `SevenZipEntry.data()` will throw `SevenZipError.dataIsUnavailable` 
+                // Additionally, `SevenZipEntry.data()` will throw `SevenZipError.dataIsUnavailable`
                 //  for files which should have had data, but SubstreamInfo wasn't available.
                 guard let substreamInfo = streamInfo.substreamInfo else {
                     info = SevenZipEntryInfo(file)
                     data = nil
                     continue
-                    // FIXME: Possible problems, because we didn't update counters for folders and files.
                 }
 
                 // Check if there is enough folders.

@@ -8,20 +8,20 @@ __Note:__ Some tests have "-" mark instead of an actual result.
 This means, that performance in that version and that configuration wasn't enough
 to complete the test in reasonable amount of time.
 
-Tests description
----------------------------
+## Tests description
+
 - test1: text file with "Hello, World!\n".
-- test2: text file with copyright free song lyrics from http://www.freesonglyrics.co.uk/lyrics13.html
-- test3: text file with random string from https://www.random.org/strings/
+- test2: text file with copyright free song lyrics from
+    [freesonglyrics.co.uk](http://www.freesonglyrics.co.uk/lyrics13.html)
+- test3: text file with random string from [random.org](https://www.random.org/strings/)
 - test4: text file with string "I'm a tester" repeated several times.
 - test5: empty file.
 - test6: file with size of 5MB containing nulls from /dev/null.
 - test7: file with size of 5MB containing random bytes from /dev/urandom.
 
-Release
-=================
-BZip2 (Decompression)
----------------------------
+## Release
+
+### BZip2 (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -36,9 +36,15 @@ BZip2 (Decompression)
 |3.0.1|0.000|0.005|0.002|0.001|0.000|0.084|3.868|
 |3.1.0|0.000|0.002|0.002|0.000|0.000|0.054|3.268|
 |3.3.0|0.000|0.002|0.002|0.000|0.000|0.051|3.948|
+|3.4.0|0.000|0.003|0.002|0.000|0.000|0.051|4.116|
 
-Deflate (Decompression)
----------------------------
+### BZip2 (Compression)
+
+|Version|test1|test2|test3|test4|test5|test6|test7|
+|---|---|---|---|---|---|---|---|
+|3.4.0|0.000|0.007|0.004|0.001|0.000|0.245|39.653|
+
+### Deflate (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -53,9 +59,9 @@ Deflate (Decompression)
 |3.0.1|0.001|0.002|0.001|0.000|0.001|0.046|0.210|
 |3.1.0|0.001|0.001|0.001|0.000|0.000|0.045|0.210|
 |3.3.0|0.001|0.002|0.001|0.001|0.001|0.043|0.263|
+|3.4.0|0.000|0.002|0.001|0.000|0.000|0.073|0.284|
 
-Deflate (Compression)
----------------------------
+### Deflate (Compression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -66,9 +72,9 @@ Deflate (Compression)
 |3.0.1|0.001|0.002|0.002|0.001|0.000|0.033|2.442|
 |3.1.0|0.000|0.002|0.002|0.001|0.001|0.031|2.539|
 |3.3.0|0.001|0.002|0.002|0.001|0.001|0.032|2.542|
+|3.4.0|0.000|0.001|0.001|0.000|0.000|0.024|1.451|
 
-XZ (LZMA/LZMA2) (Decompression)
----------------------------
+### XZ (LZMA/LZMA2) (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -81,11 +87,11 @@ XZ (LZMA/LZMA2) (Decompression)
 |3.0.1|0.000|0.002|0.001|0.000|0.000|0.076|0.253|
 |3.1.0|0.000|0.002|0.002|0.000|0.000|0.069|0.252|
 |3.3.0|0.000|0.002|0.002|0.000|0.000|0.070|0.249|
+|3.4.0|0.000|0.002|0.002|0.000|0.000|0.072|0.262|
 
-Debug
-=================
-BZip2 (Decompression)
----------------------------
+## Debug
+
+### BZip2 (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -101,9 +107,15 @@ BZip2 (Decompression)
 |3.0.1|0.002|0.274|0.126|0.125|0.000|6.831|-|
 |3.1.0|0.001|0.021|0.012|0.006|0.000|0.619|28.992|
 |3.3.0|0.001|0.022|0.012|0.005|0.000|0.642|32.183|
+|3.4.0|0.001|0.028|0.014|0.006|0.000|5.019|40.314|
 
-Deflate (Decompression)
----------------------------
+### BZip2 (Compression)
+
+|Version|test1|test2|test3|test4|test5|test6|test7|
+|---|---|---|---|---|---|---|---|
+|3.4.0|0.001|0.148|0.075|0.035|0.000|2.433|-|
+
+### Deflate (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -119,9 +131,9 @@ Deflate (Decompression)
 |3.0.1|0.001|0.003|0.003|0.002|0.001|0.502|0.501|
 |3.1.0|0.001|0.004|0.003|0.002|0.001|0.563|0.535|
 |3.3.0|0.001|0.004|0.003|0.002|0.002|0.512|3.058|
+|3.4.0|0.002|0.008|0.006|0.002|0.001|0.904|4.303|
 
-Deflate (Compression)
----------------------------
+### Deflate (Compression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -132,9 +144,9 @@ Deflate (Compression)
 |3.0.1|0.002|0.017|0.006|0.002|0.000|0.762|12.384|
 |3.1.0|0.002|0.018|0.006|0.002|0.002|0.770|12.161|
 |3.3.0|0.002|0.018|0.007|0.003|0.002|0.779|12.792|
+|3.4.0|0.002|0.023|0.010|0.002|0.001|0.889|-|
 
-XZ (LZMA/LZMA2) (Decompression)
----------------------------
+### XZ (LZMA/LZMA2) (Decompression)
 
 |Version|test1|test2|test3|test4|test5|test6|test7|
 |---|---|---|---|---|---|---|---|
@@ -147,3 +159,4 @@ XZ (LZMA/LZMA2) (Decompression)
 |3.0.1|0.000|0.007|0.007|0.001|0.000|0.470|0.507|
 |3.1.0|0.000|0.007|0.007|0.001|0.000|0.466|0.521|
 |3.3.0|0.000|0.006|0.008|0.001|0.000|0.536|0.527|
+|3.4.0|0.000|0.027|0.024|0.002|0.000|2.272|1.834|

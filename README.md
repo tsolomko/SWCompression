@@ -1,4 +1,5 @@
 # SWCompression
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Swift 3](https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg)](https://developer.apple.com/swift/)
@@ -12,11 +13,11 @@ A framework which contains implementations of (de)compression algorithms and fun
 
 __Developed with Swift.__
 
-Why have you made this framework?
-----------------------------------------
-There are a couple of reasons for this.
+## Motivation
 
-The main reason is that it is very educational and somewhat fun.
+There are a couple of reasons for the project's development.
+
+The main reason is that it is very educational.
 
 Secondly, if you are a Swift developer and you want to compress/decompress something in your project
 you have to use either wrapper around system libraries (which is probably written in Objective-C)
@@ -27,47 +28,48 @@ And yes, it is also in Objective-C.
 
 And here comes SWCompression: no Objective-C, pure Swift.
 
-Features
-----------------
+## Features
+
 - Containers:
-  - ZIP
-  - TAR
-  - 7-Zip
+    - ZIP
+    - TAR
+    - 7-Zip
 - Decompression algorithms:
-  - LZMA/LZMA2
-  - Deflate
-  - BZip2
+    - LZMA/LZMA2
+    - Deflate
+    - BZip2
 - Compression algorithms:
-  - Deflate
+    - Deflate
+    - BZip2
 - Archives:
-  - XZ
-  - GZip
-  - Zlib
+    - XZ
+    - GZip
+    - Zlib
 - Platform independent.
 - _Written with Swift only._
 
 By the way, it seems like GZip, Deflate and Zlib implementations are __specification compliant__.
 
-Installation
-----------------
+## Installation
 
 SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.
 
-##### CocoaPods
+### CocoaPods
+
 Add to your Podfile `pod 'SWCompression'`.
 
 There are several sub-podspecs in case you need only parts of framework's functionality.
 Available subspecs:
 
-  - SWCompression/LZMA
-  - SWCompression/XZ
-  - SWCompression/Deflate
-  - SWCompression/Gzip
-  - SWCompression/Zlib
-  - SWCompression/BZip2
-  - SWCompression/ZIP
-  - SWCompression/TAR
-  - SWCompression/SevenZip
+- SWCompression/LZMA
+- SWCompression/XZ
+- SWCompression/Deflate
+- SWCompression/Gzip
+- SWCompression/Zlib
+- SWCompression/BZip2
+- SWCompression/ZIP
+- SWCompression/TAR
+- SWCompression/SevenZip
 
 You can add some or all of them instead of `pod 'SWCompression'`
 
@@ -75,15 +77,19 @@ Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-##### Carthage
+### Carthage
+
 Add to  your Cartfile `github "tsolomko/SWCompression"`.
 
 Then run `carthage update`.
 
-Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder into the "Embedded Binaries" section on your targets' "General" tab.
+Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder
+into the "Embedded Binaries" section on your targets' "General" tab.
 
-##### Swift Package Manager
-Add to you package dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`, for example like this:
+### Swift Package Manager
+
+Add to you package dependecies `.Package(url: "https://github.com/tsolomko/SWCompression.git")`,
+for example like this:
 
 ```swift
 import PackageDescription
@@ -98,8 +104,8 @@ let package = Package(
 
 More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
-Options for CocoaPods users
----------------------------
+## Options for CocoaPods users
+
 Both ZIP and 7-Zip containers have compression method
 which is most likely to be used when compressing files into them.
 This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
@@ -117,20 +123,23 @@ only if a corresponding subspec is expicitly specified in your Podfile and insta
 __List of 'optional dependecies'.__
 
 For SWCompression/ZIP:
-  - SWCompression/BZip2
-  - SWCompression/LZMA
+
+- SWCompression/BZip2
+- SWCompression/LZMA
 
 For SWCompression/SevenZip:
-  - SWCompression/BZip2
-  - SWCompression/Deflate
+
+- SWCompression/BZip2
+- SWCompression/Deflate
 
 __Note:__ If you use Carthage or Swift Package Manager you always have the full package,
 and ZIP will be built with both additional BZip2 and LZMA support
 as well as 7-Zip will be build with both additional Deflate and BZip2 support.
 
-Usage
------
-#### Basics
+## Usage
+
+### Basics
+
 If you'd like to decompress "deflated" data just use:
 
 ```swift
@@ -152,11 +161,13 @@ let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 One final note: every SWCompression function can throw an error and
 you are responsible for handling them.
 
-#### Documentation
+### Documentation
+
 Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
 
-#### Handling Errors
+### Handling Errors
+
 If you look at list of available error types and their cases, you may be frightened by their number.
 However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
 
@@ -175,51 +186,51 @@ do {
 }
 ```
 
-#### Sophisticated example
+### Sophisticated example
+
 There is a small program, [swcomp](https://github.com/tsolomko/swcomp),
 which uses SWCompression for unarchiving several types of archives.
 
-Performace
-----------------
-__TL;DR__ Constantly trying to improve performance;
-use whole module optimizations, which are enabled by default for Release configurations.
+## Performace
 
-Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
+Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.
 
 [Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
 
-Running tests locally
----------------------
+## Running tests locally
+
 If you want to run tests locally you need to clone this repository and do some additional steps:
+
 ```bash
-$ git submodule update --init --recursive
-$ cd Tests/Test\ Files
-$ git lfs pull
+git submodule update --init --recursive
+cd Tests/Test\ Files
+git lfs pull
 ```
+
 These commands fetch example archives and other files which are used for testing.
 These files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
 Git LFS is also used for storing them which basically is the reason for having them in other repository.
 Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
 (requires installing git-lfs _locally_ with `--skip-smudge` option to solve the problem).
 
-Known issues
-------------
+## Known issues
+
 - `wrongCRC` and `wrongCheck` errors for XZ and GZip multi-member archives
-contain only last member's data as their associated value instead of all successfully processed members.
+  contain only last member's data as their associated value instead of all successfully processed members.
 
 Comment: Philosophy for such errors is that by the time these errors are thrown,
 decompression was already performed, so we can still provide the result of decompression to the caller.
 It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.
 
-Future plans
--------------
-- BZip2 compression.
+## Future plans
+
 - Container API rework.
 - Better Deflate compression.
 - Something else...
 
-References
------------
+## References
+
 - [pyflate](http://www.paul.sladen.org/projects/pyflate/)
 - [Deflate specification](https://www.ietf.org/rfc/rfc1951.txt)
 - [GZip specification](https://www.ietf.org/rfc/rfc1952.txt)
@@ -234,3 +245,5 @@ References
 - [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
+- [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
+- [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)
