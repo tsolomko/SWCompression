@@ -192,10 +192,8 @@ which uses SWCompression for unarchiving several types of archives.
 
 ## Performace
 
-__TL;DR__ Constantly trying to improve performance;
-use whole module optimizations, which are enabled by default for Release configurations.
-
-Further thoughts, details and notes about performance you can read in a [separate document](Performance.md).
+Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.
 
 [Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
 
