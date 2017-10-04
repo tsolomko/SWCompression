@@ -29,7 +29,7 @@ public class ZipEntry: ContainerEntry {
 
     /// Size of the data associated with the entry.
     public var size: Int {
-        return Int(truncatingBitPattern: cdEntry.uncompSize)
+        return Int(truncatingIfNeeded: cdEntry.uncompSize)
     }
 
     /**
@@ -83,7 +83,7 @@ public class ZipEntry: ContainerEntry {
     public func data() throws -> Data {
         // Now, let's move to the location of local header.
         let pointerData = DataWithPointer(data: self.containerData)
-        pointerData.index = Int(UInt32(truncatingBitPattern: self.cdEntry.offset))
+        pointerData.index = Int(UInt32(truncatingIfNeeded: self.cdEntry.offset))
 
         if localHeader == nil {
             localHeader = try ZipLocalHeader(pointerData)
@@ -102,11 +102,11 @@ public class ZipEntry: ContainerEntry {
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
         var uncompSize = hasDataDescriptor ?
-            Int(UInt32(truncatingBitPattern: cdEntry.uncompSize)) :
-            Int(UInt32(truncatingBitPattern: localHeader!.uncompSize))
+            Int(UInt32(truncatingIfNeeded: cdEntry.uncompSize)) :
+            Int(UInt32(truncatingIfNeeded: localHeader!.uncompSize))
         var compSize = hasDataDescriptor ?
-            Int(UInt32(truncatingBitPattern: cdEntry.compSize)) :
-            Int(UInt32(truncatingBitPattern: localHeader!.compSize))
+            Int(UInt32(truncatingIfNeeded: cdEntry.compSize)) :
+            Int(UInt32(truncatingIfNeeded: localHeader!.compSize))
         var crc32 = hasDataDescriptor ? cdEntry.crc32 : localHeader!.crc32
 
         let fileBytes: [UInt8]

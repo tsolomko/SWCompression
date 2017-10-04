@@ -70,7 +70,7 @@ struct ZipEndOfCentralDirectory {
                 else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
-            pointerData.index = Int(UInt(truncatingBitPattern: zip64CDEndOffset))
+            pointerData.index = Int(UInt(truncatingIfNeeded: zip64CDEndOffset))
 
             // Check signature.
             guard pointerData.uint32() == 0x06064b50

@@ -62,7 +62,7 @@ class LZMARangeDecoder {
             self.normalize()
 
             res <<= 1
-            res = UInt32.addWithOverflow(res, UInt32.addWithOverflow(t, 1).0).0
+            res = res &+ (t &+ 1)
             count -= 1
         } while count > 0
         return Int(res)

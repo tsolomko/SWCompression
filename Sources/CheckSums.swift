@@ -49,7 +49,7 @@ struct CheckSums {
         var crc: UInt64 = ~0
         for i in 0..<array.count {
             let index = (crc & 0xFF) ^ (UInt64(array[i]))
-            crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingBitPattern: index))] ^ (crc >> 8)
+            crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingIfNeeded: index))] ^ (crc >> 8)
         }
         return ~crc
     }

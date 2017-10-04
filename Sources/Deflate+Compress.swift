@@ -187,8 +187,8 @@ extension Deflate: CompressionAlgorithm {
                                 repeatIndex = matchStartIndex + 1
                             }
                     }
-                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingBitPattern: matchLength),
-                                                         UInt16(truncatingBitPattern: distance)))
+                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingIfNeeded: matchLength),
+                                                         UInt16(truncatingIfNeeded: distance)))
                     stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
                     stats[286 + ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
                     inputIndex += matchLength

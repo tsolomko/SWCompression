@@ -63,7 +63,7 @@ extension UInt64 {
 extension Int {
 
     func toUInt8() -> UInt8 {
-        return UInt8(truncatingBitPattern: UInt(self))
+        return UInt8(truncatingIfNeeded: UInt(self))
     }
 
 }

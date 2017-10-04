@@ -46,7 +46,7 @@ public class ZipContainer: Container {
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(UInt(truncatingBitPattern: endOfCD.cdOffset))
+        pointerData.index = Int(UInt(truncatingIfNeeded: endOfCD.cdOffset))
 
         for _ in 0..<cdEntries {
             let cdEntry = try ZipCentralDirectoryEntry(pointerData, endOfCD.currentDiskNumber)

@@ -159,7 +159,7 @@ public class GzipArchive: Archive {
         if let modificationTime = modificationTime {
             let timeInterval = Int(modificationTime.timeIntervalSince1970)
             for i in 0..<4 {
-                mtimeBytes[i] = UInt8(truncatingBitPattern: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
+                mtimeBytes[i] = UInt8(truncatingIfNeeded: (timeInterval & (0xFF << (i * 8))) >> (i * 8))
             }
         }
 
