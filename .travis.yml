@@ -6,7 +6,7 @@ env:
 matrix:
     include:
     - language: objective-c
-      osx_image: xcode8.3
+      osx_image: xcode9
       xcode_project: SWCompression.xcodeproj
       xcode_scheme: SWCompression
       before_install:
