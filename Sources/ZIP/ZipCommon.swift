@@ -12,7 +12,7 @@ import Foundation
 class ZipCommon {
 
     #if os(Linux)
-        static let cp437Encoding: CFStringEncoding = UInt32(truncatingBitPattern: UInt(kCFStringEncodingDOSLatinUS))
+        static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
         static let cp437Available: Bool = CFStringIsEncodingAvailable(cp437Encoding)
     #else
         static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)

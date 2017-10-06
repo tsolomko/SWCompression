@@ -30,9 +30,9 @@ class SuffixArray {
             typemap[bytes.count] = .sType // The empty suffix is S type.
 
             if bytes.count != 0 {
-                bucketSizes[bytes[bytes.count - 1]] += 1
+                bucketSizes[bytes[bytes.endIndex]] += 1
                 // The suffix containing only the last character must be "larger" than the empty suffix.
-                typemap[bytes.count - 1] = .lType
+                typemap[bytes.endIndex] = .lType
             }
 
             for i in stride(from: bytes.count - 2, through: 0, by: -1) {
