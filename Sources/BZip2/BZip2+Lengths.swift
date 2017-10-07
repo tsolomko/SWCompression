@@ -13,19 +13,30 @@ extension BZip2 {
      from Recommendation T.81 of ITU (aka JPEG specfications).
      */
     static func lengths(from stats: [Int]) -> [HuffmanLength] {
+        // Handle redundant cases.
         if stats.count == 0 {
             return []
         } else if stats.count == 1 {
             return [HuffmanLength(symbol: 0, codeLength: 1)]
         }
 
-        let symbolsCount = stats.count
+        // Calculate code lengths based on stats.
+        let codeLengths = calculateCodeLengths(from: stats)
 
+        // Now we count code sizes.
+        var bits = count(codeLengths)
+
+        adjust(&bits)
+
+        return generateSizeTable(from: bits)
+    }
+
+    private static func calculateCodeLengths(from stats: [Int]) -> [Int] {
         /// Mutable copy of input `stats`.
         var stats = stats
 
-        var codeSizes = Array(repeating: 0, count: symbolsCount)
-        var others = Array(repeating: -1, count: symbolsCount)
+        var codeLengths = Array(repeating: 0, count: stats.count)
+        var others = Array(repeating: -1, count: stats.count)
 
         while true {
             var c1 = -1
@@ -52,30 +63,34 @@ extension BZip2 {
             stats[c1] += stats[c2]
             stats[c2] = 0
 
-            codeSizes[c1] += 1
+            codeLengths[c1] += 1
             while others[c1] >= 0 {
                 c1 = others[c1]
-                codeSizes[c1] += 1
+                codeLengths[c1] += 1
 
             }
             others[c1] = c2
 
-            codeSizes[c2] += 1
+            codeLengths[c2] += 1
             while others[c2] >= 0 {
                 c2 = others[c2]
-                codeSizes[c2] += 1
+                codeLengths[c2] += 1
             }
         }
+        return codeLengths
+    }
 
-        // Now we count code lengths.
-        var bits = Array(repeating: 0, count: symbolsCount)
+    private static func count(_ codeLengths: [Int]) -> [Int] {
+        var bits = Array(repeating: 0, count: codeLengths.count)
         for i in 0..<bits.count {
             // We don't check for zero code length because we have unused element in `bits` array for them.
-            bits[codeSizes[i]] += 1
+            bits[codeLengths[i]] += 1
         }
+        return bits
+    }
 
-        // Adjust_bits
-        for i in stride(from: symbolsCount - 1, to: 20, by: -1) {
+    private static func adjust(_ bits: inout [Int]) {
+        for i in stride(from: bits.count - 1, to: 20, by: -1) {
             while bits[i] > 0 {
                 var j = i - 2
                 while bits[j] == 0 {
@@ -87,8 +102,9 @@ extension BZip2 {
                 bits[j] -= 1
             }
         }
+    }
 
-        // Generate_size_table
+    private static func generateSizeTable(from bits: [Int]) -> [HuffmanLength] {
         var symbol = 0
         var lengths = [HuffmanLength]()
         for i in 1...min(20, bits.count - 1) {
@@ -99,7 +115,6 @@ extension BZip2 {
                 j += 1
             }
         }
-
         return lengths
     }
 
