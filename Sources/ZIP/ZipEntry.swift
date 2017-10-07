@@ -41,7 +41,7 @@ public class ZipEntry: ContainerEntry {
         if let fileType = entryAttributes[FileAttributeKey.type] as? FileAttributeType {
             return fileType == FileAttributeType.typeDirectory
         } else {
-            return size == 0 && name.characters.last == "/"
+            return size == 0 && name.last == "/"
         }
     }
 

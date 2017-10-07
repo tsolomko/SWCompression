@@ -119,7 +119,7 @@ public class GzipArchive: Archive {
         var commentData = Data()
         if var comment = comment {
             flags |= 1 << 4
-            if comment.characters.last != "\u{00}" {
+            if comment.last != "\u{00}" {
                 comment.append("\u{00}")
             }
             if let data = comment.data(using: .isoLatin1) {
@@ -132,7 +132,7 @@ public class GzipArchive: Archive {
         var fileNameData = Data()
         if var fileName = fileName {
             flags |= 1 << 3
-            if fileName.characters.last != "\u{00}" {
+            if fileName.last != "\u{00}" {
                 fileName.append("\u{00}")
             }
             if let data = fileName.data(using: .isoLatin1) {

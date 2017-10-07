@@ -41,7 +41,7 @@ public class TarEntry: ContainerEntry {
 
     /// True, if entry is a directory.
     public var isDirectory: Bool {
-        return (type == .directory) || (type == .normal && size == 0 && name.characters.last == "/")
+        return (type == .directory) || (type == .normal && size == 0 && name.last == "/")
     }
 
     /// Size of the data associated with the entry.
@@ -204,7 +204,6 @@ public class TarEntry: ContainerEntry {
             else { throw TarError.fieldIsNotNumber }
         let checksum = octalChecksum.octalToDecimal()
 
-        // TODO: Change subdata to slicing in Swift 4.0.
         let currentIndex = pointerData.index
         pointerData.index = blockStartIndex
         var headerDataForChecksum = pointerData.bytes(count: 512)
@@ -344,19 +343,16 @@ public class TarEntry: ContainerEntry {
         if let headerString = header {
             let headerEntries = headerString.components(separatedBy: "\n")
             for headerEntry in headerEntries {
-                if headerEntry == "" {
-                    continue
-                }
-                let headerEntrySplit = headerEntry.characters.split(separator: " ", maxSplits: 1,
-                                                                    omittingEmptySubsequences: false)
-                guard Int(String(headerEntrySplit[0])) == headerEntry.characters.count + 1
+                guard !headerEntry.isEmpty
+                    else { continue }
+                let headerEntrySplit = headerEntry.split(separator: " ", maxSplits: 1,
+                                                         omittingEmptySubsequences: false)
+                guard Int(headerEntrySplit[0]) == headerEntry.count + 1
                     else { throw TarError.wrongPaxHeaderEntry }
-                let keywordValue = String(headerEntrySplit[1])
-                let keywordValueSplit = keywordValue.characters.split(separator: "=", maxSplits: 1,
-                                                                      omittingEmptySubsequences: false)
-                let keyword = String(keywordValueSplit[0])
-                let value = String(keywordValueSplit[1])
-                fieldsDict[keyword] = value
+                let keywordValue = headerEntrySplit[1]
+                let keywordValueSplit = keywordValue.split(separator: "=", maxSplits: 1,
+                                                           omittingEmptySubsequences: false)
+                fieldsDict[String(keywordValueSplit[0])] = String(keywordValueSplit[1])
             }
         }
     }
