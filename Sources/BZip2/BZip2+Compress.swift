@@ -221,42 +221,9 @@ extension BZip2: CompressionAlgorithm {
 
         var usedMap = Array(repeating: UInt8(0), count: 16)
         for usedByte in usedBytes {
-            if 0 <= usedByte && usedByte < 16 {
-                usedMap[0] = 1
-            } else if 16 <= usedByte && usedByte < 32 {
-                usedMap[1] = 1
-            } else if 32 <= usedByte && usedByte < 48 {
-                usedMap[2] = 1
-            } else if 48 <= usedByte && usedByte < 64 {
-                usedMap[3] = 1
-            } else if 64 <= usedByte && usedByte < 80 {
-                usedMap[4] = 1
-            } else if 80 <= usedByte && usedByte < 96 {
-                usedMap[5] = 1
-            } else if 96 <= usedByte && usedByte < 112 {
-                usedMap[6] = 1
-            } else if 112 <= usedByte && usedByte < 128 {
-                usedMap[7] = 1
-            } else if 128 <= usedByte && usedByte < 144 {
-                usedMap[8] = 1
-            } else if 144 <= usedByte && usedByte < 160 {
-                usedMap[9] = 1
-            } else if 160 <= usedByte && usedByte < 176 {
-                usedMap[10] = 1
-            } else if 176 <= usedByte && usedByte < 192 {
-                usedMap[11] = 1
-            } else if 192 <= usedByte && usedByte < 208 {
-                usedMap[12] = 1
-            } else if 208 <= usedByte && usedByte < 224 {
-                usedMap[13] = 1
-            } else if 224 <= usedByte && usedByte < 240 {
-                usedMap[14] = 1
-            } else if 240 <= usedByte && usedByte <= 255 {
-                usedMap[15] = 1
-            } else {
-                fatalError("Incorrect used byte.")
-            }
-
+            guard usedByte <= 255
+                else { fatalError("Incorrect used byte.") }
+            usedMap[usedByte / 16] = 1
         }
         bitWriter.write(bits: usedMap)
 
@@ -279,21 +246,10 @@ extension BZip2: CompressionAlgorithm {
 
         let mtfSelectors = mtf(selectors)
         for selector in mtfSelectors {
-            if selector == 0 {
-                bitWriter.write(bit: 0)
-            } else if selector == 1 {
-                bitWriter.write(bits: [1, 0])
-            } else if selector == 2 {
-                bitWriter.write(bits: [1, 1, 0])
-            } else if selector == 3 {
-                bitWriter.write(bits: [1, 1, 1, 0])
-            } else if selector == 4 {
-                bitWriter.write(bits: [1, 1, 1, 1, 0])
-            } else if selector == 5 {
-                bitWriter.write(bits: [1, 1, 1, 1, 1, 0])
-            } else {
-                fatalError("Incorrect selector.")
-            }
+            guard selector <= 5
+                else { fatalError("Incorrect selector.") }
+            bitWriter.write(bits: Array(repeating: 1, count: selector))
+            bitWriter.write(bit: 0)
         }
 
         // Delta bit lengths.
