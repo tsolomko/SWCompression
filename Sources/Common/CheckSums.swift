@@ -11,8 +11,8 @@ struct CheckSums {
 
     static func crc32(_ array: [UInt8], prevValue: UInt32 = 0) -> UInt32 {
         var crc = ~prevValue
-        for i in 0..<array.count {
-            let index = (crc & 0xFF) ^ (UInt32(array[i]))
+        for byte in array {
+            let index = (crc & 0xFF) ^ (UInt32(byte))
             crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
         }
         return ~crc
@@ -20,8 +20,8 @@ struct CheckSums {
 
     static func crc32(_ data: Data, prevValue: UInt32 = 0) -> UInt32 {
         var crc = ~prevValue
-        for i in 0..<data.count {
-            let index = (crc & 0xFF) ^ (UInt32(data[i]))
+        for byte in data {
+            let index = (crc & 0xFF) ^ (UInt32(byte))
             crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
         }
         return ~crc
@@ -29,8 +29,8 @@ struct CheckSums {
 
     static func bzip2CRC32(_ array: [UInt8]) -> UInt32 {
         var crc: UInt32 = 0xFFFFFFFF
-        for i in 0..<array.count {
-            let index = UInt32(array[i])
+        for byte in array {
+            let index = UInt32(byte)
             crc = (crc << 8) ^ CheckSums.bzip2CRC32table[Int((crc >> 24) ^ index)]
         }
         return ~crc
@@ -38,8 +38,8 @@ struct CheckSums {
 
     static func bzip2CRC32(_ data: Data) -> UInt32 {
         var crc: UInt32 = 0xFFFFFFFF
-        for i in 0..<data.count {
-            let index = UInt32(data[i])
+        for byte in data {
+            let index = UInt32(byte)
             crc = (crc << 8) ^ CheckSums.bzip2CRC32table[Int((crc >> 24) ^ index)]
         }
         return ~crc
@@ -47,8 +47,8 @@ struct CheckSums {
 
     static func crc64(_ array: [UInt8]) -> UInt64 {
         var crc: UInt64 = ~0
-        for i in 0..<array.count {
-            let index = (crc & 0xFF) ^ (UInt64(array[i]))
+        for byte in array {
+            let index = (crc & 0xFF) ^ (UInt64(byte))
             crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingIfNeeded: index))] ^ (crc >> 8)
         }
         return ~crc
@@ -58,8 +58,8 @@ struct CheckSums {
         let base: UInt32 = 65521
         var s1: UInt32 = 1
         var s2: UInt32 = 0
-        for i in 0..<array.count {
-            s1 = (s1 + UInt32(array[i])) % base
+        for byte in array {
+            s1 = (s1 + UInt32(byte)) % base
             s2 = (s2 + s1) % base
         }
         return (s2 << 16) + s1
@@ -69,8 +69,8 @@ struct CheckSums {
         let base = 65521
         var s1 = 1
         var s2 = 0
-        for i in 0..<data.count {
-            s1 = (s1 + data[i].toInt()) % base
+        for byte in data {
+            s1 = (s1 + byte.toInt()) % base
             s2 = (s2 + s1) % base
         }
         return (s2 << 16) + s1
