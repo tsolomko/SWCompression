@@ -70,92 +70,18 @@ extension BZip2: CompressionAlgorithm {
     }
 
     private static func process(block data: Data, _ bitWriter: BitWriter) {
-        var out = [Int]()
+        var out: [Int]
 
-        // Run Length Encoding
-        var index = data.startIndex
-        while index < data.endIndex {
-            var runLength = 1
-            while index + 1 < data.endIndex && data[index] == data[index + 1] && runLength < 255 {
-                runLength += 1
-                index += 1
-            }
-            if runLength >= 4 {
-                for _ in 0..<4 {
-                    out.append(data[index].toInt())
-                }
-                out.append(runLength - 4)
-            } else {
-                for _ in 0..<runLength {
-                    out.append(data[index].toInt())
-                }
-            }
-            index += 1
-        }
+        out = initialRle(data)
 
-        // BWT
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
 
-        // Move to front
-        var usedBytes = Set(out).sorted()
-        for i in 0..<out.count {
-            let index = usedBytes.index(of: out[i])!
-            out[i] = index
-            let oldByte = usedBytes.remove(at: index)
-            usedBytes.insert(oldByte, at: 0)
-        }
+        let usedBytes = Set(out).sorted()
+        out = mtf(out, characters: usedBytes)
 
-        // RLE of MTF
-        var zeroRunLength = 0
-        var symbolOut = [Int]()
-        var maxSymbol = 1
-        for byte in out {
-            if byte == 0 {
-                zeroRunLength += 1
-            } else {
-                if zeroRunLength > 0 {
-                    let digitsNumber = floor(log2(Double(zeroRunLength) + 1))
-                    var remainder = zeroRunLength
-                    for _ in 0..<Int(digitsNumber) {
-                        let quotient = Int(ceil(Double(remainder) / 2) - 1)
-                        let digit = remainder - quotient * 2
-                        if digit == 1 {
-                            symbolOut.append(0)
-                        } else {
-                            symbolOut.append(1)
-                        }
-                        remainder = quotient
-                    }
-                    zeroRunLength = 0
-                }
-                let newSymbol = byte + 1
-                // We add one because, 1 is used as RUNB.
-                // We don't add two instead, because 0 is never encountered as separate symbol,
-                //  without RUNA meaning.
-                symbolOut.append(newSymbol)
-                if newSymbol > maxSymbol {
-                    maxSymbol = newSymbol
-                }
-            }
-        }
-        // In case last symbols were 0.
-        if zeroRunLength > 0 {
-            let digitsNumber = floor(log2(Double(zeroRunLength) + 1))
-            var remainder = zeroRunLength
-            for _ in 0..<Int(digitsNumber) {
-                let quotient = Int(ceil(Double(remainder) / 2) - 1)
-                let digit = remainder - quotient * 2
-                if digit == 1 {
-                    symbolOut.append(0)
-                } else {
-                    symbolOut.append(1)
-                }
-                remainder = quotient
-            }
-        }
-        // Add 'end of stream' symbol.
-        symbolOut.append(maxSymbol + 1)
+        var maxSymbol = 0
+        (out, maxSymbol) = rleOfMtf(out)
 
         // First, we analyze data and create Huffman trees and selectors.
         // Then we will perform encoding itself.
@@ -164,7 +90,6 @@ extension BZip2: CompressionAlgorithm {
         var processed = 50
         var tables = [EncodingHuffmanTree]()
         var tablesLengths = [[Int]]()
-        var selectorsUsed = 0
         var selectors = [Int]()
 
         // Algorithm for code lengths calculations skips any symbol with frequency equal to 0.
@@ -172,11 +97,11 @@ extension BZip2: CompressionAlgorithm {
         // To prevent skipping, we set default value of 1 for every symbol's frequency.
         var stats = Array(repeating: 1, count: maxSymbol + 2)
 
-        for i in 0..<symbolOut.count {
-            let symbol = symbolOut[i]
+        for i in 0..<out.count {
+            let symbol = out[i]
             stats[symbol] += 1
             processed -= 1
-            if processed <= 0 || i == symbolOut.count - 1 {
+            if processed <= 0 || i == out.count - 1 {
                 processed = 50
                 // We need to calculate code lengths for our current stats.
                 let lengths = BZip2.lengths(from: stats)
@@ -196,10 +121,8 @@ extension BZip2: CompressionAlgorithm {
                     tables.append(table)
                     tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
                     selectors.append(tables.count - 1)
-                    selectorsUsed += 1
                 } else {
                     selectors.append(minimumSelector)
-                    selectorsUsed += 1
                 }
 
                 // Clear stats.
@@ -228,7 +151,6 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(bits: usedMap)
 
         var usedBytesIndex = 0
-        usedBytes.sort()
         for i in 0..<16 {
             guard usedMap[i] == 1 else { continue }
             for j in 0..<16 {
@@ -242,9 +164,9 @@ extension BZip2: CompressionAlgorithm {
         }
 
         bitWriter.write(number: tables.count, bitsCount: 3)
-        bitWriter.write(number: selectorsUsed, bitsCount: 15)
+        bitWriter.write(number: selectors.count, bitsCount: 15)
 
-        let mtfSelectors = mtf(selectors)
+        let mtfSelectors = mtf(selectors, characters: Array(0..<selectors.count))
         for selector in mtfSelectors {
             guard selector <= 5
                 else { fatalError("Incorrect selector.") }
@@ -276,7 +198,7 @@ extension BZip2: CompressionAlgorithm {
         var encoded = 0
         var selectorPointer = 0
         var t: EncodingHuffmanTree?
-        for symbol in symbolOut {
+        for symbol in out {
             encoded -= 1
             if encoded <= 0 {
                 encoded = 50
@@ -291,16 +213,84 @@ extension BZip2: CompressionAlgorithm {
         }
     }
 
-    private static func mtf(_ array: [Int]) -> [Int] {
-        var result = [Int]()
-        var mtf = Array(0..<array.count)
-        for i in 0..<array.count {
-            let index = mtf.index(of: array[i])!
-            result.append(index)
-            let old = mtf.remove(at: index)
-            mtf.insert(old, at: 0)
+    /// Initial Run Length Encoding.
+    private static func initialRle(_ data: Data) -> [Int] {
+        var out = [Int]()
+        var index = data.startIndex
+        while index < data.endIndex {
+            var runLength = 1
+            while index + 1 < data.endIndex && data[index] == data[index + 1] && runLength < 255 {
+                runLength += 1
+                index += 1
+            }
+            if runLength >= 4 {
+                for _ in 0..<4 {
+                    out.append(data[index].toInt())
+                }
+                out.append(runLength - 4)
+            } else {
+                for _ in 0..<runLength {
+                    out.append(data[index].toInt())
+                }
+            }
+            index += 1
         }
-        return result
+        return out
+    }
+
+    private static func mtf(_ array: [Int], characters: [Int]) -> [Int] {
+        var out = [Int]()
+        /// Mutable copy of `characters`.
+        var dictionary = characters
+        for i in 0..<array.count {
+            let index = dictionary.index(of: array[i])!
+            out.append(index)
+            let old = dictionary.remove(at: index)
+            dictionary.insert(old, at: 0)
+        }
+        return out
+    }
+
+    private static func rleOfMtf(_ array: [Int]) -> ([Int], Int) {
+        var out = [Int]()
+        var lengthofZerosRun = 0
+        var maxSymbol = 1
+        for i in 0..<array.count {
+            let byte = array[i]
+            if byte == 0 {
+                lengthofZerosRun += 1
+            }
+            if (byte == 0 && i == array.count - 1) || byte != 0 {
+                if lengthofZerosRun > 0 {
+                    let digitsNumber = floor(log2(Double(lengthofZerosRun) + 1))
+                    var remainder = lengthofZerosRun
+                    for _ in 0..<Int(digitsNumber) {
+                        let quotient = Int(ceil(Double(remainder) / 2) - 1)
+                        let digit = remainder - quotient * 2
+                        if digit == 1 {
+                            out.append(0)
+                        } else {
+                            out.append(1)
+                        }
+                        remainder = quotient
+                    }
+                    lengthofZerosRun = 0
+                }
+            }
+            if byte != 0 {
+                let newSymbol = byte + 1
+                // We add one because, 1 is used as RUNB.
+                // We don't add two instead, because 0 is never encountered as separate symbol,
+                //  without RUNA meaning.
+                out.append(newSymbol)
+                if newSymbol > maxSymbol {
+                    maxSymbol = newSymbol
+                }
+            }
+        }
+        // Add 'end of stream' symbol.
+        out.append(maxSymbol + 1)
+        return (out, maxSymbol)
     }
 
 }
