@@ -65,8 +65,10 @@ class ZipCommon {
                 return false
             }
 
-            for i in 1..<codeLength where bytes[index + i] & 0xC0 != 0x80 {
-                return false
+            for i in 1..<codeLength {
+                if bytes[index + i] & 0xC0 != 0x80 {
+                    return false
+                }
             }
 
             if codeLength == 2 {

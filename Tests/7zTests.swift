@@ -97,16 +97,20 @@ class SevenZipTests: XCTestCase {
 
             XCTAssertEqual(entries.count, 6)
 
-            for entry in entries where entry.name == "test_create/test4.answer" {
-                XCTAssertEqual((entry as? SevenZipEntry)?.info.isAnti, true)
+            for entry in entries {
+                if entry.name == "test_create/test4.answer" {
+                    XCTAssertEqual((entry as? SevenZipEntry)?.info.isAnti, true)
+                }
             }
         #else
             let entries = try SevenZipContainer.info(container: testData)
 
             XCTAssertEqual(entries.count, 6)
 
-            for entry in entries where entry.name == "test_create/test4.answer" {
-                XCTAssertEqual(entry.isAnti, true)
+            for entry in entries {
+                if entry.name == "test_create/test4.answer" {
+                    XCTAssertEqual(entry.isAnti, true)
+                }
             }
         #endif
     }
