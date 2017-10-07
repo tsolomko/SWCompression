@@ -155,13 +155,9 @@ public class BZip2: DecompressionAlgorithm {
         }
 
         let tables = try computeTables()
-        var favourites = used.enumerated().reduce([UInt8]()) {
+        var usedBytes = used.enumerated().reduce(into: [UInt8]()) {
             if $1.element {
-                var newResult = $0
-                newResult.append($1.offset.toUInt8())
-                return newResult
-            } else {
-                return $0
+                $0.append($1.offset.toUInt8())
             }
         }
 
@@ -196,15 +192,15 @@ public class BZip2: DecompressionAlgorithm {
                 continue
             } else if runLength > 0 {
                 for _ in 0..<runLength {
-                    buffer.append(favourites[0])
+                    buffer.append(usedBytes[0])
                 }
                 runLength = 0
             }
             if symbol == symbolsInUse - 1 { // End of stream symbol.
                 break
             } else { // Move to front inverse.
-                let element = favourites.remove(at: symbol - 1)
-                favourites.insert(element, at: 0)
+                let element = usedBytes.remove(at: symbol - 1)
+                usedBytes.insert(element, at: 0)
                 buffer.append(element)
             }
         }
