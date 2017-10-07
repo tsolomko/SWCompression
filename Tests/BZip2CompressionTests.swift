@@ -6,7 +6,7 @@
 import XCTest
 import SWCompression
 
-class BZip2CompressTests: XCTestCase {
+class BZip2CompressionTests: XCTestCase {
 
     static let testType: String = "bz2"
 
