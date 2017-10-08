@@ -355,78 +355,8 @@ public class TarEntry {
                 fieldsDict[String(keywordValueSplit[0])] = String(keywordValueSplit[1])
             }
         }
+
     }
 
 }
 
-extension DataWithPointer {
-
-    func nullEndedBuffer(cutoff: Int) -> [UInt8] {
-        let startIndex = index
-        var buffer = [UInt8]()
-        while index - startIndex < cutoff {
-            let byte = self.byte()
-            if byte == 0 {
-                index -= 1
-                break
-            }
-            buffer.append(byte)
-        }
-        index += cutoff - (index - startIndex)
-        return buffer
-    }
-
-    func nullEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullEndedBuffer(cutoff: cutoff), encoding: .ascii) {
-            return string
-        } else {
-            throw TarError.notAsciiString
-        }
-    }
-
-    func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
-        let startIndex = index
-        var buffer = [UInt8]()
-        while index - startIndex < cutoff {
-            let byte = self.byte()
-            if byte == 0 || byte == 0x20 {
-                index -= 1
-                break
-            }
-            buffer.append(byte)
-        }
-        index += cutoff - (index - startIndex)
-        return buffer
-    }
-
-    func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullSpaceEndedBuffer(cutoff: cutoff), encoding: .ascii) {
-            return string
-        } else {
-            throw TarError.notAsciiString
-        }
-    }
-
-}
-
-extension Int {
-
-    func octalToDecimal() -> Int {
-        var octal = self
-        var decimal = 0, i = 0
-        while octal != 0 {
-            let remainder = octal % 10
-            octal /= 10
-            decimal += remainder * Int(pow(8, Double(i)))
-            i += 1
-        }
-        return decimal
-    }
-
-    func roundTo512() -> Int {
-        let fractionNum = Double(self) / 512
-        let roundedNum = Int(ceil(fractionNum))
-        return roundedNum * 512
-    }
-
-}
