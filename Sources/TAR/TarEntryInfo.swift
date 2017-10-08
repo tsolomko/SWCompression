@@ -123,6 +123,8 @@ public class TarEntryInfo: ContainerEntryInfo {
     private let gnuLongName: String?
     private let gnuLongLinkName: String?
 
+    let blockStartIndex: Int
+
     init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
          _ longName: String?, _ longLinkName: String?) throws {
         if let longName = longName {
@@ -138,7 +140,7 @@ public class TarEntryInfo: ContainerEntryInfo {
 
         var attributesDict = [FileAttributeKey: Any]()
 
-        let blockStartIndex = pointerData.index
+        self.blockStartIndex = pointerData.index
 
         // File name
         fileName = try pointerData.nullEndedAsciiString(cutoff: 100)

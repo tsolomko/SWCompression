@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open function for TAR containers.
-public class TarContainer {
+public class TarContainer: Container {
 
     /**
      Processes TAR container and returns an array of `ContainerEntry` (which are actually `TarEntry`).
@@ -69,13 +69,22 @@ public class TarContainer {
             }
             pointerData.index -= 157
 
-            let entry = try TarEntry(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
-                                     longName, longLinkName)
-            switch entry.type {
+            let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+                                        longName, longLinkName)
+
+            // File data
+            let dataStartIndex = info.blockStartIndex + 512
+            let dataEndIndex = dataStartIndex + info.size!
+            let data = data[dataStartIndex..<dataEndIndex]
+            pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+
+            let entry = TarEntry(info, data)
+
+            switch info.tarType {
             case .globalExtendedHeader:
-                lastGlobalExtendedHeader = String(data: entry.data(), encoding: .utf8)
+                lastGlobalExtendedHeader = String(data: entry.data!, encoding: .utf8)
             case .localExtendedHeader:
-                lastLocalExtendedHeader = String(data: entry.data(), encoding: .utf8)
+                lastLocalExtendedHeader = String(data: entry.data!, encoding: .utf8)
             default:
                 output.append(entry)
                 lastLocalExtendedHeader = nil
@@ -86,5 +95,10 @@ public class TarContainer {
 
         return output
     }
+
+    public static func info(container: Data) throws -> [TarEntryInfo] {
+        return []
+    }
+
 
 }
