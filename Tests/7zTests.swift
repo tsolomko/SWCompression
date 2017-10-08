@@ -98,8 +98,8 @@ class SevenZipTests: XCTestCase {
             XCTAssertEqual(entries.count, 6)
 
             for entry in entries {
-                if entry.name == "test_create/test4.answer" {
-                    XCTAssertEqual((entry as? SevenZipEntry)?.info.isAnti, true)
+                if entry.info.name == "test_create/test4.answer" {
+                    XCTAssertEqual(entry.info.isAnti, true)
                 }
             }
         #else
@@ -150,10 +150,10 @@ class SevenZipTests: XCTestCase {
             XCTAssertEqual(entries.count, 6)
 
             for entry in entries {
-                XCTAssertNotNil((entry as? SevenZipEntry)?.info.creationTime)
-                XCTAssertNotNil((entry as? SevenZipEntry)?.info.accessTime)
+                XCTAssertNotNil(entry.info.creationTime)
+                XCTAssertNotNil(entry.info.accessTime)
                 // Just in case...
-                XCTAssertNotNil((entry as? SevenZipEntry)?.info.modificationTime)
+                XCTAssertNotNil(entry.info.modificationTime)
             }
         #else
             let entries = try SevenZipContainer.info(container: testData)
@@ -328,8 +328,8 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries[0].info.name, "dir")
         XCTAssertEqual(entries[0].info.isDirectory, true)
-        XCTAssertEqual(entries[0].info.size, 0)
-        XCTAssertEqual(entries[0].data, Data())
+        XCTAssertEqual(entries[0].info.size, nil)
+        XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
         XCTAssertEqual(entries[1].info.isDirectory, false)
@@ -365,8 +365,8 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_dir")
         XCTAssertEqual(entries[0].info.isDirectory, true)
-        XCTAssertEqual(entries[0].info.size, 0)
-        XCTAssertEqual(entries[0].data, Data())
+        XCTAssertEqual(entries[0].info.size, nil)
+        XCTAssertEqual(entries[0].data, nil)
     }
 
     func testEmptyContainer() throws {

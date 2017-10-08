@@ -142,7 +142,7 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
     /// Entry's UNIX file type.
     public let unixType: UnixType?
 
-    /// 7-Zip internal propety. Indicates whether entry has a stream (data) inside container.
+    /// True, if entry has a stream (data) inside container. 7-Zip internal propety.
     public let hasStream: Bool
 
     /// True, if entry is an empty file. 7-Zip internal property.

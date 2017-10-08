@@ -168,8 +168,8 @@ public class SevenZipContainer {
                     folderIndex += 1
                 }
             } else {
-                info = SevenZipEntryInfo(file)
-                data = Data()
+                info = file.isEmptyFile && !file.isAntiFile ? SevenZipEntryInfo(file, 0) : SevenZipEntryInfo(file)
+                data = file.isEmptyFile && !file.isAntiFile ? Data() : nil
             }
 
             entries.append(SevenZipEntry(info, data))
@@ -212,7 +212,8 @@ public class SevenZipContainer {
                                                     substreamInfo.digests[nonEmptyFileIndex]))
                 nonEmptyFileIndex += 1
             } else {
-                entryInfos.append(SevenZipEntryInfo(file))
+                let info = file.isEmptyFile ? SevenZipEntryInfo(file, 0) : SevenZipEntryInfo(file)
+                entryInfos.append(info)
             }
         }
 
