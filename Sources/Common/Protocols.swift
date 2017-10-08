@@ -51,11 +51,14 @@ public protocol ContainerEntry {
 
 public protocol ContainerEntryInfo {
 
-    var name: String { get }
+    var name: String? { get }
 
-    var size: Int { get }
+    var type: ContainerEntryType? { get }
 
-    var type: ContainerEntryType { get }
+    var size: Int? { get }
+
+    // TODO: a/c/m times.
+    // TODO: uncompressed and compressed sizes?
 
 }
 
