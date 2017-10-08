@@ -28,6 +28,8 @@ public class XZArchive: Archive {
 
     /**
      Unarchives XZ archive.
+     Archives with multiple streams are supported,
+     but uncompressed data from each stream will be combined into single `Data` object.
 
      If data passed is not actually XZ archive, `XZError` will be thrown.
      Particularly, if filters other than LZMA2 are used in archive,
@@ -44,63 +46,15 @@ public class XZArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archive data: Data) throws -> Data {
-        /// Object with input data which supports convenient work with bit shifts.
+        /// Object with input data which supports convenient work with bytes.
         let pointerData = DataWithPointer(data: data)
 
-        // First, we should check footer magic bytes.
-        // If they are wrong, then file cannot be 'undamaged'.
-        // But the file may end with padding, so we need to account for this.
-        pointerData.index = pointerData.size - 1
-        var paddingBytes = 0
-        while true {
-            let byte = pointerData.byte()
-            if byte != 0 {
-                if paddingBytes % 4 != 0 {
-                    throw XZError.wrongPadding
-                } else {
-                    break
-                }
-            }
-            paddingBytes += 1
-            pointerData.index -= 2
-        }
-        pointerData.index -= 2
-        guard pointerData.bytes(count: 2) == [0x59, 0x5A]
-            else { throw XZError.wrongMagic }
-
-        // Let's now go to the start of the file.
-        pointerData.index = 0
-
-        return try processStream(pointerData)
-
-    }
-
-    /**
-     Unarchives XZ archive which contains one or more streams.
-
-     - Note: `wrongCheck` error contains only last processed stream's data as their associated value
-     instead of all successfully processed members.
-     This is a known issue and it will be fixed in future major version
-     because solution requires backwards-incompatible API changes.
-
-     - Parameter archive: XZ archive with one or more streams.
-
-     - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
-     It may indicate that one of the streams of archive is damaged or
-     it might not be archived with XZ or LZMA(2) at all.
-
-     - Returns: Unarchived data.
-     */
-    public static func multiUnarchive(archive data: Data) throws -> [Data] {
-        /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
-
-        // Note: for multi-stream archives we don't check footer's magic bytes,
-        //  because it is impossible to determine the end of each stream
-        //  without processing them, and checking last stream's footer doesn't
+        // Note: We don't check footer's magic bytes at the beginning,
+        //  because it is impossible to determine the end of each stream in multi-stream archives
+        //  without fully processing them, and checking last stream's footer doesn't
         //  guarantee correctness of other streams.
 
-        var result = [Data]()
+        var result = Data()
         streamLoop: while !pointerData.isAtTheEnd {
             result.append(try processStream(pointerData))
 
