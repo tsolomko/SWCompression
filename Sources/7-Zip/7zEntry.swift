@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents an entry in 7-Zip container.
-public class SevenZipEntry: ContainerEntry {
+public class SevenZipEntry {
 
     /// Various information about entry.
     public let info: SevenZipEntryInfo

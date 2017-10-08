@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open functions for 7-Zip containers.
-public class SevenZipContainer: Container {
+public class SevenZipContainer {
 
     static let signatureHeaderSize = 32
 
@@ -26,7 +26,7 @@ public class SevenZipContainer: Container {
 
      - Returns: Array of `SevenZipEntry` as an array of `ContainerEntry`.
      */
-    public static func open(container data: Data) throws -> [ContainerEntry] {
+    public static func open(container data: Data) throws -> [SevenZipEntry] {
         var entries = [SevenZipEntry]()
         guard let header = try readHeader(data)
             else { return [] }

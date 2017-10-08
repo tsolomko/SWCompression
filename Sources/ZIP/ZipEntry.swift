@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents either a file or directory entry in ZIP container.
-public class ZipEntry: ContainerEntry {
+public class ZipEntry {
 
     private let cdEntry: ZipCentralDirectoryEntry
     private var localHeader: ZipLocalHeader?

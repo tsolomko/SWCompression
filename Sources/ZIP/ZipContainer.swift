@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open function for ZIP containers.
-public class ZipContainer: Container {
+public class ZipContainer {
 
     /**
      Processes ZIP container and returns an array of `ContainerEntry` (which are actually `ZipEntry`).
@@ -24,7 +24,7 @@ public class ZipContainer: Container {
 
      - Returns: Array of `ZipEntry` as an array of `ContainerEntry`.
      */
-    public static func open(container data: Data) throws -> [ContainerEntry] {
+    public static func open(container data: Data) throws -> [ZipEntry] {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
         var entries = [ZipEntry]()

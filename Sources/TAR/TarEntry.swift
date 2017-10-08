@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents either a file or directory entry in TAR container.
-public class TarEntry: ContainerEntry {
+public class TarEntry {
 
     /// Represents a type of an entry.
     public enum EntryType: String {

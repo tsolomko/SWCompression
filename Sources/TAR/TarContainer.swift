@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open function for TAR containers.
-public class TarContainer: Container {
+public class TarContainer {
 
     /**
      Processes TAR container and returns an array of `ContainerEntry` (which are actually `TarEntry`).
@@ -22,7 +22,7 @@ public class TarContainer: Container {
 
      - Returns: Array of `TarEntry` as an array of `ContainerEntry`.
      */
-    public static func open(container data: Data) throws -> [ContainerEntry] {
+    public static func open(container data: Data) throws -> [TarEntry] {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
