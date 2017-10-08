@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides information about 7-Zip entry.
-public struct SevenZipEntryInfo {
+public struct SevenZipEntryInfo: ContainerEntryInfo {
 
     /// Represents file access permissions in UNIX format.
     public struct Permissions: OptionSet {
@@ -106,11 +106,17 @@ public struct SevenZipEntryInfo {
         case socket = 0o140000
     }
 
+    // MARK: ContainerEntryInfo
+
     /// Entry's name.
     public let name: String?
 
     /// Entry's data size.
     public let size: Int?
+
+    public let type: ContainerEntryType? = nil
+
+    // MARK: 7-Zip specific
 
     /// True, if entry is a directory.
     public let isDirectory: Bool
