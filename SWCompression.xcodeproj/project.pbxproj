@@ -848,12 +848,12 @@
 			isa = PBXGroup;
 			children = (
 				067518351E2A86F700D16354 /* ZipContainer.swift */,
+				061C06411F0E8AD500832F0C /* ZipEntry.swift */,
+				061C063C1F0E8AB700832F0C /* ZipError.swift */,
 				06393DF41F1A7F8E00A647A0 /* ZipCommon.swift */,
 				061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */,
 				061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */,
 				061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */,
-				061C06411F0E8AD500832F0C /* ZipEntry.swift */,
-				061C063C1F0E8AB700832F0C /* ZipError.swift */,
 			);
 			path = ZIP;
 			sourceTree = "<group>";
@@ -872,6 +872,9 @@
 			isa = PBXGroup;
 			children = (
 				064F72231F1E5D4400017297 /* 7zContainer.swift */,
+				06F276DE1F2BAB4900E67335 /* 7zEntry.swift */,
+				065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */,
+				064F72281F1E638A00017297 /* 7zError.swift */,
 				06A9605A1F1E7D990078E6D1 /* 7zHeader.swift */,
 				06B689571F278815007C9316 /* 7zProperty.swift */,
 				06A960501F1E7D040078E6D1 /* 7zStreamInfo.swift */,
@@ -882,9 +885,6 @@
 				064512861F82CE63006490BA /* 7zCoder+Equatable.swift */,
 				06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */,
 				06A9605F1F1E7DE20078E6D1 /* 7zFileInfo.swift */,
-				064F72281F1E638A00017297 /* 7zError.swift */,
-				065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */,
-				06F276DE1F2BAB4900E67335 /* 7zEntry.swift */,
 			);
 			path = "7-Zip";
 			sourceTree = "<group>";
