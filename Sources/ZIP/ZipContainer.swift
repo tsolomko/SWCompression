@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open function for ZIP containers.
-public class ZipContainer {
+public class ZipContainer: Container {
 
     /**
      Processes ZIP container and returns an array of `ContainerEntry` (which are actually `ZipEntry`).
@@ -50,10 +50,105 @@ public class ZipContainer {
 
         for _ in 0..<cdEntries {
             let cdEntry = try ZipCentralDirectoryEntry(pointerData, endOfCD.currentDiskNumber)
-            entries.append(ZipEntry(cdEntry, pointerData))
+
+            let savedDataIndex = pointerData.index
+
+            let info = ZipEntryInfo(cdEntry, pointerData)
+            let data = try ZipContainer.getEntryData(pointerData, info)
+            pointerData.index = savedDataIndex
+            entries.append(ZipEntry(info, data))
         }
 
         return entries
+    }
+
+    // TODO: temporary
+    private static func getEntryData(_ pointerData: DataWithPointer, _ info: ZipEntryInfo) throws -> Data {
+        // Now, let's move to the location of local header.
+        pointerData.index = Int(UInt32(truncatingIfNeeded: info.cdEntry.offset))
+
+        let localHeader = try ZipLocalHeader(pointerData)
+        // Check local header for consistency with Central Directory entry.
+        guard localHeader.generalPurposeBitFlags == info.cdEntry.generalPurposeBitFlags &&
+            localHeader.compressionMethod == info.cdEntry.compressionMethod &&
+            localHeader.lastModFileTime == info.cdEntry.lastModFileTime &&
+            localHeader.lastModFileDate == info.cdEntry.lastModFileDate
+            else { throw ZipError.wrongLocalHeader }
+
+        let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+
+        // If file has data descriptor, then some values in local header are absent.
+        // So we need to use values from CD entry.
+        var uncompSize = hasDataDescriptor ?
+            Int(UInt32(truncatingIfNeeded: info.cdEntry.uncompSize)) :
+            Int(UInt32(truncatingIfNeeded: localHeader.uncompSize))
+        var compSize = hasDataDescriptor ?
+            Int(UInt32(truncatingIfNeeded: info.cdEntry.compSize)) :
+            Int(UInt32(truncatingIfNeeded: localHeader.compSize))
+        var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : localHeader.crc32
+
+        let fileBytes: [UInt8]
+        let fileDataStart = pointerData.index
+        switch localHeader.compressionMethod {
+        case 0:
+            fileBytes = pointerData.bytes(count: uncompSize)
+        case 8:
+            let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
+            bitReader.index = pointerData.index
+            fileBytes = try Deflate.decompress(bitReader)
+            // Sometimes pointerData stays in not-aligned state after deflate decompression.
+            // Following line ensures that this is not the case.
+            bitReader.align()
+            pointerData.index = bitReader.index
+        case 12:
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
+                // BZip2 algorithm considers bits in a byte in a different order.
+                let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
+                bitReader.index = pointerData.index
+                fileBytes = try BZip2.decompress(bitReader)
+                bitReader.align()
+                pointerData.index = bitReader.index
+            #else
+                throw ZipError.compressionNotSupported
+            #endif
+        case 14:
+            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
+                pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
+                let lzmaDecoder = try LZMADecoder(pointerData)
+                try lzmaDecoder.decodeLZMA(uncompSize)
+                fileBytes = lzmaDecoder.out
+            #else
+                throw ZipError.compressionNotSupported
+            #endif
+        default:
+            throw ZipError.compressionNotSupported
+        }
+        let realCompSize = pointerData.index - fileDataStart
+
+        if hasDataDescriptor {
+            // Now we need to parse data descriptor itself.
+            // First, it might or might not have signature.
+            let ddSignature = pointerData.uint32()
+            if ddSignature != 0x08074b50 {
+                pointerData.index -= 4
+            }
+            // Now, let's update from CD with values from data descriptor.
+            crc32 = pointerData.uint32()
+            let sizeOfSizeField: UInt64 = localHeader.zip64FieldsArePresent ? 8 : 4
+            compSize = Int(pointerData.uint64(count: sizeOfSizeField))
+            uncompSize = Int(pointerData.uint64(count: sizeOfSizeField))
+        }
+
+        guard compSize == realCompSize && uncompSize == fileBytes.count
+            else { throw ZipError.wrongSize }
+        guard crc32 == UInt32(CheckSums.crc32(fileBytes))
+            else { throw ZipError.wrongCRC32(Data(bytes: fileBytes)) }
+
+        return Data(bytes: fileBytes)
+    }
+
+    public static func info(container: Data) throws -> [ZipEntryInfo] {
+        return []
     }
 
 }

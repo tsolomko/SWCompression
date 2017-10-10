@@ -7,7 +7,7 @@ import Foundation
 
 public class ZipEntryInfo: ContainerEntryInfo {
 
-    private let cdEntry: ZipCentralDirectoryEntry
+    let cdEntry: ZipCentralDirectoryEntry
     private var localHeader: ZipLocalHeader?
     private let containerData: Data
 
