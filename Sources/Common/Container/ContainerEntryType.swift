@@ -6,6 +6,7 @@
 import Foundation
 
 public enum ContainerEntryType {
+    // TODO: Sort alphabetically.
     /// FIFO special file.
     case fifo
     /// Character special file.
@@ -20,6 +21,9 @@ public enum ContainerEntryType {
     case symbolicLink
     /// Socket.
     case socket
+
+    case hardLink
+    case contiguous
     /// Entry type is unknown.
     case unknown
 
