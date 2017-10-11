@@ -123,6 +123,9 @@ public class TarEntryInfo: ContainerEntryInfo {
     private let gnuLongName: String?
     private let gnuLongLinkName: String?
 
+    let isGlobalExtendedHeader: Bool
+    let isLocalExtendedHeader: Bool
+
     let blockStartIndex: Int
 
     init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
@@ -220,6 +223,8 @@ public class TarEntryInfo: ContainerEntryInfo {
         default:
             attributesDict[FileAttributeKey.type] = FileAttributeType.typeUnknown
         }
+        self.isGlobalExtendedHeader = fileTypeIndicator == "g"
+        self.isLocalExtendedHeader = fileTypeIndicator == "x"
 
         // Linked file name
         linkedFileName = try pointerData.nullEndedAsciiString(cutoff: 100)

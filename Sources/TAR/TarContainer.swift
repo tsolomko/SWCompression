@@ -80,12 +80,11 @@ public class TarContainer: Container {
 
             let entry = TarEntry(info, data)
 
-            switch info.tarType {
-            case .globalExtendedHeader:
+            if info.isGlobalExtendedHeader {
                 lastGlobalExtendedHeader = String(data: entry.data!, encoding: .utf8)
-            case .localExtendedHeader:
+            } else if info.isLocalExtendedHeader {
                 lastLocalExtendedHeader = String(data: entry.data!, encoding: .utf8)
-            default:
+            } else {
                 output.append(entry)
                 lastLocalExtendedHeader = nil
                 longName = nil
