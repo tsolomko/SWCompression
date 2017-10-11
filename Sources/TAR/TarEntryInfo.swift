@@ -22,6 +22,8 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     public let permissions: Permissions
 
+    public let unixType: UnixType?
+
     /**
      Owner's ID.
      */
@@ -85,11 +87,12 @@ public class TarEntryInfo: ContainerEntryInfo {
         name = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         // Sometime file mode also contains unix type, so we need to filter it out.
-        let posixAttributes = UInt32(truncatingIfNeeded: octalPosixPermissions.octalToDecimal())
+        let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes.octalToDecimal())
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
+        unixType = UnixType(rawValue: posixAttributes & 0xF000)
 
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
