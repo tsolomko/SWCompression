@@ -7,32 +7,6 @@ import Foundation
 
 public class TarEntryInfo: ContainerEntryInfo {
 
-    /// Represents a type of an entry.
-    public enum EntryType: String {
-        /// Normal file.
-        case normal = "0"
-        /// Hard linked entry.
-        case hardLink = "1"
-        /// Symbolically linked entry.
-        case symbolicLink = "2"
-        /// Character special file.
-        case characterSpecial = "3"
-        /// Block special file.
-        case blockSpecial = "4"
-        /// Directory.
-        case directory = "5"
-        /// FIFO special file.
-        case fifo = "6"
-        /// Contiguous file.
-        case contiguous = "7"
-        /// PAX global extended header. (Should not be encountered separately).
-        case globalExtendedHeader = "g"
-        /// PAX local extended header. (Should not be encountered separately).
-        case localExtendedHeader = "x"
-        /// Either unknown type, vendor specific or reserved value.
-        case vendorUnknownOrReserved
-    }
-
     // MARK: ContainerEntryInfo
 
     // TODO: Describe order in which formats' features are used to set this property.
