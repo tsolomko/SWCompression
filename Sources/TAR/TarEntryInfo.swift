@@ -50,8 +50,9 @@ public class TarEntryInfo: ContainerEntryInfo {
      */
     public private(set) var ownerGroupName: String?
 
-    private let deviceMajorNumber: String?
-    private let deviceMinorNumber: String?
+    public let deviceMajorNumber: Int?
+
+    public let deviceMinorNumber: Int?
 
     /// The most recent access time of the original file or directory (PAX only).
     public private(set) var accessTime: Date?
@@ -157,8 +158,8 @@ public class TarEntryInfo: ContainerEntryInfo {
             ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
             ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
 
-            deviceMajorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
-            deviceMinorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
+            deviceMajorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+            deviceMinorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             name = try pointerData.nullEndedAsciiString(cutoff: 155) + (name ?? "")
         } else {
             ownerUserName = nil
