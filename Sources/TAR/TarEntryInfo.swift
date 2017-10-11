@@ -98,8 +98,6 @@ public class TarEntryInfo: ContainerEntryInfo {
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
-    private let gnuLongLinkName: String?
-
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
 
@@ -107,12 +105,6 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
          _ longName: String?, _ longLinkName: String?) throws {
-        if let longLinkName = longLinkName {
-            gnuLongLinkName = longLinkName
-        } else {
-            gnuLongLinkName = nil
-        }
-
         self.blockStartIndex = pointerData.index
         var linkName: String?
         var name: String?
