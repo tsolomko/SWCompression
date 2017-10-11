@@ -22,4 +22,23 @@ public enum ContainerEntryType {
     case socket
     /// Entry type is unknown.
     case unknown
+
+    init(from unixType: UnixType) {
+        switch unixType {
+        case .fifo:
+            self = .fifo
+        case .characterSpecial:
+            self = .characterSpecial
+        case .directory:
+            self = .directory
+        case .blockSpecial:
+            self = .blockSpecial
+        case .regular:
+            self = .regular
+        case .symbolicLink:
+            self = .symbolicLink
+        case .socket:
+            self = .socket
+        }
+    }
 }
