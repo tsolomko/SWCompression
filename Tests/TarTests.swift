@@ -22,7 +22,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].info.name, "test5.answer")
         XCTAssertEqual(result[0].info.size, 0)
-        XCTAssertEqual(result[0].info.isDirectory, false)
+        XCTAssertNotEqual(result[0].info.type, .directory)
         XCTAssertEqual(result[0].data, Data())
     }
 
@@ -47,7 +47,7 @@ class TarTests: XCTestCase {
             let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(entry.data, answerData)
-            XCTAssertEqual(entry.info.isDirectory, false)
+            XCTAssertNotEqual(entry.info.type, .directory)
             XCTAssertNotNil(entry.info.accessTime)
         }
     }
@@ -74,7 +74,7 @@ class TarTests: XCTestCase {
             XCTAssertEqual(result.count, 1)
             XCTAssertEqual(result[0].info.name, "test1.answer")
             XCTAssertEqual(result[0].info.size, 14)
-            XCTAssertEqual(result[0].info.isDirectory, false)
+            XCTAssertNotEqual(result[0].info.type, .directory)
             XCTAssertEqual(result[0].data, answerData)
         }
     }
@@ -107,12 +107,12 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries.count, 2)
 
         XCTAssertEqual(entries[0].info.name, "dir/")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertEqual(entries[1].info.isDirectory, false)
+        XCTAssertNotEqual(entries[1].info.type, .directory)
         XCTAssertEqual(entries[1].info.size, 15)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
@@ -128,7 +128,7 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
@@ -144,7 +144,7 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_dir/")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
