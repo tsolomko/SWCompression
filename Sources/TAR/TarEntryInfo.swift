@@ -174,9 +174,9 @@ public class TarEntryInfo: ContainerEntryInfo {
 
         // File type
         // TODO: Don't convert to String.
-        let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
-        self.isGlobalExtendedHeader = fileTypeIndicator == "g"
-        self.isLocalExtendedHeader = fileTypeIndicator == "x"
+        let fileTypeIndicator = pointerData.byte()
+        self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
+        self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
         self.type = ContainerEntryType(from: fileTypeIndicator)
 
         // Linked file name

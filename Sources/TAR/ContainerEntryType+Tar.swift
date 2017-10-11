@@ -7,26 +7,27 @@ import Foundation
 
 extension ContainerEntryType {
 
-    init(from fileTypeIndicator: String) {
+    init(from fileTypeIndicator: UInt8) {
         switch fileTypeIndicator {
-        case "0":
+        case 48: // "0"
             self = .regular
-        case "1":
+        case 49: // "1"
             self = .hardLink
-        case "2":
+        case 50: // "2"
             self = .symbolicLink
-        case "3":
+        case 51: // "3"
             self = .characterSpecial
-        case "4":
+        case 52: // "4"
             self = .blockSpecial
-        case "5":
+        case 53: // "5"
             self = .directory
-        case "6":
+        case 54: // "6"
             self = .fifo
-        case "7":
+        case 55: // "7"
             self = .contiguous
         default:
             self = .unknown
         }
     }
+
 }
