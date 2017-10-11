@@ -21,8 +21,9 @@ public enum ContainerEntryType {
     case symbolicLink
     /// Socket.
     case socket
-
+    /// Hard link.
     case hardLink
+    /// Contiguous file.
     case contiguous
     /// Entry type is unknown.
     case unknown
