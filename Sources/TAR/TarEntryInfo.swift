@@ -35,10 +35,9 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
 
+    // TODO: Describe order in which formats' features are used to set this property.
     /// Name of the file or directory.
-    public var name: String? {
-        return (paxPath ?? gnuLongName) ?? ((fileNamePrefix ?? "") + (fileName ?? ""))
-    }
+    public let name: String?
 
     /// Size of the data associated with the entry.
     public private(set) var size: Int?
@@ -80,11 +79,6 @@ public class TarEntryInfo: ContainerEntryInfo {
     private let deviceMajorNumber: String?
     private let deviceMinorNumber: String?
 
-    private let fileName: String?
-    private let fileNamePrefix: String?
-    private let linkedFileName: String?
-    private var paxPath: String?
-
     /// The most recent access time of the original file or directory (PAX only).
     public private(set) var accessTime: Date?
 
@@ -97,17 +91,13 @@ public class TarEntryInfo: ContainerEntryInfo {
     /// Comment associated with the entry (PAX only).
     public private(set) var comment: String?
 
+    // TODO: Describe order in which formats' features are used to set this property.
     /// Path to a linked file for symbolic link entry.
-    public var linkPath: String? {
-        return (paxLinkPath ?? gnuLongLinkName) ?? linkedFileName
-    }
-
-    private var paxLinkPath: String?
+    public let linkName: String?
 
     /// Other entries from PAX extended headers.
     public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
-    private let gnuLongName: String?
     private let gnuLongLinkName: String?
 
     let isGlobalExtendedHeader: Bool
@@ -117,11 +107,6 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
          _ longName: String?, _ longLinkName: String?) throws {
-        if let longName = longName {
-            gnuLongName = longName
-        } else {
-            gnuLongName = nil
-        }
         if let longLinkName = longLinkName {
             gnuLongLinkName = longLinkName
         } else {
@@ -129,9 +114,11 @@ public class TarEntryInfo: ContainerEntryInfo {
         }
 
         self.blockStartIndex = pointerData.index
+        var linkName: String?
+        var name: String?
 
         // File name
-        fileName = try pointerData.nullEndedAsciiString(cutoff: 100)
+        name = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
         guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
@@ -193,7 +180,7 @@ public class TarEntryInfo: ContainerEntryInfo {
         self.type = ContainerEntryType(from: fileTypeIndicator)
 
         // Linked file name
-        linkedFileName = try pointerData.nullEndedAsciiString(cutoff: 100)
+        linkName = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
         // They differ in `magic` field value and how other fields are padded.
@@ -204,22 +191,22 @@ public class TarEntryInfo: ContainerEntryInfo {
         if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
-            let ownerName = try pointerData.nullEndedAsciiString(cutoff: 32)
-            ownerUserName = ownerName
-
-            let groupName = try pointerData.nullEndedAsciiString(cutoff: 32)
-            ownerGroupName = groupName
+            ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
+            ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
 
             deviceMajorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
             deviceMinorNumber = try pointerData.nullSpaceEndedAsciiString(cutoff: 8)
-            fileNamePrefix = try pointerData.nullEndedAsciiString(cutoff: 155)
+            name = try pointerData.nullEndedAsciiString(cutoff: 155) + (name ?? "")
         } else {
             ownerUserName = nil
             ownerGroupName = nil
             deviceMajorNumber = nil
             deviceMinorNumber = nil
-            fileNamePrefix = nil
         }
+
+        // Set `name` and `linkName` to values from GNU format if possible.
+        name = longName ?? name
+        linkName = longLinkName ?? linkName
 
         var fieldsDict = [String: String]()
         try TarEntryInfo.parseHeader(globalExtendedHeader, &fieldsDict)
@@ -252,9 +239,9 @@ public class TarEntryInfo: ContainerEntryInfo {
             case "hdrcharset":
                 break
             case "linkpath":
-                self.paxLinkPath = value
+                linkName = value
             case "path":
-                self.paxPath = value
+                name = value
             case "size":
                 self.size = Int(value)
             case "uid":
@@ -265,6 +252,9 @@ public class TarEntryInfo: ContainerEntryInfo {
                 self.unknownExtendedHeaderEntries[keyword] = value
             }
         }
+
+        self.name = name
+        self.linkName = linkName
     }
 
     private static func parseHeader(_ header: String?, _ fieldsDict: inout [String: String]) throws {
