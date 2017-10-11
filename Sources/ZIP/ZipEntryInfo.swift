@@ -23,7 +23,7 @@ public class ZipEntryInfo: ContainerEntryInfo {
         return Int(truncatingIfNeeded: cdEntry.uncompSize)
     }
 
-    public var type: ContainerEntryType?
+    public let type: ContainerEntryType
 
     // MARK: TAR specific
 
@@ -156,6 +156,8 @@ public class ZipEntryInfo: ContainerEntryInfo {
         }
         // TODO: attributesDict.
         self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
+        
+        self.type = .unknown
     }
 
 }

@@ -43,7 +43,7 @@ public class TarEntryInfo: ContainerEntryInfo {
     /// Size of the data associated with the entry.
     public private(set) var size: Int?
 
-    public var type: ContainerEntryType?
+    public let type: ContainerEntryType
 
     // MARK: TAR specific
 
@@ -310,6 +310,8 @@ public class TarEntryInfo: ContainerEntryInfo {
         }
         // TODO: attributesDict.
         self.isLink = attributesDict[FileAttributeKey.type] as? FileAttributeType == FileAttributeType.typeSymbolicLink
+
+        self.type = .unknown
     }
 
     private static func parseHeader(_ header: String?, _ fieldsDict: inout [String: String]) throws {
