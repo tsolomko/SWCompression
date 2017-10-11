@@ -16,12 +16,9 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
     /// Entry's data size.
     public let size: Int?
 
-    public let type: ContainerEntryType? = nil
+    public let type: ContainerEntryType
 
     // MARK: 7-Zip specific
-
-    /// True, if entry is a directory.
-    public let isDirectory: Bool
 
     /// Entry's last access time and date.
     public let accessTime: Date?
@@ -66,7 +63,6 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
         self.isAnti = file.isAntiFile
 
         self.name = file.name
-        self.isDirectory = file.isEmptyStream && !file.isEmptyFile
 
         self.accessTime = Date(from: file.aTime)
         self.creationTime = Date(from: file.cTime)
@@ -82,6 +78,21 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
             self.permissions = nil
             self.unixType = nil
             self.dosAttributes = nil
+        }
+
+        // Set type
+        if let unixType = self.unixType {
+            self.type = ContainerEntryType(from: unixType)
+        } else if let dosAttributes = self.dosAttributes {
+            if dosAttributes.contains(.directory) {
+                self.type = .directory
+            } else {
+                self.type = .regular
+            }
+        } else if file.isEmptyStream && !file.isEmptyFile {
+            self.type = .directory
+        } else {
+            self.type = .regular
         }
 
         self.crc = crc
