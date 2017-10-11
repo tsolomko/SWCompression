@@ -58,6 +58,18 @@
 		061C065E1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
 		061C065F1F0E90E600832F0C /* TarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C065B1F0E90E600832F0C /* TarEntry.swift */; };
 		061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FCE2C1DBCC6A30052F7BE /* Constants.swift */; };
+		0620F4941F8E21BC001C9B7A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4931F8E21BC001C9B7A /* Permissions.swift */; };
+		0620F4951F8E21BC001C9B7A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4931F8E21BC001C9B7A /* Permissions.swift */; };
+		0620F4961F8E21BC001C9B7A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4931F8E21BC001C9B7A /* Permissions.swift */; };
+		0620F4971F8E21BC001C9B7A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4931F8E21BC001C9B7A /* Permissions.swift */; };
+		0620F4991F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
+		0620F49A1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
+		0620F49B1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
+		0620F49C1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
+		0620F49E1F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
+		0620F49F1F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
+		0620F4A01F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
+		0620F4A11F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
 		0621E5181F0451C200C0003F /* test_multi.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0621E5171F0451C200C0003F /* test_multi.gz */; };
 		0623135B1F33B41B0070A574 /* test_empty_cont.tar in Resources */ = {isa = PBXBuildFile; fileRef = 062313571F33B41B0070A574 /* test_empty_cont.tar */; };
 		0623135C1F33B41B0070A574 /* test_empty_dir.tar in Resources */ = {isa = PBXBuildFile; fileRef = 062313581F33B41B0070A574 /* test_empty_dir.tar */; };
@@ -410,6 +422,9 @@
 		061C065B1F0E90E600832F0C /* TarEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarEntry.swift; sourceTree = "<group>"; };
 		061FCE251DBCC4BE0052F7BE /* Deflate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deflate.swift; sourceTree = "<group>"; };
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0620F4931F8E21BC001C9B7A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		0620F4981F8E21F8001C9B7A /* DosAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosAttributes.swift; sourceTree = "<group>"; };
+		0620F49D1F8E2230001C9B7A /* UnixType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnixType.swift; sourceTree = "<group>"; };
 		0621E5171F0451C200C0003F /* test_multi.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test_multi.gz; sourceTree = "<group>"; };
 		062313571F33B41B0070A574 /* test_empty_cont.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_cont.tar; sourceTree = "<group>"; };
 		062313581F33B41B0070A574 /* test_empty_dir.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_dir.tar; sourceTree = "<group>"; };
@@ -609,6 +624,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0620F4921F8E2197001C9B7A /* Containers */ = {
+			isa = PBXGroup;
+			children = (
+				0620F4931F8E21BC001C9B7A /* Permissions.swift */,
+				0620F4981F8E21F8001C9B7A /* DosAttributes.swift */,
+				0620F49D1F8E2230001C9B7A /* UnixType.swift */,
+			);
+			path = Containers;
+			sourceTree = "<group>";
+		};
 		06393DF91F1A858000A647A0 /* Long names */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,6 +671,7 @@
 		0680B4C01F88140500C5F253 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				0620F4921F8E2197001C9B7A /* Containers */,
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
@@ -1309,12 +1335,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06531F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				0620F49F1F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB81F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06955E4A1F65C761004D5D79 /* BZip2+Lengths.swift in Sources */,
 				065569691DC65C2A00A47E66 /* ZlibArchive.swift in Sources */,
 				061C064E1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10E1DE1F07800F38082 /* Extensions.swift in Sources */,
+				0620F49A1F8E21F8001C9B7A /* DosAttributes.swift in Sources */,
 				06595E0F1F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1141DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
 				06595E141F1E90C2006501C2 /* 7zCoder.swift in Sources */,
@@ -1366,6 +1394,7 @@
 				061C06431F0E8AD500832F0C /* ZipEntry.swift in Sources */,
 				061C06361F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
 				06A960521F1E7D040078E6D1 /* 7zStreamInfo.swift in Sources */,
+				0620F4951F8E21BC001C9B7A /* Permissions.swift in Sources */,
 				06CDFCB31F111DEC00292758 /* LZMA2Error.swift in Sources */,
 				06DDB1721F8190D400035BEF /* BZip2+BlockSize.swift in Sources */,
 				061C065D1F0E90E600832F0C /* TarEntry.swift in Sources */,
@@ -1384,12 +1413,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06541F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				0620F4A01F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB91F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06955E4B1F65C761004D5D79 /* BZip2+Lengths.swift in Sources */,
 				063DF1191DE1F2E200F38082 /* DataWithPointer.swift in Sources */,
 				061C064F1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF11A1DE1F2E200F38082 /* Extensions.swift in Sources */,
+				0620F49B1F8E21F8001C9B7A /* DosAttributes.swift in Sources */,
 				06595E101F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF11C1DE1F2E200F38082 /* DecodingHuffmanTree.swift in Sources */,
 				06595E151F1E90C2006501C2 /* 7zCoder.swift in Sources */,
@@ -1441,6 +1472,7 @@
 				061C06441F0E8AD500832F0C /* ZipEntry.swift in Sources */,
 				061C06371F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
 				06A960531F1E7D040078E6D1 /* 7zStreamInfo.swift in Sources */,
+				0620F4961F8E21BC001C9B7A /* Permissions.swift in Sources */,
 				06CDFCB41F111DEC00292758 /* LZMA2Error.swift in Sources */,
 				06DDB1731F8190D400035BEF /* BZip2+BlockSize.swift in Sources */,
 				061C065E1F0E90E600832F0C /* TarEntry.swift in Sources */,
@@ -1459,12 +1491,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06551F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				0620F4A11F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCBA1F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06955E4C1F65C761004D5D79 /* BZip2+Lengths.swift in Sources */,
 				065569771DC65C2B00A47E66 /* ZlibArchive.swift in Sources */,
 				061C06501F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10F1DE1F07800F38082 /* Extensions.swift in Sources */,
+				0620F49C1F8E21F8001C9B7A /* DosAttributes.swift in Sources */,
 				06595E111F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1151DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
 				06595E161F1E90C2006501C2 /* 7zCoder.swift in Sources */,
@@ -1516,6 +1550,7 @@
 				061C06451F0E8AD500832F0C /* ZipEntry.swift in Sources */,
 				061C06381F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
 				06A960541F1E7D040078E6D1 /* 7zStreamInfo.swift in Sources */,
+				0620F4971F8E21BC001C9B7A /* Permissions.swift in Sources */,
 				06CDFCB51F111DEC00292758 /* LZMA2Error.swift in Sources */,
 				06DDB1741F8190D400035BEF /* BZip2+BlockSize.swift in Sources */,
 				061C065F1F0E90E600832F0C /* TarEntry.swift in Sources */,
@@ -1534,12 +1569,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
+				0620F49E1F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB71F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				06955E491F65C761004D5D79 /* BZip2+Lengths.swift in Sources */,
 				06A393391DE0709300182E12 /* GzipArchive.swift in Sources */,
 				061C064D1F0E901C00832F0C /* ZipLocalHeader.swift in Sources */,
 				063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */,
+				0620F4991F8E21F8001C9B7A /* DosAttributes.swift in Sources */,
 				06595E0E1F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
 				06595E131F1E90C2006501C2 /* 7zCoder.swift in Sources */,
@@ -1591,6 +1628,7 @@
 				061C06421F0E8AD500832F0C /* ZipEntry.swift in Sources */,
 				061C06351F0E8A5F00832F0C /* ZlibHeader.swift in Sources */,
 				06A960511F1E7D040078E6D1 /* 7zStreamInfo.swift in Sources */,
+				0620F4941F8E21BC001C9B7A /* Permissions.swift in Sources */,
 				06CDFCB21F111DEC00292758 /* LZMA2Error.swift in Sources */,
 				06DDB1711F8190D400035BEF /* BZip2+BlockSize.swift in Sources */,
 				061C065C1F0E90E600832F0C /* TarEntry.swift in Sources */,
