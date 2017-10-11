@@ -124,8 +124,7 @@ public class TarEntryInfo: ContainerEntryInfo {
         guard let octalPosixPermissions = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
         // Sometime file mode also contains unix type, so we need to filter it out.
-        let posixPermissions = octalPosixPermissions.octalToDecimal() & 0xFFF
-        mode = posixPermissions
+        mode = octalPosixPermissions.octalToDecimal() & 0xFFF
 
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
@@ -140,14 +139,12 @@ public class TarEntryInfo: ContainerEntryInfo {
         // File size
         guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
-        let fileSize = octalFileSize.octalToDecimal()
-        size = fileSize
+        size = octalFileSize.octalToDecimal()
 
         // Modification time
         guard let octalMtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
-        let mtime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
-        modificationTime = mtime
+        modificationTime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
 
         // Checksum
         guard let octalChecksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
@@ -222,13 +219,11 @@ public class TarEntryInfo: ContainerEntryInfo {
                 self.charset = value
             case "ctime":
                 if let interval = Double(value) {
-                    let ctime = Date(timeIntervalSince1970: interval)
-                    self.creationTime = ctime
+                    self.creationTime = Date(timeIntervalSince1970: interval)
                 }
             case "mtime":
                 if let interval = Double(value) {
-                    let newMtime = Date(timeIntervalSince1970: interval)
-                    self.modificationTime = newMtime
+                    self.modificationTime = Date(timeIntervalSince1970: interval)
                 }
             case "comment":
                 self.comment = value
