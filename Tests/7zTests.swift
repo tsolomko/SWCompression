@@ -28,7 +28,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, answerData.count)
         XCTAssertEqual(entries[0].data, answerData)
     }
@@ -52,7 +52,7 @@ class SevenZipTests: XCTestCase {
         var answerData = try Data(contentsOf: answer1URL, options: .mappedIfSafe)
 
         XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, answerData.count)
         XCTAssertEqual(entries[0].data, answerData)
 
@@ -64,7 +64,7 @@ class SevenZipTests: XCTestCase {
         answerData = try Data(contentsOf: answer4URL, options: .mappedIfSafe)
 
         XCTAssertEqual(entries[1].info.name, "test4.answer")
-        XCTAssertEqual(entries[1].info.isDirectory, false)
+        XCTAssertNotEqual(entries[1].info.type, .directory)
         XCTAssertEqual(entries[1].info.size, answerData.count)
         XCTAssertEqual(entries[1].data, answerData)
     }
@@ -255,7 +255,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -279,7 +279,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -303,7 +303,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -327,12 +327,12 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries.count, 2)
 
         XCTAssertEqual(entries[0].info.name, "dir")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, nil)
         XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertEqual(entries[1].info.isDirectory, false)
+        XCTAssertNotEqual(entries[1].info.type, .directory)
         XCTAssertEqual(entries[1].info.size, 15)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
@@ -348,7 +348,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
@@ -364,7 +364,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_dir")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, nil)
         XCTAssertEqual(entries[0].data, nil)
     }
