@@ -226,7 +226,7 @@ public class TarEntryInfo: ContainerEntryInfo {
 
         // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
         // They differ in `magic` field value and how other fields are padded.
-        // Padding is taken care of in Data extension functions at the end of this file.
+        // Padding is taken care of in Data extension functions in "DataWithPointer+Tar.swift" file.
         // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
         let magic = pointerData.bytes(count: 8)
 

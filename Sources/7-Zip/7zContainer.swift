@@ -11,7 +11,7 @@ public class SevenZipContainer {
     static let signatureHeaderSize = 32
 
     /**
-     Processes 7-Zip container and returns an array of `ContainerEntry` (which are actually `SevenZipEntry`).
+     Processes 7-Zip container and returns an array of `SevenZipEntry`.
 
      - Important: The order of entries is defined by 7-Zip container and,
      particularly, by the creator of a given 7-Zip container.
