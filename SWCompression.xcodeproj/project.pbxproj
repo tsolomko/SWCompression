@@ -70,6 +70,10 @@
 		0620F49F1F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
 		0620F4A01F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
 		0620F4A11F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
+		0620F4A31F8E2271001C9B7A /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A21F8E2271001C9B7A /* Protocols.swift */; };
+		0620F4A41F8E2271001C9B7A /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A21F8E2271001C9B7A /* Protocols.swift */; };
+		0620F4A51F8E2271001C9B7A /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A21F8E2271001C9B7A /* Protocols.swift */; };
+		0620F4A61F8E2271001C9B7A /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A21F8E2271001C9B7A /* Protocols.swift */; };
 		0621E5181F0451C200C0003F /* test_multi.gz in Resources */ = {isa = PBXBuildFile; fileRef = 0621E5171F0451C200C0003F /* test_multi.gz */; };
 		0623135B1F33B41B0070A574 /* test_empty_cont.tar in Resources */ = {isa = PBXBuildFile; fileRef = 062313571F33B41B0070A574 /* test_empty_cont.tar */; };
 		0623135C1F33B41B0070A574 /* test_empty_dir.tar in Resources */ = {isa = PBXBuildFile; fileRef = 062313581F33B41B0070A574 /* test_empty_dir.tar */; };
@@ -425,6 +429,7 @@
 		0620F4931F8E21BC001C9B7A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		0620F4981F8E21F8001C9B7A /* DosAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosAttributes.swift; sourceTree = "<group>"; };
 		0620F49D1F8E2230001C9B7A /* UnixType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnixType.swift; sourceTree = "<group>"; };
+		0620F4A21F8E2271001C9B7A /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		0621E5171F0451C200C0003F /* test_multi.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test_multi.gz; sourceTree = "<group>"; };
 		062313571F33B41B0070A574 /* test_empty_cont.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_cont.tar; sourceTree = "<group>"; };
 		062313581F33B41B0070A574 /* test_empty_dir.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_dir.tar; sourceTree = "<group>"; };
@@ -624,14 +629,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0620F4921F8E2197001C9B7A /* Containers */ = {
+		0620F4921F8E2197001C9B7A /* Container */ = {
 			isa = PBXGroup;
 			children = (
 				0620F4931F8E21BC001C9B7A /* Permissions.swift */,
 				0620F4981F8E21F8001C9B7A /* DosAttributes.swift */,
 				0620F49D1F8E2230001C9B7A /* UnixType.swift */,
+				0620F4A21F8E2271001C9B7A /* Protocols.swift */,
 			);
-			path = Containers;
+			path = Container;
 			sourceTree = "<group>";
 		};
 		06393DF91F1A858000A647A0 /* Long names */ = {
@@ -671,7 +677,7 @@
 		0680B4C01F88140500C5F253 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				0620F4921F8E2197001C9B7A /* Containers */,
+				0620F4921F8E2197001C9B7A /* Container */,
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1091DE1F07800F38082 /* Protocols.swift */,
@@ -1401,6 +1407,7 @@
 				064F722A1F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCAE1F111DBE00292758 /* LZMAError.swift in Sources */,
 				063DF10B1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				0620F4A41F8E2271001C9B7A /* Protocols.swift in Sources */,
 				06E6A63A1F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
 				0656B82C1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */,
 				06B689591F278815007C9316 /* 7zProperty.swift in Sources */,
@@ -1479,6 +1486,7 @@
 				064F722B1F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCAF1F111DBE00292758 /* LZMAError.swift in Sources */,
 				0655696F1DC65C2B00A47E66 /* GzipArchive.swift in Sources */,
+				0620F4A51F8E2271001C9B7A /* Protocols.swift in Sources */,
 				06E6A63B1F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
 				0656B82D1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */,
 				06B6895A1F278815007C9316 /* 7zProperty.swift in Sources */,
@@ -1557,6 +1565,7 @@
 				064F722C1F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCB01F111DBE00292758 /* LZMAError.swift in Sources */,
 				063DF10C1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				0620F4A61F8E2271001C9B7A /* Protocols.swift in Sources */,
 				06E6A63C1F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
 				0656B82E1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */,
 				06B6895B1F278815007C9316 /* 7zProperty.swift in Sources */,
@@ -1635,6 +1644,7 @@
 				064F72291F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */,
 				063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
+				0620F4A31F8E2271001C9B7A /* Protocols.swift in Sources */,
 				06E6A6391F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
 				0656B82B1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */,
 				06B689581F278815007C9316 /* 7zProperty.swift in Sources */,
