@@ -662,33 +662,15 @@
 		0620F4921F8E2197001C9B7A /* Container */ = {
 			isa = PBXGroup;
 			children = (
-				0620F4AC1F8E2463001C9B7A /* Protocols */,
+				0620F4AD1F8E246E001C9B7A /* Container.swift */,
+				0620F4B21F8E2477001C9B7A /* ContainerEntry.swift */,
+				0620F4B71F8E248C001C9B7A /* ContainerEntryInfo.swift */,
 				0620F4931F8E21BC001C9B7A /* Permissions.swift */,
 				0620F4981F8E21F8001C9B7A /* DosAttributes.swift */,
 				0620F49D1F8E2230001C9B7A /* UnixType.swift */,
 				0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */,
 			);
 			path = Container;
-			sourceTree = "<group>";
-		};
-		0620F4AC1F8E2463001C9B7A /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				0620F4AD1F8E246E001C9B7A /* Container.swift */,
-				0620F4B21F8E2477001C9B7A /* ContainerEntry.swift */,
-				0620F4B71F8E248C001C9B7A /* ContainerEntryInfo.swift */,
-			);
-			path = Protocols;
-			sourceTree = "<group>";
-		};
-		0620F4BC1F8E2495001C9B7A /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				0620F4BD1F8E24AA001C9B7A /* Archive.swift */,
-				0620F4C21F8E24B6001C9B7A /* CompressionAlgorithm.swift */,
-				0620F4C71F8E24BF001C9B7A /* DecompressionAlgorithm.swift */,
-			);
-			path = Protocols;
 			sourceTree = "<group>";
 		};
 		06393DF91F1A858000A647A0 /* Long names */ = {
@@ -729,7 +711,9 @@
 			isa = PBXGroup;
 			children = (
 				0620F4921F8E2197001C9B7A /* Container */,
-				0620F4BC1F8E2495001C9B7A /* Protocols */,
+				0620F4BD1F8E24AA001C9B7A /* Archive.swift */,
+				0620F4C21F8E24B6001C9B7A /* CompressionAlgorithm.swift */,
+				0620F4C71F8E24BF001C9B7A /* DecompressionAlgorithm.swift */,
 				06E234811E06A6C200F18798 /* CheckSums.swift */,
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
