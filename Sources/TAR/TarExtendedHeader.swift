@@ -9,8 +9,8 @@ struct TarExtendedHeader {
 
     let entries: [String: String]
 
-    init?(_ data: Data) throws {
-        guard let headerString = String(data: data, encoding: .utf8)
+    init?(_ data: Data?) throws {
+        guard let data = data, let headerString = String(data: data, encoding: .utf8)
             else { return nil }
 
         var entries = [String: String]()
