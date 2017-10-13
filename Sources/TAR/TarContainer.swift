@@ -32,8 +32,8 @@ public class TarContainer: Container {
 
         var output = [TarEntry]()
 
-        var lastGlobalExtendedHeader: String?
-        var lastLocalExtendedHeader: String?
+        var lastGlobalExtendedHeader: TarExtendedHeader?
+        var lastLocalExtendedHeader: TarExtendedHeader?
         var longLinkName: String?
         var longName: String?
 
@@ -81,9 +81,9 @@ public class TarContainer: Container {
             let entry = TarEntry(info, data)
 
             if info.isGlobalExtendedHeader {
-                lastGlobalExtendedHeader = String(data: entry.data!, encoding: .utf8)
+                lastGlobalExtendedHeader = try TarExtendedHeader(entry.data)
             } else if info.isLocalExtendedHeader {
-                lastLocalExtendedHeader = String(data: entry.data!, encoding: .utf8)
+                lastLocalExtendedHeader = try TarExtendedHeader(entry.data)
             } else {
                 output.append(entry)
                 lastLocalExtendedHeader = nil
