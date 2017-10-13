@@ -77,7 +77,7 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     let blockStartIndex: Int
 
-    init(_ pointerData: DataWithPointer, _ globalExtendedHeader: String?, _ localExtendedHeader: String?,
+    init(_ pointerData: DataWithPointer, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         self.blockStartIndex = pointerData.index
         var linkName: String?
@@ -172,70 +172,95 @@ public class TarEntryInfo: ContainerEntryInfo {
         // Set `name` and `linkName` to values from GNU format if possible.
         name = longName ?? name
         linkName = longLinkName ?? linkName
-
-        var fieldsDict = [String: String]()
-        try TarEntryInfo.parseHeader(globalExtendedHeader, &fieldsDict)
-        try TarEntryInfo.parseHeader(localExtendedHeader, &fieldsDict)
-
-        for (keyword, value) in fieldsDict {
-            switch keyword {
-            case "atime":
-                if let interval = Double(value) {
-                    self.accessTime = Date(timeIntervalSince1970: interval)
-                }
-            case "charset":
-                self.charset = value
-            case "ctime":
-                if let interval = Double(value) {
-                    self.creationTime = Date(timeIntervalSince1970: interval)
-                }
-            case "mtime":
-                if let interval = Double(value) {
-                    self.modificationTime = Date(timeIntervalSince1970: interval)
-                }
-            case "comment":
-                self.comment = value
-            case "gid":
-                self.groupID = Int(value)
-            case "gname":
-                self.ownerGroupName = value
-            case "hdrcharset":
-                break
-            case "linkpath":
-                linkName = value
-            case "path":
-                name = value
-            case "size":
-                self.size = Int(value)
-            case "uid":
-                self.ownerID = Int(value)
-            case "uname":
-                self.ownerUserName = value
-            default:
-                self.unknownExtendedHeaderEntries[keyword] = value
-            }
+        
+        // Set properties from PAX extended headers.
+        if let globalAtimeString = global?.entries["atime"], let globalAtime = Double(globalAtimeString) {
+            self.accessTime = Date(timeIntervalSince1970: globalAtime)
+        }
+        if let localAtimeString = local?.entries["atime"], let localAtime = Double(localAtimeString) {
+            self.accessTime = Date(timeIntervalSince1970: localAtime)
+        }
+        
+        if let globalCtimeString = global?.entries["ctime"], let globalCtime = Double(globalCtimeString) {
+            self.creationTime = Date(timeIntervalSince1970: globalCtime)
+        }
+        if let localCtimeString = local?.entries["ctime"], let localCtime = Double(localCtimeString) {
+            self.creationTime = Date(timeIntervalSince1970: localCtime)
+        }
+        
+        // TODO: mtime and some other properties will need special treatment to make it constant.
+        if let globalMtimeString = global?.entries["mtime"], let globalMtime = Double(globalMtimeString) {
+            self.modificationTime = Date(timeIntervalSince1970: globalMtime)
+        }
+        if let localMtimeString = local?.entries["mtime"], let localMtime = Double(localMtimeString) {
+            self.modificationTime = Date(timeIntervalSince1970: localMtime)
+        }
+        
+        if let globalCharset = global?.entries["charset"] {
+            self.charset = globalCharset
+        }
+        if let localCharset = local?.entries["charset"] {
+            self.charset = localCharset
+        }
+        
+        if let globalComment = global?.entries["comment"] {
+            self.comment = globalComment
+        }
+        if let localComment = local?.entries["comment"] {
+            self.comment = localComment
+        }
+        
+        if let globalLinkpath = global?.entries["linkpath"] {
+            linkName = globalLinkpath
+        }
+        if let localLinkpath = local?.entries["linkpath"] {
+            linkName = localLinkpath
+        }
+        
+        if let globalPath = global?.entries["path"] {
+            name = globalPath
+        }
+        if let localPath = local?.entries["path"] {
+            name = localPath
+        }
+        
+        if let globalGidString = global?.entries["gid"] {
+            self.groupID = Int(globalGidString)
+        }
+        if let localGidString = local?.entries["gid"] {
+            self.groupID = Int(localGidString)
+        }
+        
+        if let globalUidString = global?.entries["uid"] {
+            self.ownerID = Int(globalUidString)
+        }
+        if let localUidString = local?.entries["uid"] {
+            self.ownerID = Int(localUidString)
+        }
+        
+        if let globalSizeString = global?.entries["size"] {
+            self.size = Int(globalSizeString)
+        }
+        if let localSizeString = local?.entries["size"] {
+            self.size = Int(localSizeString)
+        }
+        
+        if let globalGname = global?.entries["gname"] {
+            self.ownerGroupName = globalGname
+        }
+        if let localGname = local?.entries["gname"] {
+            self.ownerGroupName = localGname
+        }
+        
+        if let globalUname = global?.entries["uname"] {
+            self.ownerUserName = globalUname
+        }
+        if let localUname = local?.entries["uname"] {
+            self.ownerUserName = localUname
         }
 
         self.name = name
         self.linkName = linkName
-    }
-
-    private static func parseHeader(_ header: String?, _ fieldsDict: inout [String: String]) throws {
-        if let headerString = header {
-            let headerEntries = headerString.components(separatedBy: "\n")
-            for headerEntry in headerEntries {
-                guard !headerEntry.isEmpty
-                    else { continue }
-                let headerEntrySplit = headerEntry.split(separator: " ", maxSplits: 1,
-                                                         omittingEmptySubsequences: false)
-                guard Int(headerEntrySplit[0]) == headerEntry.count + 1
-                    else { throw TarError.wrongPaxHeaderEntry }
-                let keywordValue = headerEntrySplit[1]
-                let keywordValueSplit = keywordValue.split(separator: "=", maxSplits: 1,
-                                                           omittingEmptySubsequences: false)
-                fieldsDict[String(keywordValueSplit[0])] = String(keywordValueSplit[1])
-            }
-        }
     }
 
 }
