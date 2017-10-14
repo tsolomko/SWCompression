@@ -14,7 +14,7 @@ public class TarEntryInfo: ContainerEntryInfo {
     public let name: String?
 
     /// Size of the data associated with the entry.
-    public private(set) var size: Int?
+    public let size: Int?
 
     public let type: ContainerEntryType
 
@@ -24,53 +24,40 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     public let unixType: UnixType?
 
-    /**
-     Owner's ID.
-     */
-    public private(set) var ownerID: Int?
+    /// The most recent access time of the original file or directory (PAX only).
+    public let accessTime: Date?
+    
+    /// The most recent modification time of the original file or directory.
+    public let modificationTime: Date
+    
+    /// The creation time of the original file or directory (PAX only).
+    public let creationTime: Date?
+    
+    /// Owner's ID.
+    public let ownerID: Int?
+    
+    /// Owner's group ID.
+    public let groupID: Int?
 
-    /**
-     Owner's group ID.
-     */
-    public private(set) var groupID: Int?
+    /// Owner's user name.
+    public let ownerUserName: String?
 
-    /**
-     The most recent modification time of the original file or directory.
-     */
-    public private(set) var modificationTime: Date
-
-    /**
-     Owner's user name.
-     */
-    public private(set) var ownerUserName: String?
-
-    /**
-     Owner's group name.
-     */
-    public private(set) var ownerGroupName: String?
+    /// Owner's group name.
+    public let ownerGroupName: String?
 
     public let deviceMajorNumber: Int?
 
     public let deviceMinorNumber: Int?
 
-    /// The most recent access time of the original file or directory (PAX only).
-    public private(set) var accessTime: Date?
-
-    /// The creation time of the original file or directory (PAX only).
-    public private(set) var creationTime: Date?
-
     /// Name of the character set used to encode entry's data (PAX only).
-    public private(set) var charset: String?
+    public let charset: String?
 
     /// Comment associated with the entry (PAX only).
-    public private(set) var comment: String?
+    public let comment: String?
 
     // TODO: Describe order in which formats' features are used to set this property.
     /// Path to a linked file for symbolic link entry.
     public let linkName: String?
-
-    /// Other entries from PAX extended headers.
-    public private(set) var unknownExtendedHeaderEntries: [String: String] = [:]
 
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
@@ -89,7 +76,7 @@ public class TarEntryInfo: ContainerEntryInfo {
         // File mode
         guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
-        // Sometime file mode also contains unix type, so we need to filter it out.
+        // Sometimes file mode also contains unix type, so we need to filter it out.
         let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes.octalToDecimal())
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
         unixType = UnixType(rawValue: posixAttributes & 0xF000)
@@ -97,22 +84,41 @@ public class TarEntryInfo: ContainerEntryInfo {
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
-        ownerID = ownerAccountID
+        // There might be a PAX extended header with "uid" attribute.
+        if let uidString = local?.entries["uid"] ?? global?.entries["uid"] {
+            ownerID = Int(uidString)
+        } else {
+            ownerID = ownerAccountID
+        }
 
         // Group's user ID
         guard let groupAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }
-        groupID = groupAccountID
+        // There might be a PAX extended header with "gid" attribute.
+        if let gidString = local?.entries["gid"] ?? global?.entries["gid"] {
+            groupID = Int(gidString)
+        } else {
+            groupID = groupAccountID
+        }
 
         // File size
         guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
-        size = octalFileSize.octalToDecimal()
+        // There might be a PAX extended header with "size" attribute.
+        if let sizeString = local?.entries["size"] ?? global?.entries["size"] {
+            size = Int(sizeString)
+        } else {
+            size = octalFileSize.octalToDecimal()
+        }
 
         // Modification time
         guard let octalMtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.fieldIsNotNumber }
-        modificationTime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
+        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"], let mtime = Double(mtimeString) {
+            self.modificationTime = Date(timeIntervalSince1970: mtime)
+        } else {
+            modificationTime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
+        }
 
         // Checksum
         guard let octalChecksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
@@ -138,7 +144,6 @@ public class TarEntryInfo: ContainerEntryInfo {
             else { throw TarError.wrongHeaderChecksum }
 
         // File type
-        // TODO: Don't convert to String.
         let fileTypeIndicator = pointerData.byte()
         self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
         self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
@@ -156,111 +161,49 @@ public class TarEntryInfo: ContainerEntryInfo {
         if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
-            ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
-            ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
+            if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
+                self.ownerUserName = uname
+                pointerData.index += 32
+            } else {
+                ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
+            }
+
+            if let gname = local?.entries["gname"] ?? global?.entries["gname"] {
+                ownerGroupName = gname
+                pointerData.index += 32
+            } else {
+                ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
+            }
 
             deviceMajorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             deviceMinorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             name = try pointerData.nullEndedAsciiString(cutoff: 155) + (name ?? "")
         } else {
-            ownerUserName = nil
-            ownerGroupName = nil
+            ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
+            ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]
             deviceMajorNumber = nil
             deviceMinorNumber = nil
         }
 
-        // Set `name` and `linkName` to values from GNU format if possible.
-        name = longName ?? name
-        linkName = longLinkName ?? linkName
+        // Set `name` and `linkName` to values from PAX or GNU format if possible.
+        self.name = ((local?.entries["path"] ?? global?.entries["path"]) ?? longName) ?? name
+        self.linkName = ((local?.entries["linkpath"] ?? global?.entries["linkpath"]) ?? longLinkName) ?? linkName
         
-        // Set properties from PAX extended headers.
-        if let globalAtimeString = global?.entries["atime"], let globalAtime = Double(globalAtimeString) {
-            self.accessTime = Date(timeIntervalSince1970: globalAtime)
-        }
-        if let localAtimeString = local?.entries["atime"], let localAtime = Double(localAtimeString) {
-            self.accessTime = Date(timeIntervalSince1970: localAtime)
-        }
-        
-        if let globalCtimeString = global?.entries["ctime"], let globalCtime = Double(globalCtimeString) {
-            self.creationTime = Date(timeIntervalSince1970: globalCtime)
-        }
-        if let localCtimeString = local?.entries["ctime"], let localCtime = Double(localCtimeString) {
-            self.creationTime = Date(timeIntervalSince1970: localCtime)
+        // Set additional properties from PAX extended headers.
+        if let atimeString = local?.entries["atime"] ?? global?.entries["atime"], let atime = Double(atimeString) {
+            accessTime = Date(timeIntervalSince1970: atime)
+        } else {
+            accessTime = nil
         }
         
-        // TODO: mtime and some other properties will need special treatment to make it constant.
-        if let globalMtimeString = global?.entries["mtime"], let globalMtime = Double(globalMtimeString) {
-            self.modificationTime = Date(timeIntervalSince1970: globalMtime)
-        }
-        if let localMtimeString = local?.entries["mtime"], let localMtime = Double(localMtimeString) {
-            self.modificationTime = Date(timeIntervalSince1970: localMtime)
-        }
-        
-        if let globalCharset = global?.entries["charset"] {
-            self.charset = globalCharset
-        }
-        if let localCharset = local?.entries["charset"] {
-            self.charset = localCharset
-        }
-        
-        if let globalComment = global?.entries["comment"] {
-            self.comment = globalComment
-        }
-        if let localComment = local?.entries["comment"] {
-            self.comment = localComment
-        }
-        
-        if let globalLinkpath = global?.entries["linkpath"] {
-            linkName = globalLinkpath
-        }
-        if let localLinkpath = local?.entries["linkpath"] {
-            linkName = localLinkpath
-        }
-        
-        if let globalPath = global?.entries["path"] {
-            name = globalPath
-        }
-        if let localPath = local?.entries["path"] {
-            name = localPath
-        }
-        
-        if let globalGidString = global?.entries["gid"] {
-            self.groupID = Int(globalGidString)
-        }
-        if let localGidString = local?.entries["gid"] {
-            self.groupID = Int(localGidString)
-        }
-        
-        if let globalUidString = global?.entries["uid"] {
-            self.ownerID = Int(globalUidString)
-        }
-        if let localUidString = local?.entries["uid"] {
-            self.ownerID = Int(localUidString)
-        }
-        
-        if let globalSizeString = global?.entries["size"] {
-            self.size = Int(globalSizeString)
-        }
-        if let localSizeString = local?.entries["size"] {
-            self.size = Int(localSizeString)
-        }
-        
-        if let globalGname = global?.entries["gname"] {
-            self.ownerGroupName = globalGname
-        }
-        if let localGname = local?.entries["gname"] {
-            self.ownerGroupName = localGname
-        }
-        
-        if let globalUname = global?.entries["uname"] {
-            self.ownerUserName = globalUname
-        }
-        if let localUname = local?.entries["uname"] {
-            self.ownerUserName = localUname
+        if let ctimeString = local?.entries["ctime"] ?? global?.entries["ctime"], let ctime = Double(ctimeString) {
+            creationTime = Date(timeIntervalSince1970: ctime)
+        } else {
+            creationTime = nil
         }
 
-        self.name = name
-        self.linkName = linkName
+        charset = local?.entries["charset"] ?? global?.entries["charset"]
+        comment =  local?.entries["comment"] ?? global?.entries["comment"]
     }
 
 }
