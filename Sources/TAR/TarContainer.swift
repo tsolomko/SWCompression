@@ -37,38 +37,33 @@ public class TarContainer: Container {
         var longLinkName: String?
         var longName: String?
 
-        // Container ends with two zero-filled records.
-        // TODO: Add better check and error throw.
-        // TODO: Use `Data(capacity: 1024)` and don't use `DataWithPointer` here.
         while true {
-            if pointerData.bytes(count: 1024) == Array(repeating: 0, count: 1024) {
+            // Container ends with two zero-filled records.
+            if pointerData.data[pointerData.index..<pointerData.index + 1024] == Data(count: 1024) {
                 break
-            } else {
-                pointerData.index -= 1024
             }
-            pointerData.index += 156
-            let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
-            if fileTypeIndicator == "K" || fileTypeIndicator == "L" {
-                pointerData.index -= 33
-
-                guard let octalSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+            
+            // Check for GNU LongName or LongLinkName.
+            let fileTypeIndicator = pointerData.data[pointerData.index + 156]
+            if fileTypeIndicator == 75 /* "K" */ || fileTypeIndicator == 76 /* "L" */ {
+                // Jump to "size" field of header.
+                pointerData.index += 124
+                guard let size = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
                     else { throw TarError.fieldIsNotNumber }
-                let size = octalSize.octalToDecimal()
+                
+                // Jump to the start of data
                 pointerData.index += 376
-
                 let dataStartIndex = pointerData.index
                 let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
-
-                if fileTypeIndicator == "K" {
+                
+                if fileTypeIndicator == 75 /* "K" */ {
                     longLinkName = longPath
                 } else {
                     longName = longPath
                 }
-                pointerData.index = dataStartIndex
-                pointerData.index += size.roundTo512()
+                pointerData.index = dataStartIndex + size.roundTo512()
                 continue
             }
-            pointerData.index -= 157
 
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
@@ -111,38 +106,33 @@ public class TarContainer: Container {
         var longLinkName: String?
         var longName: String?
         
-        // Container ends with two zero-filled records.
-        // TODO: Add better check and error throw.
-        // TODO: Use `Data(capacity: 1024)` and don't use `DataWithPointer` here.
         while true {
-            if pointerData.bytes(count: 1024) == Array(repeating: 0, count: 1024) {
+            // Container ends with two zero-filled records.
+            if pointerData.data[pointerData.index..<pointerData.index + 1024] == Data(count: 1024) {
                 break
-            } else {
-                pointerData.index -= 1024
             }
-            pointerData.index += 156
-            let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
-            if fileTypeIndicator == "K" || fileTypeIndicator == "L" {
-                pointerData.index -= 33
-                
-                guard let octalSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+            
+            // Check for GNU LongName or LongLinkName.
+            let fileTypeIndicator = pointerData.data[pointerData.index + 156]
+            if fileTypeIndicator == 75 /* "K" */ || fileTypeIndicator == 76 /* "L" */ {
+                // Jump to "size" field of header.
+                pointerData.index += 124
+                guard let size = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
                     else { throw TarError.fieldIsNotNumber }
-                let size = octalSize.octalToDecimal()
-                pointerData.index += 376
                 
+                // Jump to the start of data
+                pointerData.index += 376
                 let dataStartIndex = pointerData.index
                 let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
                 
-                if fileTypeIndicator == "K" {
+                if fileTypeIndicator == 75 /* "K" */ {
                     longLinkName = longPath
                 } else {
                     longName = longPath
                 }
-                pointerData.index = dataStartIndex
-                pointerData.index += size.roundTo512()
+                pointerData.index = dataStartIndex + size.roundTo512()
                 continue
             }
-            pointerData.index -= 157
             
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)

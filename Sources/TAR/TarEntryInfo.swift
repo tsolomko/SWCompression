@@ -74,10 +74,10 @@ public class TarEntryInfo: ContainerEntryInfo {
         name = try pointerData.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
             else { throw TarError.fieldIsNotNumber }
         // Sometimes file mode also contains unix type, so we need to filter it out.
-        let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes.octalToDecimal())
+        let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
         unixType = UnixType(rawValue: posixAttributes & 0xF000)
 
@@ -112,18 +112,17 @@ public class TarEntryInfo: ContainerEntryInfo {
         }
 
         // Modification time
-        guard let octalMtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+        guard let mtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
             else { throw TarError.fieldIsNotNumber }
-        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"], let mtime = Double(mtimeString) {
-            self.modificationTime = Date(timeIntervalSince1970: mtime)
+        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"], let paxMtime = Double(mtimeString) {
+            self.modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else {
-            modificationTime = Date(timeIntervalSince1970: TimeInterval(octalMtime.octalToDecimal()))
+            modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
         }
 
         // Checksum
-        guard let octalChecksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let checksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
             else { throw TarError.fieldIsNotNumber }
-        let checksum = octalChecksum.octalToDecimal()
 
         let currentIndex = pointerData.index
         pointerData.index = blockStartIndex
