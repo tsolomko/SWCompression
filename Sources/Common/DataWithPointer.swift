@@ -9,7 +9,7 @@ class DataWithPointer {
 
     let size: Int
     let data: Data
-    var index: Int = 0
+    var index: Int
 
     var isAtTheEnd: Bool {
         return self.size == self.index
@@ -26,6 +26,7 @@ class DataWithPointer {
     init(data: Data) {
         self.size = data.count
         self.data = data
+        self.index = data.startIndex
     }
 
     func byte() -> UInt8 {
