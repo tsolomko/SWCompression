@@ -66,7 +66,7 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     init(_ pointerData: DataWithPointer, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
-        self.blockStartIndex = pointerData.index
+        blockStartIndex = pointerData.index
         var linkName: String?
         var name: String?
 

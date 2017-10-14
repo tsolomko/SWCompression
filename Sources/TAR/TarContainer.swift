@@ -39,6 +39,7 @@ public class TarContainer: Container {
 
         // Container ends with two zero-filled records.
         // TODO: Add better check and error throw.
+        // TODO: Use `Data(capacity: 1024)` and don't use `DataWithPointer` here.
         while true {
             if pointerData.bytes(count: 1024) == Array(repeating: 0, count: 1024) {
                 break
@@ -75,10 +76,10 @@ public class TarContainer: Container {
             // File data
             let dataStartIndex = info.blockStartIndex + 512
             let dataEndIndex = dataStartIndex + info.size!
-            let data = data[dataStartIndex..<dataEndIndex]
+            let entryData = data[dataStartIndex..<dataEndIndex]
             pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
 
-            let entry = TarEntry(info, data)
+            let entry = TarEntry(info, entryData)
 
             if info.isGlobalExtendedHeader {
                 lastGlobalExtendedHeader = try TarExtendedHeader(entry.data)
@@ -95,9 +96,82 @@ public class TarContainer: Container {
         return output
     }
 
-    public static func info(container: Data) throws -> [TarEntryInfo] {
-        return []
-    }
+    public static func info(container data: Data) throws -> [TarEntryInfo] {
+        // First, if the TAR container contains only header, it should be at least 512 bytes long.
+        // So we have to check this.
+        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
+        
+        /// Object with input data which supports convenient work with bit shifts.
+        let pointerData = DataWithPointer(data: data)
+        
+        var output = [TarEntryInfo]()
+        
+        var lastGlobalExtendedHeader: TarExtendedHeader?
+        var lastLocalExtendedHeader: TarExtendedHeader?
+        var longLinkName: String?
+        var longName: String?
+        
+        // Container ends with two zero-filled records.
+        // TODO: Add better check and error throw.
+        // TODO: Use `Data(capacity: 1024)` and don't use `DataWithPointer` here.
+        while true {
+            if pointerData.bytes(count: 1024) == Array(repeating: 0, count: 1024) {
+                break
+            } else {
+                pointerData.index -= 1024
+            }
+            pointerData.index += 156
+            let fileTypeIndicator = String(Character(UnicodeScalar(pointerData.byte())))
+            if fileTypeIndicator == "K" || fileTypeIndicator == "L" {
+                pointerData.index -= 33
+                
+                guard let octalSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+                    else { throw TarError.fieldIsNotNumber }
+                let size = octalSize.octalToDecimal()
+                pointerData.index += 376
+                
+                let dataStartIndex = pointerData.index
+                let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
+                
+                if fileTypeIndicator == "K" {
+                    longLinkName = longPath
+                } else {
+                    longName = longPath
+                }
+                pointerData.index = dataStartIndex
+                pointerData.index += size.roundTo512()
+                continue
+            }
+            pointerData.index -= 157
+            
+            let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+                                        longName, longLinkName)
+            
+            if info.isGlobalExtendedHeader {
+                let dataStartIndex = info.blockStartIndex + 512
+                let dataEndIndex = dataStartIndex + info.size!
+                let headerData = data[dataStartIndex..<dataEndIndex]
+                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
 
+                lastGlobalExtendedHeader = try TarExtendedHeader(headerData)
+            } else if info.isLocalExtendedHeader {
+                let dataStartIndex = info.blockStartIndex + 512
+                let dataEndIndex = dataStartIndex + info.size!
+                let headerData = data[dataStartIndex..<dataEndIndex]
+                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+
+                lastLocalExtendedHeader = try TarExtendedHeader(headerData)
+            } else {
+                // Skip file data.
+                pointerData.index = info.blockStartIndex + 512 + info.size!.roundTo512()
+                output.append(info)
+                lastLocalExtendedHeader = nil
+                longName = nil
+                longLinkName = nil
+            }
+        }
+        
+        return output
+    }
 
 }
