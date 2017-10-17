@@ -33,7 +33,7 @@ struct ZipCentralDirectoryEntry {
     private(set) var ntfsAtime: UInt64?
     private(set) var ntfsCtime: UInt64?
 
-    init(_ pointerData: DataWithPointer, _ currentDiskNumber: UInt32) throws {
+    init(_ pointerData: DataWithPointer) throws {
         // Check signature.
         guard pointerData.uint32() == 0x02014b50
             else { throw ZipError.wrongSignature }
@@ -114,7 +114,9 @@ struct ZipCentralDirectoryEntry {
         guard let fileComment = ZipCommon.getStringField(pointerData, fileCommentLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
+    }
 
+    func validate(_ currentDiskNumber: UInt32? = nil) throws {
         // Let's check entry's values for consistency.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
