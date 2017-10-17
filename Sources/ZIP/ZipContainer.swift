@@ -49,11 +49,9 @@ public class ZipContainer: Container {
         pointerData.index = Int(UInt(truncatingIfNeeded: endOfCD.cdOffset))
 
         for _ in 0..<cdEntries {
-            let cdEntry = try ZipCentralDirectoryEntry(pointerData, endOfCD.currentDiskNumber)
-
             let savedDataIndex = pointerData.index
 
-            let info = ZipEntryInfo(cdEntry, pointerData)
+            let info = try ZipEntryInfo(pointerData)
             let data = try ZipContainer.getEntryData(pointerData, info)
             pointerData.index = savedDataIndex
             entries.append(ZipEntry(info, data))

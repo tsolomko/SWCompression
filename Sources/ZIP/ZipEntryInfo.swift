@@ -69,8 +69,8 @@ public class ZipEntryInfo: ContainerEntryInfo {
         return cdEntry.internalFileAttributes & 0x1 != 0
     }
 
-    init(_ cdEntry: ZipCentralDirectoryEntry, _ pointerData: DataWithPointer) {
-        self.cdEntry = cdEntry
+    init(_ pointerData: DataWithPointer) throws {
+        self.cdEntry = try ZipCentralDirectoryEntry(pointerData)
         self.containerData = pointerData.data
 
         var attributesDict = [FileAttributeKey: Any]()
