@@ -105,7 +105,8 @@ public class TarContainer: Container {
         var lastLocalExtendedHeader: TarExtendedHeader?
         var longLinkName: String?
         var longName: String?
-        
+
+        // TODO: First, populate infos, then get data in second loop.
         while true {
             // Container ends with two zero-filled records.
             if pointerData.data[pointerData.index..<pointerData.index + 1024] == Data(count: 1024) {
@@ -113,6 +114,7 @@ public class TarContainer: Container {
             }
             
             // Check for GNU LongName or LongLinkName.
+            // TODO: Include into TarEntryInfo.
             let fileTypeIndicator = pointerData.data[pointerData.index + 156]
             if fileTypeIndicator == 75 /* "K" */ || fileTypeIndicator == 76 /* "L" */ {
                 // Jump to "size" field of header.
