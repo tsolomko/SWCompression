@@ -82,7 +82,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "текстовый файл")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertNotNil(entries[0].data)
     }
 
@@ -97,7 +97,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -120,7 +120,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -144,12 +144,12 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries.count, 2)
 
         XCTAssertEqual(entries[0].info.name, "dir/")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertEqual(entries[1].info.isDirectory, false)
+        XCTAssertNotEqual(entries[1].info.type, .directory)
         XCTAssertEqual(entries[1].info.size, 15)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
@@ -165,7 +165,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertEqual(entries[0].info.isDirectory, false)
+        XCTAssertNotEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
@@ -181,7 +181,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_dir/")
-        XCTAssertEqual(entries[0].info.isDirectory, true)
+        XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
