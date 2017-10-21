@@ -68,11 +68,7 @@ public class ZipContainer: Container {
 
         let localHeader = try ZipLocalHeader(pointerData)
         // Check local header for consistency with Central Directory entry.
-        guard localHeader.generalPurposeBitFlags == info.cdEntry.generalPurposeBitFlags &&
-            localHeader.compressionMethod == info.cdEntry.compressionMethod &&
-            localHeader.lastModFileTime == info.cdEntry.lastModFileTime &&
-            localHeader.lastModFileDate == info.cdEntry.lastModFileDate
-            else { throw ZipError.wrongLocalHeader }
+        try localHeader.validate(with: info.cdEntry)
 
         let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
 

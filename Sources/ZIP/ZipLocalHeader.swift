@@ -99,7 +99,9 @@ struct ZipLocalHeader {
                 pointerData.index += size
             }
         }
+    }
 
+    func validate(with cdEntry: ZipCentralDirectoryEntry) throws {
         // Let's check headers's values for consistency.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
@@ -109,6 +111,12 @@ struct ZipLocalHeader {
             else { throw ZipError.encryptionNotSupported }
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
+
+        guard self.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
+            self.compressionMethod == cdEntry.compressionMethod &&
+            self.lastModFileTime == cdEntry.lastModFileTime &&
+            self.lastModFileDate == cdEntry.lastModFileDate
+            else { throw ZipError.wrongLocalHeader }
     }
 
 }
