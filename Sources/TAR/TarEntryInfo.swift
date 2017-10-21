@@ -59,6 +59,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
+    let isLongLinkName: Bool
+    let isLongName: Bool
 
     let blockStartIndex: Int
 
@@ -143,6 +145,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
         let fileTypeIndicator = pointerData.byte()
         self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
         self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
+        self.isLongLinkName = fileTypeIndicator == 75 // "K"
+        self.isLongName =  fileTypeIndicator == 76 // "L"
         self.type = ContainerEntryType(from: fileTypeIndicator)
 
         // Linked file name

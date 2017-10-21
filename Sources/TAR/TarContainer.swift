@@ -37,34 +37,8 @@ public class TarContainer: Container {
         var longLinkName: String?
         var longName: String?
 
-        while true {
-            // Container ends with two zero-filled records.
-            if pointerData.data[pointerData.index..<pointerData.index + 1024] == Data(count: 1024) {
-                break
-            }
-            
-            // Check for GNU LongName or LongLinkName.
-            let fileTypeIndicator = pointerData.data[pointerData.index + 156]
-            if fileTypeIndicator == 75 /* "K" */ || fileTypeIndicator == 76 /* "L" */ {
-                // Jump to "size" field of header.
-                pointerData.index += 124
-                guard let size = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
-                    else { throw TarError.fieldIsNotNumber }
-                
-                // Jump to the start of data
-                pointerData.index += 376
-                let dataStartIndex = pointerData.index
-                let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
-                
-                if fileTypeIndicator == 75 /* "K" */ {
-                    longLinkName = longPath
-                } else {
-                    longName = longPath
-                }
-                pointerData.index = dataStartIndex + size.roundTo512()
-                continue
-            }
-
+        // Container ends with two zero-filled records.
+        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
 
@@ -80,6 +54,18 @@ public class TarContainer: Container {
                 lastGlobalExtendedHeader = try TarExtendedHeader(entry.data)
             } else if info.isLocalExtendedHeader {
                 lastLocalExtendedHeader = try TarExtendedHeader(entry.data)
+            } else if info.isLongLinkName {
+                let dataStartIndex = info.blockStartIndex + 512
+                pointerData.index = dataStartIndex
+
+                longLinkName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
+                pointerData.index = dataStartIndex + info.size!.roundTo512()
+            } else if info.isLongName {
+                let dataStartIndex = info.blockStartIndex + 512
+                pointerData.index = dataStartIndex
+
+                longName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
+                pointerData.index = dataStartIndex + info.size!.roundTo512()
             } else {
                 output.append(entry)
                 lastLocalExtendedHeader = nil
@@ -107,52 +93,35 @@ public class TarContainer: Container {
         var longName: String?
 
         // TODO: First, populate infos, then get data in second loop.
-        while true {
-            // Container ends with two zero-filled records.
-            if pointerData.data[pointerData.index..<pointerData.index + 1024] == Data(count: 1024) {
-                break
-            }
-            
-            // Check for GNU LongName or LongLinkName.
-            // TODO: Include into TarEntryInfo.
-            let fileTypeIndicator = pointerData.data[pointerData.index + 156]
-            if fileTypeIndicator == 75 /* "K" */ || fileTypeIndicator == 76 /* "L" */ {
-                // Jump to "size" field of header.
-                pointerData.index += 124
-                guard let size = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
-                    else { throw TarError.fieldIsNotNumber }
-                
-                // Jump to the start of data
-                pointerData.index += 376
-                let dataStartIndex = pointerData.index
-                let longPath = try pointerData.nullEndedAsciiString(cutoff: size)
-                
-                if fileTypeIndicator == 75 /* "K" */ {
-                    longLinkName = longPath
-                } else {
-                    longName = longPath
-                }
-                pointerData.index = dataStartIndex + size.roundTo512()
-                continue
-            }
-            
+        // Container ends with two zero-filled records.
+        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {            
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
             
             if info.isGlobalExtendedHeader {
                 let dataStartIndex = info.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + info.size!
-                let headerData = data[dataStartIndex..<dataEndIndex]
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
 
-                lastGlobalExtendedHeader = try TarExtendedHeader(headerData)
+                lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
+                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
             } else if info.isLocalExtendedHeader {
                 let dataStartIndex = info.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + info.size!
-                let headerData = data[dataStartIndex..<dataEndIndex]
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
 
-                lastLocalExtendedHeader = try TarExtendedHeader(headerData)
+                lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
+                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+            } else if info.isLongLinkName {
+                let dataStartIndex = info.blockStartIndex + 512
+                pointerData.index = dataStartIndex
+
+                longLinkName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
+                pointerData.index = dataStartIndex + info.size!.roundTo512()
+            } else if info.isLongName {
+                let dataStartIndex = info.blockStartIndex + 512
+                pointerData.index = dataStartIndex
+
+                longName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
+                pointerData.index = dataStartIndex + info.size!.roundTo512()
             } else {
                 // Skip file data.
                 pointerData.index = info.blockStartIndex + 512 + info.size!.roundTo512()
