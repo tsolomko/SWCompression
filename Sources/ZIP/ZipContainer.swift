@@ -25,45 +25,20 @@ public class ZipContainer: Container {
      - Returns: Array of `ZipEntry`.
      */
     public static func open(container data: Data) throws -> [ZipEntry] {
-        /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let infos = try info(container: data)
         var entries = [ZipEntry]()
 
-        pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
-        while true {
-            // Check signature.
-            if pointerData.uint32() == 0x06054b50 {
-                // We found it!
-                break
-            }
-            if pointerData.index == 0 {
-                throw ZipError.notFoundCentralDirectoryEnd
-            }
-            pointerData.index -= 5
-        }
-
-        let endOfCD = try ZipEndOfCentralDirectory(pointerData)
-        let cdEntries = endOfCD.cdEntries
-
-        // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(truncatingIfNeeded: endOfCD.cdOffset)
-
-        for _ in 0..<cdEntries {
-            let info = try ZipEntryInfo(pointerData)
-            try info.cdEntry.validate(endOfCD.currentDiskNumber)
-
-            let savedDataIndex = pointerData.index
-            let data = try ZipContainer.getEntryData(pointerData, info)
-            pointerData.index = savedDataIndex
-            entries.append(ZipEntry(info, data))
+        for infoEntry in infos {
+            let data = try ZipContainer.getEntryData(from: data, using: infoEntry)
+            entries.append(ZipEntry(infoEntry, data))
         }
 
         return entries
     }
 
-    // TODO: temporary
-    private static func getEntryData(_ pointerData: DataWithPointer, _ info: ZipEntryInfo) throws -> Data {
+    private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> Data {
         // Now, let's move to the location of local header.
+        let pointerData = DataWithPointer(data: data)
         pointerData.index = Int(truncatingIfNeeded: info.cdEntry.offset)
 
         let localHeader = try ZipLocalHeader(pointerData)
