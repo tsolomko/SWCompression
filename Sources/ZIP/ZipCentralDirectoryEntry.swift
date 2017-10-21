@@ -116,7 +116,7 @@ struct ZipCentralDirectoryEntry {
         self.fileComment = fileComment
     }
 
-    func validate(_ currentDiskNumber: UInt32? = nil) throws {
+    func validate(_ currentDiskNumber: UInt32) throws {
         // Let's check entry's values for consistency.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
