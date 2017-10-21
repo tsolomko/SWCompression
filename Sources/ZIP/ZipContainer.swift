@@ -46,7 +46,7 @@ public class ZipContainer: Container {
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(UInt(truncatingIfNeeded: endOfCD.cdOffset))
+        pointerData.index = Int(truncatingIfNeeded: endOfCD.cdOffset)
 
         for _ in 0..<cdEntries {
             let info = try ZipEntryInfo(pointerData)
@@ -64,7 +64,7 @@ public class ZipContainer: Container {
     // TODO: temporary
     private static func getEntryData(_ pointerData: DataWithPointer, _ info: ZipEntryInfo) throws -> Data {
         // Now, let's move to the location of local header.
-        pointerData.index = Int(info.cdEntry.offset)
+        pointerData.index = Int(truncatingIfNeeded: info.cdEntry.offset)
 
         let localHeader = try ZipLocalHeader(pointerData)
         // Check local header for consistency with Central Directory entry.
@@ -75,11 +75,11 @@ public class ZipContainer: Container {
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
         var uncompSize = hasDataDescriptor ?
-            Int(UInt32(truncatingIfNeeded: info.cdEntry.uncompSize)) :
-            Int(UInt32(truncatingIfNeeded: localHeader.uncompSize))
+            Int(truncatingIfNeeded: info.cdEntry.uncompSize) :
+            Int(truncatingIfNeeded: localHeader.uncompSize)
         var compSize = hasDataDescriptor ?
-            Int(UInt32(truncatingIfNeeded: info.cdEntry.compSize)) :
-            Int(UInt32(truncatingIfNeeded: localHeader.compSize))
+            Int(truncatingIfNeeded: info.cdEntry.compSize) :
+            Int(truncatingIfNeeded: localHeader.compSize)
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : localHeader.crc32
 
         let fileBytes: [UInt8]
@@ -130,13 +130,13 @@ public class ZipContainer: Container {
             // Now, let's update from CD with values from data descriptor.
             crc32 = pointerData.uint32()
             let sizeOfSizeField: UInt64 = localHeader.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(pointerData.uint64(count: sizeOfSizeField))
-            uncompSize = Int(pointerData.uint64(count: sizeOfSizeField))
+            compSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
+            uncompSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
         }
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
             else { throw ZipError.wrongSize }
-        guard crc32 == UInt32(CheckSums.crc32(fileBytes))
+        guard crc32 == CheckSums.crc32(fileBytes)
             else { throw ZipError.wrongCRC32(Data(bytes: fileBytes)) }
 
         return Data(bytes: fileBytes)
