@@ -28,31 +28,31 @@ class TarCommand: Command {
     let archive = Parameter()
 
     func execute() throws {
-        var fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
-                        options: .mappedIfSafe)
+        // var fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
+        //                 options: .mappedIfSafe)
 
-        if gz.value {
-            fileData = try GzipArchive.unarchive(archive: fileData)
-        } else if bz2.value {
-            fileData = try BZip2.decompress(data: fileData)
-        } else if xz.value {
-            fileData = try XZArchive.unarchive(archive: fileData)
-        }
+        // if gz.value {
+        //     fileData = try GzipArchive.unarchive(archive: fileData)
+        // } else if bz2.value {
+        //     fileData = try BZip2.decompress(data: fileData)
+        // } else if xz.value {
+        //     fileData = try XZArchive.unarchive(archive: fileData)
+        // }
 
-        if info.value {
-            let entries = try TarContainer.open(container: fileData)
-            swcomp.printInfo(entries)
-        } else {
-            let outputPath = self.extract.value ?? FileManager.default.currentDirectoryPath
+        // if info.value {
+        //     let entries = try TarContainer.open(container: fileData)
+        //     swcomp.printInfo(entries)
+        // } else {
+        //     let outputPath = self.extract.value ?? FileManager.default.currentDirectoryPath
 
-            if try !isValidOutputDirectory(outputPath, create: true) {
-                print("ERROR: Specified path already exists and is not a directory.")
-                exit(1)
-            }
+        //     if try !isValidOutputDirectory(outputPath, create: true) {
+        //         print("ERROR: Specified path already exists and is not a directory.")
+        //         exit(1)
+        //     }
 
-            let entries = try TarContainer.open(container: fileData)
-            try swcomp.write(entries, outputPath, verbose.value)
-        }
+        //     let entries = try TarContainer.open(container: fileData)
+        //     try swcomp.write(entries, outputPath, verbose.value)
+        // }
     }
 
 }
