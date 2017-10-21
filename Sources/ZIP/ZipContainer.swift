@@ -64,7 +64,7 @@ public class ZipContainer: Container {
     // TODO: temporary
     private static func getEntryData(_ pointerData: DataWithPointer, _ info: ZipEntryInfo) throws -> Data {
         // Now, let's move to the location of local header.
-        pointerData.index = Int(UInt32(truncatingIfNeeded: info.cdEntry.offset))
+        pointerData.index = Int(info.cdEntry.offset)
 
         let localHeader = try ZipLocalHeader(pointerData)
         // Check local header for consistency with Central Directory entry.
