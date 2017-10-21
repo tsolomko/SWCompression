@@ -5,7 +5,7 @@
 
 import Foundation
 
-public class TarEntryInfo: ContainerEntryInfo {
+public struct TarEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
 

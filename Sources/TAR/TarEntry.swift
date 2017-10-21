@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents an entry in 7-Zip container.
-public class TarEntry: ContainerEntry {
+public struct TarEntry: ContainerEntry {
 
     /// Various information about entry.
     public let info: TarEntryInfo

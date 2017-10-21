@@ -5,7 +5,7 @@
 
 import Foundation
 
-public class ZipEntryInfo: ContainerEntryInfo {
+public struct ZipEntryInfo: ContainerEntryInfo {
 
     let cdEntry: ZipCentralDirectoryEntry
 

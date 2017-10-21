@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents either a file or directory entry in ZIP container.
-public class ZipEntry: ContainerEntry {
+public struct ZipEntry: ContainerEntry {
 
     /// Various information about entry.
     public let info: ZipEntryInfo
