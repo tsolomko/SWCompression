@@ -24,7 +24,6 @@ public class TarContainer: Container {
      */
     public static func open(container data: Data) throws -> [TarEntry] {
         let infos = try info(container: data)
-
         var entries = [TarEntry]()
 
         for infoEntry in infos {

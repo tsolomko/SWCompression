@@ -197,7 +197,7 @@ public class SevenZipContainer {
      - Returns: Array of `SevenZipEntryInfo`.
      */
     public static func info(container data: Data) throws -> [SevenZipEntryInfo] {
-        var entryInfos = [SevenZipEntryInfo]()
+        var entries = [SevenZipEntryInfo]()
         guard let header = try readHeader(data)
             else { return [] }
 
@@ -207,17 +207,17 @@ public class SevenZipContainer {
         var nonEmptyFileIndex = 0
         for file in files {
             if !file.isEmptyStream, let substreamInfo = header.mainStreams?.substreamInfo {
-                entryInfos.append(SevenZipEntryInfo(file,
+                entries.append(SevenZipEntryInfo(file,
                                                     substreamInfo.unpackSizes[nonEmptyFileIndex],
                                                     substreamInfo.digests[nonEmptyFileIndex]))
                 nonEmptyFileIndex += 1
             } else {
                 let info = file.isEmptyFile ? SevenZipEntryInfo(file, 0) : SevenZipEntryInfo(file)
-                entryInfos.append(info)
+                entries.append(info)
             }
         }
 
-        return entryInfos
+        return entries
     }
 
     private static func readHeader(_ data: Data) throws -> SevenZipHeader? {

@@ -29,8 +29,8 @@ public class ZipContainer: Container {
         var entries = [ZipEntry]()
 
         for infoEntry in infos {
-            let data = try ZipContainer.getEntryData(from: data, using: infoEntry)
-            entries.append(ZipEntry(infoEntry, data))
+            let entryData = try ZipContainer.getEntryData(from: data, using: infoEntry)
+            entries.append(ZipEntry(infoEntry, entryData))
         }
 
         return entries
