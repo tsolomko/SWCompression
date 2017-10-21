@@ -142,8 +142,37 @@ public class ZipContainer: Container {
         return Data(bytes: fileBytes)
     }
 
-    public static func info(container: Data) throws -> [ZipEntryInfo] {
-        return []
+    public static func info(container data: Data) throws -> [ZipEntryInfo] {
+        /// Object with input data which supports convenient work with bit shifts.
+        let pointerData = DataWithPointer(data: data)
+        var entries = [ZipEntryInfo]()
+
+        pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
+        while true {
+            // Check signature.
+            if pointerData.uint32() == 0x06054b50 {
+                // We found it!
+                break
+            }
+            if pointerData.index == 0 {
+                throw ZipError.notFoundCentralDirectoryEnd
+            }
+            pointerData.index -= 5
+        }
+
+        let endOfCD = try ZipEndOfCentralDirectory(pointerData)
+        let cdEntries = endOfCD.cdEntries
+
+        // OK, now we are ready to read Central Directory itself.
+        pointerData.index = Int(truncatingIfNeeded: endOfCD.cdOffset)
+
+        for _ in 0..<cdEntries {
+            let info = try ZipEntryInfo(pointerData)
+            try info.cdEntry.validate(endOfCD.currentDiskNumber)
+            entries.append(info)
+        }
+
+        return entries
     }
 
 }
