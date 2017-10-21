@@ -17,14 +17,11 @@ class ZipTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try ZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.count, 211)
-
+    
         #if LONG_TESTS
-            for entry in entries {
-                _ = try entry.data()
-            }
+            _ = try ZipContainer.open(container: testData)
+        #else
+            _ = try ZipContainer.info(container: testData)
         #endif
     }
 
