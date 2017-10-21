@@ -22,8 +22,6 @@ public class TarEntryInfo: ContainerEntryInfo {
 
     public let permissions: Permissions
 
-    public let unixType: UnixType?
-
     /// The most recent access time of the original file or directory (PAX only).
     public let accessTime: Date?
     
@@ -79,8 +77,7 @@ public class TarEntryInfo: ContainerEntryInfo {
         // Sometimes file mode also contains unix type, so we need to filter it out.
         let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
-        unixType = UnixType(rawValue: posixAttributes & 0xF000)
-
+        
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.fieldIsNotNumber }

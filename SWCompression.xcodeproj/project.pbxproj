@@ -66,10 +66,6 @@
 		0620F49A1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
 		0620F49B1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
 		0620F49C1F8E21F8001C9B7A /* DosAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4981F8E21F8001C9B7A /* DosAttributes.swift */; };
-		0620F49E1F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
-		0620F49F1F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
-		0620F4A01F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
-		0620F4A11F8E2230001C9B7A /* UnixType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F49D1F8E2230001C9B7A /* UnixType.swift */; };
 		0620F4A81F8E2450001C9B7A /* ContainerEntryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */; };
 		0620F4A91F8E2450001C9B7A /* ContainerEntryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */; };
 		0620F4AA1F8E2450001C9B7A /* ContainerEntryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */; };
@@ -457,7 +453,6 @@
 		061FCE2C1DBCC6A30052F7BE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0620F4931F8E21BC001C9B7A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		0620F4981F8E21F8001C9B7A /* DosAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DosAttributes.swift; sourceTree = "<group>"; };
-		0620F49D1F8E2230001C9B7A /* UnixType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnixType.swift; sourceTree = "<group>"; };
 		0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerEntryType.swift; sourceTree = "<group>"; };
 		0620F4AD1F8E246E001C9B7A /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		0620F4B21F8E2477001C9B7A /* ContainerEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerEntry.swift; sourceTree = "<group>"; };
@@ -674,7 +669,6 @@
 				0620F4B71F8E248C001C9B7A /* ContainerEntryInfo.swift */,
 				0620F4931F8E21BC001C9B7A /* Permissions.swift */,
 				0620F4981F8E21F8001C9B7A /* DosAttributes.swift */,
-				0620F49D1F8E2230001C9B7A /* UnixType.swift */,
 				0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */,
 			);
 			path = Container;
@@ -1387,7 +1381,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06531F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
-				0620F49F1F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB81F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F311E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				0620F4C41F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */,
@@ -1473,7 +1466,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06541F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
-				0620F4A01F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB91F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F321E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				0620F4C51F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */,
@@ -1559,7 +1551,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06551F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
-				0620F4A11F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCBA1F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F331E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				0620F4C61F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */,
@@ -1645,7 +1636,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
-				0620F49E1F8E2230001C9B7A /* UnixType.swift in Sources */,
 				06CDFCB71F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				0620F4C31F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */,

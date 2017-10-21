@@ -38,9 +38,6 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
     /// Entry's DOS attributes.
     public let dosAttributes: DosAttributes?
 
-    /// Entry's UNIX file type.
-    public let unixType: UnixType?
-
     /// True, if entry has a stream (data) inside container. 7-Zip internal propety.
     public let hasStream: Bool
 
@@ -72,17 +69,16 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
         if let attributes = self.winAttributes {
             self.permissions = Permissions(rawValue: (0x0FFF0000 & attributes) >> 16)
-            self.unixType = UnixType(rawValue: (0xF0000000 & attributes) >> 16)
             self.dosAttributes = DosAttributes(rawValue: 0xFF & attributes)
         } else {
             self.permissions = nil
-            self.unixType = nil
             self.dosAttributes = nil
         }
 
         // Set entry type.
-        if let unixType = self.unixType {
-            self.type = ContainerEntryType(from: unixType)
+        if let attributes = self.winAttributes,
+            let unixType = ContainerEntryType(from: (0xF0000000 & attributes) >> 16) {
+            self.type = unixType
         } else if let dosAttributes = self.dosAttributes {
             if dosAttributes.contains(.directory) {
                 self.type = .directory

@@ -28,22 +28,25 @@ public enum ContainerEntryType {
     /// Entry type is unknown.
     case unknown
 
-    init(from unixType: UnixType) {
+    init?(from unixType: UInt32) {
         switch unixType {
-        case .fifo:
+        case 0o010000:
             self = .fifo
-        case .characterSpecial:
+        case 0o020000:
             self = .characterSpecial
-        case .directory:
+        case 0o040000:
             self = .directory
-        case .blockSpecial:
+        case 0o060000:
             self = .blockSpecial
-        case .regular:
+        case 0o100000:
             self = .regular
-        case .symbolicLink:
+        case 0o120000:
             self = .symbolicLink
-        case .socket:
+        case 0o140000:
             self = .socket
+        default:
+            return nil
         }
     }
+
 }

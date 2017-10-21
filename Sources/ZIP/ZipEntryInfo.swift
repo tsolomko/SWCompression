@@ -21,19 +21,18 @@ public class ZipEntryInfo: ContainerEntryInfo {
 
     // MARK: ZIP specific
 
+    // TODO: Describe preference of various fields when setting this property.
     public let modificationTime: Date?
 
     public let creationTime: Date?
 
     public let comment: String
 
-    public let winAttributes: UInt32
+    public let externalFileAttributes: UInt32
 
     public let permissions: Permissions?
 
     public let dosAttributes: DosAttributes?
-
-    public let unixType: UnixType?
 
     /// True if entry is likely to be text or ASCII file.
     public let isTextFile: Bool
@@ -80,14 +79,13 @@ public class ZipEntryInfo: ContainerEntryInfo {
         self.size = Int(cdEntry.uncompSize)
 
         // External file attributes.
-        self.winAttributes = cdEntry.externalFileAttributes
+        self.externalFileAttributes = cdEntry.externalFileAttributes
         self.permissions = Permissions(rawValue: (0x0FFF0000 & cdEntry.externalFileAttributes) >> 16)
-        self.unixType = UnixType(rawValue: (0xF0000000 & cdEntry.externalFileAttributes) >> 16)
         self.dosAttributes = DosAttributes(rawValue: 0xFF & cdEntry.externalFileAttributes)
 
         // Set entry type.
-        if let unixType = self.unixType {
-            self.type = ContainerEntryType(from: unixType)
+        if let unixType = ContainerEntryType(from: (0xF0000000 & cdEntry.externalFileAttributes) >> 16) {
+            self.type = unixType
         } else if let dosAttributes = self.dosAttributes {
             if dosAttributes.contains(.directory) {
                 self.type = .directory
