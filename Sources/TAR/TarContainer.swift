@@ -20,61 +20,21 @@ public class TarContainer: Container {
 
      - Throws: `TarError`, which may indicate that either container is damaged or it might not be TAR container at all.
 
-     - Returns: Array of `TarEntry` as an array of `ContainerEntry`.
+     - Returns: Array of `TarEntry`.
      */
     public static func open(container data: Data) throws -> [TarEntry] {
-        // First, if the TAR container contains only header, it should be at least 512 bytes long.
-        // So we have to check this.
-        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
+        let infos = try info(container: data)
 
-        /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        var entries = [TarEntry]()
 
-        var output = [TarEntry]()
-
-        var lastGlobalExtendedHeader: TarExtendedHeader?
-        var lastLocalExtendedHeader: TarExtendedHeader?
-        var longLinkName: String?
-        var longName: String?
-
-        // Container ends with two zero-filled records.
-        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {
-            let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
-                                        longName, longLinkName)
-
-            // File data
-            let dataStartIndex = info.blockStartIndex + 512
-            let dataEndIndex = dataStartIndex + info.size!
+        for infoEntry in infos {
+            let dataStartIndex = infoEntry.blockStartIndex + 512
+            let dataEndIndex = dataStartIndex + infoEntry.size!
             let entryData = data[dataStartIndex..<dataEndIndex]
-            pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
-
-            let entry = TarEntry(info, entryData)
-
-            if info.isGlobalExtendedHeader {
-                lastGlobalExtendedHeader = try TarExtendedHeader(entry.data)
-            } else if info.isLocalExtendedHeader {
-                lastLocalExtendedHeader = try TarExtendedHeader(entry.data)
-            } else if info.isLongLinkName {
-                let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
-
-                longLinkName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
-            } else if info.isLongName {
-                let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
-
-                longName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
-            } else {
-                output.append(entry)
-                lastLocalExtendedHeader = nil
-                longName = nil
-                longLinkName = nil
-            }
+            entries.append(TarEntry(infoEntry, entryData))
         }
 
-        return output
+        return entries
     }
 
     public static func info(container data: Data) throws -> [TarEntryInfo] {
@@ -85,14 +45,13 @@ public class TarContainer: Container {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
         
-        var output = [TarEntryInfo]()
+        var entries = [TarEntryInfo]()
         
         var lastGlobalExtendedHeader: TarExtendedHeader?
         var lastLocalExtendedHeader: TarExtendedHeader?
         var longLinkName: String?
         var longName: String?
 
-        // TODO: First, populate infos, then get data in second loop.
         // Container ends with two zero-filled records.
         while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {            
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
@@ -125,14 +84,14 @@ public class TarContainer: Container {
             } else {
                 // Skip file data.
                 pointerData.index = info.blockStartIndex + 512 + info.size!.roundTo512()
-                output.append(info)
+                entries.append(info)
                 lastLocalExtendedHeader = nil
                 longName = nil
                 longLinkName = nil
             }
         }
         
-        return output
+        return entries
     }
 
 }
