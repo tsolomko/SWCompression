@@ -9,7 +9,7 @@ import Foundation
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP container and returns an array of `ContainerEntry` (which are actually `ZipEntry`).
+     Processes ZIP container and returns an array of `ZipEntry`.
 
      - Important: The order of entries is defined by ZIP container and,
      particularly, by the creator of a given ZIP container.
@@ -22,7 +22,7 @@ public class ZipContainer: Container {
      depending on the type of the problem.
      It may indicate that either container is damaged or it might not be ZIP container at all.
 
-     - Returns: Array of `ZipEntry` as an array of `ContainerEntry`.
+     - Returns: Array of `ZipEntry`.
      */
     public static func open(container data: Data) throws -> [ZipEntry] {
         /// Object with input data which supports convenient work with bit shifts.
