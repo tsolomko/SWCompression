@@ -8,7 +8,7 @@ import SWCompression
 import SwiftCLI
 
 struct GlobalOptions: GlobalOptionsSource {
-    static let verbose = Flag("--verbose", usage: "Print the list of extracted files and directories.")
+    static let verbose = Flag("--verbose", description: "Print the list of extracted files and directories.")
     static var options: [Option] {
         return [verbose]
     }

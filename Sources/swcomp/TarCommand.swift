@@ -12,12 +12,12 @@ class TarCommand: Command {
     let name = "tar"
     let shortDescription = "Extracts TAR container"
 
-    let gz = Flag("-z", "--gz", usage: "Decompress with GZip first")
-    let bz2 = Flag("-j", "--bz2", usage: "Decompress with BZip2 first")
-    let xz = Flag("-x", "--xz", usage: "Decompress with XZ first")
+    let gz = Flag("-z", "--gz", description: "Decompress with GZip first")
+    let bz2 = Flag("-j", "--bz2", description: "Decompress with BZip2 first")
+    let xz = Flag("-x", "--xz", description: "Decompress with XZ first")
 
-    let info = Flag("-i", "--info", usage: "Print list of entries in container and their attributes")
-    let extract = Key<String>("-e", "--extract", usage: "Extract container into specified directory (it must be empty or not exist)")
+    let info = Flag("-i", "--info", description: "Print list of entries in container and their attributes")
+    let extract = Key<String>("-e", "--extract", description: "Extract container into specified directory (it must be empty or not exist)")
 
     var optionGroups: [OptionGroup] {
         let compressions = OptionGroup(options: [gz, bz2, xz], restriction: .atMostOne)
