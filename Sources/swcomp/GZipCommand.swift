@@ -15,6 +15,9 @@ class GZipCommand: Command {
     let compress = Flag("-c", "--compress", description: "Compress input file into GZip archive")
     let decompress = Flag("-d", "--decompress", description: "Decompress GZip archive")
 
+    let useGZipName = Flag("-n", "--use-gzip-name",
+                           description: "Use name saved inside GZip archive as output path, if possible")
+
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
         return [actions]
@@ -27,12 +30,24 @@ class GZipCommand: Command {
         if decompress.value {
             let inputURL = URL(fileURLWithPath: self.input.value)
 
-            let outputURL: URL
+            var outputURL: URL?
             if let outputPath = output.value {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else if inputURL.pathExtension == "gz" {
                 outputURL = inputURL.deletingPathExtension()
-            } else {
+            }
+
+            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+
+            if useGZipName.value {
+                let header = try GzipHeader(archive: fileData)
+                if let fileName = header.fileName {
+                    outputURL = inputURL.deletingLastPathComponent()
+                                    .appendingPathComponent(fileName, isDirectory: false)
+                }
+            }
+
+            guard outputURL != nil else {
                 print("""
                       ERROR: Unable to get output path. \
                       No output parameter was specified. \
@@ -41,9 +56,8 @@ class GZipCommand: Command {
                 exit(1)
             }
 
-            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             let decompressedData = try GzipArchive.unarchive(archive: fileData)
-            try decompressedData.write(to: outputURL)
+            try decompressedData.write(to: outputURL!)
         } else if compress.value {
             let inputURL = URL(fileURLWithPath: self.input.value)
             let fileName = inputURL.lastPathComponent
