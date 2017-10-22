@@ -17,7 +17,6 @@ cli.commands = [XZCommand(),
                 BZip2Command(),
                 CompressBZip2Command(),
                 GZipCommand(),
-                CompressGZipCommand(),
                 ZipCommand(),
                 TarCommand(),
                 SevenZipCommand()]
