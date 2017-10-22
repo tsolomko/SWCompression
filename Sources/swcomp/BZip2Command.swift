@@ -33,11 +33,12 @@ class BZip2Command: Command {
             } else if inputURL.pathExtension == "bz2" {
                 outputURL = inputURL.deletingPathExtension()
             } else {
-                fatalError("""
-                           Unable to get output path.
-                           No output parameter was specified.
-                           Extension was: \(inputURL.pathExtension)
-                           """)
+                print("""
+                      ERROR: Unable to get output path. \
+                      No output parameter was specified. \
+                      Extension was: \(inputURL.pathExtension)
+                      """)
+                exit(1)
             }
 
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
@@ -57,7 +58,8 @@ class BZip2Command: Command {
             let compressedData = BZip2.compress(data: fileData)
             try compressedData.write(to: outputURL)
         } else {
-            fatalError("Neither compress nor decompress option in BZip2Command.")
+            print("ERROR: Neither compress nor decompress option in BZip2Command.")
+            exit(1)
         }
     }
 

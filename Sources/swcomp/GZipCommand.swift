@@ -33,11 +33,12 @@ class GZipCommand: Command {
             } else if inputURL.pathExtension == "gz" {
                 outputURL = inputURL.deletingPathExtension()
             } else {
-                fatalError("""
-                           Unable to get output path.
-                           No output parameter was specified.
-                           Extension was: \(inputURL.pathExtension)
-                           """)
+                print("""
+                      ERROR: Unable to get output path. \
+                      No output parameter was specified. \
+                      Extension was: \(inputURL.pathExtension)
+                      """)
+                exit(1)
             }
 
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
@@ -60,7 +61,8 @@ class GZipCommand: Command {
                                                         writeHeaderCRC: true)
             try compressedData.write(to: outputURL)
         } else {
-            fatalError("Neither compress nor decompress option in GZipCommand.")
+            print("ERROR: Neither compress nor decompress option in GZipCommand.")
+            exit(1)
         }
     }
 
