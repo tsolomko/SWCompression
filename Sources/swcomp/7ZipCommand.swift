@@ -15,6 +15,8 @@ class SevenZipCommand: Command {
     let info = Flag("-i", "--info", description: "Print list of entries in container and their attributes")
     let extract = Key<String>("-e", "--extract", description: "Extract container into specified directory (it must be empty or not exist)")
 
+    let verbose = Flag("--verbose", description: "Print the list of extracted files and directories.")
+
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [info, extract], restriction: .exactlyOne)
         return [actions]
