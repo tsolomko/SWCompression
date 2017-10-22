@@ -28,7 +28,6 @@ class GZipCommand: Command {
             let inputURL = URL(fileURLWithPath: self.input.value)
 
             let outputURL: URL
-            print(inputURL.pathExtension) // TODO:
             if let outputPath = output.value {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else if inputURL.pathExtension == "gz" {
