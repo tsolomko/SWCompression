@@ -13,7 +13,12 @@ public protocol ContainerEntryInfo {
 
     var size: Int? { get }
 
-    // TODO: a/c/m times.
+    var accessTime: Date? { get }
+
+    var creationTime: Date? { get }
+
+    var modificationTime: Date? { get }
+    
     // TODO: uncompressed and compressed sizes?
 
 }

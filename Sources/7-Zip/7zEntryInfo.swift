@@ -18,8 +18,6 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
     public let type: ContainerEntryType
 
-    // MARK: 7-Zip specific
-
     /// Entry's last access time and date.
     public let accessTime: Date?
 
@@ -28,6 +26,8 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
     /// Entry's last modification time and date.
     public let modificationTime: Date?
+
+    // MARK: 7-Zip specific
 
     /// 7-Zip internal property which may contain UNIX permissions, type and/or DOS attributes.
     public let winAttributes: UInt32?

@@ -19,12 +19,14 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
     public let type: ContainerEntryType
 
-    // MARK: ZIP specific
-
-    // TODO: Describe preference of various fields when setting this property.
-    public let modificationTime: Date?
+    // TODO: Describe preference of various fields when setting time properties.
+    public let accessTime: Date?
 
     public let creationTime: Date?
+
+    public let modificationTime: Date?
+
+    // MARK: ZIP specific
 
     public let comment: String
 
@@ -72,8 +74,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
                                                    hour: hours, minute: minutes, second: seconds).date
         }
 
-        // NTFS Creation Time from extra fields.
+        // NTFS Access and Creation times from extra fields.
         self.creationTime = Date(from: cdEntry.ntfsCtime)
+        self.accessTime = Date(from: cdEntry.ntfsAtime)
 
         // Size
         self.size = Int(cdEntry.uncompSize)

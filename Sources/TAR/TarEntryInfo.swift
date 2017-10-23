@@ -18,18 +18,18 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     public let type: ContainerEntryType
 
+    /// The most recent access time of the original file or directory (PAX only).
+    public let accessTime: Date?
+
+    /// The creation time of the original file or directory (PAX only).
+    public let creationTime: Date?
+
+    /// The most recent modification time of the original file or directory.
+    public let modificationTime: Date?
+
     // MARK: TAR specific
 
     public let permissions: Permissions
-
-    /// The most recent access time of the original file or directory (PAX only).
-    public let accessTime: Date?
-    
-    /// The most recent modification time of the original file or directory.
-    public let modificationTime: Date
-    
-    /// The creation time of the original file or directory (PAX only).
-    public let creationTime: Date?
     
     /// Owner's ID.
     public let ownerID: Int?
