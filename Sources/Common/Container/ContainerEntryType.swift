@@ -6,25 +6,24 @@
 import Foundation
 
 public enum ContainerEntryType {
-    // TODO: Sort alphabetically.
-    /// FIFO special file.
-    case fifo
-    /// Character special file.
-    case characterSpecial
-    /// Directory.
-    case directory
     /// Block special file.
     case blockSpecial
-    /// Regular file.
-    case regular
-    /// Symbolic link.
-    case symbolicLink
-    /// Socket.
-    case socket
-    /// Hard link.
-    case hardLink
+    /// Character special file.
+    case characterSpecial
     /// Contiguous file.
     case contiguous
+    /// Directory.
+    case directory
+    /// FIFO special file.
+    case fifo
+    /// Hard link.
+    case hardLink
+    /// Regular file.
+    case regular
+    /// Socket.
+    case socket
+    /// Symbolic link.
+    case symbolicLink
     /// Entry type is unknown.
     case unknown
 
