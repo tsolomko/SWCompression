@@ -27,9 +27,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// The most recent modification time of the original file or directory.
     public let modificationTime: Date?
 
-    // MARK: TAR specific
+    public let permissions: Permissions?
 
-    public let permissions: Permissions
+    // MARK: TAR specific
     
     /// Owner's ID.
     public let ownerID: Int?

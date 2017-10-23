@@ -18,7 +18,7 @@ public protocol ContainerEntryInfo {
     var creationTime: Date? { get }
 
     var modificationTime: Date? { get }
-    
-    // TODO: uncompressed and compressed sizes?
+
+    var permissions: Permissions? { get }
 
 }

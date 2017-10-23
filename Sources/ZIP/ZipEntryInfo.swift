@@ -26,13 +26,13 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
     public let modificationTime: Date?
 
+    public let permissions: Permissions?
+
     // MARK: ZIP specific
 
     public let comment: String
 
     public let externalFileAttributes: UInt32
-
-    public let permissions: Permissions?
 
     public let dosAttributes: DosAttributes?
 
