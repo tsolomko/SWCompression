@@ -106,7 +106,19 @@ struct ZipLocalHeader {
         self.dataOffset = pointerData.index
     }
 
-    func validate(with cdEntry: ZipCentralDirectoryEntry) throws {
+    func validate(with cdEntry: ZipCentralDirectoryEntry, _ currentDiskNumber: UInt32) throws {
+        // Let's check entry's values for consistency.
+        guard cdEntry.versionNeeded & 0xFF <= 63
+            else { throw ZipError.wrongVersion }
+        guard cdEntry.diskNumberStart == currentDiskNumber
+            else { throw ZipError.multiVolumesNotSupported }
+        guard cdEntry.generalPurposeBitFlags & 0x2000 == 0 &&
+            cdEntry.generalPurposeBitFlags & 0x40 == 0 &&
+            cdEntry.generalPurposeBitFlags & 0x01 == 0
+            else { throw ZipError.encryptionNotSupported }
+        guard cdEntry.generalPurposeBitFlags & 0x20 == 0
+            else { throw ZipError.patchingNotSupported }
+
         // Let's check headers's values for consistency.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }

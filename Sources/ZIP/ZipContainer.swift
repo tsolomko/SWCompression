@@ -142,8 +142,7 @@ public class ZipContainer: Container {
         }
 
         for _ in 0..<cdEntries {
-            let info = try ZipEntryInfo(data, entryIndex)
-            try info.cdEntry.validate(endOfCD.currentDiskNumber)
+            let info = try ZipEntryInfo(data, entryIndex, endOfCD.currentDiskNumber)
             entries.append(info)
             entryIndex = info.cdEntry.nextEntryIndex
         }
