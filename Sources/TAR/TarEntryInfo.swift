@@ -147,7 +147,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
         self.isLongLinkName = fileTypeIndicator == 75 // "K"
         self.isLongName =  fileTypeIndicator == 76 // "L"
-        self.type = ContainerEntryType(from: fileTypeIndicator)
+        self.type = ContainerEntryType(fileTypeIndicator)
 
         // Linked file name
         linkName = try pointerData.nullEndedAsciiString(cutoff: 100)

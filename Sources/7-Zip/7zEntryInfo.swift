@@ -61,9 +61,9 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
         self.name = file.name
 
-        self.accessTime = Date(from: file.aTime)
-        self.creationTime = Date(from: file.cTime)
-        self.modificationTime = Date(from: file.mTime)
+        self.accessTime = Date(file.aTime)
+        self.creationTime = Date(file.cTime)
+        self.modificationTime = Date(file.mTime)
 
         self.winAttributes = file.winAttributes
 
@@ -77,7 +77,7 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
         // Set entry type.
         if let attributes = self.winAttributes,
-            let unixType = ContainerEntryType(from: (0xF0000000 & attributes) >> 16) {
+            let unixType = ContainerEntryType((0xF0000000 & attributes) >> 16) {
             self.type = unixType
         } else if let dosAttributes = self.dosAttributes {
             if dosAttributes.contains(.directory) {

@@ -70,7 +70,7 @@ extension Int {
 
 extension Date {
 
-    init?(from ntfsTime: UInt64?) {
+    init?(_ ntfsTime: UInt64?) {
         if let time = ntfsTime,
             let ntfsStartDate = DateComponents(calendar: Calendar(identifier: .iso8601),
                                                timeZone: TimeZone(abbreviation: "UTC"),

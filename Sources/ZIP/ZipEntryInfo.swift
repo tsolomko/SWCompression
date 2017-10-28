@@ -59,7 +59,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let mtimestamp = cdEntry.modificationTimestamp {
             // Extended Timestamp extra field.
             self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
-        } else if let mtime = Date(from: cdEntry.ntfsMtime) {
+        } else if let mtime = Date(cdEntry.ntfsMtime) {
             // NTFS extra field.
             self.modificationTime = mtime
         } else {
@@ -86,7 +86,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let ctimestamp = localHeader.creationTimestamp {
             // Extended Timestamp extra field.
             self.creationTime = Date(timeIntervalSince1970: TimeInterval(ctimestamp))
-        } else if let ctime = Date(from: cdEntry.ntfsCtime) {
+        } else if let ctime = Date(cdEntry.ntfsCtime) {
             // NTFS extra field.
             self.creationTime = ctime
         } else {
@@ -97,7 +97,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let atimestamp = localHeader.accessTimestamp {
             // Extended Timestamp extra field.
             self.accessTime = Date(timeIntervalSince1970: TimeInterval(atimestamp))
-        } else if let atime = Date(from: cdEntry.ntfsAtime) {
+        } else if let atime = Date(cdEntry.ntfsAtime) {
             // NTFS extra field.
             self.accessTime = atime
         } else {
@@ -113,7 +113,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.dosAttributes = DosAttributes(rawValue: 0xFF & cdEntry.externalFileAttributes)
 
         // Set entry type.
-        if let unixType = ContainerEntryType(from: (0xF0000000 & cdEntry.externalFileAttributes) >> 16) {
+        if let unixType = ContainerEntryType((0xF0000000 & cdEntry.externalFileAttributes) >> 16) {
             self.type = unixType
         } else if let dosAttributes = self.dosAttributes {
             if dosAttributes.contains(.directory) {

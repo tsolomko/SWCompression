@@ -27,7 +27,7 @@ public enum ContainerEntryType {
     /// Entry type is unknown.
     case unknown
 
-    init?(from unixType: UInt32) {
+    init?(_ unixType: UInt32) {
         switch unixType {
         case 0o010000:
             self = .fifo
