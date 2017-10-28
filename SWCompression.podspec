@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "3.4.0"
+  s.version      = "4.0.0-dev"
   s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
 
   s.description  = <<-DESC
