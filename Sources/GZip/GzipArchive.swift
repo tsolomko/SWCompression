@@ -113,7 +113,7 @@ public class GzipArchive: Archive {
      */
     public static func archive(data: Data, comment: String? = nil, fileName: String? = nil,
                                writeHeaderCRC: Bool = false, isTextFile: Bool = false,
-                               osType: GzipHeader.FileSystemType? = nil, modificationTime: Date? = nil) throws -> Data {
+                               osType: FileSystemType? = nil, modificationTime: Date? = nil) throws -> Data {
         var flags: UInt8 = 0
 
         var commentData = Data()
@@ -150,10 +150,7 @@ public class GzipArchive: Archive {
             flags |= 1 << 0
         }
 
-        var os: UInt8 = 255
-        if let osType = osType {
-            os = (osType == .other ? 255 : osType.rawValue).toUInt8()
-        }
+        let os = osType?.osTypeByte ?? 255
 
         var mtimeBytes: [UInt8] = [0, 0, 0, 0]
         if let modificationTime = modificationTime {

@@ -22,24 +22,6 @@ public struct GzipHeader {
         case deflate = 8
     }
 
-    /// Type of file system on which GZip archive was created.
-    public enum FileSystemType: Int {
-        /**
-         One of many UNIX-like systems.
-
-         - Note: It seems like modern macOS systems also fall into this category.
-         */
-        case unix = 3
-        /// Older Macintosh systems.
-        case macintosh = 7
-        /// File system used in Microsoft(TM)(R)(C) Windows(TM)(R)(C).
-        case ntfs = 11
-        /// File system was unknown to the archiver.
-        case unknown = 255
-        /// File system is one of the rare systems.
-        case other = 256
-    }
-
     /// Compression method of archive. Currently, always equals to `.deflate`.
     public let compressionMethod: CompressionMethod
 
@@ -50,8 +32,9 @@ public struct GzipHeader {
      */
     public let modificationTime: Date?
 
+    // TODO: Explain why can be nil?
     /// Type of file system on which archivation took place.
-    public let osType: FileSystemType
+    public let osType: FileSystemType?
 
     /// Name of the original file. If archive doesn't contain file's name, then `nil`.
     public let fileName: String?
@@ -105,8 +88,9 @@ public struct GzipHeader {
         let extraFlags = pointerData.byte()
         headerBytes.append(extraFlags)
 
-        self.osType = FileSystemType(rawValue: pointerData.byte().toInt()) ?? .other
-        headerBytes.append(self.osType.rawValue.toUInt8())
+        let rawOsType = pointerData.byte()
+        self.osType = FileSystemType(rawOsType)
+        headerBytes.append(rawOsType)
 
         self.isTextFile = flags & Flags.ftext != 0
 
