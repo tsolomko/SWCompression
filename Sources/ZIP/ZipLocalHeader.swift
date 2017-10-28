@@ -107,19 +107,7 @@ struct ZipLocalHeader {
     }
 
     func validate(with cdEntry: ZipCentralDirectoryEntry, _ currentDiskNumber: UInt32) throws {
-        // Let's check entry's values for consistency.
-        guard cdEntry.versionNeeded & 0xFF <= 63
-            else { throw ZipError.wrongVersion }
-        guard cdEntry.diskNumberStart == currentDiskNumber
-            else { throw ZipError.multiVolumesNotSupported }
-        guard cdEntry.generalPurposeBitFlags & 0x2000 == 0 &&
-            cdEntry.generalPurposeBitFlags & 0x40 == 0 &&
-            cdEntry.generalPurposeBitFlags & 0x01 == 0
-            else { throw ZipError.encryptionNotSupported }
-        guard cdEntry.generalPurposeBitFlags & 0x20 == 0
-            else { throw ZipError.patchingNotSupported }
-
-        // Let's check headers's values for consistency.
+        // Check Local Header for unsupported features.
         guard self.versionNeeded & 0xFF <= 63
             else { throw ZipError.wrongVersion }
         guard self.generalPurposeBitFlags & 0x2000 == 0 &&
@@ -129,6 +117,13 @@ struct ZipLocalHeader {
         guard self.generalPurposeBitFlags & 0x20 == 0
             else { throw ZipError.patchingNotSupported }
 
+        // Check Central Directory record for unsupported features.
+        guard cdEntry.versionNeeded & 0xFF <= 63
+            else { throw ZipError.wrongVersion }
+        guard cdEntry.diskNumberStart == currentDiskNumber
+            else { throw ZipError.multiVolumesNotSupported }
+
+        // Check if Local Header is consistent with Central Directory record.
         guard self.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
             self.compressionMethod == cdEntry.compressionMethod &&
             self.lastModFileTime == cdEntry.lastModFileTime &&
