@@ -25,12 +25,12 @@ class ZipCommand: Command {
     let archive = Parameter()
 
     func execute() throws {
-        // let fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
-        //                         options: .mappedIfSafe)
-        // if info.value {
-        //     let entries = try ZipContainer.open(container: fileData)
-        //     swcomp.printInfo(entries)
-        // } else {
+        let fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
+                                options: .mappedIfSafe)
+        if info.value {
+            let entries = try ZipContainer.info(container: fileData)
+            swcomp.printInfo(entries)
+        } else {
         //     let outputPath = self.extract.value ?? FileManager.default.currentDirectoryPath
 
         //     if try !isValidOutputDirectory(outputPath, create: true) {
@@ -40,7 +40,7 @@ class ZipCommand: Command {
 
         //     let entries = try ZipContainer.open(container: fileData)
         //     try swcomp.write(entries, outputPath, verbose.value)
-        // }
+        }
     }
 
 }
