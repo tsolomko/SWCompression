@@ -57,10 +57,10 @@ public class ZipContainer: Container {
         let fileBytes: [UInt8]
         let pointerData = DataWithPointer(data: data)
         pointerData.index = info.localHeader.dataOffset
-        switch info.localHeader.compressionMethod {
-        case 0:
+        switch info.compressionMethod {
+        case .copy:
             fileBytes = pointerData.bytes(count: uncompSize)
-        case 8:
+        case .deflate:
             let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
             bitReader.index = pointerData.index
             fileBytes = try Deflate.decompress(bitReader)
@@ -68,7 +68,7 @@ public class ZipContainer: Container {
             // Following line ensures that this is not the case.
             bitReader.align()
             pointerData.index = bitReader.index
-        case 12:
+        case .bzip2:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
@@ -79,7 +79,7 @@ public class ZipContainer: Container {
             #else
                 throw ZipError.compressionNotSupported
             #endif
-        case 14:
+        case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
                 let lzmaDecoder = try LZMADecoder(pointerData)

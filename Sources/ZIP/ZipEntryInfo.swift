@@ -41,6 +41,8 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     public let isTextFile: Bool
 
     public let fileSystemType: FileSystemType?
+    
+    public let compressionMethod: CompressionMethod
 
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int, _ currentDiskNumber: UInt32) throws {
@@ -135,6 +137,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
         // File system type of machine where this container was created.
         self.fileSystemType = FileSystemType(cdEntry.versionMadeBy)
+        
+        // Compression method.
+        self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
     }
 
 }
