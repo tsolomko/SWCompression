@@ -16,13 +16,7 @@ public struct GzipHeader {
         static let fcomment: UInt8 = 0x10
     }
 
-    /// Supported compression methods in GZip archive.
-    public enum CompressionMethod: Int {
-        /// The only one supported compression method (Deflate).
-        case deflate = 8
-    }
-
-    /// Compression method of archive. Currently, always equals to `.deflate`.
+    /// Compression method of archive. Always `.deflate` for GZip archives.
     public let compressionMethod: CompressionMethod
 
     /**
