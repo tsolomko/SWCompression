@@ -6,7 +6,7 @@
 import Foundation
 
 /// Provides open functions for 7-Zip containers.
-public class SevenZipContainer {
+public class SevenZipContainer: Container {
 
     static let signatureHeaderSize = 32
 

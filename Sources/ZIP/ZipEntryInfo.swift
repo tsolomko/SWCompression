@@ -7,9 +7,6 @@ import Foundation
 
 public struct ZipEntryInfo: ContainerEntryInfo {
 
-    let cdEntry: ZipCentralDirectoryEntry
-    let localHeader: ZipLocalHeader
-
     // MARK: ContainerEntryInfo
     
     /// Name of the file or directory.
@@ -43,6 +40,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     public let fileSystemType: FileSystemType?
     
     public let compressionMethod: CompressionMethod
+    
+    let cdEntry: ZipCentralDirectoryEntry
+    let localHeader: ZipLocalHeader
 
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int, _ currentDiskNumber: UInt32) throws {
