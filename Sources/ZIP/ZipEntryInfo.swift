@@ -37,8 +37,10 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
     public let dosAttributes: DosAttributes?
 
-    /// True if entry is likely to be text or ASCII file.
+    /// True, if entry is likely to be text or ASCII file.
     public let isTextFile: Bool
+
+    public let fileSystemType: FileSystemType?
 
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int, _ currentDiskNumber: UInt32) throws {
@@ -130,6 +132,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
         // Is text file?
         self.isTextFile = cdEntry.internalFileAttributes & 0x1 != 0
+
+        // File system type of machine where this container was created.
+        self.fileSystemType = FileSystemType(cdEntry.versionMadeBy)
     }
 
 }
