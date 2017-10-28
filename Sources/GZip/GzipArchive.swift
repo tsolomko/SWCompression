@@ -93,7 +93,6 @@ public class GzipArchive: Archive {
      Data will be also compressed with Deflate algorithm.
      It will be also specified in archive's header that the compressor used the slowest Deflate algorithm.
 
-     If during compression something goes wrong `DeflateError` will be thrown.
      If either `fileName` or `comment` cannot be encoded with ISO Latin-1 encoding,
      then `GzipError.cannotEncodeISOLatin1` will be thrown.
 

@@ -19,6 +19,7 @@ class ZipCommon {
         static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
     #endif
 
+    // TODO: As extension?
     static func getStringField(_ pointerData: DataWithPointer, _ length: Int, _ useUtf8: Bool) -> String? {
         if length == 0 {
             return ""

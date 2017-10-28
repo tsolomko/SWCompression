@@ -60,11 +60,10 @@ public struct GzipHeader {
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
-        // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported
+        // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported for GZip archives.
         let method = pointerData.byte()
         guard method == 8 else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
-
         self.compressionMethod = .deflate
 
         let flags = pointerData.byte()
