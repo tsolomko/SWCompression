@@ -9,7 +9,7 @@ extension ContainerEntryType {
 
     init(from fileTypeIndicator: UInt8) {
         switch fileTypeIndicator {
-        case 48: // "0"
+        case 0, 48: // "0"
             self = .regular
         case 49: // "1"
             self = .hardLink
