@@ -37,27 +37,23 @@ public class ZipContainer: Container {
     }
 
     private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> Data {
-        let localHeader = try ZipLocalHeader(data, Int(truncatingIfNeeded: info.cdEntry.localHeaderOffset))
-        // Check local header for consistency with Central Directory entry.
-        try localHeader.validate(with: info.cdEntry)
-
-        let hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+        let hasDataDescriptor = info.localHeader.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
         // TODO:
         var uncompSize = hasDataDescriptor ?
             Int(truncatingIfNeeded: info.cdEntry.uncompSize) :
-            Int(truncatingIfNeeded: localHeader.uncompSize)
+            Int(truncatingIfNeeded: info.localHeader.uncompSize)
         var compSize = hasDataDescriptor ?
             Int(truncatingIfNeeded: info.cdEntry.compSize) :
-            Int(truncatingIfNeeded: localHeader.compSize)
-        var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : localHeader.crc32
+            Int(truncatingIfNeeded: info.localHeader.compSize)
+        var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
         let fileBytes: [UInt8]
         let pointerData = DataWithPointer(data: data)
-        pointerData.index = localHeader.dataOffset
-        switch localHeader.compressionMethod {
+        pointerData.index = info.localHeader.dataOffset
+        switch info.localHeader.compressionMethod {
         case 0:
             fileBytes = pointerData.bytes(count: uncompSize)
         case 8:
@@ -91,7 +87,7 @@ public class ZipContainer: Container {
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = pointerData.index - localHeader.dataOffset
+        let realCompSize = pointerData.index - info.localHeader.dataOffset
 
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
@@ -102,7 +98,7 @@ public class ZipContainer: Container {
             }
             // Now, let's update from CD with values from data descriptor.
             crc32 = pointerData.uint32()
-            let sizeOfSizeField: UInt64 = localHeader.zip64FieldsArePresent ? 8 : 4
+            let sizeOfSizeField: UInt64 = info.localHeader.zip64FieldsArePresent ? 8 : 4
             compSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
             uncompSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
         }
