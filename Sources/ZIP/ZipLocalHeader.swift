@@ -29,7 +29,13 @@ struct ZipLocalHeader {
     private(set) var ntfsAtime: UInt64?
     private(set) var ntfsCtime: UInt64?
 
-    init(_ pointerData: DataWithPointer) throws {
+    let dataOffset: Int
+
+    // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
+    init(_ data: Data, _ offset: Int) throws {
+        let pointerData = DataWithPointer(data: data)
+        pointerData.index = offset
+
         // Check signature.
         guard pointerData.uint32() == 0x04034b50
             else { throw ZipError.wrongSignature }
@@ -96,6 +102,8 @@ struct ZipLocalHeader {
                 pointerData.index += size
             }
         }
+
+        self.dataOffset = pointerData.index
     }
 
     func validate(with cdEntry: ZipCentralDirectoryEntry) throws {

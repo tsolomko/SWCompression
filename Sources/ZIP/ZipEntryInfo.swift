@@ -39,9 +39,10 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// True if entry is likely to be text or ASCII file.
     public let isTextFile: Bool
 
-    init(_ pointerData: DataWithPointer) throws {
+    // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
+    init(_ data: Data, _ offset: Int) throws {
         // Save Central Directory record.
-        let cdEntry = try ZipCentralDirectoryEntry(pointerData)
+        let cdEntry = try ZipCentralDirectoryEntry(data, offset)
         self.cdEntry = cdEntry
 
         // Name.

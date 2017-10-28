@@ -37,11 +37,7 @@ public class ZipContainer: Container {
     }
 
     private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> Data {
-        // Now, let's move to the location of local header.
-        let pointerData = DataWithPointer(data: data)
-        pointerData.index = Int(truncatingIfNeeded: info.cdEntry.offset)
-
-        let localHeader = try ZipLocalHeader(pointerData)
+        let localHeader = try ZipLocalHeader(data, Int(truncatingIfNeeded: info.cdEntry.localHeaderOffset))
         // Check local header for consistency with Central Directory entry.
         try localHeader.validate(with: info.cdEntry)
 
@@ -49,6 +45,7 @@ public class ZipContainer: Container {
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
+        // TODO:
         var uncompSize = hasDataDescriptor ?
             Int(truncatingIfNeeded: info.cdEntry.uncompSize) :
             Int(truncatingIfNeeded: localHeader.uncompSize)
@@ -58,7 +55,8 @@ public class ZipContainer: Container {
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : localHeader.crc32
 
         let fileBytes: [UInt8]
-        let fileDataStart = pointerData.index
+        let pointerData = DataWithPointer(data: data)
+        pointerData.index = localHeader.dataOffset
         switch localHeader.compressionMethod {
         case 0:
             fileBytes = pointerData.bytes(count: uncompSize)
@@ -93,7 +91,7 @@ public class ZipContainer: Container {
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = pointerData.index - fileDataStart
+        let realCompSize = pointerData.index - localHeader.dataOffset
 
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
@@ -139,12 +137,13 @@ public class ZipContainer: Container {
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
-        pointerData.index = Int(truncatingIfNeeded: endOfCD.cdOffset)
+        var entryIndex = Int(truncatingIfNeeded: endOfCD.cdOffset)
 
         for _ in 0..<cdEntries {
-            let info = try ZipEntryInfo(pointerData)
+            let info = try ZipEntryInfo(data, entryIndex)
             try info.cdEntry.validate(endOfCD.currentDiskNumber)
             entries.append(info)
+            entryIndex = info.cdEntry.nextEntryIndex
         }
 
         return entries

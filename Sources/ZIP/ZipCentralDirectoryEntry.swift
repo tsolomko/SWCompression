@@ -25,7 +25,7 @@ struct ZipCentralDirectoryEntry {
     let internalFileAttributes: UInt16
     let externalFileAttributes: UInt32
 
-    private(set) var offset: UInt64
+    private(set) var localHeaderOffset: UInt64
 
     private(set) var modificationTimestamp: UInt32?
 
@@ -33,7 +33,13 @@ struct ZipCentralDirectoryEntry {
     private(set) var ntfsAtime: UInt64?
     private(set) var ntfsCtime: UInt64?
 
-    init(_ pointerData: DataWithPointer) throws {
+    let nextEntryIndex: Int
+
+    // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
+    init(_ data: Data, _ offset: Int) throws {
+        let pointerData = DataWithPointer(data: data)
+        pointerData.index = offset
+
         // Check signature.
         guard pointerData.uint32() == 0x02014b50
             else { throw ZipError.wrongSignature }
@@ -63,7 +69,7 @@ struct ZipCentralDirectoryEntry {
         self.internalFileAttributes = pointerData.uint16()
         self.externalFileAttributes = pointerData.uint32()
 
-        self.offset = pointerData.uint64(count: 4)
+        self.localHeaderOffset = pointerData.uint64(count: 4)
 
         guard let fileName = ZipCommon.getStringField(pointerData, fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
@@ -82,8 +88,8 @@ struct ZipCentralDirectoryEntry {
                 if self.compSize == 0xFFFFFFFF {
                     self.compSize = pointerData.uint64()
                 }
-                if self.offset == 0xFFFFFFFF {
-                    self.offset = pointerData.uint64()
+                if self.localHeaderOffset == 0xFFFFFFFF {
+                    self.localHeaderOffset = pointerData.uint64()
                 }
                 if self.diskNumberStart == 0xFFFF {
                     self.diskNumberStart = pointerData.uint32()
@@ -114,6 +120,8 @@ struct ZipCentralDirectoryEntry {
         guard let fileComment = ZipCommon.getStringField(pointerData, fileCommentLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
+
+        self.nextEntryIndex = pointerData.index
     }
 
     func validate(_ currentDiskNumber: UInt32) throws {
