@@ -1,6 +1,250 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7-Zip/7zEntry.swift",
+      "line": 14,
+      "symbol": "SevenZipEntry.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/7-Zip/7zEntryInfo.swift",
+      "line": 19,
+      "symbol": "SevenZipEntryInfo.type",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/Container.swift",
+      "line": 8,
+      "symbol": "Container",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/Container.swift",
+      "line": 12,
+      "symbol": "Container.open(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/Container.swift",
+      "line": 14,
+      "symbol": "Container.info(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntry.swift",
+      "line": 8,
+      "symbol": "ContainerEntry",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntry.swift",
+      "line": 12,
+      "symbol": "ContainerEntry.info",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntry.swift",
+      "line": 14,
+      "symbol": "ContainerEntry.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 8,
+      "symbol": "ContainerEntryInfo",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 10,
+      "symbol": "ContainerEntryInfo.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 12,
+      "symbol": "ContainerEntryInfo.type",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 14,
+      "symbol": "ContainerEntryInfo.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 16,
+      "symbol": "ContainerEntryInfo.accessTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 18,
+      "symbol": "ContainerEntryInfo.creationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 20,
+      "symbol": "ContainerEntryInfo.modificationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryInfo.swift",
+      "line": 22,
+      "symbol": "ContainerEntryInfo.permissions",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/Common/Container/ContainerEntryType.swift",
+      "line": 8,
+      "symbol": "ContainerEntryType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarContainer.swift",
+      "line": 39,
+      "symbol": "TarContainer.info(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntry.swift",
+      "line": 14,
+      "symbol": "TarEntry.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntryInfo.swift",
+      "line": 8,
+      "symbol": "TarEntryInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntryInfo.swift",
+      "line": 19,
+      "symbol": "TarEntryInfo.type",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntryInfo.swift",
+      "line": 30,
+      "symbol": "TarEntryInfo.permissions",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntryInfo.swift",
+      "line": 46,
+      "symbol": "TarEntryInfo.deviceMajorNumber",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/TAR/TarEntryInfo.swift",
+      "line": 48,
+      "symbol": "TarEntryInfo.deviceMinorNumber",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipContainer.swift",
+      "line": 114,
+      "symbol": "ZipContainer.info(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntry.swift",
+      "line": 14,
+      "symbol": "ZipEntry.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 8,
+      "symbol": "ZipEntryInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 21,
+      "symbol": "ZipEntryInfo.type",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 24,
+      "symbol": "ZipEntryInfo.accessTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 26,
+      "symbol": "ZipEntryInfo.creationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 28,
+      "symbol": "ZipEntryInfo.modificationTime",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 30,
+      "symbol": "ZipEntryInfo.permissions",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 34,
+      "symbol": "ZipEntryInfo.comment",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 36,
+      "symbol": "ZipEntryInfo.externalFileAttributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipEntryInfo.swift",
+      "line": 38,
+      "symbol": "ZipEntryInfo.dosAttributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/timofeysolomko/Developer/Compression/SWCompression"
 }

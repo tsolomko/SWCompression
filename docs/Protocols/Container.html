@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (86% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -112,34 +112,22 @@
                 <a class="nav-group-task-link" href="../Classes/SevenZipContainer.html">SevenZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/SevenZipEntry.html">SevenZipEntry</a>
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntry.html">SevenZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/Permissions.html">– Permissions</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/DosAttributes.html">– DosAttributes</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/UnixType.html">– UnixType</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+                <a class="nav-group-task-link" href="../Structs/TarEntry.html">TarEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
+                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
             </ul>
           </li>
@@ -198,6 +186,39 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ContainerEntryType.html">ContainerEntryType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntryInfo.html">ContainerEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DosAttributes.html">DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Permissions.html">Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntryInfo.html">TarEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntryInfo.html">ZipEntryInfo</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -205,13 +226,7 @@
         <section class="section">
           <div class="section-content">
             <h1>Container</h1>
-              <div class="declaration">
-                <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Container</span></code></pre>
-
-                </div>
-              </div>
-            <p>A type that represents a container of files, directories and/or other data.</p>
+            <p>Undocumented</p>
 
           </div>
         </section>
@@ -223,9 +238,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression9ContainerP4openSayAA0B5Entry_pG10Foundation4DataV9container_tKFZ"></a>
+                    <a name="/s:13SWCompression9ContainerP4openSay5EntryQzG10Foundation4DataV9container_tKFZ"></a>
                     <a name="//apple_ref/swift/Method/open(container:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression9ContainerP4openSayAA0B5Entry_pG10Foundation4DataV9container_tKFZ">open(container:)</a>
+                    <a class="token" href="#/s:13SWCompression9ContainerP4openSay5EntryQzG10Foundation4DataV9container_tKFZ">open(container:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -233,19 +248,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Retrieve all the entries from the container.</p>
+                        <p>Undocumented</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="nv">container</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></span><span class="p">]</span></code></pre>
-
-                        </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/Protocols.swift#L36">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/Container.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression9ContainerP4infoSay5Entry_4InfoQZG10Foundation4DataV9container_tKFZ"></a>
+                    <a name="//apple_ref/swift/Method/info(container:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression9ContainerP4infoSay5Entry_4InfoQZG10Foundation4DataV9container_tKFZ">info(container:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/Container.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

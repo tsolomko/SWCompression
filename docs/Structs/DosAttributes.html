@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ZipEntry Class Reference</title>
+    <title>DosAttributes Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,16 +14,16 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Class/ZipEntry" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/DosAttributes" class="dashAnchor"></a>
 
-    <a title="ZipEntry Class Reference"></a>
+    <a title="DosAttributes Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (100% documented)
+         (86% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">SWCompression Reference</a>
       <img class="carat" src="../img/carat.png" />
-      ZipEntry Class Reference
+      DosAttributes Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -112,34 +112,22 @@
                 <a class="nav-group-task-link" href="../Classes/SevenZipContainer.html">SevenZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/SevenZipEntry.html">SevenZipEntry</a>
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntry.html">SevenZipEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/Permissions.html">– Permissions</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/DosAttributes.html">– DosAttributes</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo/UnixType.html">– UnixType</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/TarEntry.html">TarEntry</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/TarEntry/EntryType.html">– EntryType</a>
+                <a class="nav-group-task-link" href="../Structs/TarEntry.html">TarEntry</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Classes/ZipEntry.html">ZipEntry</a>
+                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
               </li>
             </ul>
           </li>
@@ -198,20 +186,53 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ContainerEntryType.html">ContainerEntryType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntryInfo.html">ContainerEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DosAttributes.html">DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Permissions.html">Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntryInfo.html">TarEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntryInfo.html">ZipEntryInfo</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
 
         <section class="section">
           <div class="section-content">
-            <h1>ZipEntry</h1>
+            <h1>DosAttributes</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">ZipEntry</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ContainerEntry.html">ContainerEntry</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DosAttributes</span><span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
 
                 </div>
               </div>
-            <p>Represents either a file or directory entry in ZIP container.</p>
+            <p>Represents file attributes in DOS format.</p>
 
           </div>
         </section>
@@ -223,9 +244,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC4nameSSv"></a>
-                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC4nameSSv">name</a>
+                    <a name="/s:13SWCompression13DosAttributesV8rawValues6UInt32Vv"></a>
+                    <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV8rawValues6UInt32Vv">rawValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -233,19 +254,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Name of the file or directory.</p>
+                        <p>Raw bit flags value.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L16-L18">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L12">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -253,9 +274,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC7commentSSSgv"></a>
-                    <a name="//apple_ref/swift/Property/comment" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC7commentSSSgv">comment</a>
+                    <a name="/s:13SWCompression13DosAttributesVACs6UInt32V8rawValue_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(rawValue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesVACs6UInt32V8rawValue_tcfc">init(rawValue:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -263,19 +284,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Comment associated with the entry.</p>
+                        <p>Initializes attributes with bit flags.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">comment</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="kt">UInt32</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L21-L23">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L15-L17">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -283,9 +304,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC10attributess6UInt32Vv"></a>
-                    <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC10attributess6UInt32Vv">attributes</a>
+                    <a name="/s:13SWCompression13DosAttributesV7archiveACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/archive" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV7archiveACvZ">archive</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -293,19 +314,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>File or directory attributes related to the file system of the container&rsquo;s creator.</p>
+                        <p>File is archive or archived.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">attributes</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">archive</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00100000</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L26-L28">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L20">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -313,9 +334,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC4sizeSiv"></a>
-                    <a name="//apple_ref/swift/Property/size" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC4sizeSiv">size</a>
+                    <a name="/s:13SWCompression13DosAttributesV9directoryACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/directory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV9directoryACvZ">directory</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -323,19 +344,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Size of the data associated with the entry.</p>
+                        <p>File is a directory.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">directory</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00010000</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L31-L33">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -343,9 +364,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC11isDirectorySbv"></a>
-                    <a name="//apple_ref/swift/Property/isDirectory" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC11isDirectorySbv">isDirectory</a>
+                    <a name="/s:13SWCompression13DosAttributesV6volumeACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/volume" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV6volumeACvZ">volume</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,21 +374,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>True, if entry is a directory.
-For MS-DOS and UNIX-like container creator&rsquo;s OS, the result is based on &lsquo;external file attributes&rsquo;.
-Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s name is &lsquo;/&rsquo;.</p>
+                        <p>File is a volume.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isDirectory</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">volume</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00001000</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L40-L46">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -375,9 +394,9 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC6isLinkSbv"></a>
-                    <a name="//apple_ref/swift/Property/isLink" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC6isLinkSbv">isLink</a>
+                    <a name="/s:13SWCompression13DosAttributesV6systemACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/system" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV6systemACvZ">system</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -385,19 +404,19 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>True, if entry is a symbolic link.</p>
+                        <p>File is a system file.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isLink</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">system</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00000100</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L49">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -405,9 +424,9 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC8linkPathSSSgv"></a>
-                    <a name="//apple_ref/swift/Property/linkPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC8linkPathSSSgv">linkPath</a>
+                    <a name="/s:13SWCompression13DosAttributesV6hiddenACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/hidden" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV6hiddenACvZ">hidden</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -415,19 +434,19 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Path to a linked file for symbolic link entry.</p>
+                        <p>File is hidden.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">linkPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">hidden</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00000010</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L52">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -435,9 +454,9 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipEntryC10isTextFileSbv"></a>
-                    <a name="//apple_ref/swift/Property/isTextFile" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC10isTextFileSbv">isTextFile</a>
+                    <a name="/s:13SWCompression13DosAttributesV8readOnlyACvZ"></a>
+                    <a name="//apple_ref/swift/Variable/readOnly" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression13DosAttributesV8readOnlyACvZ">readOnly</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -445,95 +464,19 @@ Otherwise, it is true if size of data is 0 AND last character of entry&rsquo;s n
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>True if entry is likely to be text or ASCII file.</p>
+                        <p>File is read-only.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isTextFile</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">readOnly</span> <span class="o">=</span> <span class="kt">DosAttributes</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mb">0b00000001</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L59-L61">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression8ZipEntryC15entryAttributess10DictionaryVySC16FileAttributeKeyVypGv"></a>
-                    <a name="//apple_ref/swift/Property/entryAttributes" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC15entryAttributess10DictionaryVySC16FileAttributeKeyVypGv">entryAttributes</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Provides a dictionary with various attributes of the entry.
-<code>FileAttributeKey</code> values are used as dictionary keys.</p>
-<h2 id='possible-attributes' class='heading'>Possible attributes:</h2>
-
-<ul>
-<li><code>FileAttributeKey.modificationDate</code></li>
-<li><code>FileAttributeKey.size</code></li>
-<li><code>FileAttributeKey.type</code>, only if origin OS was UNIX- or DOS-like.</li>
-<li><code>FileAttributeKey.posixPermissions</code>, only if origin OS was UNIX-like.</li>
-<li><code>FileAttributeKey.appendOnly</code>, only if origin OS was DOS-like.</li>
-</ul>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">entryAttributes</span><span class="p">:</span> <span class="p">[</span><span class="kt">FileAttributeKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L75">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression8ZipEntryC4data10Foundation4DataVyKF"></a>
-                    <a name="//apple_ref/swift/Method/data()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipEntryC4data10Foundation4DataVyKF">data()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Returns data associated with this entry.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <code><a href="../Enums/ZipError.html">ZipError</a></code> or any other error associated with compression type,
-depending on the type of the problem. An error can indicate that container is damaged.
-
-</div>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">data</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v3.4.0/Sources/ZipEntry.swift#L83-L170">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/develop/Sources/Common/Container/DosAttributes.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
