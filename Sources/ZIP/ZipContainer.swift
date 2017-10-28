@@ -139,6 +139,12 @@ public class ZipContainer: Container {
         // OK, now we are ready to read Central Directory itself.
         var entryIndex = Int(truncatingIfNeeded: endOfCD.cdOffset)
 
+        // First, check for "Archive extra data record" and skip it if present.
+        pointerData.index = entryIndex
+        if pointerData.uint32() == 0x08064b50 {
+            entryIndex += Int(truncatingIfNeeded: pointerData.uint32())
+        }
+
         for _ in 0..<cdEntries {
             let info = try ZipEntryInfo(data, entryIndex)
             try info.cdEntry.validate(endOfCD.currentDiskNumber)
