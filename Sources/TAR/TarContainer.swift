@@ -26,11 +26,15 @@ public class TarContainer: Container {
         let infos = try info(container: data)
         var entries = [TarEntry]()
 
-        for infoEntry in infos {
-            let dataStartIndex = infoEntry.blockStartIndex + 512
-            let dataEndIndex = dataStartIndex + infoEntry.size!
-            let entryData = data[dataStartIndex..<dataEndIndex]
-            entries.append(TarEntry(infoEntry, entryData))
+        for entryInfo in infos {
+            if entryInfo.type == .directory {
+                entries.append(TarEntry(entryInfo, nil))
+            } else {
+                let dataStartIndex = entryInfo.blockStartIndex + 512
+                let dataEndIndex = dataStartIndex + entryInfo.size!
+                let entryData = data[dataStartIndex..<dataEndIndex]
+                entries.append(TarEntry(entryInfo, entryData))
+            }
         }
 
         return entries

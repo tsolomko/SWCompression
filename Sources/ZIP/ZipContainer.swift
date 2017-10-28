@@ -28,9 +28,13 @@ public class ZipContainer: Container {
         let infos = try info(container: data)
         var entries = [ZipEntry]()
 
-        for infoEntry in infos {
-            let entryData = try ZipContainer.getEntryData(from: data, using: infoEntry)
-            entries.append(ZipEntry(infoEntry, entryData))
+        for entryInfo in infos {
+            if entryInfo.type == .directory {
+                entries.append(ZipEntry(entryInfo, nil))
+            } else {
+                let entryData = try ZipContainer.getEntryData(from: data, using: entryInfo)
+                entries.append(ZipEntry(entryInfo, entryData))
+            }
         }
 
         return entries
