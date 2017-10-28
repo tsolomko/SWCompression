@@ -6,11 +6,10 @@
 import Foundation
 
 public enum CompressionMethod {
-    // TODO: Sort alphabetically.
+    case bzip2
     case copy
     case deflate
     case lzma
     case lzma2
-    case bzip2
     case other
 }
