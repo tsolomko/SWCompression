@@ -60,7 +60,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "текстовый файл")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertNotNil(entries[0].data)
     }
 
@@ -75,7 +75,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -98,7 +98,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -127,7 +127,7 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertNotEqual(entries[1].info.type, .directory)
+        XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, 15)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
@@ -143,7 +143,7 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }

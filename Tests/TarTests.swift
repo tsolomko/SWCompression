@@ -22,7 +22,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].info.name, "test5.answer")
         XCTAssertEqual(result[0].info.size, 0)
-        XCTAssertNotEqual(result[0].info.type, .directory)
+        XCTAssertEqual(result[0].info.type, .regular)
         XCTAssertEqual(result[0].data, Data())
     }
 
@@ -47,7 +47,7 @@ class TarTests: XCTestCase {
             let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(entry.data, answerData)
-            XCTAssertNotEqual(entry.info.type, .directory)
+            XCTAssertEqual(entry.info.type, .regular)
             XCTAssertNotNil(entry.info.accessTime)
         }
     }
@@ -74,7 +74,7 @@ class TarTests: XCTestCase {
             XCTAssertEqual(result.count, 1)
             XCTAssertEqual(result[0].info.name, "test1.answer")
             XCTAssertEqual(result[0].info.size, 14)
-            XCTAssertNotEqual(result[0].info.type, .directory)
+            XCTAssertEqual(result[0].info.type, .regular)
             XCTAssertEqual(result[0].data, answerData)
         }
     }
@@ -112,7 +112,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertNotEqual(entries[1].info.type, .directory)
+        XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, 15)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
@@ -128,7 +128,7 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].data, Data())
     }
