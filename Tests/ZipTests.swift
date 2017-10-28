@@ -124,7 +124,7 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "dir/")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
-        XCTAssertEqual(entries[0].data, Data())
+        XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
         XCTAssertNotEqual(entries[1].info.type, .directory)
@@ -161,7 +161,7 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "empty_dir/")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
-        XCTAssertEqual(entries[0].data, Data())
+        XCTAssertEqual(entries[0].data, nil)
     }
 
     func testEmptyContainer() throws {
