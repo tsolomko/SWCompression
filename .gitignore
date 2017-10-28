@@ -69,3 +69,6 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# Ignore symbolic link to swcomp executable built by SPM.
+swcomp
