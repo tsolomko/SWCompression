@@ -8,6 +8,7 @@ import Foundation
 public struct ZipEntryInfo: ContainerEntryInfo {
 
     let cdEntry: ZipCentralDirectoryEntry
+    let localHeader: ZipLocalHeader
 
     // MARK: ContainerEntryInfo
     
@@ -41,9 +42,12 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int) throws {
-        // Save Central Directory record.
+        // Load and save Central Directory entry and Local Header.
         let cdEntry = try ZipCentralDirectoryEntry(data, offset)
         self.cdEntry = cdEntry
+        
+        let localHeader = try ZipLocalHeader(data, Int(truncatingIfNeeded: cdEntry.localHeaderOffset))
+        self.localHeader = localHeader
 
         // Name.
         self.name = cdEntry.fileName
