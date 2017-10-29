@@ -50,8 +50,7 @@ class LZMA2Decoder {
             case 0x80...0xFF:
                 try self.dispatch(controlByte)
             default:
-                // TODO: Message.
-                fatalError("")
+                fatalError("Incorrect control byte.") // This statement is never executed.
             }
         }
     }
@@ -70,11 +69,11 @@ class LZMA2Decoder {
         case 1:
             self.decoder.resetStateAndDecoders()
         case 2:
-            try self.decoder.setProperties(from: pointerData.byte())
+            try self.decoder.setProperties(pointerData.byte())
             self.decoder.resetStateAndDecoders()
             dataStartIndex += 1
         case 3:
-            try self.decoder.setProperties(from: pointerData.byte())
+            try self.decoder.setProperties(pointerData.byte())
             self.decoder.resetStateAndDecoders()
             dataStartIndex += 1
             self.decoder.resetDictionary()

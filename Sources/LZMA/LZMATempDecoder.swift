@@ -77,7 +77,7 @@ class LZMATempDecoder {
 
      - Important: `resetStateAndDecoders` should always be called afterwards.
      */
-    func setProperties(from byte: UInt8) throws {
+    func setProperties(_ byte: UInt8) throws {
         guard byte < 9 * 5 * 5
             else { throw LZMAError.wrongProperties }
         /// The number of literal context bits

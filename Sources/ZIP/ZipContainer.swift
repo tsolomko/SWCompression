@@ -84,7 +84,7 @@ public class ZipContainer: Container {
 
                 let decoder = try LZMATempDecoder(pointerData)
 
-                try decoder.setProperties(from: pointerData.byte())
+                try decoder.setProperties(pointerData.byte())
                 decoder.resetStateAndDecoders()
                 decoder.dictionarySize = pointerData.uint32().toInt()
 

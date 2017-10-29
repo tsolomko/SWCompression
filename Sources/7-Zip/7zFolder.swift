@@ -170,7 +170,7 @@ class SevenZipFolder {
                 let pointerData = DataWithPointer(data: decodedData)
                 let decoder = try LZMATempDecoder(pointerData)
 
-                try decoder.setProperties(from: properties[0])
+                try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()
 
                 var dictionarySize = 0
