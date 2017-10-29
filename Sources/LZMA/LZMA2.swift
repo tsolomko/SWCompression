@@ -24,33 +24,14 @@ public class LZMA2: DecompressionAlgorithm {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
 
-        let dictionarySize = try LZMA2.dictionarySize(pointerData.byte())
-
-        return Data(bytes: try LZMA2.decompress(dictionarySize, pointerData))
+        return Data(bytes: try decompress(pointerData))
     }
 
-    static func decompress(_ dictionarySize: Int, _ pointerData: DataWithPointer) throws -> [UInt8] {
-        // At this point lzmaDecoder will be in a VERY bad state.
-        let lzmaDecoder = try LZMADecoder(pointerData)
-        try lzmaDecoder.decodeLZMA2(dictionarySize)
-        return lzmaDecoder.out
-    }
-
-    static func dictionarySize(_ byte: UInt8) throws -> Int {
-        let bits = byte & 0x3F
-        guard byte & 0xC0 == 0
-            else { throw LZMA2Error.wrongProperties }
-        guard bits < 40
-            else { throw LZMA2Error.wrongDictionarySize }
-
-        var dictSize: UInt32 = 0
-        if bits == 40 {
-            dictSize = UInt32.max
-        } else {
-            dictSize = UInt32(2 | (bits.toInt() & 1))
-            dictSize <<= UInt32(bits.toInt() / 2 + 11)
-        }
-        return Int(dictSize)
+    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
+        let decoder = try LZMA2Decoder(pointerData)
+        try decoder.setDictionarySize(pointerData.byte())
+        try decoder.decode()
+        return decoder.out
     }
 
 }
