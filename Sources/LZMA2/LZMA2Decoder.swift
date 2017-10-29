@@ -66,7 +66,6 @@ class LZMA2Decoder {
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
             self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
         let compressedSize = self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
-        var dataStartIndex = pointerData.index
         switch reset {
         case 0:
             break
@@ -75,27 +74,26 @@ class LZMA2Decoder {
         case 2:
             try self.decoder.setProperties(pointerData.byte())
             self.decoder.resetStateAndDecoders()
-            dataStartIndex += 1
         case 3:
             try self.decoder.setProperties(pointerData.byte())
             self.decoder.resetStateAndDecoders()
-            dataStartIndex += 1
             self.decoder.resetDictionary()
         default:
             throw LZMA2Error.wrongReset
         }
         self.decoder.uncompressedSize = unpackSize
-        let startCount = self.decoder.out.count
+        let outStartIndex = self.decoder.out.count
+        let inStartIndex = self.pointerData.index
         try self.decoder.decode()
-        guard unpackSize == self.decoder.out.count - startCount &&
-            self.pointerData.index - dataStartIndex == compressedSize
+        guard unpackSize == self.decoder.out.count - outStartIndex &&
+            self.pointerData.index - inStartIndex == compressedSize
             else { throw LZMA2Error.wrongSizes }
     }
 
     private func decodeUncompressed() {
         let dataSize = self.pointerData.byte().toInt() << 8 + self.pointerData.byte().toInt() + 1
         for _ in 0..<dataSize {
-            self.decoder.put(pointerData.byte())
+            self.decoder.put(self.pointerData.byte())
         }
     }
 
