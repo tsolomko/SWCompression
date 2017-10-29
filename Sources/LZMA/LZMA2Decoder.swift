@@ -10,13 +10,16 @@ class LZMA2Decoder {
     private let pointerData: DataWithPointer
     private let decoder: LZMATempDecoder
 
+    var out: [UInt8] {
+        return self.decoder.out
+    }
+
     init(_ pointerData: DataWithPointer) throws {
         self.pointerData = pointerData
         self.decoder = try LZMATempDecoder(pointerData)
-        self.decoder.dictionarySize = try LZMA2Decoder.calculateDictionarySize(self.pointerData.byte())
     }
 
-    private static func calculateDictionarySize(_ byte: UInt8) throws -> Int {
+    func setDictionarySize(_ byte: UInt8) throws {
         let bits = byte & 0x3F
         guard byte & 0xC0 == 0
             else { throw LZMA2Error.wrongProperties }
@@ -30,7 +33,8 @@ class LZMA2Decoder {
             dictSize = UInt32(2 | (bits.toInt() & 1))
             dictSize <<= UInt32(bits.toInt() / 2 + 11)
         }
-        return Int(dictSize)
+
+        self.decoder.dictionarySize = Int(dictSize)
     }
 
     /// Main LZMA2 decoder function.
