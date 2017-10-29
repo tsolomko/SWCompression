@@ -82,7 +82,7 @@ public class ZipContainer: Container {
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
 
-                let decoder = try LZMATempDecoder(pointerData)
+                let decoder = try LZMADecoder(pointerData)
 
                 try decoder.setProperties(pointerData.byte())
                 decoder.resetStateAndDecoders()

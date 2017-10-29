@@ -291,10 +291,10 @@
 		069DCEA41EB64D0300ADC374 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 069DCE9B1EB64D0300ADC374 /* test9.answer */; };
 		069EBC371F0837B7008D5EF3 /* test_zip_lzma.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */; };
 		069F27701EDA0D5E00736269 /* TestUnicode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 069F276F1EDA0D5E00736269 /* TestUnicode.zip */; };
-		06A1727E1FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */; };
-		06A1727F1FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */; };
-		06A172801FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */; };
-		06A172811FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */; };
+		06A1727E1FA5C0D90048A89C /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */; };
+		06A1727F1FA5C0D90048A89C /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */; };
+		06A172801FA5C0D90048A89C /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */; };
+		06A172811FA5C0D90048A89C /* LZMADecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */; };
 		06A172831FA5D3770048A89C /* LZMA2Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A172821FA5D3770048A89C /* LZMA2Decoder.swift */; };
 		06A172841FA5D3770048A89C /* LZMA2Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A172821FA5D3770048A89C /* LZMA2Decoder.swift */; };
 		06A172851FA5D3770048A89C /* LZMA2Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A172821FA5D3770048A89C /* LZMA2Decoder.swift */; };
@@ -588,7 +588,7 @@
 		069DCE9B1EB64D0300ADC374 /* test9.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.answer; sourceTree = "<group>"; };
 		069EBC361F0837B7008D5EF3 /* test_zip_lzma.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_lzma.zip; sourceTree = "<group>"; };
 		069F276F1EDA0D5E00736269 /* TestUnicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = TestUnicode.zip; sourceTree = "<group>"; };
-		06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMATempDecoder.swift; sourceTree = "<group>"; };
+		06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMADecoder.swift; sourceTree = "<group>"; };
 		06A172821FA5D3770048A89C /* LZMA2Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMA2Decoder.swift; sourceTree = "<group>"; };
 		06A172871FA5DC460048A89C /* LZMAConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMAConstants.swift; sourceTree = "<group>"; };
 		06A393411DE070B500182E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -799,7 +799,7 @@
 				069AC20C1E02DB1D0041AC13 /* LZMA.swift */,
 				06CDFCAC1F111DBE00292758 /* LZMAError.swift */,
 				06A172871FA5DC460048A89C /* LZMAConstants.swift */,
-				06A1727D1FA5C0D90048A89C /* LZMATempDecoder.swift */,
+				06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */,
 				06A172821FA5D3770048A89C /* LZMA2Decoder.swift */,
 				069D0FF91E0D6CE900D8AA87 /* LZMALenDecoder.swift */,
 				069D0FF41E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift */,
@@ -1434,7 +1434,7 @@
 				0651FEC31F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */,
 				06595E0F1F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1141DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
-				06A1727F1FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */,
+				06A1727F1FA5C0D90048A89C /* LZMADecoder.swift in Sources */,
 				06595E141F1E90C2006501C2 /* 7zCoder.swift in Sources */,
 				0620F4B91F8E248C001C9B7A /* ContainerEntryInfo.swift in Sources */,
 				06CDFCA91F111D9700292758 /* DeflateError.swift in Sources */,
@@ -1526,7 +1526,7 @@
 				0651FEC41F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */,
 				06595E101F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF11C1DE1F2E200F38082 /* DecodingHuffmanTree.swift in Sources */,
-				06A172801FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */,
+				06A172801FA5C0D90048A89C /* LZMADecoder.swift in Sources */,
 				06595E151F1E90C2006501C2 /* 7zCoder.swift in Sources */,
 				0620F4BA1F8E248C001C9B7A /* ContainerEntryInfo.swift in Sources */,
 				06CDFCAA1F111D9700292758 /* DeflateError.swift in Sources */,
@@ -1618,7 +1618,7 @@
 				0651FEC51F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */,
 				06595E111F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1151DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
-				06A172811FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */,
+				06A172811FA5C0D90048A89C /* LZMADecoder.swift in Sources */,
 				06595E161F1E90C2006501C2 /* 7zCoder.swift in Sources */,
 				0620F4BB1F8E248C001C9B7A /* ContainerEntryInfo.swift in Sources */,
 				06CDFCAB1F111D9700292758 /* DeflateError.swift in Sources */,
@@ -1710,7 +1710,7 @@
 				0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */,
 				06595E0E1F1E8252006501C2 /* 7zFolder.swift in Sources */,
 				063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
-				06A1727E1FA5C0D90048A89C /* LZMATempDecoder.swift in Sources */,
+				06A1727E1FA5C0D90048A89C /* LZMADecoder.swift in Sources */,
 				06595E131F1E90C2006501C2 /* 7zCoder.swift in Sources */,
 				0620F4B81F8E248C001C9B7A /* ContainerEntryInfo.swift in Sources */,
 				06CDFCA81F111D9700292758 /* DeflateError.swift in Sources */,

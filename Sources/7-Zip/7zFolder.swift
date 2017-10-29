@@ -172,7 +172,7 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
-                let decoder = try LZMATempDecoder(pointerData)
+                let decoder = try LZMADecoder(pointerData)
 
                 try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()

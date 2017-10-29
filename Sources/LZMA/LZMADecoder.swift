@@ -1,14 +1,11 @@
+// Copyright (c) 2017 Timofey Solomko
+// Licensed under MIT License
 //
-//  LZMATempDecoder.swift
-//  SWCompression
-//
-//  Created by Timofey Solomko on 29.10.2017.
-//  Copyright © 2017 tsolomko. All rights reserved.
-//
+// See LICENSE for license information
 
 import Foundation
 
-class LZMATempDecoder {
+class LZMADecoder {
 
     private let pointerData: DataWithPointer
 

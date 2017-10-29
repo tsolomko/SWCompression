@@ -8,7 +8,7 @@ import Foundation
 class LZMA2Decoder {
 
     private let pointerData: DataWithPointer
-    private let decoder: LZMATempDecoder
+    private let decoder: LZMADecoder
 
     var out: [UInt8] {
         return self.decoder.out
@@ -16,7 +16,7 @@ class LZMA2Decoder {
 
     init(_ pointerData: DataWithPointer) throws {
         self.pointerData = pointerData
-        self.decoder = try LZMATempDecoder(pointerData)
+        self.decoder = try LZMADecoder(pointerData)
     }
 
     func setDictionarySize(_ byte: UInt8) throws {
