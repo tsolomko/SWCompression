@@ -28,9 +28,21 @@ public class LZMA: DecompressionAlgorithm {
     }
 
     static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
-        let lzmaDecoder = try LZMADecoder(pointerData)
-        try lzmaDecoder.decodeLZMA()
-        return lzmaDecoder.out
+        let decoder = try LZMADecoder(pointerData)
+
+        try decoder.setProperties(pointerData.byte())
+        decoder.resetStateAndDecoders()
+        decoder.dictionarySize = pointerData.uint32().toInt()
+
+        let uncompressedSize = pointerData.uint64()
+        if uncompressedSize == UInt64.max {
+            decoder.uncompressedSize = -1
+        } else {
+            decoder.uncompressedSize = Int(truncatingIfNeeded: uncompressedSize)
+        }
+
+        try decoder.decode()
+        return decoder.out
     }
 
 }
