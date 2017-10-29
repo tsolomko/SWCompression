@@ -158,8 +158,12 @@ class SevenZipFolder {
                     else { throw LZMA2Error.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
-                decodedData = Data(bytes: try LZMA2.decompress(LZMA2.dictionarySize(properties[0]),
-                                                               pointerData))
+
+                let decoder = try LZMA2Decoder(pointerData)
+                try decoder.setDictionarySize(properties[0])
+
+                try decoder.decode()
+                decodedData = Data(bytes: decoder.out)
             } else if coder.id == SevenZipCoder.ID.lzma {
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
