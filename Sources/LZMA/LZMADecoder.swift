@@ -231,14 +231,14 @@ class LZMADecoder {
                     rep1 = rep0
                     rep0 = dist
                 }
-                len = repLenDecoder.decode(with: &rangeDecoder, posState: posState)
+                len = repLenDecoder.decode(with: rangeDecoder, posState: posState)
                 state = state < 7 ? 8 : 11
             } else { // SIMPLE MATCH CASE
                 // First, we need to move history of distance values.
                 rep3 = rep2
                 rep2 = rep1
                 rep1 = rep0
-                len = lenDecoder.decode(with: &rangeDecoder, posState: posState)
+                len = lenDecoder.decode(with: rangeDecoder, posState: posState)
                 state = state < 7 ? 7 : 10
 
                 // DECODE DISTANCE:
@@ -249,7 +249,7 @@ class LZMADecoder {
                 }
 
                 /// Defines decoding scheme for distance value.
-                let posSlot = posSlotDecoder[lenState].decode(with: &rangeDecoder)
+                let posSlot = posSlotDecoder[lenState].decode(with: rangeDecoder)
                 if posSlot < 4 {
                     // If `posSlot` is less than 4 then distance has defined value (no need to decode).
                     // And distance is actually equal to `posSlot`.
@@ -263,15 +263,14 @@ class LZMADecoder {
                         // ...and 'Reverse' scheme to get distance value.
                         dist += LZMABitTreeDecoder.bitTreeReverseDecode(probs: &posDecoders,
                                                                         startIndex: dist - posSlot,
-                                                                        bits: numDirectBits,
-                                                                        rangeDecoder: &rangeDecoder)
+                                                                        bits: numDirectBits, rangeDecoder)
                     } else {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
                         dist += rangeDecoder.decode(directBits: (numDirectBits - LZMAConstants.numAlignBits))
                             << LZMAConstants.numAlignBits
                         // Low 4 bits are decoded with a bit tree decoder (called 'AlignDecoder')...
                         // ...with "Reverse" scheme.
-                        dist += alignDecoder.reverseDecode(with: &rangeDecoder)
+                        dist += alignDecoder.reverseDecode(with: rangeDecoder)
                     }
                     rep0 = dist
                 }
