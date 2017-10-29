@@ -15,7 +15,7 @@ let package = Package(
         .target(
             name: "SWCompression",
             path: "Sources",
-            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZMA", "TAR", "XZ", "ZIP", "Zlib"]),
+            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
         .target(
             name: "swcomp",
             dependencies: ["SWCompression", "SwiftCLI"],
