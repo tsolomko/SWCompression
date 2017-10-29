@@ -29,7 +29,7 @@ class LZMATempDecoder {
     /// An array for storing output data.
     var out = [UInt8]()
 
-    // This array will also serve as dictionary and out window.
+    // `out` array also serves as dictionary and out window.
     private var dictStart = 0
     private var dictEnd = 0
 
@@ -115,6 +115,10 @@ class LZMATempDecoder {
                                  count: 1 + LZMAConstants.numFullDistances - LZMAConstants.endPosModelIndex)
         self.lenDecoder = LZMALenDecoder()
         self.repLenDecoder = LZMALenDecoder()
+    }
+
+    func resetDictionary() {
+        self.dictStart = self.dictEnd
     }
 
     /// Main LZMA (algorithm) decoder function.
@@ -306,7 +310,7 @@ class LZMATempDecoder {
 
     // MARK: Dictionary (out window) related functions.
 
-    private func put(_ byte: UInt8) {
+    func put(_ byte: UInt8) {
         out.append(byte)
         dictEnd += 1
         if dictEnd - dictStart == dictionarySize {
