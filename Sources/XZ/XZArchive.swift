@@ -190,7 +190,11 @@ public class XZArchive: Archive {
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = pointerData.byte()
                 let closure = { (dwp: DataWithPointer) -> [UInt8] in
-                    try LZMA2.decompress(LZMA2.dictionarySize(filterPropeties), dwp)
+                    let decoder = try LZMA2Decoder(pointerData)
+                    try decoder.setDictionarySize(filterPropeties)
+
+                    try decoder.decode()
+                    return decoder.out
                 }
                 filters.append(closure)
             } else {
