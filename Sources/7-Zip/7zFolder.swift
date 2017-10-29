@@ -168,15 +168,22 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
-                let lzmaDecoder = try LZMADecoder(pointerData)
+                let decoder = try LZMATempDecoder(pointerData)
+
+                try decoder.setProperties(from: properties[0])
+                decoder.resetStateAndDecoders()
 
                 var dictionarySize = 0
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
+                decoder.dictionarySize = dictionarySize
 
-                try lzmaDecoder.decodeLZMA(unpackSize, properties[0], dictionarySize)
-                decodedData = Data(bytes: lzmaDecoder.out)
+                // TODO: Make unpackSize (and, probably, other properties) UInt64 and set uncompressed size correctly.
+                decoder.uncompressedSize = unpackSize
+
+                try decoder.decode()
+                decodedData = Data(bytes: decoder.out)
             } else {
                 if coder.id[0] == 0x06 {
                     throw SevenZipError.encryptionNotSupported
