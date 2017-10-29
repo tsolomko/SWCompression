@@ -794,13 +794,10 @@
 		0680B4C41F8814EB00C5F253 /* LZMA */ = {
 			isa = PBXGroup;
 			children = (
-				06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */,
-				06CDFCB11F111DEC00292758 /* LZMA2Error.swift */,
 				069AC20C1E02DB1D0041AC13 /* LZMA.swift */,
 				06CDFCAC1F111DBE00292758 /* LZMAError.swift */,
-				06A172871FA5DC460048A89C /* LZMAConstants.swift */,
 				06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */,
-				06A172821FA5D3770048A89C /* LZMA2Decoder.swift */,
+				06A172871FA5DC460048A89C /* LZMAConstants.swift */,
 				069D0FF91E0D6CE900D8AA87 /* LZMALenDecoder.swift */,
 				069D0FF41E0D6CD000D8AA87 /* LZMABitTreeDecoder.swift */,
 				069D0FEF1E0D6CB600D8AA87 /* LZMARangeDecoder.swift */,
@@ -878,6 +875,16 @@
 			path = Answers;
 			sourceTree = "<group>";
 		};
+		06A1728C1FA5DCF00048A89C /* LZMA2 */ = {
+			isa = PBXGroup;
+			children = (
+				06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */,
+				06CDFCB11F111DEC00292758 /* LZMA2Error.swift */,
+				06A172821FA5D3770048A89C /* LZMA2Decoder.swift */,
+			);
+			path = LZMA2;
+			sourceTree = "<group>";
+		};
 		06A3933D1DE070B500182E12 /* Service */ = {
 			isa = PBXGroup;
 			children = (
@@ -932,6 +939,7 @@
 				0680B4C11F88142D00C5F253 /* Deflate */,
 				0680B4C31F8814C400C5F253 /* BZip2 */,
 				0680B4C41F8814EB00C5F253 /* LZMA */,
+				06A1728C1FA5DCF00048A89C /* LZMA2 */,
 				0680B4C61F88151400C5F253 /* XZ */,
 				06C936831F881A0B008BBF0E /* GZip */,
 				06C936841F881A28008BBF0E /* Zlib */,
