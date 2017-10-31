@@ -14,7 +14,7 @@ struct XZBlock {
         return bytes.count
     }
 
-    init(_ blockHeaderSize: Int, _ pointerData: DataWithPointer) throws {
+    init(_ blockHeaderSize: Int, _ pointerData: DataWithPointer, _ checkSize: Int) throws {
         let blockHeaderStartIndex = pointerData.index - 1
         guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
             else { throw XZError.wrongFieldValue }
@@ -97,7 +97,7 @@ struct XZBlock {
         }
 
         self.bytes = out
-        self.unpaddedSize = unpaddedSize
+        self.unpaddedSize = unpaddedSize + checkSize
     }
 
 }

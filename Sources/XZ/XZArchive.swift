@@ -71,16 +71,15 @@ public class XZArchive: Archive {
         let streamHeader = try XZStreamHeader(pointerData)
 
         // BLOCKS AND INDEX
-        /// Zero value of blockHeaderSize means that we encountered INDEX.
         var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
         var indexSize = -1
         while true {
             let blockHeaderSize = pointerData.byte().toInt()
-            if blockHeaderSize == 0 {
+            if blockHeaderSize == 0 { /// Zero value of blockHeaderSize means that we've encountered INDEX.
                 indexSize = try processIndex(blockInfos, pointerData)
                 break
             } else {
-                let block = try XZBlock(blockHeaderSize, pointerData)
+                let block = try XZBlock(blockHeaderSize, pointerData, streamHeader.checkType.size)
                 out.append(contentsOf: block.bytes)
                 switch streamHeader.checkType {
                 case .none:
@@ -96,7 +95,7 @@ public class XZArchive: Archive {
                 case .sha256:
                     throw XZError.checkTypeSHA256
                 }
-                blockInfos.append((block.unpaddedSize + streamHeader.checkType.size, block.uncompressedSize))
+                blockInfos.append((block.unpaddedSize, block.uncompressedSize))
             }
         }
 
