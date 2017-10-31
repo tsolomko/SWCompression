@@ -82,25 +82,21 @@ public class XZArchive: Archive {
             } else {
                 let block = try XZBlock(blockHeaderSize, pointerData)
                 out.append(contentsOf: block.bytes)
-                let checkSize: Int
                 switch streamHeader.checkType {
                 case .none:
-                    checkSize = 0
                     break
                 case .crc32:
-                    checkSize = 4
                     let check = pointerData.uint32()
                     guard CheckSums.crc32(block.bytes) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
                 case .crc64:
-                    checkSize = 8
                     let check = pointerData.uint64()
                     guard CheckSums.crc64(block.bytes) == check
                         else { throw XZError.wrongCheck(Data(bytes: out)) }
                 case .sha256:
                     throw XZError.checkTypeSHA256
                 }
-                blockInfos.append((block.unpaddedSize + checkSize, block.uncompressedSize))
+                blockInfos.append((block.unpaddedSize + streamHeader.checkType.size, block.uncompressedSize))
             }
         }
 
