@@ -72,7 +72,8 @@ public class ZipContainer: Container {
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
-                fileBytes = try BZip2.decompress(bitReader)
+                // TODO: Remove `toArray`.
+                fileBytes = try BZip2.decompress(bitReader).toArray(type: UInt8.self)
                 bitReader.align()
                 pointerData.index = bitReader.index
             #else
