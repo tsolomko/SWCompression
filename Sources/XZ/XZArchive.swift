@@ -66,7 +66,7 @@ public class XZArchive: Archive {
     }
 
     private static func processStream(_ pointerData: DataWithPointer) throws -> Data {
-        var out: [UInt8] = []
+        var out = Data()
 
         let streamHeader = try XZStreamHeader(pointerData)
 
@@ -80,18 +80,18 @@ public class XZArchive: Archive {
                 break
             } else {
                 let block = try XZBlock(blockHeaderSize, pointerData, streamHeader.checkType.size)
-                out.append(contentsOf: block.bytes)
+                out.append(block.data)
                 switch streamHeader.checkType {
                 case .none:
                     break
                 case .crc32:
                     let check = pointerData.uint32()
-                    guard CheckSums.crc32(block.bytes) == check
-                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                    guard CheckSums.crc32(block.data) == check
+                        else { throw XZError.wrongCheck(out) }
                 case .crc64:
                     let check = pointerData.uint64()
-                    guard CheckSums.crc64(block.bytes) == check
-                        else { throw XZError.wrongCheck(Data(bytes: out)) }
+                    guard CheckSums.crc64(block.data) == check
+                        else { throw XZError.wrongCheck(out) }
                 case .sha256:
                     throw XZError.checkTypeSHA256
                 }
@@ -102,7 +102,7 @@ public class XZArchive: Archive {
         // STREAM FOOTER
         try processFooter(streamHeader, indexSize, pointerData)
 
-        return Data(bytes: out)
+        return out
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],

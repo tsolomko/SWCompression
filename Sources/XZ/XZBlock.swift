@@ -7,11 +7,11 @@ import Foundation
 
 struct XZBlock {
 
-    let bytes: [UInt8]
+    let data: Data
     let unpaddedSize: Int
 
     var uncompressedSize: Int {
-        return bytes.count
+        return data.count
     }
 
     init(_ blockHeaderSize: Int, _ pointerData: DataWithPointer, _ checkSize: Int) throws {
@@ -35,7 +35,7 @@ struct XZBlock {
         /// Should match the size of data after decompression.
         let uncompressedSize = blockFlags & 0x80 != 0 ? try pointerData.multiByteDecode() : -1
 
-        var filters: [(DataWithPointer) throws -> [UInt8]] = []
+        var filters: [(DataWithPointer) throws -> Data] = []
         for _ in 0..<filtersCount {
             let filterID = try pointerData.multiByteDecode()
             guard UInt64(filterID) < 0x4000000000000000
@@ -46,12 +46,12 @@ struct XZBlock {
                 _ = try pointerData.multiByteDecode()
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = pointerData.byte()
-                let closure = { (dwp: DataWithPointer) -> [UInt8] in
+                let closure = { (dwp: DataWithPointer) -> Data in
                     let decoder = try LZMA2Decoder(pointerData)
                     try decoder.setDictionarySize(filterPropeties)
 
                     try decoder.decode()
-                    return decoder.out
+                    return Data(bytes: decoder.out)
                 }
                 filters.append(closure)
             } else {
@@ -75,8 +75,8 @@ struct XZBlock {
         var intResult = pointerData
         let compressedDataStart = pointerData.index
         for filterIndex in 0..<filtersCount - 1 {
-            var arrayResult = try filters[filtersCount.toInt() - filterIndex.toInt() - 1](intResult)
-            intResult = DataWithPointer(array: &arrayResult)
+            let intData = try filters[filtersCount.toInt() - filterIndex.toInt() - 1](intResult)
+            intResult = DataWithPointer(data: intData)
         }
         guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart
             else { throw XZError.wrongDataSize }
@@ -96,7 +96,7 @@ struct XZBlock {
             }
         }
 
-        self.bytes = out
+        self.data = out
         self.unpaddedSize = unpaddedSize + checkSize
     }
 
