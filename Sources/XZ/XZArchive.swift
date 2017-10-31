@@ -8,13 +8,6 @@ import Foundation
 /// Provides unarchive function for XZ archives.
 public class XZArchive: Archive {
 
-    enum CheckType: Int {
-        case none = 0x00
-        case crc32 = 0x01
-        case crc64 = 0x04
-        case sha256 = 0x0A
-    }
-
     private struct Block {
 
         let bytes: [UInt8]
@@ -27,16 +20,13 @@ public class XZArchive: Archive {
     }
 
     /**
-     Unarchives XZ archive.
-     Archives with multiple streams are supported,
+     Unarchives XZ archive. Archives with multiple streams are supported,
      but uncompressed data from each stream will be combined into single `Data` object.
 
      If data passed is not actually XZ archive, `XZError` will be thrown.
-     Particularly, if filters other than LZMA2 are used in archive,
-     then `XZError.wrongFilter` will be thrown.
+     Particularly, if filters other than LZMA2 are used in archive, then `XZError.wrongFilter` will be thrown.
 
-     If an error happens during LZMA2 decompression,
-     then `LZMAError` or `LZMA2Error` will be thrown.
+     If an error happens during LZMA2 decompression, then `LZMAError` or `LZMA2Error` will be thrown.
 
      - Parameter archive: Data archived using XZ format.
 
@@ -89,8 +79,7 @@ public class XZArchive: Archive {
     private static func processStream(_ pointerData: DataWithPointer) throws -> Data {
         var out: [UInt8] = []
 
-        // STREAM HEADER
-        let streamHeader = try processStreamHeader(pointerData)
+        let streamHeader = try XZStreamHeader(pointerData)
 
         // BLOCKS AND INDEX
         /// Zero value of blockHeaderSize means that we encountered INDEX.
@@ -130,31 +119,6 @@ public class XZArchive: Archive {
         try processFooter(streamHeader, indexSize, pointerData)
 
         return Data(bytes: out)
-    }
-
-    private static func processStreamHeader(_ pointerData: DataWithPointer) throws
-        -> (checkType: CheckType, flagsCRC: UInt32) {
-        // Check magic number.
-        guard pointerData.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
-            else { throw XZError.wrongMagic }
-
-        let flagsBytes = pointerData.bytes(count: 2)
-
-        // First, we need to check for corruption in flags,
-        //  so we compare CRC32 of flags to the value stored in archive.
-        let flagsCRC = pointerData.uint32()
-        guard CheckSums.crc32(flagsBytes) == flagsCRC
-            else { throw XZError.wrongInfoCRC }
-
-        // If data is not corrupted, then some bits must be equal to zero.
-        guard flagsBytes[0] == 0 && flagsBytes[1] & 0xF0 == 0
-            else { throw XZError.fieldReservedValue }
-
-        // Four bits of second flags byte indicate type of redundancy check.
-        guard let checkType = CheckType(rawValue: flagsBytes[1].toInt() & 0xF)
-            else { throw XZError.fieldReservedValue }
-
-        return (checkType, flagsCRC)
     }
 
     private static func processBlock(_ blockHeaderSize: Int, _ pointerData: DataWithPointer) throws -> Block {
@@ -279,8 +243,7 @@ public class XZArchive: Archive {
         return indexSize + 4
     }
 
-    private static func processFooter(_ streamHeader: (checkType: CheckType, flagsCRC: UInt32),
-                                      _ indexSize: Int,
+    private static func processFooter(_ streamHeader: XZStreamHeader, _ indexSize: Int,
                                       _ pointerData: DataWithPointer) throws {
         let footerCRC = pointerData.uint32()
         /// Indicates the size of Index field. Should match its real size.
