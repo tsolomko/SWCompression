@@ -12,6 +12,19 @@ struct XZStreamHeader {
         case crc32 = 0x01
         case crc64 = 0x04
         case sha256 = 0x0A
+
+        var size: Int {
+            switch self {
+            case .none:
+                return 0
+            case .crc32:
+                return 4
+            case .crc64:
+                return 8
+            case .sha256:
+                return 32
+            }
+        }
     }
 
     let checkType: CheckType
