@@ -45,9 +45,9 @@ struct CheckSums {
         return ~crc
     }
 
-    static func crc64(_ array: [UInt8]) -> UInt64 {
+    static func crc64(_ data: Data) -> UInt64 {
         var crc: UInt64 = ~0
-        for byte in array {
+        for byte in data {
             let index = (crc & 0xFF) ^ (UInt64(byte))
             crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingIfNeeded: index))] ^ (crc >> 8)
         }
