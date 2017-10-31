@@ -160,6 +160,10 @@
 		064F722C1F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		064F722F1F1E63D800017297 /* test1.7z in Resources */ = {isa = PBXBuildFile; fileRef = 064F722E1F1E63D800017297 /* test1.7z */; };
 		064F72311F1E63E200017297 /* 7zTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72301F1E63E200017297 /* 7zTests.swift */; };
+		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
+		0651461F1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
+		065146201FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
+		065146211FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
 		0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
 		0651FEC31F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
 		0651FEC41F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
@@ -520,6 +524,7 @@
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		064F722E1F1E63D800017297 /* test1.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.7z; sourceTree = "<group>"; };
 		064F72301F1E63E200017297 /* 7zTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zTests.swift; sourceTree = "<group>"; };
+		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
 		0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerEntryType+Tar.swift"; sourceTree = "<group>"; };
 		0655693F1DC659FF00A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0655694C1DC65A8000A47E66 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -810,6 +815,7 @@
 			children = (
 				06E2346B1E068E9600F18798 /* XZArchive.swift */,
 				061C06201F0E89D900832F0C /* XZError.swift */,
+				0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */,
 				06CC3FE11F8AAF3100BD576D /* DataWithPointer+XZ.swift */,
 			);
 			path = XZ;
@@ -1494,6 +1500,7 @@
 				06CC3FE31F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */,
 				065D0ADD1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276E01F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
+				0651461F1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
 				06E2346D1E068E9600F18798 /* XZArchive.swift in Sources */,
 				06CDFC9F1F111D2600292758 /* Deflate+Compress.swift in Sources */,
 				0620F4AF1F8E246E001C9B7A /* Container.swift in Sources */,
@@ -1586,6 +1593,7 @@
 				06CC3FE41F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */,
 				065D0ADE1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276E11F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
+				065146201FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
 				06E2346E1E068E9600F18798 /* XZArchive.swift in Sources */,
 				06CDFCA01F111D2600292758 /* Deflate+Compress.swift in Sources */,
 				0620F4B01F8E246E001C9B7A /* Container.swift in Sources */,
@@ -1678,6 +1686,7 @@
 				06CC3FE51F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */,
 				065D0ADF1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276E21F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
+				065146211FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
 				06E2346F1E068E9600F18798 /* XZArchive.swift in Sources */,
 				06CDFCA11F111D2600292758 /* Deflate+Compress.swift in Sources */,
 				0620F4B11F8E246E001C9B7A /* Container.swift in Sources */,
@@ -1770,6 +1779,7 @@
 				06CC3FE21F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */,
 				065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
+				0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
 				06E2346C1E068E9600F18798 /* XZArchive.swift in Sources */,
 				06CDFC9E1F111D2600292758 /* Deflate+Compress.swift in Sources */,
 				0620F4AE1F8E246E001C9B7A /* Container.swift in Sources */,
