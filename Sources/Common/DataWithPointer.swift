@@ -12,7 +12,7 @@ class DataWithPointer {
     var index: Int
 
     var isAtTheEnd: Bool {
-        return self.size == self.index
+        return self.data.endIndex == self.index
     }
 
     var previousByte: UInt8 {
