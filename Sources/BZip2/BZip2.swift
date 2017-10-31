@@ -23,12 +23,12 @@ public class BZip2: DecompressionAlgorithm {
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = BitReader(data: data, bitOrder: .straight)
-        return Data(bytes: try decompress(bitReader))
+        return try decompress(bitReader)
     }
 
-    static func decompress(_ bitReader: BitReader) throws -> [UInt8] {
+    static func decompress(_ bitReader: BitReader) throws -> Data {
         /// An array for storing output data
-        var out = [UInt8]()
+        var out = Data()
 
         let magic = bitReader.uint16()
         guard magic == 0x5a42 else { throw BZip2Error.wrongMagic }
@@ -51,17 +51,15 @@ public class BZip2: DecompressionAlgorithm {
             let blockCRC32 = UInt32(truncatingIfNeeded: bitReader.intFromBits(count: 32))
 
             if blockType == 0x314159265359 {
-                let blockBytes = try decode(bitReader)
-                guard CheckSums.bzip2CRC32(blockBytes) == blockCRC32
-                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
-                for byte in blockBytes {
-                    out.append(byte)
-                }
+                let blockData = try decode(bitReader)
+                guard CheckSums.bzip2CRC32(blockData) == blockCRC32
+                    else { throw BZip2Error.wrongCRC(out) }
+                out.append(blockData)
                 totalCRC = (totalCRC << 1) | (totalCRC >> 31)
                 totalCRC ^= blockCRC32
             } else if blockType == 0x177245385090 {
                 guard totalCRC == blockCRC32
-                    else { throw BZip2Error.wrongCRC(Data(bytes: out)) }
+                    else { throw BZip2Error.wrongCRC(out) }
                 break
             } else {
                 throw BZip2Error.wrongBlockType
@@ -71,7 +69,7 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decode(_ bitReader: BitReader) throws -> [UInt8] {
+    private static func decode(_ bitReader: BitReader) throws -> Data {
         let isRandomized = bitReader.bit()
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }
@@ -223,7 +221,7 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
 
-        return out
+        return Data(bytes: out)
     }
 
 }
