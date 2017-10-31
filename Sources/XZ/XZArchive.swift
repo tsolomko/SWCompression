@@ -65,6 +65,41 @@ public class XZArchive: Archive {
         return result
     }
 
+    public static func splitUnarchive(archive data: Data) throws -> [Data] {
+        // Same code as in `unarchive(archive:)` but with different type of `result`.
+        let pointerData = DataWithPointer(data: data)
+
+        var result = [Data]()
+        streamLoop: while !pointerData.isAtTheEnd {
+            result.append(try processStream(pointerData))
+
+            guard !pointerData.isAtTheEnd else { break streamLoop }
+
+            var paddingBytes = 0
+            while true {
+                let byte = pointerData.byte()
+                if byte != 0 {
+                    if paddingBytes % 4 != 0 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break
+                    }
+                }
+                if pointerData.isAtTheEnd {
+                    if byte != 0 || paddingBytes % 4 != 3 {
+                        throw XZError.wrongPadding
+                    } else {
+                        break streamLoop
+                    }
+                }
+                paddingBytes += 1
+            }
+            pointerData.index -= 1
+        }
+
+        return result
+    }
+
     private static func processStream(_ pointerData: DataWithPointer) throws -> Data {
         var out = Data()
 
