@@ -82,6 +82,7 @@ class XZTests: XCTestCase {
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: testData)
+        let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
@@ -90,7 +91,9 @@ class XZTests: XCTestCase {
                 return
             }
 
-            answerData.append(try Data(contentsOf: answerURL, options: .mappedIfSafe))
+            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
+            answerData.append(currentAnswerData)
+            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
 
         XCTAssertEqual(decompressedData, answerData)
@@ -109,6 +112,7 @@ class XZTests: XCTestCase {
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: testData)
+        let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
@@ -117,7 +121,9 @@ class XZTests: XCTestCase {
                 return
             }
 
-            answerData.append(try Data(contentsOf: answerURL, options: .mappedIfSafe))
+            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
+            answerData.append(currentAnswerData)
+            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
 
         XCTAssertEqual(decompressedData, answerData)
