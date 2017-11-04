@@ -16,11 +16,25 @@ class XZCommand: Command {
     let outputPath = OptionalParameter()
 
     func execute() throws {
-        let fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
-                        options: .mappedIfSafe)
-        let outputPath = self.outputPath.value ?? FileManager.default.currentDirectoryPath
+        let inputURL = URL(fileURLWithPath: self.archive.value)
+
+        let outputURL: URL
+        if let outputPath = self.outputPath.value {
+            outputURL = URL(fileURLWithPath: outputPath)
+        } else if inputURL.pathExtension == "xz" {
+            outputURL = inputURL.deletingPathExtension()
+        } else {
+            print("""
+                    ERROR: Unable to get output path. \
+                    No output parameter was specified. \
+                    Extension was: \(inputURL.pathExtension)
+                    """)
+            exit(1)
+        }
+
+        let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: fileData)
-        try decompressedData.write(to: URL(fileURLWithPath: outputPath))
+        try decompressedData.write(to: outputURL)
     }
 
 }
