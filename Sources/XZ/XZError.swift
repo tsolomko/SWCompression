@@ -32,7 +32,7 @@ public enum XZError: Error {
      Computed checksum of uncompressed data doesn't match the value stored in the archive.
      Associated value of the error contains already decompressed data.
      */
-    case wrongCheck(Data)
+    case wrongCheck([Data])
     /// Padding (null-bytes appended to an archive's structure) is incorrect.
     case wrongPadding
     /// Either null byte encountered or exceeded maximum amount bytes during reading multi byte number.
