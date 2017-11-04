@@ -34,7 +34,7 @@ public class BZip2: DecompressionAlgorithm {
         guard magic == 0x5a42 else { throw BZip2Error.wrongMagic }
 
         let method = bitReader.byte()
-        guard method == 104 else { throw BZip2Error.wrongCompressionMethod }
+        guard method == 104 else { throw BZip2Error.wrongVersion }
 
         var blockSize = bitReader.byte()
         if blockSize >= 49 && blockSize <= 57 {
