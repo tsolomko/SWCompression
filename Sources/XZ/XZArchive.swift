@@ -40,9 +40,7 @@ public class XZArchive: Archive {
             guard !streamResult.checkError
                 else { throw XZError.wrongCheck([result]) }
 
-            if try processPadding(pointerData) {
-                break
-            }
+            try processPadding(pointerData)
         }
 
         return result
@@ -59,9 +57,7 @@ public class XZArchive: Archive {
             guard !streamResult.checkError
                 else { throw XZError.wrongCheck(result) }
 
-            if try processPadding(pointerData) {
-                break
-            }
+            try processPadding(pointerData)
         }
 
         return result
@@ -170,8 +166,9 @@ public class XZArchive: Archive {
     }
 
     /// Returns `true` if end of archive is reached, `false` otherwise.
-    private static func processPadding(_ pointerData: DataWithPointer) throws -> Bool {
-        guard !pointerData.isAtTheEnd else { return true }
+    private static func processPadding(_ pointerData: DataWithPointer) throws {
+        guard !pointerData.isAtTheEnd
+            else { return }
 
         var paddingBytes = 0
         while true {
@@ -187,13 +184,12 @@ public class XZArchive: Archive {
                 if byte != 0 || paddingBytes % 4 != 3 {
                     throw XZError.wrongPadding
                 } else {
-                    return true
+                    return
                 }
             }
             paddingBytes += 1
         }
         pointerData.index -= 1
-        return false
     }
 
 }
