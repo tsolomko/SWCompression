@@ -17,6 +17,8 @@ public class GzipArchive: Archive {
         /// Unarchived data from a member.
         public let data: Data
 
+        internal let crcError: Bool
+
     }
 
     /**
@@ -40,17 +42,17 @@ public class GzipArchive: Archive {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = BitReader(data: data, bitOrder: .reversed)
 
-        return try processMember(bitReader).data
+        let member = try processMember(bitReader)
+
+        guard !member.crcError
+            else { throw GzipError.wrongCRC([member]) }
+
+        return member.data
     }
 
     /**
      Unarchives multi-member GZip archive.
      Multi-member GZip archives are essentially several GZip archives following each other in a single file.
-
-     - Note: `wrongCRC` error contains only last processed member's data as their associated value
-     instead of all successfully processed members.
-     This is a known issue and it will be fixed in future major version
-     because solution requires backwards-incompatible API changes.
 
      - Parameter archive: GZip archive with one or more members.
 
@@ -66,7 +68,12 @@ public class GzipArchive: Archive {
 
         var result = [Member]()
         while !bitReader.isAtTheEnd {
-            result.append(try processMember(bitReader))
+            let member = try processMember(bitReader)
+
+            result.append(member)
+
+            guard !member.crcError
+                else { throw GzipError.wrongCRC(result) }
         }
 
         return result
@@ -76,16 +83,14 @@ public class GzipArchive: Archive {
         let header = try GzipHeader(bitReader)
 
         let memberData = Data(bytes: try Deflate.decompress(bitReader))
-
         bitReader.align()
 
         let crc32 = bitReader.uint32()
-        guard CheckSums.crc32(memberData) == crc32 else { throw GzipError.wrongCRC(memberData) }
-
         let isize = bitReader.uint64(count: 4)
         guard UInt64(memberData.count) % (UInt64(1) << 32) == isize else { throw GzipError.wrongISize }
 
-        return Member(header: header, data: memberData)
+        return Member(header: header, data: memberData,
+                      crcError: CheckSums.crc32(memberData) != crc32)
     }
 
     /**

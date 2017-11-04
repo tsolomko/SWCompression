@@ -22,10 +22,14 @@ public enum GzipError: Error {
     /// Computed CRC of archive's header doesn't match the value stored in archive.
     case wrongHeaderCRC
     /**
-     Computed checksum of uncompressed data doesn't match the value stored in archive.
-     Associated value of the error contains already decompressed data.
+     Computed checksum of uncompressed data doesn't match the value stored in the archive.
+     Associated value of the error contains `GzipArchive.Member`s for all already decompressed data:
+     + if `unarchive` function was called then associated array will have only one element,
+     since this function always processes only first member of archive.
+     + if `multiUnarchive` function was called then associated array will have an element
+     for each already decompressed member, including the one with mismatching checksum.
      */
-    case wrongCRC(Data)
+    case wrongCRC([GzipArchive.Member])
     /// Computed 'isize' didn't match the value stored in the archive.
     case wrongISize
     /// Either specified file name or comment cannot be encoded using ISO Latin-1 encoding.
