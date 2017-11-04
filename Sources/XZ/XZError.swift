@@ -16,7 +16,7 @@ public enum XZError: Error {
      One of the special fields in archive has an incorrect value,
      which can mean both damaged archive or that archive uses a newer version of XZ format.
      */
-    case wrongFieldValue
+    case wrongField
     /// Checksum of one of the fields of archive doesn't match the value stored in archive.
     case wrongInfoCRC
     /// Filter used in archvie is unsupported.

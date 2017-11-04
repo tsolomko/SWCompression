@@ -25,7 +25,7 @@ struct XZBlock {
          */
         let filtersCount = blockFlags & 0x03 + 1
         guard blockFlags & 0x3C == 0
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
 
         /// Should match size of compressed data.
         let compressedSize = blockFlags & 0x40 != 0 ? try pointerData.multiByteDecode() : -1

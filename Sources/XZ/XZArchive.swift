@@ -145,12 +145,12 @@ public class XZArchive: Archive {
         let indexStartIndex = pointerData.index - 1
         let recordsCount = try pointerData.multiByteDecode()
         guard recordsCount == blockInfos.count
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
 
         for blockInfo in blockInfos {
             let unpaddedSize = try pointerData.multiByteDecode()
             guard unpaddedSize == blockInfo.unpaddedSize
-                else { throw XZError.wrongFieldValue }
+                else { throw XZError.wrongField }
 
             let uncompSize = try pointerData.multiByteDecode()
             guard uncompSize == blockInfo.uncompSize
@@ -189,15 +189,15 @@ public class XZArchive: Archive {
             else { throw XZError.wrongInfoCRC }
 
         guard backwardSize == indexSize
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
 
         // Flags in the footer should be the same as in the header.
         guard streamFooterFlags & 0xFF == 0
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
         guard (streamFooterFlags & 0xF00) >> 8 == streamHeader.checkType.rawValue
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
         guard streamFooterFlags & 0xF000 == 0
-            else { throw XZError.wrongFieldValue }
+            else { throw XZError.wrongField }
 
         // Check footer's magic number
         guard pointerData.bytes(count: 2) == [0x59, 0x5A]
