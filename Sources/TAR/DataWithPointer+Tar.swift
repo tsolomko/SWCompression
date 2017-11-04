@@ -7,7 +7,7 @@ import Foundation
 
 extension DataWithPointer {
 
-    func nullEndedBuffer(cutoff: Int) -> [UInt8] {
+    private func nullEndedBuffer(cutoff: Int) -> [UInt8] {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
@@ -30,7 +30,7 @@ extension DataWithPointer {
         }
     }
 
-    func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
+    private func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
