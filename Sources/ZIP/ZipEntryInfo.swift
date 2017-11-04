@@ -8,7 +8,7 @@ import Foundation
 public struct ZipEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
-    
+
     /// Name of the file or directory.
     public let name: String?
 
@@ -38,9 +38,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     public let isTextFile: Bool
 
     public let fileSystemType: FileSystemType?
-    
+
     public let compressionMethod: CompressionMethod
-    
+
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
@@ -49,7 +49,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         // Load and save Central Directory entry and Local Header.
         let cdEntry = try ZipCentralDirectoryEntry(data, offset)
         self.cdEntry = cdEntry
-        
+
         let localHeader = try ZipLocalHeader(data, Int(truncatingIfNeeded: cdEntry.localHeaderOffset))
         try localHeader.validate(with: cdEntry, currentDiskNumber)
         self.localHeader = localHeader
@@ -137,7 +137,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
         // File system type of machine where this container was created.
         self.fileSystemType = FileSystemType(cdEntry.versionMadeBy)
-        
+
         // Compression method.
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
     }

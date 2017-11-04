@@ -159,7 +159,7 @@ public class XZArchive: Archive {
             (streamFooterFlags & 0xF00) >> 8 == streamHeader.checkType.rawValue &&
             streamFooterFlags & 0xF000 == 0
             else { throw XZError.wrongField }
-        
+
         // Check footer's magic number
         guard pointerData.bytes(count: 2) == [0x59, 0x5A]
             else { throw XZError.wrongMagic }

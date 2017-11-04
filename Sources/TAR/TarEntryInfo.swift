@@ -30,10 +30,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
     public let permissions: Permissions?
 
     // MARK: TAR specific
-    
+
     /// Owner's ID.
     public let ownerID: Int?
-    
+
     /// Owner's group ID.
     public let groupID: Int?
 
@@ -79,7 +79,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Sometimes file mode also contains unix type, so we need to filter it out.
         let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
-        
+
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.wrongField }
@@ -146,7 +146,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
         self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
         self.isLongLinkName = fileTypeIndicator == 75 // "K"
-        self.isLongName =  fileTypeIndicator == 76 // "L"
+        self.isLongName = fileTypeIndicator == 76 // "L"
         self.type = ContainerEntryType(fileTypeIndicator)
 
         // Linked file name
@@ -188,14 +188,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Set `name` and `linkName` to values from PAX or GNU format if possible.
         self.name = ((local?.entries["path"] ?? global?.entries["path"]) ?? longName) ?? name
         self.linkName = ((local?.entries["linkpath"] ?? global?.entries["linkpath"]) ?? longLinkName) ?? linkName
-        
+
         // Set additional properties from PAX extended headers.
         if let atimeString = local?.entries["atime"] ?? global?.entries["atime"], let atime = Double(atimeString) {
             accessTime = Date(timeIntervalSince1970: atime)
         } else {
             accessTime = nil
         }
-        
+
         if let ctimeString = local?.entries["ctime"] ?? global?.entries["ctime"], let ctime = Double(ctimeString) {
             creationTime = Date(timeIntervalSince1970: ctime)
         } else {
@@ -203,7 +203,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         charset = local?.entries["charset"] ?? global?.entries["charset"]
-        comment =  local?.entries["comment"] ?? global?.entries["comment"]
+        comment = local?.entries["comment"] ?? global?.entries["comment"]
     }
 
 }

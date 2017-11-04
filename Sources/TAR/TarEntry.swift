@@ -19,4 +19,3 @@ public struct TarEntry: ContainerEntry {
     }
 
 }
-

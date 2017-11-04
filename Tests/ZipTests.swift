@@ -17,7 +17,7 @@ class ZipTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-    
+
         #if LONG_TESTS
             _ = try ZipContainer.open(container: testData)
         #else

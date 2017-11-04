@@ -44,22 +44,22 @@ public class TarContainer: Container {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
-        
+
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
-        
+
         var entries = [TarEntryInfo]()
-        
+
         var lastGlobalExtendedHeader: TarExtendedHeader?
         var lastLocalExtendedHeader: TarExtendedHeader?
         var longLinkName: String?
         var longName: String?
 
         // Container ends with two zero-filled records.
-        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {            
+        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
-            
+
             if info.isGlobalExtendedHeader {
                 let dataStartIndex = info.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + info.size!
@@ -93,7 +93,7 @@ public class TarContainer: Container {
                 longLinkName = nil
             }
         }
-        
+
         return entries
     }
 

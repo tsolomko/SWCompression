@@ -160,15 +160,15 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(entries.isEmpty, true)
     }
-    
+
     func testBigContainer() throws {
         guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: TarTests.testType) else {
             XCTFail("Unable to get test's URL.")
             return
         }
-        
+
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        
+
         #if LONG_TESTS
             _ = try TarContainer.open(container: testData)
         #else

@@ -6,7 +6,7 @@ let package = Package(
     products: [
         .library(
             name: "SWCompression",
-            targets: ["SWCompression"]),
+            targets: ["SWCompression"])
     ],
     dependencies: [
         .package(url: "https://github.com/jakeheis/SwiftCLI", from: "4.0.0")

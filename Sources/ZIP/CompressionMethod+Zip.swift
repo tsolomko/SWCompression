@@ -6,7 +6,7 @@
 import Foundation
 
 extension CompressionMethod {
-    
+
     init(_ compression: UInt16) {
         switch compression {
         case 0:
@@ -21,7 +21,5 @@ extension CompressionMethod {
             self = .other
         }
     }
-    
+
 }
-
-
