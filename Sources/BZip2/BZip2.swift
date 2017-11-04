@@ -52,9 +52,9 @@ public class BZip2: DecompressionAlgorithm {
 
             if blockType == 0x314159265359 {
                 let blockData = try decode(bitReader)
+                out.append(blockData)
                 guard CheckSums.bzip2CRC32(blockData) == blockCRC32
                     else { throw BZip2Error.wrongCRC(out) }
-                out.append(blockData)
                 totalCRC = (totalCRC << 1) | (totalCRC >> 31)
                 totalCRC ^= blockCRC32
             } else if blockType == 0x177245385090 {
