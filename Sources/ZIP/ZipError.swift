@@ -32,7 +32,7 @@ public enum ZipError: Error {
      Computed checksum of entry's data doesn't match the value stored in container.
      Associated value of the error contains entry's data.
      */
-    case wrongCRC32(Data)
+    case wrongCRC(Data)
     /// Either entry's comment or file name cannot be processed using UTF-8 encoding.
     case wrongTextField
 }

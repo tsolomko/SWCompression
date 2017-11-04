@@ -122,7 +122,7 @@ public class ZipContainer: Container {
         guard compSize == realCompSize && uncompSize == fileBytes.count
             else { throw ZipError.wrongSize }
         guard crc32 == CheckSums.crc32(fileBytes)
-            else { throw ZipError.wrongCRC32(Data(bytes: fileBytes)) }
+            else { throw ZipError.wrongCRC(Data(bytes: fileBytes)) }
 
         return Data(bytes: fileBytes)
     }
