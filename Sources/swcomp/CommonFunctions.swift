@@ -49,11 +49,15 @@ func printInfo(_ entries: [ContainerEntryInfo]) {
             print("Type: unknown")
         }
 
+        if let tarEntry = entry as? TarEntryInfo {
+            if tarEntry.type == .symbolicLink {
+                print("Linked path: \(tarEntry.linkName!)")
+            }
+        }
+
         if let size = entry.size {
             print("Size: \(size) bytes")
         }
-
-        // TODO: linkName in some cases.
 
         if let mtime = entry.modificationTime {
             print("Mtime: \(mtime)")
@@ -70,8 +74,6 @@ func printInfo(_ entries: [ContainerEntryInfo]) {
         if let permissions = entry.permissions?.rawValue {
             print(String(format: "Permissions: %o", permissions))
         }
-
-        // TODO: Additional properties in some cases.
 
         print("------------------\n")
     }
