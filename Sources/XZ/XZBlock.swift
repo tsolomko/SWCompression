@@ -14,11 +14,9 @@ struct XZBlock {
         return data.count
     }
 
-    init(_ blockHeaderSize: Int, _ pointerData: DataWithPointer, _ checkSize: Int) throws {
+    init(_ blockHeaderSize: UInt8, _ pointerData: DataWithPointer, _ checkSize: Int) throws {
         let blockHeaderStartIndex = pointerData.index - 1
-        guard blockHeaderSize >= 0x01 && blockHeaderSize <= 0xFF
-            else { throw XZError.wrongFieldValue }
-        let realBlockHeaderSize = (blockHeaderSize + 1) * 4
+        let realBlockHeaderSize = (blockHeaderSize.toInt() + 1) * 4
 
         let blockFlags = pointerData.byte()
         /**

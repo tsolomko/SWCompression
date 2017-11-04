@@ -109,7 +109,7 @@ public class XZArchive: Archive {
         var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
         var indexSize = -1
         while true {
-            let blockHeaderSize = pointerData.byte().toInt()
+            let blockHeaderSize = pointerData.byte()
             if blockHeaderSize == 0 { /// Zero value of blockHeaderSize means that we've encountered INDEX.
                 indexSize = try processIndex(blockInfos, pointerData)
                 break
