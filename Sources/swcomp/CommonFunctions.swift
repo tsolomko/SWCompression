@@ -79,100 +79,113 @@ func printInfo(_ entries: [ContainerEntryInfo]) {
     }
 }
 
-// func write(_ entries: [ContainerEntry], _ outputPath: String, _ verbose: Bool) throws {
-//     let fileManager = FileManager.default
-//     let outputURL = URL(fileURLWithPath: outputPath)
-//     var directoryAttributes = [(attributes: [FileAttributeKey: Any],
-//                                 path: String,
-//                                 log: String)]()
+func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: Bool) throws {
+    let fileManager = FileManager.default
+    let outputURL = URL(fileURLWithPath: outputPath)
 
-//     if verbose {
-//         print("d = directory, f = file, l = symbolic link")
-//     }
+    if verbose {
+        print("d = directory, f = file, l = symbolic link")
+    }
 
-//     for entry in entries {
-//         let attributes = entry.entryAttributes
-//         guard let type = attributes[FileAttributeKey.type] as? FileAttributeType else {
-//             print("ERROR: Not a FileAttributeType type. This error should never happen.")
-//             exit(1)
-//         }
+    var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
 
-//         let isDirectory = type == FileAttributeType.typeDirectory || entry.isDirectory
+    // First, we create directories.
+    for entry in entries where entry.info.type == .directory {
+        guard let entryName = entry.info.name else {
+            print("ERROR: Unable to get entry's name.")
+            exit(1)
+        }
+        let entryFullURL = outputURL.appendingPathComponent(entryName, isDirectory: true)
 
-//         let entryPath = entry.name
-//         let entryFullURL = outputURL.appendingPathComponent(entryPath, isDirectory: isDirectory)
+        if verbose {
+            print("d: \(entryName)")
+        }
+        try fileManager.createDirectory(at: entryFullURL, withIntermediateDirectories: true)
 
-//         if isDirectory {
-//             if verbose {
-//                 print("d: \(entryPath)")
-//             }
-//             try fileManager.createDirectory(at: entryFullURL, withIntermediateDirectories: true)
-//         } else if entry.isLink {
-//             guard let destinationPath = entry.linkPath else {
-//                 print("ERROR: Unable to get destination path for symbolic link \(entryPath).")
-//                 exit(1)
-//             }
-//             let endURL = entryFullURL.deletingLastPathComponent().appendingPathComponent(destinationPath)
-//             if verbose {
-//                 print("l: \(entryPath) -> \(endURL.path)")
-//             }
-//             try fileManager.createSymbolicLink(atPath: entryFullURL.path, withDestinationPath: endURL.path)
-//             // We cannot apply attributes to symbolic link.
-//             continue
-//         } else if type == FileAttributeType.typeRegular {
-//             if verbose {
-//                 print("f: \(entryPath)")
-//             }
-//             let entryData = try entry.data()
-//             try entryData.write(to: entryFullURL)
-//         } else {
-//             print("WARNING: Unknown file type \(type) for entry \(entryPath). Skipping this entry.")
-//             continue
-//         }
+        var attributes = [FileAttributeKey: Any]()
 
-//         var attributesLog = " attributes:"
+        #if !os(Linux) // On linux only permissions attribute is supported.
+            if let mtime = entry.info.modificationTime {
+                attributes[FileAttributeKey.modificationDate] = mtime
+            }
 
-//         var attributesToWrite = [FileAttributeKey: Any]()
+            if let ctime = entry.info.creationTime {
+                attributes[FileAttributeKey.creationDate] = ctime
+            }
+        #endif
 
-//         #if !os(Linux) // On linux only permissions attribute is supported.
-//             if let mtime = attributes[FileAttributeKey.modificationDate] {
-//                 attributesLog += " mtime: \(mtime)"
-//                 attributesToWrite[FileAttributeKey.modificationDate] = mtime
-//             }
+        if let permissions = entry.info.permissions?.rawValue {
+            attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
+        }
 
-//             if let ctime = attributes[FileAttributeKey.creationDate] {
-//                 attributesLog += " ctime: \(ctime)"
-//                 attributesToWrite[FileAttributeKey.creationDate] = ctime
-//             }
+        // We apply attributes to directories later, because extracting files into them changes mtime.
+        directoryAttributes.append((attributes, entryFullURL.path))
+    }
 
-//             if let readOnly = attributes[FileAttributeKey.appendOnly] as? Bool {
-//                 attributesLog += readOnly ? " read-only" : ""
-//                 attributesToWrite[FileAttributeKey.appendOnly] = NSNumber(value: readOnly)
-//             }
-//         #endif
+    // Now, we create the rest of files.
+    for entry in entries where entry.info.type != .directory {
+        guard let entryName = entry.info.name else {
+            print("ERROR: Unable to get entry's name.")
+            exit(1)
+        }
+        let entryFullURL = outputURL.appendingPathComponent(entryName, isDirectory: false)
 
-//         if let permissions = attributes[FileAttributeKey.posixPermissions] as? UInt32 {
-//             attributesLog += String(format: " permissions: %o", permissions)
-//             attributesToWrite[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
-//         }
+        if entry.info.type == .symbolicLink {
+            let destinationPath: String?
+            if let tarEntry = entry as? TarEntry {
+                destinationPath = tarEntry.info.linkName
+            } else {
+                guard let entryData = entry.data else {
+                    print("ERROR: Unable to get destination path for symbolic link \(entryName).")
+                    exit(1)
+                }
+                destinationPath = String(data: entryData, encoding: .utf8)
+            }
+            guard destinationPath != nil else {
+                print("ERROR: Unable to get destination path for symbolic link \(entryName).")
+                exit(1)
+            }
+            let endURL = entryFullURL.deletingLastPathComponent().appendingPathComponent(destinationPath!)
+            if verbose {
+                print("l: \(entryName) -> \(endURL.path)")
+            }
+            try fileManager.createSymbolicLink(atPath: entryFullURL.path, withDestinationPath: endURL.path)
+            // We cannot apply attributes to symbolic link.
+            continue
+        } else if entry.info.type == .regular {
+            if verbose {
+                print("f: \(entryName)")
+            }
+            guard let entryData = entry.data else {
+                print("ERROR: Unable to get data for the entry \(entryName).")
+                exit(1)
+            }
+            try entryData.write(to: entryFullURL)
+        } else {
+            print("WARNING: Unknown file type \(entry.info.type) for entry \(entryName). Skipping this entry.")
+            continue
+        }
 
-//         if !isDirectory {
-//             try fileManager.setAttributes(attributesToWrite, ofItemAtPath: entryFullURL.path)
-//             if verbose {
-//                 print(attributesLog)
-//             }
-//         } else {
-//             // We apply attributes to directories later,
-//             //  because extracting files into them changes mtime.
-//             directoryAttributes.append((attributesToWrite, entryFullURL.path, attributesLog))
-//         }
-//     }
+        var attributes = [FileAttributeKey: Any]()
 
-//     for tuple in directoryAttributes {
-//         try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
-//         if verbose {
-//             print("set for dir: \(tuple.path)", terminator: "")
-//             print(tuple.log)
-//         }
-//     }
-// }
+        #if !os(Linux) // On linux only permissions attribute is supported.
+            if let mtime = entry.info.modificationTime {
+                attributes[FileAttributeKey.modificationDate] = mtime
+            }
+
+            if let ctime = entry.info.creationTime {
+                attributes[FileAttributeKey.creationDate] = ctime
+            }
+        #endif
+
+        if let permissions = entry.info.permissions?.rawValue {
+            attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
+        }
+
+        try fileManager.setAttributes(attributes, ofItemAtPath: entryFullURL.path)
+    }
+
+    for tuple in directoryAttributes {
+        try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
+    }
+}
