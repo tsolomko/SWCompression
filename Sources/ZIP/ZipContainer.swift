@@ -32,15 +32,17 @@ public class ZipContainer: Container {
             if entryInfo.type == .directory {
                 entries.append(ZipEntry(entryInfo, nil))
             } else {
-                let entryData = try ZipContainer.getEntryData(from: data, using: entryInfo)
-                entries.append(ZipEntry(entryInfo, entryData))
+                let entryDataResult = try ZipContainer.getEntryData(from: data, using: entryInfo)
+                entries.append(ZipEntry(entryInfo, entryDataResult.data))
+                guard !entryDataResult.crcError
+                    else { throw ZipError.wrongCRC(entries) }
             }
         }
 
         return entries
     }
 
-    private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> Data {
+    private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> (data: Data, crcError: Bool) {
         let hasDataDescriptor = info.localHeader.generalPurposeBitFlags & 0x08 != 0
 
         // If file has data descriptor, then some values in local header are absent.
@@ -112,7 +114,7 @@ public class ZipContainer: Container {
             if ddSignature != 0x08074b50 {
                 pointerData.index -= 4
             }
-            // Now, let's update from CD with values from data descriptor.
+            // Now, let's update with values from data descriptor.
             crc32 = pointerData.uint32()
             let sizeOfSizeField: UInt64 = info.localHeader.zip64FieldsArePresent ? 8 : 4
             compSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
@@ -121,10 +123,9 @@ public class ZipContainer: Container {
 
         guard compSize == realCompSize && uncompSize == fileBytes.count
             else { throw ZipError.wrongSize }
-        guard crc32 == CheckSums.crc32(fileBytes)
-            else { throw ZipError.wrongCRC(Data(bytes: fileBytes)) }
+        let crcError = crc32 != CheckSums.crc32(fileBytes)
 
-        return Data(bytes: fileBytes)
+        return (Data(bytes: fileBytes), crcError)
     }
 
     public static func info(container data: Data) throws -> [ZipEntryInfo] {

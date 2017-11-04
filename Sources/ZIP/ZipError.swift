@@ -29,10 +29,10 @@ public enum ZipError: Error {
     /// Local header of an entry is inconsistent with Central Directory.
     case wrongLocalHeader
     /**
-     Computed checksum of entry's data doesn't match the value stored in container.
-     Associated value of the error contains entry's data.
+     Computed checksum of entry's data doesn't match the value stored in the archive.
+     Associated value of the error contains `ZipEntry` objects for all already processed entries:
      */
-    case wrongCRC(Data)
+    case wrongCRC([ZipEntry])
     /// Either entry's comment or file name cannot be processed using UTF-8 encoding.
     case wrongTextField
 }
