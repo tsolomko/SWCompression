@@ -214,15 +214,6 @@ Git LFS is also used for storing them which basically is the reason for having t
 Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
 (requires installing git-lfs _locally_ with `--skip-smudge` option to solve the problem).
 
-## Known issues
-
-- `wrongCRC` and `wrongCheck` errors for XZ and GZip multi-member archives
-  contain only last member's data as their associated value instead of all successfully processed members.
-
-Comment: Philosophy for such errors is that by the time these errors are thrown,
-decompression was already performed, so we can still provide the result of decompression to the caller.
-It is intended to fix this problem, but solution requires backwards-incompatible API changes so it is delayed until 4.0 release.
-
 ## Future plans
 
 - Container API rework.
