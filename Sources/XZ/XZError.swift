@@ -12,13 +12,11 @@ import Foundation
 public enum XZError: Error {
     /// Either 'magic' number in header or footer isn't equal to a predefined value.
     case wrongMagic
-    /// One of the fields in archive has an incorrect value.
-    case wrongFieldValue
     /**
-     One of the reserved fields in archive has an unexpected value, which can also mean (apart from damaged archive),
-     that archive uses a newer version of XZ format.
+     One of the special fields in archive has an incorrect value,
+     which can mean both damaged archive or that archive uses a newer version of XZ format.
      */
-    case fieldReservedValue
+    case wrongFieldValue
     /// Checksum of one of the fields of archive doesn't match the value stored in archive.
     case wrongInfoCRC
     /// Filter used in archvie is unsupported.

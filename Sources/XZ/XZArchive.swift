@@ -193,11 +193,11 @@ public class XZArchive: Archive {
 
         // Flags in the footer should be the same as in the header.
         guard streamFooterFlags & 0xFF == 0
-            else { throw XZError.fieldReservedValue }
+            else { throw XZError.wrongFieldValue }
         guard (streamFooterFlags & 0xF00) >> 8 == streamHeader.checkType.rawValue
             else { throw XZError.wrongFieldValue }
         guard streamFooterFlags & 0xF000 == 0
-            else { throw XZError.fieldReservedValue }
+            else { throw XZError.wrongFieldValue }
 
         // Check footer's magic number
         guard pointerData.bytes(count: 2) == [0x59, 0x5A]

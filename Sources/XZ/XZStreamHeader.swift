@@ -46,13 +46,13 @@ struct XZStreamHeader {
 
         // If data is not corrupted, then some bits must be equal to zero.
         guard flagsBytes[0] == 0 && flagsBytes[1] & 0xF0 == 0
-            else { throw XZError.fieldReservedValue }
+            else { throw XZError.wrongFieldValue }
 
         // Four bits of second flags byte indicate type of redundancy check.
         if let checkType = CheckType(rawValue: flagsBytes[1] & 0xF) {
             self.checkType = checkType
         } else {
-            throw XZError.fieldReservedValue
+            throw XZError.wrongFieldValue
         }
     }
 
