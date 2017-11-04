@@ -8,12 +8,18 @@ import Foundation
 /// Represents a GZip archive's header.
 public struct GzipHeader {
 
-    struct Flags {
-        static let ftext: UInt8 = 0x01
-        static let fhcrc: UInt8 = 0x02
-        static let fextra: UInt8 = 0x04
-        static let fname: UInt8 = 0x08
-        static let fcomment: UInt8 = 0x10
+    struct Flags: OptionSet {
+        let rawValue: UInt8
+
+        init(rawValue: UInt8) {
+            self.rawValue = rawValue
+        }
+
+        static let ftext = Flags(rawValue: 0x01)
+        static let fhcrc = Flags(rawValue: 0x02)
+        static let fextra = Flags(rawValue: 0x04)
+        static let fname = Flags(rawValue: 0x08)
+        static let fcomment = Flags(rawValue: 0x10)
     }
 
     /// Compression method of archive. Always `.deflate` for GZip archives.
@@ -36,7 +42,7 @@ public struct GzipHeader {
     /// Comment stored in archive. If archive doesn't contain any comment, then `nil`.
     public let comment: String?
 
-    /// Check if file is likely to be text file or ASCII-file.
+    /// True, if file is likely to be text file or ASCII-file.
     public let isTextFile: Bool
 
     /**
@@ -66,9 +72,11 @@ public struct GzipHeader {
         headerBytes.append(method)
         self.compressionMethod = .deflate
 
-        let flags = pointerData.byte()
-        guard (flags & 0x20 == 0) && (flags & 0x40 == 0) && (flags & 0x80 == 0) else { throw GzipError.wrongFlags }
-        headerBytes.append(flags)
+        let rawFlags = pointerData.byte()
+        guard rawFlags & 0xE0 == 0
+            else { throw GzipError.wrongFlags }
+        let flags = Flags(rawValue: rawFlags)
+        headerBytes.append(rawFlags)
 
         var mtime = 0
         for i in 0..<4 {
@@ -85,10 +93,10 @@ public struct GzipHeader {
         self.osType = FileSystemType(rawOsType)
         headerBytes.append(rawOsType)
 
-        self.isTextFile = flags & Flags.ftext != 0
+        self.isTextFile = flags.contains(.ftext)
 
         // Some archives may contain extra fields
-        if flags & Flags.fextra != 0 {
+        if flags.contains(.fextra) {
             var xlen = 0
             for i in 0..<2 {
                 let byte = pointerData.byte()
@@ -101,7 +109,7 @@ public struct GzipHeader {
         }
 
         // Some archives may contain source file name (this part ends with zero byte)
-        if flags & Flags.fname != 0 {
+        if flags.contains(.fname) {
             var fnameBytes: [UInt8] = []
             while true {
                 let byte = pointerData.byte()
@@ -115,7 +123,7 @@ public struct GzipHeader {
         }
 
         // Some archives may contain comment (this part also ends with zero)
-        if flags & Flags.fcomment != 0 {
+        if flags.contains(.fcomment) {
             var fcommentBytes: [UInt8] = []
             while true {
                 let byte = pointerData.byte()
@@ -129,11 +137,10 @@ public struct GzipHeader {
         }
 
         // Some archives may contain 2-bytes checksum
-        if flags & Flags.fhcrc != 0 {
+        if flags.contains(.fhcrc) {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
             let crc16 = pointerData.uint32(count: 2)
-            let ourCRC32 = CheckSums.crc32(headerBytes)
-            guard ourCRC32 & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
+            guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }
 
