@@ -75,14 +75,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // File mode
         guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
         // Sometimes file mode also contains unix type, so we need to filter it out.
         let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
         
         // Owner's user ID
         guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
         // There might be a PAX extended header with "uid" attribute.
         if let uidString = local?.entries["uid"] ?? global?.entries["uid"] {
             ownerID = Int(uidString)
@@ -92,7 +92,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // Group's user ID
         guard let groupAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
         // There might be a PAX extended header with "gid" attribute.
         if let gidString = local?.entries["gid"] ?? global?.entries["gid"] {
             groupID = Int(gidString)
@@ -102,7 +102,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // File size
         guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
         if let sizeString = local?.entries["size"] ?? global?.entries["size"] {
             size = Int(sizeString)
@@ -112,7 +112,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // Modification time
         guard let mtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
         if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"], let paxMtime = Double(mtimeString) {
             self.modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else {
@@ -121,7 +121,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // Checksum
         guard let checksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
-            else { throw TarError.fieldIsNotNumber }
+            else { throw TarError.wrongField }
 
         let currentIndex = pointerData.index
         pointerData.index = blockStartIndex

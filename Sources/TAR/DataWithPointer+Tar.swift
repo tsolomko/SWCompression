@@ -26,7 +26,7 @@ extension DataWithPointer {
         if let string = String(bytes: self.nullEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {
-            throw TarError.notAsciiString
+            throw TarError.wrongField
         }
     }
 
@@ -49,7 +49,7 @@ extension DataWithPointer {
         if let string = String(bytes: self.nullSpaceEndedBuffer(cutoff: cutoff), encoding: .ascii) {
             return string
         } else {
-            throw TarError.notAsciiString
+            throw TarError.wrongField
         }
     }
 

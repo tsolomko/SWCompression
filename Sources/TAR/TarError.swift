@@ -13,11 +13,9 @@ public enum TarError: Error {
     /// Size of data is too small, even to contain only one header.
     case tooSmallFileIsPassed
     /// Failed to process a field as a number.
-    case fieldIsNotNumber
+    case wrongField
     /// Computed checksum of a header doesn't match the value stored in container.
     case wrongHeaderChecksum
     /// Entry from PAX extended header is in incorrect format.
     case wrongPaxHeaderEntry
-    /// Failed to process a field as an ASCII string.
-    case notAsciiString
 }
