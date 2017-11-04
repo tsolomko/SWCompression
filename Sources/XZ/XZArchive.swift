@@ -34,37 +34,15 @@ public class XZArchive: Archive {
         //  guarantee correctness of other streams.
 
         var result = Data()
-        streamLoop: while !pointerData.isAtTheEnd {
+        while !pointerData.isAtTheEnd {
             let streamResult = try processStream(pointerData)
-            if streamResult.checkError {
-                throw XZError.wrongCheck([result])
-            } else {
-                result.append(streamResult.data)
-            }
+            result.append(streamResult.data)
+            guard !streamResult.checkError
+                else { throw XZError.wrongCheck([result]) }
 
-            guard !pointerData.isAtTheEnd else { break streamLoop }
-
-            // STREAM PADDING
-            var paddingBytes = 0
-            while true {
-                let byte = pointerData.byte()
-                if byte != 0 {
-                    if paddingBytes % 4 != 0 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break
-                    }
-                }
-                if pointerData.isAtTheEnd {
-                    if byte != 0 || paddingBytes % 4 != 3 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break streamLoop
-                    }
-                }
-                paddingBytes += 1
+            if try processPadding(pointerData) {
+                break
             }
-            pointerData.index -= 1
         }
 
         return result
@@ -75,36 +53,15 @@ public class XZArchive: Archive {
         let pointerData = DataWithPointer(data: data)
 
         var result = [Data]()
-        streamLoop: while !pointerData.isAtTheEnd {
+        while !pointerData.isAtTheEnd {
             let streamResult = try processStream(pointerData)
-            if streamResult.checkError {
-                throw XZError.wrongCheck(result)
-            } else {
-                result.append(streamResult.data)
-            }
+            result.append(streamResult.data)
+            guard !streamResult.checkError
+                else { throw XZError.wrongCheck(result) }
 
-            guard !pointerData.isAtTheEnd else { break streamLoop }
-
-            var paddingBytes = 0
-            while true {
-                let byte = pointerData.byte()
-                if byte != 0 {
-                    if paddingBytes % 4 != 0 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break
-                    }
-                }
-                if pointerData.isAtTheEnd {
-                    if byte != 0 || paddingBytes % 4 != 3 {
-                        throw XZError.wrongPadding
-                    } else {
-                        break streamLoop
-                    }
-                }
-                paddingBytes += 1
+            if try processPadding(pointerData) {
+                break
             }
-            pointerData.index -= 1
         }
 
         return result
@@ -210,6 +167,33 @@ public class XZArchive: Archive {
         // Check footer's magic number
         guard pointerData.bytes(count: 2) == [0x59, 0x5A]
             else { throw XZError.wrongMagic }
+    }
+
+    /// Returns `true` if end of archive is reached, `false` otherwise.
+    private static func processPadding(_ pointerData: DataWithPointer) throws -> Bool {
+        guard !pointerData.isAtTheEnd else { return true }
+
+        var paddingBytes = 0
+        while true {
+            let byte = pointerData.byte()
+            if byte != 0 {
+                if paddingBytes % 4 != 0 {
+                    throw XZError.wrongPadding
+                } else {
+                    break
+                }
+            }
+            if pointerData.isAtTheEnd {
+                if byte != 0 || paddingBytes % 4 != 3 {
+                    throw XZError.wrongPadding
+                } else {
+                    return true
+                }
+            }
+            paddingBytes += 1
+        }
+        pointerData.index -= 1
+        return false
     }
 
 }
