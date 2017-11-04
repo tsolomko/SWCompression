@@ -30,7 +30,11 @@ public enum XZError: Error {
     case wrongDataSize
     /**
      Computed checksum of uncompressed data doesn't match the value stored in the archive.
-     Associated value of the error contains already decompressed data.
+     Associated value of the error contains already decompressed data:
+     + if `unarchive` function was called then associated array will have only one element
+     with combined data for all already decompressed streams, including the one with mismatching checksum.
+     + if `splitUnarchive` function was called then associated array will have an element
+     for each already decompressed stream, including the one with mismatching checksum.
      */
     case wrongCheck([Data])
     /// Padding (null-bytes appended to an archive's structure) is incorrect.
