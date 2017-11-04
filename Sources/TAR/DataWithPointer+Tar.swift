@@ -7,12 +7,12 @@ import Foundation
 
 extension DataWithPointer {
 
-    private func nullEndedBuffer(cutoff: Int) -> [UInt8] {
+    private func buffer(_ cutoff: Int, endingWith ends: UInt8...) -> [UInt8] {
         let startIndex = index
         var buffer = [UInt8]()
         while index - startIndex < cutoff {
             let byte = self.byte()
-            if byte == 0 {
+            if ends.contains(byte) {
                 index -= 1
                 break
             }
@@ -23,30 +23,15 @@ extension DataWithPointer {
     }
 
     func nullEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullEndedBuffer(cutoff: cutoff), encoding: .ascii) {
+        if let string = String(bytes: self.buffer(cutoff, endingWith: 0), encoding: .ascii) {
             return string
         } else {
             throw TarError.wrongField
         }
     }
 
-    private func nullSpaceEndedBuffer(cutoff: Int) -> [UInt8] {
-        let startIndex = index
-        var buffer = [UInt8]()
-        while index - startIndex < cutoff {
-            let byte = self.byte()
-            if byte == 0 || byte == 0x20 {
-                index -= 1
-                break
-            }
-            buffer.append(byte)
-        }
-        index += cutoff - (index - startIndex)
-        return buffer
-    }
-
     func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.nullSpaceEndedBuffer(cutoff: cutoff), encoding: .ascii) {
+        if let string = String(bytes: self.self.buffer(cutoff, endingWith: 0, 0x20), encoding: .ascii) {
             return string
         } else {
             throw TarError.wrongField
