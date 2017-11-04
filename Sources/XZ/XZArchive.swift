@@ -35,7 +35,12 @@ public class XZArchive: Archive {
 
         var result = Data()
         streamLoop: while !pointerData.isAtTheEnd {
-            result.append(try processStream(pointerData))
+            let streamResult = try processStream(pointerData)
+            if streamResult.checkError {
+                throw XZError.wrongCheck([result])
+            } else {
+                result.append(streamResult.data)
+            }
 
             guard !pointerData.isAtTheEnd else { break streamLoop }
 
@@ -71,7 +76,12 @@ public class XZArchive: Archive {
 
         var result = [Data]()
         streamLoop: while !pointerData.isAtTheEnd {
-            result.append(try processStream(pointerData))
+            let streamResult = try processStream(pointerData)
+            if streamResult.checkError {
+                throw XZError.wrongCheck(result)
+            } else {
+                result.append(streamResult.data)
+            }
 
             guard !pointerData.isAtTheEnd else { break streamLoop }
 
@@ -100,7 +110,7 @@ public class XZArchive: Archive {
         return result
     }
 
-    private static func processStream(_ pointerData: DataWithPointer) throws -> Data {
+    private static func processStream(_ pointerData: DataWithPointer) throws -> (data: Data, checkError: Bool) {
         var out = Data()
 
         let streamHeader = try XZStreamHeader(pointerData)
@@ -122,11 +132,11 @@ public class XZArchive: Archive {
                 case .crc32:
                     let check = pointerData.uint32()
                     guard CheckSums.crc32(block.data) == check
-                        else { throw XZError.wrongCheck(out) }
+                        else { return (out, true) }
                 case .crc64:
                     let check = pointerData.uint64()
                     guard CheckSums.crc64(block.data) == check
-                        else { throw XZError.wrongCheck(out) }
+                        else { return (out, true) }
                 case .sha256:
                     throw XZError.checkTypeSHA256
                 }
@@ -137,7 +147,7 @@ public class XZArchive: Archive {
         // STREAM FOOTER
         try processFooter(streamHeader, indexSize, pointerData)
 
-        return out
+        return (out, false)
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
