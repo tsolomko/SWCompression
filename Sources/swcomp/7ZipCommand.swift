@@ -31,7 +31,7 @@ class SevenZipCommand: Command {
             let entries = try SevenZipContainer.info(container: fileData)
             swcomp.printInfo(entries)
         } else {
-            let outputPath = self.extract.value ?? FileManager.default.currentDirectoryPath
+            let outputPath = self.extract.value!
 
             if try !isValidOutputDirectory(outputPath, create: true) {
                 print("ERROR: Specified path already exists and is not a directory.")
