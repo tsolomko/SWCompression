@@ -13,7 +13,7 @@ public enum FileSystemType {
     case other
     /**
      One of many UNIX-like systems.
-     
+
      - Note: Modern macOS systems also fall into this category.
      */
     case unix
