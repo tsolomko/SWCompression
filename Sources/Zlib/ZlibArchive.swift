@@ -32,6 +32,7 @@ public class ZlibArchive: Archive {
         _ = try ZlibHeader(bitReader)
 
         let out = Data(bytes: try Deflate.decompress(bitReader))
+        bitReader.align()
 
         let adler32 = bitReader.uint32().reverseBytes()
         guard CheckSums.adler32(out) == adler32 else { throw ZlibError.wrongAdler32(out) }
