@@ -22,7 +22,7 @@
         <a class="header-link" href="index.html">
           SWCompression Docs
         </a>
-         (82% documented)
+         (81% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -91,9 +91,6 @@
                 <a class="nav-group-task-link" href="Structs/ZlibHeader.html">ZlibHeader</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/ZlibHeader/CompressionMethod.html">– CompressionMethod</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/ZlibHeader/CompressionLevel.html">– CompressionLevel</a>
               </li>
             </ul>
@@ -140,6 +137,9 @@
                 <a class="nav-group-task-link" href="Enums/DeflateError.html">DeflateError</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/GzipError.html">GzipError</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/LZMAError.html">LZMAError</a>
               </li>
               <li class="nav-group-task">
@@ -152,13 +152,10 @@
                 <a class="nav-group-task-link" href="Enums/TarError.html">TarError</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/ZipError.html">ZipError</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/GzipError.html">GzipError</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/XZError.html">XZError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/ZipError.html">ZipError</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/ZlibError.html">ZlibError</a>
@@ -287,6 +284,42 @@ It may indicate that either the data is damaged or it might not be compressed wi
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/Deflate/DeflateError.swift#L12-L21">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression9GzipErrorO"></a>
+                    <a name="//apple_ref/swift/Enum/GzipError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression9GzipErrorO">GzipError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents an error, which happened during processing GZip archive.
+It may indicate that either archive is damaged or it might not be GZip archive at all.</p>
+
+                        <a href="Enums/GzipError.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">GzipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/GZip/GzipError.swift#L12-L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -442,78 +475,6 @@ It may indicate that either container is damaged or it might not be TAR containe
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression8ZipErrorO"></a>
-                    <a name="//apple_ref/swift/Enum/ZipError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression8ZipErrorO">ZipError</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Represents an error, which happened during processing ZIP container.
-It may indicate that either container is damaged or it might not be ZIP container at all.</p>
-
-                        <a href="Enums/ZipError.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ZipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/ZIP/ZipError.swift#L12-L38">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SWCompression9GzipErrorO"></a>
-                    <a name="//apple_ref/swift/Enum/GzipError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression9GzipErrorO">GzipError</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Represents an error, which happened during processing GZip archive.
-It may indicate that either archive is damaged or it might not be GZip archive at all.</p>
-
-                        <a href="Enums/GzipError.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">GzipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/GZip/GzipError.swift#L12-L37">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:13SWCompression7XZErrorO"></a>
                     <a name="//apple_ref/swift/Enum/XZError" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SWCompression7XZErrorO">XZError</a>
@@ -539,6 +500,42 @@ It may indicate that either archive is damaged or it might not be XZ archive at 
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/XZ/XZError.swift#L12-L44">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression8ZipErrorO"></a>
+                    <a name="//apple_ref/swift/Enum/ZipError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression8ZipErrorO">ZipError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents an error, which happened during processing ZIP container.
+It may indicate that either container is damaged or it might not be ZIP container at all.</p>
+
+                        <a href="Enums/ZipError.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ZipError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1/Sources/ZIP/ZipError.swift#L12-L38">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
