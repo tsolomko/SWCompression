@@ -32,12 +32,12 @@ Pod::Spec.new do |s|
 
   s.subspec 'GZip' do |sp|
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{Gzip/*,Common/Checksums}.swift'
+    sp.source_files = 'Sources/{GZip/*,Common/*}.swift'
   end
 
   s.subspec 'Zlib' do |sp|
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{Zlib/*,Common/CheckSums}.swift'
+    sp.source_files = 'Sources/{Zlib/*,Common/*}.swift'
   end
 
   s.subspec 'BZip2' do |sp|
@@ -46,28 +46,33 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'LZMA' do |sp|
-    sp.source_files = 'Sources/{LZMA/*,Common/Extensions,Common/Protocols,Common/DataWithPointer}.swift'
+    sp.source_files = 'Sources/{LZMA/*,Common/*}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_LZMA' }
   end
 
-  s.subspec 'XZ' do |sp|
+  s.subspec 'LZMA2' do |sp|
     sp.dependency 'SWCompression/LZMA'
-    sp.source_files = 'Sources/{XZ/*,Common/CheckSums}.swift'
+    sp.source_files = 'Sources/{LZMA2/*,Common/*}.swift'
+  end
+
+  s.subspec 'XZ' do |sp|
+    sp.dependency 'SWCompression/LZMA2'
+    sp.source_files = 'Sources/{XZ/*,Common/*}.swift'
   end
 
   s.subspec 'ZIP' do |sp|
     sp.dependency 'SWCompression/Deflate'
-    sp.source_files = 'Sources/{Zip/*,Common/CheckSums}.swift'
+    sp.source_files = 'Sources/{Zip/*,Common/*,Common/Container/*}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_ZIP' }
   end
 
   s.subspec 'TAR' do |sp|
-    sp.source_files = 'Sources/{Tar/*,Common/Extensions,Common/Protocols,Common/DataWithPointer}.swift'
+    sp.source_files = 'Sources/{TAR/*,Common/*,Common/Container/*}.swift'
   end
 
   s.subspec 'SevenZip' do |sp|
-    sp.dependency 'SWCompression/LZMA'
-    sp.source_files = 'Sources/{7-Zip/*,Common/CheckSums,Common/BitReader}.swift'
+    sp.dependency 'SWCompression/LZMA2'
+    sp.source_files = 'Sources/{7-Zip/*,Common/*,Common/Container/*}.swift'
     sp.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DSWCOMPRESSION_POD_SEVENZIP' }
   end
 
