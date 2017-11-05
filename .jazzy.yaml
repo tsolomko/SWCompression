@@ -39,13 +39,13 @@ custom_categories:
       children:
       - BZip2Error
       - DeflateError
+      - GzipError
       - LZMAError
       - LZMA2Error
       - SevenZipError
       - TarError
-      - ZipError
-      - GzipError
       - XZError
+      - ZipError
       - ZlibError
     - name: Protocols
       children:
