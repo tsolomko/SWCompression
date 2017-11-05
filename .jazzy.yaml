@@ -31,8 +31,10 @@ custom_categories:
       - SevenZipEntryInfo
       - TarContainer
       - TarEntry
+      - TarEntryInfo
       - ZipContainer
       - ZipEntry
+      - ZipEntryInfo
     - name: Errors
       children:
       - BZip2Error
@@ -50,5 +52,13 @@ custom_categories:
       - Archive
       - Container
       - ContainerEntry
+      - ContainerEntryInfo
       - CompressionAlgorithm
       - DecompressionAlgorithm
+    - name: Common Auxiliary Types
+      children:
+      - ContainerEntryType
+      - DosAttributes
+      - Permissions
+      - CompressionMethod
+      - FileSystemType
