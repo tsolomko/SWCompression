@@ -136,21 +136,22 @@ class SevenZipFolder {
 
             let unpackSize = self.unpackSize(for: coder)
 
-            if coder.id == SevenZipCoder.ID.copy || coder.id == SevenZipCoder.ID.zipCopy {
+            switch coder.compressionMethod {
+            case .copy:
                 continue
-            } else if coder.id == SevenZipCoder.ID.deflate {
+            case .deflate:
                 #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_DEFLATE)
                     decodedData = try Deflate.decompress(data: decodedData)
                 #else
                     throw SevenZipError.compressionNotSupported
                 #endif
-            } else if coder.id == SevenZipCoder.ID.bzip2 || coder.id == SevenZipCoder.ID.zipBzip2 {
+            case .bzip2:
                 #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_BZ2)
                     decodedData = try BZip2.decompress(data: decodedData)
                 #else
                     throw SevenZipError.compressionNotSupported
                 #endif
-            } else if coder.id == SevenZipCoder.ID.lzma2 {
+            case .lzma2:
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties
                     else { throw LZMA2Error.wrongProperties }
@@ -164,7 +165,7 @@ class SevenZipFolder {
 
                 try decoder.decode()
                 decodedData = Data(bytes: decoder.out)
-            } else if coder.id == SevenZipCoder.ID.lzma {
+            case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
                     else { throw LZMAError.wrongProperties }
@@ -188,7 +189,7 @@ class SevenZipFolder {
 
                 try decoder.decode()
                 decodedData = Data(bytes: decoder.out)
-            } else {
+            default:
                 if coder.id[0] == 0x06 {
                     throw SevenZipError.encryptionNotSupported
                 } else {
