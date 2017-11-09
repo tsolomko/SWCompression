@@ -190,7 +190,7 @@ class SevenZipFolder {
                 try decoder.decode()
                 decodedData = Data(bytes: decoder.out)
             default:
-                if coder.id[0] == 0x06 {
+                if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {
                     throw SevenZipError.compressionNotSupported

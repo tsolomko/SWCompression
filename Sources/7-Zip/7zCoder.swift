@@ -13,6 +13,7 @@ class SevenZipCoder {
 
     let id: [UInt8]
     let compressionMethod: CompressionMethod
+    let isEncryptionMethod: Bool
 
     let numInStreams: Int
     let numOutStreams: Int
@@ -31,6 +32,7 @@ class SevenZipCoder {
         let id = bitReader.bytes(count: idSize)
         self.id = id
         compressionMethod = CompressionMethod(id)
+        isEncryptionMethod = id[0] == 0x06
 
         numInStreams = isComplex ? bitReader.szMbd() : 1
         numOutStreams = isComplex ? bitReader.szMbd() : 1
