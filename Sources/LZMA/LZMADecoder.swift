@@ -121,9 +121,8 @@ class LZMADecoder {
     /// Main LZMA (algorithm) decoder function.
     func decode() throws {
         // First, we need to initialize Rande Decoder.
-        guard let rD = LZMARangeDecoder(pointerData) else {
-            throw LZMAError.rangeDecoderInitError
-        }
+        guard let rD = LZMARangeDecoder(pointerData)
+            else { throw LZMAError.rangeDecoderInitError }
         self.rangeDecoder = rD
 
         // Main decoding cycle.

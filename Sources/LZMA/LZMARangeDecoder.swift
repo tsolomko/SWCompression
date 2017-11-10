@@ -25,7 +25,6 @@ class LZMARangeDecoder {
             self.code = (self.code << 8) | UInt32(self.pointerData.byte())
         }
         if byte != 0 || self.code == self.range {
-            self.isCorrupted = true
             return nil
         }
     }

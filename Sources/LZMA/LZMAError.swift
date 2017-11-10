@@ -24,6 +24,4 @@ public enum LZMAError: Error {
     case repeatWillExceed
     /// The amount of already decoded bytes is smaller than repeat length.
     case notEnoughToRepeat
-    /// LZMADecoder wasn't properly initialized before decoding data.
-    case decoderIsNotInitialised
 }
