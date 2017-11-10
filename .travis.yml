@@ -1,7 +1,6 @@
 env:
   global:
   - FRAMEWORK_NAME=SWCompression
-  - CC_TEST_REPORTER_ID=87379ba4ed4c1c2f6cd9ab95560364759898a0902effca0c23eddfc16a9ff5ff
 matrix:
     include:
     - language: objective-c
@@ -19,17 +18,11 @@ matrix:
       - cd Tests/Test\ Files
       - git lfs pull
       - cd ../..
-      - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-darwin-amd64 > ./cc-test-reporter
-      - chmod +x ./cc-test-reporter
-      - ./cc-test-reporter before-build
       before_deploy:
       - carthage build --no-skip-current
       - carthage archive $FRAMEWORK_NAME
       script:
       - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
-      after_success:
-      - slather coverage -x --scheme SWCompression SWCompression.xcodeproj/
-      - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
       deploy:
         provider: releases
         api_key:

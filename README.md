@@ -4,7 +4,6 @@
 [![CocoaPods](https://img.shields.io/cocoapods/p/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Swift 3](https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg)](https://developer.apple.com/swift/)
 [![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression)
-[![Test Coverage](https://codeclimate.com/github/tsolomko/SWCompression/badges/coverage.svg)](https://codeclimate.com/github/tsolomko/SWCompression/coverage)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/SWCompression.svg)](https://cocoapods.org/pods/SWCompression)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
