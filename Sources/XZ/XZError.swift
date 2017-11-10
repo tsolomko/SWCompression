@@ -19,7 +19,7 @@ public enum XZError: Error {
     case wrongField
     /// Checksum of one of the fields of archive doesn't match the value stored in archive.
     case wrongInfoCRC
-    /// Filter used in archvie is unsupported.
+    /// Filter used in archive is unsupported.
     case wrongFilterID
     /// Archive uses SHA-256 checksum which is unsupported.
     case checkTypeSHA256
