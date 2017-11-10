@@ -20,9 +20,9 @@ class LZMA2Decoder {
     }
 
     func setDictionarySize(_ byte: UInt8) throws {
-        let bits = byte & 0x3F
         guard byte & 0xC0 == 0
-            else { throw LZMA2Error.wrongProperties }
+            else { throw LZMA2Error.wrongDictionarySize }
+        let bits = byte & 0x3F
         guard bits < 40
             else { throw LZMA2Error.wrongDictionarySize }
 

@@ -10,9 +10,7 @@ import Foundation
  It may indicate that either data is damaged or it might not be compressed with LZMA2 at all.
  */
 public enum LZMA2Error: Error {
-    /// Reserved bits of LZMA2 properties' byte aren't equal to zero.
-    case wrongProperties
-    /// Dictionary size is too big.
+    /// Dictionary size is too big, or has reserved bits set, or is in incorrect format in general.
     case wrongDictionarySize
     /// Unknown conrol byte value of LZMA2 packet.
     case wrongControlByte

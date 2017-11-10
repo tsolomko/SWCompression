@@ -153,11 +153,10 @@ class SevenZipFolder {
                 #endif
             case .lzma2:
                 // Dictionary size is stored in coder's properties.
-                guard let properties = coder.properties
-                    else { throw LZMA2Error.wrongProperties }
-                guard properties.count == 1
-                    else { throw LZMA2Error.wrongProperties }
-
+                guard let properties = coder.properties,
+                    properties.count == 1
+                    else { throw LZMA2Error.wrongDictionarySize }
+                
                 let pointerData = DataWithPointer(data: decodedData)
 
                 let decoder = try LZMA2Decoder(pointerData)
