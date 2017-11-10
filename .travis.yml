@@ -8,7 +8,6 @@ matrix:
       xcode_project: SWCompression.xcodeproj
       xcode_scheme: SWCompression
       before_install:
-      - gem install slather
       - brew update
       # `brew outdated` is necessary to prevent build error when there is no updates for Carthage.
       - brew outdated carthage || brew upgrade carthage
