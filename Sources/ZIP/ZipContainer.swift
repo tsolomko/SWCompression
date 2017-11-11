@@ -47,12 +47,8 @@ public class ZipContainer: Container {
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
-        // TODO: Order in case of data descriptor?
-        // TODO: Remove Int(truncatingIfNeeded:) completely.
         var uncompSize = hasDataDescriptor ? info.cdEntry.uncompSize : info.localHeader.uncompSize
-        var compSize = hasDataDescriptor ?
-            Int(truncatingIfNeeded: info.cdEntry.compSize) :
-            Int(truncatingIfNeeded: info.localHeader.compSize)
+        var compSize = hasDataDescriptor ? info.cdEntry.compSize : info.localHeader.compSize
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
         let fileBytes: [UInt8]
@@ -117,7 +113,7 @@ public class ZipContainer: Container {
             // Now, let's update with values from data descriptor.
             crc32 = pointerData.uint32()
             let sizeOfSizeField: UInt64 = info.localHeader.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
+            compSize = pointerData.uint64(count: sizeOfSizeField)
             uncompSize = pointerData.uint64(count: sizeOfSizeField)
         }
 
