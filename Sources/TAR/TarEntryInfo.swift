@@ -55,7 +55,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     // TODO: Describe order in which formats' features are used to set this property.
     /// Path to a linked file for symbolic link entry.
-    public let linkName: String?
+    public let linkName: String
 
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
@@ -67,7 +67,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
     init(_ pointerData: DataWithPointer, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         blockStartIndex = pointerData.index
-        var linkName: String?
+        var linkName: String
         var name: String
 
         // File name
