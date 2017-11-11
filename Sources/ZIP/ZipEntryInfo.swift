@@ -37,7 +37,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// True, if entry is likely to be text or ASCII file.
     public let isTextFile: Bool
 
-    public let fileSystemType: FileSystemType?
+    public let fileSystemType: FileSystemType
 
     public let compressionMethod: CompressionMethod
 
