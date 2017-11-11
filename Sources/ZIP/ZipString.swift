@@ -9,7 +9,7 @@ import Foundation
     import CoreFoundation
 #endif
 
-class ZipCommon {
+class ZipString {
 
     #if os(Linux)
         static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
@@ -83,21 +83,4 @@ class ZipCommon {
         return false
     }
 
-}
-
-extension DataWithPointer {
-    
-    func getZipStringField(_ length: Int, _ useUtf8: Bool) -> String? {
-        guard length > 0
-            else { return "" }
-        let bytes = self.bytes(count: length)
-        let bytesAreUtf8 = ZipCommon.needsUtf8(bytes)
-        if !useUtf8 && ZipCommon.cp437Available && !bytesAreUtf8 {
-            return String(data: Data(bytes: bytes), encoding: String.Encoding(rawValue:
-                CFStringConvertEncodingToNSStringEncoding(ZipCommon.cp437Encoding)))
-        } else {
-            return String(data: Data(bytes: bytes), encoding: .utf8)
-        }
-    }
-    
 }
