@@ -10,7 +10,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     // MARK: ContainerEntryInfo
 
     /// Name of the file or directory.
-    public let name: String?
+    public let name: String
 
     /// Size of the data associated with the entry.
     public let size: Int?

@@ -11,7 +11,7 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
     // MARK: ContainerEntryInfo
 
     /// Entry's name.
-    public let name: String?
+    public let name: String
 
     /// Entry's data size.
     public let size: Int?

@@ -11,7 +11,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     // TODO: Describe order in which formats' features are used to set this property.
     /// Name of the file or directory.
-    public let name: String?
+    public let name: String
 
     /// Size of the data associated with the entry.
     public let size: Int?
@@ -68,7 +68,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
          _ longName: String?, _ longLinkName: String?) throws {
         blockStartIndex = pointerData.index
         var linkName: String?
-        var name: String?
+        var name: String
 
         // File name
         name = try pointerData.nullEndedAsciiString(cutoff: 100)
@@ -177,7 +177,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
             deviceMajorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
             deviceMinorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
-            name = try pointerData.nullEndedAsciiString(cutoff: 155) + (name ?? "")
+            name = try pointerData.nullEndedAsciiString(cutoff: 155) + name
         } else {
             ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
             ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]

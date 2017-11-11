@@ -7,7 +7,7 @@ import Foundation
 
 public protocol ContainerEntryInfo {
 
-    var name: String? { get }
+    var name: String { get }
 
     var type: ContainerEntryType { get }
 
