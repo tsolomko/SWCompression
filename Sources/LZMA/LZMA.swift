@@ -27,14 +27,14 @@ public class LZMA: DecompressionAlgorithm {
         return Data(bytes: try decompress(pointerData))
     }
 
-    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
+    static func decompress(_ pointerData: DataWithPointer, uncompressedSize: UInt64? = nil) throws -> [UInt8] {
         let decoder = try LZMADecoder(pointerData)
 
         try decoder.setProperties(pointerData.byte())
         decoder.resetStateAndDecoders()
         decoder.dictionarySize = pointerData.uint32().toInt()
 
-        let uncompressedSize = pointerData.uint64()
+        let uncompressedSize = uncompressedSize ?? pointerData.uint64()
         if uncompressedSize == UInt64.max {
             decoder.uncompressedSize = -1
         } else {

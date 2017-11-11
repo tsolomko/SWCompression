@@ -80,21 +80,7 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-
-                let decoder = try LZMADecoder(pointerData)
-
-                try decoder.setProperties(pointerData.byte())
-                decoder.resetStateAndDecoders()
-                decoder.dictionarySize = pointerData.uint32().toInt()
-
-                if uncompSize == UInt64.max {
-                    decoder.uncompressedSize = -1
-                } else {
-                    decoder.uncompressedSize = Int(truncatingIfNeeded: uncompSize)
-                }
-
-                try decoder.decode()
-                fileBytes = decoder.out
+                fileBytes = try LZMA.decompress(pointerData, uncompressedSize: uncompSize)
             #else
                 throw ZipError.compressionNotSupported
             #endif
