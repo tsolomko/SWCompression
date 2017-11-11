@@ -254,7 +254,7 @@
     },
     {
       "file": "/Users/timofeysolomko/Developer/Compression/SWCompression/Sources/ZIP/ZipContainer.swift",
-      "line": 131,
+      "line": 114,
       "symbol": "ZipContainer.info(container:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"

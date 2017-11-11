@@ -3,11 +3,11 @@ clean: true
 exclude: Tests/
 author: Timofey Solomko
 module: SWCompression
-module_version: 4.0.0-test.1
+module_version: 4.0.0-test.2
 copyright: '© 2017 Timofey Solomko'
 readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
-github_file_prefix: https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.1
+github_file_prefix: https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2
 theme: fullwidth
 
 custom_categories:
