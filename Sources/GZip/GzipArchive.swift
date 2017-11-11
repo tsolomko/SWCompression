@@ -82,7 +82,7 @@ public class GzipArchive: Archive {
     private static func processMember(_ bitReader: BitReader) throws -> Member {
         let header = try GzipHeader(bitReader)
 
-        let memberData = Data(bytes: try Deflate.decompress(bitReader))
+        let memberData = try Deflate.decompress(bitReader)
         bitReader.align()
 
         let crc32 = bitReader.uint32()

@@ -31,7 +31,7 @@ public class ZlibArchive: Archive {
 
         _ = try ZlibHeader(bitReader)
 
-        let out = Data(bytes: try Deflate.decompress(bitReader))
+        let out = try Deflate.decompress(bitReader)
         bitReader.align()
 
         let adler32 = bitReader.uint32().reverseBytes()

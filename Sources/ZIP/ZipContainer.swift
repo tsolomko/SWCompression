@@ -60,9 +60,9 @@ public class ZipContainer: Container {
         case .deflate:
             let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
             bitReader.index = pointerData.index
-            fileData = Data(bytes: try Deflate.decompress(bitReader))
-            // Sometimes pointerData stays in not-aligned state after deflate decompression.
-            // Following line ensures that this is not the case.
+            fileData = try Deflate.decompress(bitReader)
+            // Sometimes `bitReader` has not-aligned state after Deflate decompression,
+            //  so we need to align before getting end index back.
             bitReader.align()
             pointerData.index = bitReader.index
         case .bzip2:
@@ -71,6 +71,8 @@ public class ZipContainer: Container {
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
                 fileData = try BZip2.decompress(bitReader)
+                // Sometimes `bitReader` has not-aligned state after BZip2 decompression,
+                //  so we need to align before getting end index back.
                 bitReader.align()
                 pointerData.index = bitReader.index
             #else
@@ -79,7 +81,7 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-                fileData = Data(bytes: try LZMA.decompress(pointerData, uncompressedSize: uncompSize))
+                fileData = try LZMA.decompress(pointerData, uncompressedSize: uncompSize)
             #else
                 throw ZipError.compressionNotSupported
             #endif
