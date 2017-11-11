@@ -51,16 +51,16 @@ public class ZipContainer: Container {
         var compSize = hasDataDescriptor ? info.cdEntry.compSize : info.localHeader.compSize
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
-        let fileBytes: [UInt8]
+        let fileData: Data
         let pointerData = DataWithPointer(data: data)
         pointerData.index = info.localHeader.dataOffset
         switch info.compressionMethod {
         case .copy:
-            fileBytes = pointerData.bytes(count: Int(truncatingIfNeeded: uncompSize))
+            fileData = Data(bytes: pointerData.bytes(count: Int(truncatingIfNeeded: uncompSize)))
         case .deflate:
             let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
             bitReader.index = pointerData.index
-            fileBytes = try Deflate.decompress(bitReader)
+            fileData = Data(bytes: try Deflate.decompress(bitReader))
             // Sometimes pointerData stays in not-aligned state after deflate decompression.
             // Following line ensures that this is not the case.
             bitReader.align()
@@ -70,8 +70,7 @@ public class ZipContainer: Container {
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
-                // TODO: Remove `toArray`.
-                fileBytes = try BZip2.decompress(bitReader).toArray(type: UInt8.self)
+                fileData = try BZip2.decompress(bitReader)
                 bitReader.align()
                 pointerData.index = bitReader.index
             #else
@@ -80,7 +79,7 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-                fileBytes = try LZMA.decompress(pointerData, uncompressedSize: uncompSize)
+                fileData = Data(bytes: try LZMA.decompress(pointerData, uncompressedSize: uncompSize))
             #else
                 throw ZipError.compressionNotSupported
             #endif
@@ -103,11 +102,11 @@ public class ZipContainer: Container {
             uncompSize = pointerData.uint64(count: sizeOfSizeField)
         }
 
-        guard compSize == realCompSize && uncompSize == fileBytes.count
+        guard compSize == realCompSize && uncompSize == fileData.count
             else { throw ZipError.wrongSize }
-        let crcError = crc32 != CheckSums.crc32(fileBytes)
+        let crcError = crc32 != CheckSums.crc32(fileData)
 
-        return (Data(bytes: fileBytes), crcError)
+        return (fileData, crcError)
     }
 
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
