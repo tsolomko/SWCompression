@@ -156,7 +156,7 @@ class SevenZipFolder {
                 guard let properties = coder.properties,
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
-                
+
                 let pointerData = DataWithPointer(data: decodedData)
 
                 let decoder = LZMA2Decoder(pointerData)
