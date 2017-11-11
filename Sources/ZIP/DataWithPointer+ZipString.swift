@@ -5,6 +5,10 @@
 
 import Foundation
 
+#if os(Linux)
+    import CoreFoundation
+#endif
+
 extension DataWithPointer {
 
     func getZipStringField(_ length: Int, _ useUtf8: Bool) -> String? {
