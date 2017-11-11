@@ -11,7 +11,7 @@ class SevenZipFileInfo {
         var isEmptyStream = false
         var isEmptyFile = false
         var isAntiFile = false
-        var name: String?
+        var name: String = ""
         var cTime: UInt64?
         var mTime: UInt64?
         var aTime: UInt64?
