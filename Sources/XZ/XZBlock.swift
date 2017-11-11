@@ -45,7 +45,7 @@ struct XZBlock {
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = pointerData.byte()
                 let closure = { (dwp: DataWithPointer) -> Data in
-                    let decoder = try LZMA2Decoder(pointerData)
+                    let decoder = LZMA2Decoder(pointerData)
                     try decoder.setDictionarySize(filterPropeties)
 
                     try decoder.decode()

@@ -28,7 +28,7 @@ public class LZMA2: DecompressionAlgorithm {
     }
 
     static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
-        let decoder = try LZMA2Decoder(pointerData)
+        let decoder = LZMA2Decoder(pointerData)
         try decoder.setDictionarySize(pointerData.byte())
         try decoder.decode()
         return decoder.out

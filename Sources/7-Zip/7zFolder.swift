@@ -159,7 +159,7 @@ class SevenZipFolder {
                 
                 let pointerData = DataWithPointer(data: decodedData)
 
-                let decoder = try LZMA2Decoder(pointerData)
+                let decoder = LZMA2Decoder(pointerData)
                 try decoder.setDictionarySize(properties[0])
 
                 try decoder.decode()
@@ -172,7 +172,7 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
-                let decoder = try LZMADecoder(pointerData)
+                let decoder = LZMADecoder(pointerData)
 
                 try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()
@@ -183,7 +183,6 @@ class SevenZipFolder {
                 }
                 decoder.dictionarySize = dictionarySize
 
-                // TODO: Make unpackSize (and, probably, other properties) UInt64 and set uncompressed size correctly.
                 decoder.uncompressedSize = unpackSize
 
                 try decoder.decode()

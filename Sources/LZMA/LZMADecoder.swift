@@ -65,7 +65,7 @@ class LZMADecoder {
     /// Used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state = 0
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
     }
 
