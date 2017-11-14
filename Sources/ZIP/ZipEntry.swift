@@ -5,10 +5,9 @@
 
 import Foundation
 
-/// Represents either a file or directory entry in ZIP container.
+/// Represents an entry from the ZIP container.
 public struct ZipEntry: ContainerEntry {
 
-    /// Various information about entry.
     public let info: ZipEntryInfo
 
     public let data: Data?

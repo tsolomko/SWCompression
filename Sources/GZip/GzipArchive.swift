@@ -17,7 +17,7 @@ public class GzipArchive: Archive {
         /// Unarchived data from a member.
         public let data: Data
 
-        internal let crcError: Bool
+        let crcError: Bool
 
     }
 

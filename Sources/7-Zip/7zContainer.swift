@@ -5,26 +5,24 @@
 
 import Foundation
 
-/// Provides open functions for 7-Zip containers.
+/// Provides functions for work with 7-Zip containers.
 public class SevenZipContainer: Container {
 
     static let signatureHeaderSize = 32
 
     /**
-     Processes 7-Zip container and returns an array of `SevenZipEntry`.
+     Processes 7-Zip container and returns an array of `SevenZipEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by 7-Zip container and,
-     particularly, by the creator of a given 7-Zip container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by 7-Zip container and, particularly,
+     by the creator of a given 7-Zip container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
 
      - Parameter container: 7-Zip container's data.
 
-     - Throws: `SevenZipError` or any other error associated with compression type,
-     depending on the type of the problem.
+     - Throws: `SevenZipError` or any other error associated with compression type depending on the type of the problem.
      It may indicate that either container is damaged or it might not be 7-Zip container at all.
 
-     - Returns: Array of `SevenZipEntry` as an array of `ContainerEntry`.
+     - Returns: Array of `SevenZipEntry`.
      */
     public static func open(container data: Data) throws -> [SevenZipEntry] {
         var entries = [SevenZipEntry]()
@@ -179,19 +177,16 @@ public class SevenZipContainer: Container {
     }
 
     /**
-     Processes ZIP container and returns an array of `SevenZipEntryInfo`,
-     which contain various information about container's entry.
-     This is performed without decompressing entries' data.
+     Processes 7-Zip container and returns an array of `SevenZipEntryInfo`
+     with information about entries in this container.
 
-     - Important: The order of entries is defined by 7-Zip container and,
-     particularly, by the creator of a given 7-Zip container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by 7-Zip container and, particularly,
+     by the creator of a given 7-Zip container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
 
      - Parameter container: 7-Zip container's data.
 
-     - Throws: `SevenZipError` or any other error associated with compression type,
-     depending on the type of the problem.
+     - Throws: `SevenZipError` or any other error associated with compression type depending on the type of the problem.
      It may indicate that either container is damaged or it might not be 7-Zip container at all.
 
      - Returns: Array of `SevenZipEntryInfo`.

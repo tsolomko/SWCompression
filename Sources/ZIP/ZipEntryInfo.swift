@@ -5,40 +5,72 @@
 
 import Foundation
 
+/// Provides access to information about an entry from the ZIP container.
 public struct ZipEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
 
-    /// Name of the file or directory.
     public let name: String
 
-    /// Size of the data associated with the entry.
     public let size: Int?
 
     public let type: ContainerEntryType
 
-    // TODO: Describe preference of various fields when setting time properties.
+    /**
+     Entry's last access time (`nil`, if not available).
+
+     Set from different sources in the following preference order:
+     1. Extended timestamp extra field (most common on UNIX-like systems).
+     2. NTFS extra field.
+    */
     public let accessTime: Date?
 
+    /**
+     Entry's creation time (`nil`, if not available).
+
+     Set from different sources in the following preference order:
+     1. Extended timestamp extra field (most common on UNIX-like systems).
+     2. NTFS extra field.
+     */
     public let creationTime: Date?
 
+    /**
+     Entry's last modification time.
+
+     Set from different sources in the following preference order:
+     1. Extended timestamp extra field (most common on UNIX-like systems).
+     2. NTFS extra field.
+     3. ZIP container's own storage (in Central Directory entry).
+     */
     public let modificationTime: Date?
 
+    /**
+     Entry's permissions in POSIX format.
+     May have meaningless value if origin file system's attributes weren't POSIX compatible.
+     */
     public let permissions: Permissions?
 
     // MARK: ZIP specific
 
+    /// Entry's comment.
     public let comment: String
 
+    /**
+     Entry's external file attributes. ZIP internal property.
+     May be useful when origin file system's attributes weren't POSIX compatible.
+     */
     public let externalFileAttributes: UInt32
 
+    /// Entry's attributes in DOS format.
     public let dosAttributes: DosAttributes?
 
     /// True, if entry is likely to be text or ASCII file.
     public let isTextFile: Bool
 
+    /// File system type of container's origin.
     public let fileSystemType: FileSystemType
 
+    /// Entry's compression method.
     public let compressionMethod: CompressionMethod
 
     let cdEntry: ZipCentralDirectoryEntry

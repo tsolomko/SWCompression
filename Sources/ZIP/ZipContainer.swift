@@ -5,21 +5,19 @@
 
 import Foundation
 
-/// Provides open function for ZIP containers.
+/// Provides functions for work with ZIP containers.
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP container and returns an array of `ZipEntry`.
+     Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by ZIP container and,
-     particularly, by the creator of a given ZIP container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by ZIP container and, particularly,
+     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
 
      - Parameter container: ZIP container's data.
 
-     - Throws: `ZipError` or any other error associated with compression type,
-     depending on the type of the problem.
+     - Throws: `ZipError` or any other error associated with compression type, depending on the type of the problem.
      It may indicate that either container is damaged or it might not be ZIP container at all.
 
      - Returns: Array of `ZipEntry`.
@@ -111,6 +109,19 @@ public class ZipContainer: Container {
         return (fileData, crcError)
     }
 
+    /**
+     Processes ZIP container and returns an array of `ZipEntryInfo` with information about entries in this container.
+
+     - Important: The order of entries is defined by ZIP container and, particularly,
+     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: ZIP container's data.
+
+     - Throws: `ZipError`, which may indicate that either container is damaged or it might not be ZIP container at all.
+
+     - Returns: Array of `ZipEntryInfo`.
+     */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)

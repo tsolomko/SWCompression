@@ -5,56 +5,75 @@
 
 import Foundation
 
+/// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
 
-    // TODO: Describe order in which formats' features are used to set this property.
-    /// Name of the file or directory.
+    /**
+     Entry's name.
+
+     Depending on the particular format of the container, different container's structures are used
+     to set this property, in the following preference order:
+     1. Local PAX extended header "path" property.
+     2. Global PAX extended header "path" property.
+     3. GNU format type "L" (LongName) entry.
+     4. Default TAR header.
+     */
     public let name: String
 
-    /// Size of the data associated with the entry.
+    /// Entry's data size.
     public let size: Int?
 
     public let type: ContainerEntryType
 
-    /// The most recent access time of the original file or directory (PAX only).
+    /// Entry's last access time (`nil`, if not available; can only be available for PAX format).
     public let accessTime: Date?
 
-    /// The creation time of the original file or directory (PAX only).
+    /// Entry's creation time (`nil`, if not available; can only be available for PAX format).
     public let creationTime: Date?
 
-    /// The most recent modification time of the original file or directory.
+    /// Entry's last modification time.
     public let modificationTime: Date?
 
     public let permissions: Permissions?
 
     // MARK: TAR specific
 
-    /// Owner's ID.
+    /// ID of entry's owner.
     public let ownerID: Int?
 
-    /// Owner's group ID.
+    /// ID of the group of entry's owner.
     public let groupID: Int?
 
-    /// Owner's user name.
+    /// User name of entry's owner.
     public let ownerUserName: String?
 
-    /// Owner's group name.
+    /// Name of the group of entry's owner.
     public let ownerGroupName: String?
 
+    /// Device major number.
     public let deviceMajorNumber: Int?
 
+    /// Device minor number.
     public let deviceMinorNumber: Int?
 
-    /// Name of the character set used to encode entry's data (PAX only).
+    /// Name of the character set used to encode entry's data (can only be available for PAX format).
     public let charset: String?
 
-    /// Comment associated with the entry (PAX only).
+    /// Entry's comment (can only be available for PAX format).
     public let comment: String?
 
-    // TODO: Describe order in which formats' features are used to set this property.
-    /// Path to a linked file for symbolic link entry.
+    /**
+     Path to a linked file for symbolic link entry.
+
+     Depending on the particular format of the container, different container's structures are used
+     to set this property, in the following preference order:
+     1. Local PAX extended header "linkpath" property.
+     2. Global PAX extended header "linkpath" property.
+     3. GNU format type "K" (LongLink) entry.
+     4. Default TAR header.
+     */
     public let linkName: String
 
     let isGlobalExtendedHeader: Bool
@@ -114,7 +133,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Modification time
         guard let mtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
             else { throw TarError.wrongField }
-        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"], let paxMtime = Double(mtimeString) {
+        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"],
+            let paxMtime = Double(mtimeString) {
             self.modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else {
             modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
@@ -191,13 +211,15 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.linkName = ((local?.entries["linkpath"] ?? global?.entries["linkpath"]) ?? longLinkName) ?? linkName
 
         // Set additional properties from PAX extended headers.
-        if let atimeString = local?.entries["atime"] ?? global?.entries["atime"], let atime = Double(atimeString) {
+        if let atimeString = local?.entries["atime"] ?? global?.entries["atime"],
+            let atime = Double(atimeString) {
             accessTime = Date(timeIntervalSince1970: atime)
         } else {
             accessTime = nil
         }
 
-        if let ctimeString = local?.entries["ctime"] ?? global?.entries["ctime"], let ctime = Double(ctimeString) {
+        if let ctimeString = local?.entries["ctime"] ?? global?.entries["ctime"],
+            let ctime = Double(ctimeString) {
             creationTime = Date(timeIntervalSince1970: ctime)
         } else {
             creationTime = nil
