@@ -11,8 +11,6 @@ public class BZip2: DecompressionAlgorithm {
     /**
      Decompresses `data` using BZip2 algortihm.
 
-     If `data` is not actually compressed with BZip2, `BZip2Error` will be thrown.
-
      - Parameter data: Data compressed with BZip2.
 
      - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `data`.

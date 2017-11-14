@@ -11,8 +11,6 @@ public class Deflate: DecompressionAlgorithm {
     /**
      Decompresses `data` using Deflate algortihm.
 
-     If `data` is not actually compressed with Deflate, `DeflateError` will be thrown.
-
      - Note: This function is specification compliant.
 
      - Parameter data: Data compressed with Deflate.

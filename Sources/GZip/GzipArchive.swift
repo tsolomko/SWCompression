@@ -24,17 +24,13 @@ public class GzipArchive: Archive {
     /**
      Unarchives GZip archive.
 
-     If data passed is not actually a GZip archive, `GzipError` will be thrown.
-
-     If data in archive is not actually compressed with Deflate algorithm, `DeflateError` will be thrown.
-
      - Note: This function is specification compliant.
 
      - Parameter archive: Data archived with GZip.
 
      - Throws: `DeflateError` or `GzipError` depending on the type of the problem.
-     It may indicate that either archive is damaged or
-     it might not be archived with GZip or compressed with Deflate at all.
+     It may indicate that either archive is damaged or it might not be archived with GZip
+     or compressed with Deflate at all.
 
      - Returns: Unarchived data.
      */
@@ -97,9 +93,6 @@ public class GzipArchive: Archive {
      Archives `data` into GZip archive, using various specified options.
      Data will be also compressed with Deflate algorithm.
      It will be also specified in archive's header that the compressor used the slowest Deflate algorithm.
-
-     If either `fileName` or `comment` cannot be encoded with ISO Latin-1 encoding,
-     then `GzipError.cannotEncodeISOLatin1` will be thrown.
 
      - Note: This function is specification compliant.
 

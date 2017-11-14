@@ -11,8 +11,6 @@ public class LZMA: DecompressionAlgorithm {
     /**
      Decompresses `data` using LZMA algortihm.
 
-     If `data` is not actually compressed with LZMA, `LZMAError` will be thrown.
-
      - Parameter data: Data compressed with LZMA.
 
      - Throws: `LZMAError` if unexpected byte (bit) sequence was encountered in `data`.

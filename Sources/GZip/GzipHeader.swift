@@ -47,8 +47,6 @@ public struct GzipHeader {
     /**
      Initializes the structure with the values from the first 'member' of GZip `archive`.
 
-     If data passed is not actually a GZip archive, `GzipError` will be thrown.
-
      - Parameter archive: Data archived with GZip.
 
      - Throws: `GzipError`. It may indicate that either archive is damaged or

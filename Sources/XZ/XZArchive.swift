@@ -12,15 +12,14 @@ public class XZArchive: Archive {
      Unarchives XZ archive. Archives with multiple streams are supported,
      but uncompressed data from each stream will be combined into single `Data` object.
 
-     If data passed is not actually XZ archive, `XZError` will be thrown.
-     Particularly, if filters other than LZMA2 are used in archive, then `XZError.wrongFilterID` will be thrown.
-
      If an error happens during LZMA2 decompression, then `LZMAError` or `LZMA2Error` will be thrown.
 
      - Parameter archive: Data archived using XZ format.
 
      - Throws: `LZMAError`, `LZMA2Error` or `XZError` depending on the type of the problem.
-     It may indicate that either the archive is damaged or it might not be compressed with XZ or LZMA(2) at all.
+     Particularly, if filters other than LZMA2 are used in archive, then `XZError.wrongFilterID` will be thrown,
+     but it may also indicate that either the archive is damaged or
+     it might not be compressed with XZ or LZMA(2) at all.
 
      - Returns: Unarchived data.
      */
