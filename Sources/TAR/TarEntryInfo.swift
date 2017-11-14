@@ -104,10 +104,11 @@ public struct TarEntryInfo: ContainerEntryInfo {
         guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
-        if let sizeString = local?.entries["size"] ?? global?.entries["size"] {
-            size = Int(sizeString)
+        if let sizeString = local?.entries["size"] ?? global?.entries["size"],
+            let size = Int(sizeString) {
+            self.size = size
         } else {
-            size = octalFileSize.octalToDecimal()
+            self.size = octalFileSize.octalToDecimal()
         }
 
         // Modification time
