@@ -214,67 +214,115 @@
             
             <h1 id='swcompression' class='heading'>SWCompression</h1>
 
-<p><a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a>
-<a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/p/SWCompression.svg" alt="CocoaPods"></a>
-<a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-3.1.1-lightgrey.svg" alt="Swift 3"></a>
+<p><a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-4.0-blue.svg" alt="Swift 4"></a>
+<a href="https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a>
 <a href="https://travis-ci.org/tsolomko/SWCompression"><img src="https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop" alt="Build Status"></a></p>
 
-<p><a href="https://cocoapods.org/pods/SWCompression"><img src="https://img.shields.io/cocoapods/v/SWCompression.svg" alt="CocoaPods"></a>
-<a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
+<p>A framework with (de)compression algorithms and functions for processing various archives and containers.</p>
+<h2 id='what' class='heading'>What</h2>
 
-<p>A framework with implementations of (de)compression algorithms and functions which parse various archives and containers.</p>
-<h2 id='motivation' class='heading'>Motivation</h2>
+<p>SWCompression - is a framework with a collection of different functions to:</p>
 
-<p>There are a couple of reasons for the project&rsquo;s development.</p>
+<ol>
+<li>Decompress (and sometimes compress) using different algorithms.</li>
+<li>Read (and sometimes write) different archives.</li>
+<li>Read containers such as ZIP, TAR and 7-Zip.</li>
+</ol>
 
-<p>The main reason is that it is very educational.</p>
+<p>In the tables below full list of available features is presented.
+<q>TBD</q> means that feature is planned but not implemented (yet).</p>
 
-<p>Secondly, if you are a Swift developer and you want to compress/decompress something in your project
-you have to use either wrapper around system libraries (which is probably written in Objective-C)
-or you have to use built-in Compression framework.
-You might think that last option is what you need, but, frankly
-that framework has a bit complicated API and somewhat questionable choice of supported compression algorithms.
-And yes, it is also in Objective-C.</p>
+<table><thead>
+<tr>
+<th></th>
+<th>Deflate</th>
+<th>BZip2</th>
+<th>LZMA/LZMA2</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Compression</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+</tr>
+<tr>
+<td>Decompression</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+<td>TBD</td>
+</tr>
+</tbody></table>
 
-<p>And here comes SWCompression: no Objective-C, pure Swift.</p>
-<h2 id='features' class='heading'>Features</h2>
+<table><thead>
+<tr>
+<th></th>
+<th>Zlib</th>
+<th>GZip</th>
+<th>XZ</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Read</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+</tr>
+<tr>
+<td>Write</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+<td>TBD</td>
+</tr>
+</tbody></table>
 
-<ul>
-<li>Containers:
+<table><thead>
+<tr>
+<th></th>
+<th>ZIP</th>
+<th>TAR</th>
+<th>7-Zip</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Read</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+<td>:white_check_mark:</td>
+</tr>
+<tr>
+<td>Write</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+</tbody></table>
 
-<ul>
-<li>ZIP</li>
-<li>TAR</li>
-<li>7-Zip</li>
-</ul></li>
-<li>Decompression algorithms:
-
-<ul>
-<li>LZMA/LZMA2</li>
-<li>Deflate</li>
-<li>BZip2</li>
-</ul></li>
-<li>Compression algorithms:
-
-<ul>
-<li>Deflate</li>
-<li>BZip2</li>
-</ul></li>
-<li>Archives:
-
-<ul>
-<li>XZ</li>
-<li>GZip</li>
-<li>Zlib</li>
-</ul></li>
-<li>Platform independent.</li>
-<li><em>Written with Swift only.</em></li>
-</ul>
-
-<p>By the way, it seems like GZip, Deflate and Zlib implementations are <strong>specification compliant</strong>.</p>
+<p>And, by the way, SWCompression is <em>written with Swift only.</em></p>
 <h2 id='installation' class='heading'>Installation</h2>
 
-<p>SWCompression can be integrated into your project either using CocoaPods, Carthage or Swift Package Manager.</p>
+<p>SWCompression can be integrated into your project either using Swift Package Manager, CocoaPods or Carthage.</p>
+<h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
+
+<p>Add SWCompression to you package dependencies and also specify it as a dependency for your target, e.g.:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">PackageDescription</span>
+
+<span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+    <span class="nv">name</span><span class="p">:</span> <span class="s">"PackageName"</span><span class="p">,</span>
+    <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/tsolomko/SWCompression.git"</span><span class="p">,</span>
+                 <span class="nv">from</span><span class="p">:</span> <span class="s">"4.0.0"</span><span class="p">)</span>
+    <span class="p">],</span>
+    <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">target</span><span class="p">(</span>
+            <span class="nv">name</span><span class="p">:</span> <span class="s">"TargetName"</span><span class="p">,</span>
+            <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span><span class="s">"SWCompression"</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre>
+
+<p>More info about SPM you can find at <a href="https://github.com/apple/swift-package-manager/tree/master/Documentation">Swift Package Manager&rsquo;s Documentation</a>.</p>
 <h3 id='cocoapods' class='heading'>CocoaPods</h3>
 
 <p>Add to your Podfile <code>pod &#39;SWCompression&#39;</code>.</p>
@@ -283,56 +331,32 @@ And yes, it is also in Objective-C.</p>
 Available subspecs:</p>
 
 <ul>
-<li>SWCompression/LZMA</li>
-<li>SWCompression/XZ</li>
+<li>SWCompression/BZip2</li>
 <li>SWCompression/Deflate</li>
 <li>SWCompression/Gzip</li>
-<li>SWCompression/Zlib</li>
-<li>SWCompression/BZip2</li>
-<li>SWCompression/ZIP</li>
-<li>SWCompression/TAR</li>
+<li>SWCompression/LZMA</li>
+<li>SWCompression/LZMA2</li>
 <li>SWCompression/SevenZip</li>
+<li>SWCompression/TAR</li>
+<li>SWCompression/XZ</li>
+<li>SWCompression/Zlib</li>
+<li>SWCompression/ZIP</li>
 </ul>
 
-<p>You can add some or all of them instead of <code>pod &#39;SWCompression&#39;</code></p>
+<p>You can add some of them instead of <code>pod &#39;SWCompression&#39;</code></p>
 
 <p>Also, do not forget to include <code>use_frameworks!</code> line in your Podfile.</p>
 
 <p>To complete installation, run <code>pod install</code>.</p>
-<h3 id='carthage' class='heading'>Carthage</h3>
+<h4 id='options-for-cocoapods-users' class='heading'>Options for CocoaPods users</h4>
 
-<p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
-
-<p>Then run <code>carthage update</code>.</p>
-
-<p>Finally, drag and drop <code>SWCompression.framework</code> from <code>Carthage/Build</code> folder
-into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> tab.</p>
-<h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
-
-<p>Add to you package dependecies <code>.Package(url: &quot;https://github.com/tsolomko/SWCompression.git&quot;)</code>,
-for example like this:</p>
-<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">PackageDescription</span>
-
-<span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
-    <span class="nv">name</span><span class="p">:</span> <span class="s">"PackageName"</span><span class="p">,</span>
-    <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
-        <span class="o">.</span><span class="kt">Package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/tsolomko/SWCompression.git"</span><span class="p">,</span> <span class="nv">majorVersion</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-</code></pre>
-
-<p>More info about SPM you can find at <a href="https://github.com/apple/swift-package-manager/tree/master/Documentation">Swift Package Manager&rsquo;s Documentation</a>.</p>
-<h2 id='options-for-cocoapods-users' class='heading'>Options for CocoaPods users</h2>
-
-<p>Both ZIP and 7-Zip containers have compression method
-which is most likely to be used when compressing files into them.
+<p>Both ZIP and 7-Zip containers have compression method which is most likely to be used when compressing files into them.
 This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
 Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
 and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.</p>
 
-<p>But both these containers support other compression methods,
-some of them are implemented in SWCompression.
-For CocoaPods configurations some sort of &lsquo;optional dependecies&rsquo; are provided for such compression methods.</p>
+<p>But both these containers support other compression methods, some of them are implemented in SWCompression.
+For CocoaPods configurations there are some sort of &lsquo;optional dependencies&rsquo; for such compression methods.</p>
 
 <p>&lsquo;Optional dependency&rsquo; in this context means
 that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
@@ -357,25 +381,28 @@ only if a corresponding subspec is expicitly specified in your Podfile and insta
 <p><strong>Note:</strong> If you use Carthage or Swift Package Manager you always have the full package,
 and ZIP will be built with both additional BZip2 and LZMA support
 as well as 7-Zip will be build with both additional Deflate and BZip2 support.</p>
+<h3 id='carthage' class='heading'>Carthage</h3>
+
+<p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
+
+<p>Then run <code>carthage update</code>.</p>
+
+<p>Finally, drag and drop <code>SWCompression.framework</code> from <code>Carthage/Build</code> folder
+into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> tab.</p>
 <h2 id='usage' class='heading'>Usage</h2>
 <h3 id='basics' class='heading'>Basics</h3>
 
 <p>If you&rsquo;d like to decompress <q>deflated</q> data just use:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
-                     <span class="nv">options</span><span class="p">:</span> <span class="o">.</span><span class="n">mappedIfSafe</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">// let data = &lt;Your compressed data&gt;</span>
 <span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">Deflate</span><span class="o">.</span><span class="nf">decompress</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 </code></pre>
-
-<p><em>Note:</em> It is <strong>highly recommended</strong> to specify <code>Data.ReadingOptions.mappedIfSafe</code>,
-especially if you are working with large files, so you don&rsquo;t run out of system memory.</p>
 
 <p>However, it is unlikely that you will encounter deflated data outside of any archive.
 So, in case of GZip archive you should use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">GzipArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archiveData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 </code></pre>
 
-<p>One final note: every SWCompression function can throw an error and
-you are responsible for handling them.</p>
+<p>One final note: every SWCompression function can throw an error and you are responsible for handling them.</p>
 <h3 id='documentation' class='heading'>Documentation</h3>
 
 <p>Every function or class of public API of SWCompression is documented.
@@ -420,10 +447,22 @@ These files are stored in a <a href="https://github.com/tsolomko/SWCompression-T
 Git LFS is also used for storing them which basically is the reason for having them in other repository.
 Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
 (requires installing git-lfs <em>locally</em> with <code>--skip-smudge</code> option to solve the problem).</p>
+<h2 id='why' class='heading'>Why</h2>
+
+<p>First of all, existing solutions for work with compression, archives and containers have some problems.
+They might not support some particular compression algorithms or archive formats and they all have different APIs,
+which sometimes can be slightly <q>unfriendly</q> to use.
+This project attempts to provide missing (and sometimes existing) functionality through unified API,
+which is easy to use and remember.</p>
+
+<p>Secondly, it may be important to have a compression framework written completely in Swift,
+without relying on either system libraries or solutions implemented in different languages.
+Additionaly, since SWCompression is written fully in Swift without Objective-C,
+it can also be compiled on <strong>Linux</strong>.</p>
 <h2 id='future-plans' class='heading'>Future plans</h2>
 
 <ul>
-<li>Container API rework.</li>
+<li>Performance&hellip;</li>
 <li>Better Deflate compression.</li>
 <li>Something else&hellip;</li>
 </ul>

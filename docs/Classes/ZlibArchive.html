@@ -242,10 +242,6 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Unarchives Zlib archive.</p>
-
-<p>If data passed is not actually a Zlib archive, <code><a href="../Enums/ZlibError.html">ZlibError</a></code> will be thrown.</p>
-
-<p>If data in archive is not actually compressed with Deflate algorithm, <code><a href="../Enums/DeflateError.html">DeflateError</a></code> will be thrown.</p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is specification compliant.</p>
@@ -254,8 +250,8 @@
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     <p><code><a href="../Enums/DeflateError.html">DeflateError</a></code> or <code><a href="../Enums/ZlibError.html">ZlibError</a></code> depending on the type of the problem.
-It may indicate that either archive is damaged or
-it might not be archived with Zlib or compressed with Deflate at all.</p>
+It may indicate that either archive is damaged or it might not be archived with Zlib
+or compressed with Deflate at all.</p>
 
 </div>
 
@@ -292,7 +288,7 @@ it might not be archived with Zlib or compressed with Deflate at all.</p>
                         <p>Unarchived data.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/Zlib/ZlibArchive.swift#L28-L41">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/Zlib/ZlibArchive.swift#L24-L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -310,11 +306,8 @@ it might not be archived with Zlib or compressed with Deflate at all.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Archives <code>data</code> into Zlib archive.
-Data will be also compressed with Deflate algorithm.
+                        <p>Archives <code>data</code> into Zlib archive. Data will be also compressed with Deflate algorithm.
 It will also be specified in archive&rsquo;s header that the compressor used the slowest Deflate algorithm.</p>
-
-<p>If during compression something goes wrong <code><a href="../Enums/DeflateError.html">DeflateError</a></code> will be thrown.</p>
 <div class="aside aside-note">
     <p class="aside-title">Note</p>
     <p>This function is specification compliant.</p>
@@ -354,7 +347,7 @@ It will also be specified in archive&rsquo;s header that the compressor used the
                         <p>Resulting archive&rsquo;s data.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/Zlib/ZlibArchive.swift#L56-L72">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/Zlib/ZlibArchive.swift#L49-L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
