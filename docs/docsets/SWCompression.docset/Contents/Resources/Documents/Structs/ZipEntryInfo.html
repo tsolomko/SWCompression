@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           SWCompression Docs
         </a>
-         (81% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -219,7 +219,7 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>Provides access to information about an entry from the ZIP container.</p>
 
           </div>
         </section>
@@ -238,9 +238,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression12ZipEntryInfoV4nameSSv"></a>
+                    <a name="/s:13SWCompression18ContainerEntryInfoP4nameSSv"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression12ZipEntryInfoV4nameSSv">name</a>
+                    <a class="token" href="#/s:13SWCompression18ContainerEntryInfoP4nameSSv">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -248,8 +248,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Name of the file or directory.</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -260,7 +259,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L13">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L12">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -268,9 +267,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression12ZipEntryInfoV4sizeSiSgv"></a>
+                    <a name="/s:13SWCompression18ContainerEntryInfoP4sizeSiSgv"></a>
                     <a name="//apple_ref/swift/Property/size" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression12ZipEntryInfoV4sizeSiSgv">size</a>
+                    <a class="token" href="#/s:13SWCompression18ContainerEntryInfoP4sizeSiSgv">size</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -278,8 +277,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Size of the data associated with the entry.</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -290,7 +288,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L16">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L18">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -298,9 +296,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SWCompression12ZipEntryInfoV4typeAA09ContainerC4TypeOv"></a>
+                    <a name="/s:13SWCompression18ContainerEntryInfoP4typeAA0bC4TypeOv"></a>
                     <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SWCompression12ZipEntryInfoV4typeAA09ContainerC4TypeOv">type</a>
+                    <a class="token" href="#/s:13SWCompression18ContainerEntryInfoP4typeAA0bC4TypeOv">type</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -308,8 +306,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -320,22 +317,11 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L15">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/TODO:%20Describe%20preference%20of%20various%20fields%20when%20setting%20time%20properties."></a>
-                <a name="//apple_ref/swift/Section/TODO: Describe preference of various fields when setting time properties." class="dashAnchor"></a>
-                <a href="#/TODO:%20Describe%20preference%20of%20various%20fields%20when%20setting%20time%20properties.">
-                  <h3 class="section-name">TODO: Describe preference of various fields when setting time properties.</h3>
-                </a>
-              </div>
-              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -349,7 +335,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s last access time (<code>nil</code>, if not available).</p>
+
+<p>Set from different sources in the following preference order:</p>
+
+<ol>
+<li>Extended timestamp extra field (most common on UNIX-like systems).</li>
+<li>NTFS extra field.</li>
+</ol>
 
                       </div>
                       <div class="declaration">
@@ -361,7 +354,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -379,7 +372,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s creation time (<code>nil</code>, if not available).</p>
+
+<p>Set from different sources in the following preference order:</p>
+
+<ol>
+<li>Extended timestamp extra field (most common on UNIX-like systems).</li>
+<li>NTFS extra field.</li>
+</ol>
 
                       </div>
                       <div class="declaration">
@@ -391,7 +391,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -409,7 +409,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s last modification time.</p>
+
+<p>Set from different sources in the following preference order:</p>
+
+<ol>
+<li>Extended timestamp extra field (most common on UNIX-like systems).</li>
+<li>NTFS extra field.</li>
+<li>ZIP container&rsquo;s own storage (in Central Directory entry).</li>
+</ol>
 
                       </div>
                       <div class="declaration">
@@ -421,7 +429,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L45">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -439,7 +447,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s permissions in POSIX format.
+May have meaningless value if origin file system&rsquo;s attributes weren&rsquo;t POSIX compatible.</p>
 
                       </div>
                       <div class="declaration">
@@ -451,7 +460,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L51">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -480,7 +489,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s comment.</p>
 
                       </div>
                       <div class="declaration">
@@ -492,7 +501,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -510,7 +519,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s external file attributes. ZIP internal property.
+May be useful when origin file system&rsquo;s attributes weren&rsquo;t POSIX compatible.</p>
 
                       </div>
                       <div class="declaration">
@@ -522,7 +532,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L62">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -540,7 +550,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s attributes in DOS format.</p>
 
                       </div>
                       <div class="declaration">
@@ -552,7 +562,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -582,7 +592,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L68">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -600,7 +610,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>File system type of container&rsquo;s origin.</p>
 
                       </div>
                       <div class="declaration">
@@ -612,7 +622,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L71">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -630,7 +640,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Entry&rsquo;s compression method.</p>
 
                       </div>
                       <div class="declaration">
@@ -642,7 +652,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/tsolomko/SWCompression/tree/v4.0.0-test.2/Sources/ZIP/ZipEntryInfo.swift#L74">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
