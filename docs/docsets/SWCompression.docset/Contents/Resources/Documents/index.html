@@ -221,13 +221,15 @@
 <p>A framework with (de)compression algorithms and functions for processing various archives and containers.</p>
 <h2 id='what' class='heading'>What</h2>
 
-<p>SWCompression - is a framework with a collection of different functions to:</p>
+<p>SWCompression &mdash; is a framework with a collection of different functions to:</p>
 
 <ol>
 <li>Decompress (and sometimes compress) using different algorithms.</li>
 <li>Read (and sometimes write) different archives.</li>
 <li>Read containers such as ZIP, TAR and 7-Zip.</li>
 </ol>
+
+<p>It also works both on Apple platforms and <strong>Linux</strong>.</p>
 
 <p>In the tables below full list of available features is presented.
 <q>TBD</q> means that feature is planned but not implemented (yet).</p>
@@ -241,15 +243,15 @@
 </tr>
 </thead><tbody>
 <tr>
-<td>Compression</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
+<td>Decompression</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
-<td>Decompression</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
+<td>Compression</td>
+<td>✅</td>
+<td>✅</td>
 <td>TBD</td>
 </tr>
 </tbody></table>
@@ -264,14 +266,14 @@
 </thead><tbody>
 <tr>
 <td>Read</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Write</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
+<td>✅</td>
+<td>✅</td>
 <td>TBD</td>
 </tr>
 </tbody></table>
@@ -286,9 +288,9 @@
 </thead><tbody>
 <tr>
 <td>Read</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
-<td>:white_check_mark:</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Write</td>
@@ -358,11 +360,11 @@ and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.</p>
 <p>But both these containers support other compression methods, some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of &lsquo;optional dependencies&rsquo; for such compression methods.</p>
 
-<p>&lsquo;Optional dependency&rsquo; in this context means
+<p><q>Optional dependency</q> in this context means
 that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
 only if a corresponding subspec is expicitly specified in your Podfile and installed.</p>
 
-<p><strong>List of &lsquo;optional dependecies&rsquo;.</strong></p>
+<p><strong>List of <q>optional dependecies</q>:</strong></p>
 
 <p>For SWCompression/ZIP:</p>
 
@@ -383,7 +385,7 @@ and ZIP will be built with both additional BZip2 and LZMA support
 as well as 7-Zip will be build with both additional Deflate and BZip2 support.</p>
 <h3 id='carthage' class='heading'>Carthage</h3>
 
-<p>Add to  your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
+<p>Add to your Cartfile <code>github &quot;tsolomko/SWCompression&quot;</code>.</p>
 
 <p>Then run <code>carthage update</code>.</p>
 
@@ -401,33 +403,30 @@ into the <q>Embedded Binaries</q> section on your targets&rsquo; <q>General</q> 
 So, in case of GZip archive you should use:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">GzipArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archiveData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
 </code></pre>
+<h3 id='handling-errors' class='heading'>Handling Errors</h3>
 
-<p>One final note: every SWCompression function can throw an error and you are responsible for handling them.</p>
+<p>Most SWCompression functions can throw an error and you are responsible for handling them.
+If you look at list of available error types and their cases, you may be frightened by their number.
+However, most of these cases (such as <code><a href="Enums/XZError.html#/s:13SWCompression7XZErrorO10wrongMagicA2CmF">XZError.wrongMagic</a></code>) exist for diagnostic purposes.</p>
+
+<p>Thus, you only need to handle the most common type of error for your archive/algorithm. For example:</p>
+<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
+    <span class="c1">// let data = &lt;Your compressed data&gt;</span>
+    <span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="kt">XZArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archive</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">XZError</span> <span class="p">{</span>
+    <span class="o">&lt;</span><span class="n">handle</span> <span class="kt">XZ</span> <span class="n">related</span> <span class="n">error</span> <span class="n">here</span><span class="o">&gt;</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="o">&lt;</span><span class="n">handle</span> <span class="n">all</span> <span class="n">other</span> <span class="n">errors</span> <span class="n">here</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</code></pre>
 <h3 id='documentation' class='heading'>Documentation</h3>
 
 <p>Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own <a href="http://tsolomko.github.io/SWCompression">website</a>.</p>
-<h3 id='handling-errors' class='heading'>Handling Errors</h3>
-
-<p>If you look at list of available error types and their cases, you may be frightened by their number.
-However, most of these cases (such as <code><a href="Enums/XZError.html#/s:13SWCompression7XZErrorO10wrongMagicA2CmF">XZError.wrongMagic</a></code>) exist for diagnostic purposes.</p>
-
-<p>Thus, you only need to handle the most common type of error for your archive/algorithm.
-For example:</p>
-<pre class="highlight swift"><code><span class="k">do</span> <span class="p">{</span>
-  <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="s">"path/to/file"</span><span class="p">),</span>
-                      <span class="nv">options</span><span class="p">:</span> <span class="o">.</span><span class="n">mappedIfSafe</span><span class="p">)</span>
-  <span class="k">let</span> <span class="nv">decompressedData</span> <span class="o">=</span> <span class="kt">XZArchive</span><span class="o">.</span><span class="nf">unarchive</span><span class="p">(</span><span class="nv">archive</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">XZError</span> <span class="p">{</span>
-  <span class="o">&lt;</span><span class="n">handle</span> <span class="kt">XZ</span> <span class="n">related</span> <span class="n">error</span> <span class="n">here</span><span class="o">&gt;</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
-  <span class="o">&lt;</span><span class="n">handle</span> <span class="n">all</span> <span class="n">other</span> <span class="n">errors</span> <span class="n">here</span><span class="o">&gt;</span>
-<span class="p">}</span>
-</code></pre>
 <h3 id='sophisticated-example' class='heading'>Sophisticated example</h3>
 
-<p>There is a small program, <a href="https://github.com/tsolomko/swcomp">swcomp</a>,
-which uses SWCompression for unarchiving several types of archives.</p>
+<p>There is a small command-line program, <q>swcomp</q>, which is included in this repository in <q>Sources/swcomp</q>.
+To build it you need to uncomment several lines in <q>Package.swift</q> and run `swift build -c release&quot;.</p>
 <h2 id='performace' class='heading'>Performace</h2>
 
 <p>Usage of whole module optimizations is recommended for best performance.
@@ -444,9 +443,9 @@ git lfs pull
 
 <p>These commands fetch example archives and other files which are used for testing.
 These files are stored in a <a href="https://github.com/tsolomko/SWCompression-Test-Files">separate repository</a>.
-Git LFS is also used for storing them which basically is the reason for having them in other repository.
-Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
-(requires installing git-lfs <em>locally</em> with <code>--skip-smudge</code> option to solve the problem).</p>
+Git LFS is used for storing them which is the reason for having them in the separate repository,
+since Swift Package Manager have some problems with Git LFS-enabled repositories.
+(it requires installing git-lfs <em>locally</em> with <code>--skip-smudge</code> option to solve these problems).</p>
 <h2 id='why' class='heading'>Why</h2>
 
 <p>First of all, existing solutions for work with compression, archives and containers have some problems.

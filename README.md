@@ -8,29 +8,31 @@ A framework with (de)compression algorithms and functions for processing various
 
 ## What
 
-SWCompression - is a framework with a collection of different functions to:
+SWCompression --- is a framework with a collection of different functions to:
 
 1. Decompress (and sometimes compress) using different algorithms.
 2. Read (and sometimes write) different archives.
 3. Read containers such as ZIP, TAR and 7-Zip.
 
+It also works both on Apple platforms and __Linux__.
+
 In the tables below full list of available features is presented.
 "TBD" means that feature is planned but not implemented (yet).
 
-|               | Deflate            | BZip2              | LZMA/LZMA2         |
-| ------------- | ------------------ | ------------------ | ------------------ |
-| Compression   | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Decompression | :white_check_mark: | :white_check_mark: | TBD                |
+|               | Deflate | BZip2 | LZMA/LZMA2 |
+| ------------- | ------- | ----- | ---------- |
+| Decompression | ✅      | ✅     | ✅         |
+| Compression   | ✅      | ✅     | TBD        |
 
-|       | Zlib               | GZip               | XZ                 |
-| ----- | ------------------ | ------------------ | ------------------ |
-| Read  | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Write | :white_check_mark: | :white_check_mark: | TBD                |
+|       | Zlib | GZip | XZ  |
+| ----- | ---- | ---- | --- |
+| Read  | ✅   | ✅    | ✅  |
+| Write | ✅   | ✅    | TBD |
 
-|       | ZIP                | TAR                | 7-Zip              |
-| ----- | ------------------ | ------------------ | ------------------ |
-| Read  | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Write | TBD                | TBD                | TBD                |
+|       | ZIP | TAR | 7-Zip |
+| ----- | --- | --- | ----- |
+| Read  | ✅  | ✅   | ✅    |
+| Write | TBD | TBD | TBD   |
 
 And, by the way, SWCompression is _written with Swift only._
 
@@ -96,11 +98,11 @@ and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.
 But both these containers support other compression methods, some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
 
-'Optional dependency' in this context means
+"Optional dependency" in this context means
 that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
 only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
-__List of 'optional dependecies'.__
+__List of "optional dependecies":__
 
 For SWCompression/ZIP:
 
@@ -118,7 +120,7 @@ as well as 7-Zip will be build with both additional Deflate and BZip2 support.
 
 ### Carthage
 
-Add to  your Cartfile `github "tsolomko/SWCompression"`.
+Add to your Cartfile `github "tsolomko/SWCompression"`.
 
 Then run `carthage update`.
 
@@ -143,37 +145,34 @@ So, in case of GZip archive you should use:
 let decompressedData = try? GzipArchive.unarchive(archiveData: data)
 ```
 
-One final note: every SWCompression function can throw an error and you are responsible for handling them.
+### Handling Errors
+
+Most SWCompression functions can throw an error and you are responsible for handling them.
+If you look at list of available error types and their cases, you may be frightened by their number.
+However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
+
+Thus, you only need to handle the most common type of error for your archive/algorithm. For example:
+
+```swift
+do {
+    // let data = <Your compressed data>
+    let decompressedData = XZArchive.unarchive(archive: data)
+} catch let error as XZError {
+    <handle XZ related error here>
+} catch let error {
+    <handle all other errors here>
+}
+```
 
 ### Documentation
 
 Every function or class of public API of SWCompression is documented.
 This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
 
-### Handling Errors
-
-If you look at list of available error types and their cases, you may be frightened by their number.
-However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
-
-Thus, you only need to handle the most common type of error for your archive/algorithm.
-For example:
-
-```swift
-do {
-  let data = try Data(contentsOf: URL(fileURLWithPath: "path/to/file"),
-                      options: .mappedIfSafe)
-  let decompressedData = XZArchive.unarchive(archive: data)
-} catch let error as XZError {
-  <handle XZ related error here>
-} catch let error {
-  <handle all other errors here>
-}
-```
-
 ### Sophisticated example
 
-There is a small program, [swcomp](https://github.com/tsolomko/swcomp),
-which uses SWCompression for unarchiving several types of archives.
+There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp".
+To build it you need to uncomment several lines in "Package.swift" and run `swift build -c release".
 
 ## Performace
 
@@ -194,9 +193,9 @@ git lfs pull
 
 These commands fetch example archives and other files which are used for testing.
 These files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
-Git LFS is also used for storing them which basically is the reason for having them in other repository.
-Otherwise, using Swift Package Manager to install SWCompression is a bit challenging
-(requires installing git-lfs _locally_ with `--skip-smudge` option to solve the problem).
+Git LFS is used for storing them which is the reason for having them in the separate repository,
+since Swift Package Manager have some problems with Git LFS-enabled repositories.
+(it requires installing git-lfs _locally_ with `--skip-smudge` option to solve these problems).
 
 ## Why
 
