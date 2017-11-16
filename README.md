@@ -6,17 +6,17 @@
 
 A framework with (de)compression algorithms and functions for processing various archives and containers.
 
-## What
+## What is this?
 
-SWCompression --- is a framework with a collection of different functions to:
+SWCompression &mdash; is a framework with a collection of functions for:
 
-1. Decompress (and sometimes compress) using different algorithms.
-2. Read (and sometimes write) different archives.
-3. Read containers such as ZIP, TAR and 7-Zip.
+1. Decompression (and sometimes compression) using different algorithms.
+2. Reading (and sometimes writing) archives of different formats.
+3. Reading containers such as ZIP, TAR and 7-Zip.
 
 It also works both on Apple platforms and __Linux__.
 
-In the tables below full list of available features is presented.
+All features are listed in the tables below.
 "TBD" means that feature is planned but not implemented (yet).
 
 |               | Deflate | BZip2 | LZMA/LZMA2 |
@@ -34,11 +34,11 @@ In the tables below full list of available features is presented.
 | Read  | ✅  | ✅   | ✅    |
 | Write | TBD | TBD | TBD   |
 
-And, by the way, SWCompression is _written with Swift only._
+Also, SWCompression is _written with Swift only._
 
 ## Installation
 
-SWCompression can be integrated into your project either using Swift Package Manager, CocoaPods or Carthage.
+SWCompression can be integrated into your project using Swift Package Manager, CocoaPods or Carthage.
 
 ### Swift Package Manager
 
@@ -62,13 +62,13 @@ let package = Package(
 )
 ```
 
-More info about SPM you can find at [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
 
 ### CocoaPods
 
 Add to your Podfile `pod 'SWCompression'`.
 
-There are several sub-podspecs in case you need only parts of framework's functionality.
+If you need only some parts of framework, you can install only them using sub-podspecs.
 Available subspecs:
 
 - SWCompression/BZip2
@@ -82,41 +82,35 @@ Available subspecs:
 - SWCompression/Zlib
 - SWCompression/ZIP
 
-You can add some of them instead of `pod 'SWCompression'`
-
 Also, do not forget to include `use_frameworks!` line in your Podfile.
 
 To complete installation, run `pod install`.
 
-#### Options for CocoaPods users
+#### "Optional Dependencies"
 
-Both ZIP and 7-Zip containers have compression method which is most likely to be used when compressing files into them.
-This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
+Both ZIP and 7-Zip containers have a single compression method which is most likely to be used,
+for compression of data inside them. This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
 Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
 and SWCompression/LZMA subspec as a dependency for SWCompression/SevenZip.
 
-But both these containers support other compression methods, some of them are implemented in SWCompression.
+But both of these formats support other compression methods, and some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
 
 "Optional dependency" in this context means
 that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
 only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
-__List of "optional dependecies":__
+List of "optional dependecies":
 
-For SWCompression/ZIP:
+- For SWCompression/ZIP:
+    - SWCompression/BZip2
+    - SWCompression/LZMA
+- For SWCompression/SevenZip:
+    - SWCompression/BZip2
+    - SWCompression/Deflate
 
-- SWCompression/BZip2
-- SWCompression/LZMA
-
-For SWCompression/SevenZip:
-
-- SWCompression/BZip2
-- SWCompression/Deflate
-
-__Note:__ If you use Carthage or Swift Package Manager you always have the full package,
-and ZIP will be built with both additional BZip2 and LZMA support
-as well as 7-Zip will be build with both additional Deflate and BZip2 support.
+__Note:__ If you use Carthage or Swift Package Manager you always have the full package
+and ZIP and 7-Zip are built with Deflate, BZip2 and LZMA/LZMA2 support.
 
 ### Carthage
 
@@ -125,11 +119,11 @@ Add to your Cartfile `github "tsolomko/SWCompression"`.
 Then run `carthage update`.
 
 Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder
-into the "Embedded Binaries" section on your targets' "General" tab.
+into the "Embedded Binaries" section on your targets' "General" tab in Xcode.
 
 ## Usage
 
-### Basics
+### Basic Example
 
 If you'd like to decompress "deflated" data just use:
 
@@ -156,7 +150,7 @@ Thus, you only need to handle the most common type of error for your archive/alg
 ```swift
 do {
     // let data = <Your compressed data>
-    let decompressedData = XZArchive.unarchive(archive: data)
+    let decompressedData = try XZArchive.unarchive(archive: data)
 } catch let error as XZError {
     <handle XZ related error here>
 } catch let error {
@@ -164,15 +158,17 @@ do {
 }
 ```
 
+Or, if you don't care about errors at all, use `try?`.
+
 ### Documentation
 
-Every function or class of public API of SWCompression is documented.
+Every function or type of SWCompression's public API is documented.
 This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
 
 ### Sophisticated example
 
 There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp".
-To build it you need to uncomment several lines in "Package.swift" and run `swift build -c release".
+To build it you need to uncomment several lines in "Package.swift" and run `swift build -c release`.
 
 ## Performace
 
@@ -183,7 +179,7 @@ These optimizations are enabled by default for Release configurations.
 
 ## Running tests locally
 
-If you want to run tests locally you need to clone this repository and do some additional steps:
+If you want to run tests locally you need to do some additional steps after cloning this repository:
 
 ```bash
 git submodule update --init --recursive
@@ -194,14 +190,14 @@ git lfs pull
 These commands fetch example archives and other files which are used for testing.
 These files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
 Git LFS is used for storing them which is the reason for having them in the separate repository,
-since Swift Package Manager have some problems with Git LFS-enabled repositories.
+since Swift Package Manager have some problems with Git LFS-enabled repositories
 (it requires installing git-lfs _locally_ with `--skip-smudge` option to solve these problems).
 
-## Why
+## Why?
 
 First of all, existing solutions for work with compression, archives and containers have some problems.
 They might not support some particular compression algorithms or archive formats and they all have different APIs,
-which sometimes can be slightly "unfriendly" to use.
+which sometimes can be slightly "unfriendly" to users.
 This project attempts to provide missing (and sometimes existing) functionality through unified API,
 which is easy to use and remember.
 
