@@ -17,33 +17,12 @@ class ZipTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try ZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.count, 211)
 
         #if LONG_TESTS
-            for entry in entries {
-                _ = try entry.data()
-            }
+            _ = try ZipContainer.open(container: testData)
+        #else
+            _ = try ZipContainer.info(container: testData)
         #endif
-    }
-
-    func testMultiThreading() throws {
-        guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
-        }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let entries = try ZipContainer.open(container: testData)
-
-        XCTAssertEqual(entries.count, 211)
-
-        for entry in entries {
-            DispatchQueue.global(qos: .userInitiated).async {
-                XCTAssertNotNil(try? entry.data())
-            }
-        }
     }
 
     func testZip64() throws {
@@ -56,10 +35,6 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 6)
-
-        for entry in entries {
-            _ = try entry.data()
-        }
     }
 
     func testDataDescriptor() throws {
@@ -72,10 +47,6 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 6)
-
-        for entry in entries {
-            _ = try entry.data()
-        }
     }
 
     func testUnicode() throws {
@@ -88,9 +59,9 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "текстовый файл")
-        XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertNotNil(try entries[0].data())
+        XCTAssertEqual(entries[0].info.name, "текстовый файл")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertNotNil(entries[0].data)
     }
 
     func testZipLZMA() throws {
@@ -103,8 +74,8 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "test4.answer")
-        XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -113,9 +84,7 @@ class ZipTests: XCTestCase {
 
         let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
 
-        XCTAssertEqual(try entries[0].data(), answerData)
-        // Test repeat of getting entry data (there was a problem with it).
-        XCTAssertEqual(try entries[0].data(), answerData)
+        XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testZipBZip2() throws {
@@ -128,8 +97,8 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "test4.answer")
-        XCTAssertEqual(entries[0].isDirectory, false)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
 
         guard let answerURL = Constants.url(forAnswer: "test4") else {
             XCTFail("Unable to get answer's URL.")
@@ -138,7 +107,7 @@ class ZipTests: XCTestCase {
 
         let answerData = try? Data(contentsOf: answerURL, options: .mappedIfSafe)
 
-        XCTAssertEqual(try entries[0].data(), answerData)
+        XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testWinContainer() throws {
@@ -152,15 +121,15 @@ class ZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 2)
 
-        XCTAssertEqual(entries[0].name, "dir/")
-        XCTAssertEqual(entries[0].isDirectory, true)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "dir/")
+        XCTAssertEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, nil)
 
-        XCTAssertEqual(entries[1].name, "text_win.txt")
-        XCTAssertEqual(entries[1].isDirectory, false)
-        XCTAssertEqual(entries[1].size, 15)
-        XCTAssertEqual(try entries[1].data(), "Hello, Windows!".data(using: .utf8))
+        XCTAssertEqual(entries[1].info.name, "text_win.txt")
+        XCTAssertEqual(entries[1].info.type, .regular)
+        XCTAssertEqual(entries[1].info.size, 15)
+        XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
 
     func testEmptyFile() throws {
@@ -173,10 +142,10 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_file")
-        XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "empty_file")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, Data())
     }
 
     func testEmptyDirectory() throws {
@@ -189,10 +158,10 @@ class ZipTests: XCTestCase {
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_dir/")
-        XCTAssertEqual(entries[0].isDirectory, true)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "empty_dir/")
+        XCTAssertEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, nil)
     }
 
     func testEmptyContainer() throws {

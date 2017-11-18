@@ -1,8 +1,0 @@
-engines:
-  fixme:
-    enabled: true
-  tailor:
-    enabled: true
-ratings:
-  paths:
-  - "**.swift"

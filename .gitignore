@@ -41,6 +41,7 @@ playground.xcworkspace
 # Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
 # Packages/
 .build/
+Package.pins
 
 # CocoaPods
 #
@@ -68,3 +69,9 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# Ignore symbolic link to swcomp executable built by SPM.
+swcomp
+
+# Ignore Package.resolved, because there is no dependencies by default for this package.
+Package.resolved

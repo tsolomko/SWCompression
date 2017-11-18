@@ -20,10 +20,10 @@ class TarTests: XCTestCase {
         let result = try TarContainer.open(container: testData)
 
         XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result[0].name, "test5.answer")
-        XCTAssertEqual(result[0].size, 0)
-        XCTAssertEqual(result[0].isDirectory, false)
-        XCTAssertEqual(try result[0].data(), Data())
+        XCTAssertEqual(result[0].info.name, "test5.answer")
+        XCTAssertEqual(result[0].info.size, 0)
+        XCTAssertEqual(result[0].info.type, .regular)
+        XCTAssertEqual(result[0].data, Data())
     }
 
     func testPax() throws {
@@ -38,11 +38,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result.count, 5)
 
         for entry in result {
-            guard let tarEntry = entry as? TarEntry else {
-                XCTFail("Unable to convert entry to TarEntry.")
-                return
-            }
-            let name = tarEntry.name.components(separatedBy: ".")[0]
+            let name = entry.info.name.components(separatedBy: ".")[0]
             guard let answerURL = Constants.url(forAnswer: name) else {
                 XCTFail("Unable to get answer's URL.")
                 return
@@ -50,9 +46,9 @@ class TarTests: XCTestCase {
 
             let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
-            XCTAssertEqual(tarEntry.data(), answerData)
-            XCTAssertEqual(tarEntry.isDirectory, false)
-            XCTAssertNotNil(tarEntry.accessTime)
+            XCTAssertEqual(entry.data, answerData)
+            XCTAssertEqual(entry.info.type, .regular)
+            XCTAssertNotNil(entry.info.accessTime)
         }
     }
 
@@ -76,10 +72,10 @@ class TarTests: XCTestCase {
             let result = try TarContainer.open(container: testData)
 
             XCTAssertEqual(result.count, 1)
-            XCTAssertEqual(result[0].name, "test1.answer")
-            XCTAssertEqual(result[0].size, 14)
-            XCTAssertEqual(result[0].isDirectory, false)
-            XCTAssertEqual(try result[0].data(), answerData)
+            XCTAssertEqual(result[0].info.name, "test1.answer")
+            XCTAssertEqual(result[0].info.size, 14)
+            XCTAssertEqual(result[0].info.type, .regular)
+            XCTAssertEqual(result[0].data, answerData)
         }
     }
 
@@ -110,15 +106,15 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 2)
 
-        XCTAssertEqual(entries[0].name, "dir/")
-        XCTAssertEqual(entries[0].isDirectory, true)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "dir/")
+        XCTAssertEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, nil)
 
-        XCTAssertEqual(entries[1].name, "text_win.txt")
-        XCTAssertEqual(entries[1].isDirectory, false)
-        XCTAssertEqual(entries[1].size, 15)
-        XCTAssertEqual(try entries[1].data(), "Hello, Windows!".data(using: .utf8))
+        XCTAssertEqual(entries[1].info.name, "text_win.txt")
+        XCTAssertEqual(entries[1].info.type, .regular)
+        XCTAssertEqual(entries[1].info.size, 15)
+        XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
 
     func testEmptyFile() throws {
@@ -131,10 +127,10 @@ class TarTests: XCTestCase {
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_file")
-        XCTAssertEqual(entries[0].isDirectory, false)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "empty_file")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, Data())
     }
 
     func testEmptyDirectory() throws {
@@ -147,10 +143,10 @@ class TarTests: XCTestCase {
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].name, "empty_dir/")
-        XCTAssertEqual(entries[0].isDirectory, true)
-        XCTAssertEqual(entries[0].size, 0)
-        XCTAssertEqual(try entries[0].data(), Data())
+        XCTAssertEqual(entries[0].info.name, "empty_dir/")
+        XCTAssertEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].data, nil)
     }
 
     func testEmptyContainer() throws {
@@ -163,6 +159,21 @@ class TarTests: XCTestCase {
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.isEmpty, true)
+    }
+
+    func testBigContainer() throws {
+        guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: TarTests.testType) else {
+            XCTFail("Unable to get test's URL.")
+            return
+        }
+
+        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
+
+        #if LONG_TESTS
+            _ = try TarContainer.open(container: testData)
+        #else
+            _ = try TarContainer.info(container: testData)
+        #endif
     }
 
 }

@@ -73,7 +73,7 @@ class XZTests: XCTestCase {
         try self.perform(test: "test9")
     }
 
-    func testMultiUnarchive() throws {
+    func testMultiStreamNoPadding() throws {
         // Doesn't contain any padding.
         guard let testURL = Constants.url(forTest: "test_multi", withType: XZTests.testType) else {
             XCTFail("Unable to get test's URL.")
@@ -81,23 +81,25 @@ class XZTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let members = try XZArchive.multiUnarchive(archive: testData)
+        let decompressedData = try XZArchive.unarchive(archive: testData)
+        let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
-        XCTAssertEqual(members.count, 4)
-
+        var answerData = Data()
         for i in 1...4 {
             guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
                 XCTFail("Unable to get answer's URL.")
                 return
             }
 
-            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
-            XCTAssertEqual(members[i - 1], answerData)
+            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
+            answerData.append(currentAnswerData)
+            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
+
+        XCTAssertEqual(decompressedData, answerData)
     }
 
-    func testMultiUnarchiveWithPadding() throws {
+    func testMultiStreamComplexPadding() throws {
         // After first stream - no padding.
         // After second - 4 bytes of padding.
         // Third - 8 bytes.
@@ -109,62 +111,22 @@ class XZTests: XCTestCase {
         }
 
         let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let members = try XZArchive.multiUnarchive(archive: testData)
+        let decompressedData = try XZArchive.unarchive(archive: testData)
+        let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
-        XCTAssertEqual(members.count, 4)
-
+        var answerData = Data()
         for i in 1...4 {
             guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
                 XCTFail("Unable to get answer's URL.")
                 return
             }
 
-            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
-            XCTAssertEqual(members[i - 1], answerData)
-        }
-    }
-
-    func testMultiUnarchiveRedundant1() throws {
-        guard let testURL = Constants.url(forTest: "test4", withType: XZTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
+            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
+            answerData.append(currentAnswerData)
+            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
 
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let members = try XZArchive.multiUnarchive(archive: testData)
-
-        XCTAssertEqual(members.count, 1)
-
-        guard let answerURL = Constants.url(forAnswer: "test4") else {
-            XCTFail("Unable to get answer's URL.")
-            return
-        }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
-        XCTAssertEqual(members[0], answerData)
-    }
-
-    func testMultiUnarchiveRedundant2() throws {
-        guard let testURL = Constants.url(forTest: "test1", withType: XZTests.testType) else {
-            XCTFail("Unable to get test's URL.")
-            return
-        }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
-        let members = try XZArchive.multiUnarchive(archive: testData)
-
-        XCTAssertEqual(members.count, 1)
-
-        guard let answerURL = Constants.url(forAnswer: "test1") else {
-            XCTFail("Unable to get answer's URL.")
-            return
-        }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
-        XCTAssertEqual(members[0], answerData)
+        XCTAssertEqual(decompressedData, answerData)
     }
 
 }

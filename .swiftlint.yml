@@ -4,8 +4,10 @@ disabled_rules:
   - function_body_length
   - type_body_length
 opt_in_rules:
+  - array_init
   - block_based_kvo
   - conditional_returns_on_newline
+  - contains_over_first_not_nil
   - discouraged_direct_init
   - explicit_init
   - fatal_error_message
@@ -13,11 +15,13 @@ opt_in_rules:
   - implicit_return
   - implicitly_unwrapped_optional
   - joined_default_parameter
+  - literal_expression_end_indentation
   - no_grouping_extension
   - operator_usage_whitespace
   - pattern_matching_keywords
   - redundant_nil_coalescing
   - single_test_class
+  - sorted_first_last
   - strict_fileprivate
   - switch_case_on_newline
   - trailing_closure
