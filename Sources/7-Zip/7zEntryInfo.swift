@@ -26,7 +26,6 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
     // MARK: 7-Zip specific
 
-
     /**
      Entry's "win attributes". 7-Zip internal property.
      May be useful when origin file system's attributes weren't POSIX compatible.
