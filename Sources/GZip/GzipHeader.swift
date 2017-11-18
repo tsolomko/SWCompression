@@ -32,9 +32,8 @@ public struct GzipHeader {
      */
     public let modificationTime: Date?
 
-    // TODO: Explain why can be nil?
     /// Type of file system on which archivation took place.
-    public let osType: FileSystemType?
+    public let osType: FileSystemType
 
     /// Name of the original file. If archive doesn't contain file's name, then `nil`.
     public let fileName: String?
@@ -47,8 +46,6 @@ public struct GzipHeader {
 
     /**
      Initializes the structure with the values from the first 'member' of GZip `archive`.
-
-     If data passed is not actually a GZip archive, `GzipError` will be thrown.
 
      - Parameter archive: Data archived with GZip.
 

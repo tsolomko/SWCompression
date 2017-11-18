@@ -12,7 +12,7 @@ import Foundation
 public enum TarError: Error {
     /// Size of data is too small, even to contain only one header.
     case tooSmallFileIsPassed
-    /// Failed to process a field as a number.
+    /// Failed to process a TAR header's field.
     case wrongField
     /// Computed checksum of a header doesn't match the value stored in container.
     case wrongHeaderChecksum

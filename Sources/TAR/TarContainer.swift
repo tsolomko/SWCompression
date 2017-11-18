@@ -5,16 +5,15 @@
 
 import Foundation
 
-/// Provides open function for TAR containers.
+/// Provides functions for work with TAR containers.
 public class TarContainer: Container {
 
     /**
-     Processes TAR container and returns an array of `TarEntry`.
+     Processes TAR container and returns an array of `TarEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by TAR container and,
-     particularly, by the creator of a given TAR container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by TAR container and, particularly,
+     by the creator of a given TAR container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
 
      - Parameter container: TAR container's data.
 
@@ -40,6 +39,19 @@ public class TarContainer: Container {
         return entries
     }
 
+    /**
+     Processes TAR container and returns an array of `TarEntryInfo` with information about entries in this container.
+
+     - Important: The order of entries is defined by TAR container and, particularly,
+     by the creator of a given TAR container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: TAR container's data.
+
+     - Throws: `TarError`, which may indicate that either container is damaged or it might not be TAR container at all.
+
+     - Returns: Array of `TarEntryInfo`.
+     */
     public static func info(container data: Data) throws -> [TarEntryInfo] {
         // First, if the TAR container contains only header, it should be at least 512 bytes long.
         // So we have to check this.

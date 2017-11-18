@@ -30,7 +30,7 @@ public extension BZip2 {
         /// 900 KB.
         case nine = 9
 
-        internal func headerByte() -> Int {
+        func headerByte() -> Int {
             switch self {
             case .one:
                 return 0x31

@@ -24,7 +24,7 @@ func isValidOutputDirectory(_ outputPath: String, create: Bool) throws -> Bool {
 
 func printInfo(_ entries: [ContainerEntryInfo]) {
     for entry in entries {
-        print("Name: \(entry.name ?? "")")
+        print("Name: \(entry.name)")
 
         switch entry.type {
         case .blockSpecial:
@@ -51,7 +51,7 @@ func printInfo(_ entries: [ContainerEntryInfo]) {
 
         if let tarEntry = entry as? TarEntryInfo {
             if tarEntry.type == .symbolicLink {
-                print("Linked path: \(tarEntry.linkName!)")
+                print("Linked path: \(tarEntry.linkName)")
             }
         }
 
@@ -91,10 +91,7 @@ func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: B
 
     // First, we create directories.
     for entry in entries where entry.info.type == .directory {
-        guard let entryName = entry.info.name else {
-            print("ERROR: Unable to get entry's name.")
-            exit(1)
-        }
+        let entryName = entry.info.name
         let entryFullURL = outputURL.appendingPathComponent(entryName, isDirectory: true)
 
         if verbose {
@@ -124,10 +121,7 @@ func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: B
 
     // Now, we create the rest of files.
     for entry in entries where entry.info.type != .directory {
-        guard let entryName = entry.info.name else {
-            print("ERROR: Unable to get entry's name.")
-            exit(1)
-        }
+        let entryName = entry.info.name
         let entryFullURL = outputURL.appendingPathComponent(entryName, isDirectory: false)
 
         if entry.info.type == .symbolicLink {

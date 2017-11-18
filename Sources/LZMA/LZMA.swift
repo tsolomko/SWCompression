@@ -11,8 +11,6 @@ public class LZMA: DecompressionAlgorithm {
     /**
      Decompresses `data` using LZMA algortihm.
 
-     If `data` is not actually compressed with LZMA, `LZMAError` will be thrown.
-
      - Parameter data: Data compressed with LZMA.
 
      - Throws: `LZMAError` if unexpected byte (bit) sequence was encountered in `data`.
@@ -23,18 +21,17 @@ public class LZMA: DecompressionAlgorithm {
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)
-
-        return Data(bytes: try decompress(pointerData))
+        return try decompress(pointerData)
     }
 
-    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
-        let decoder = try LZMADecoder(pointerData)
+    static func decompress(_ pointerData: DataWithPointer, uncompressedSize: UInt64? = nil) throws -> Data {
+        let decoder = LZMADecoder(pointerData)
 
         try decoder.setProperties(pointerData.byte())
         decoder.resetStateAndDecoders()
         decoder.dictionarySize = pointerData.uint32().toInt()
 
-        let uncompressedSize = pointerData.uint64()
+        let uncompressedSize = uncompressedSize ?? pointerData.uint64()
         if uncompressedSize == UInt64.max {
             decoder.uncompressedSize = -1
         } else {
@@ -42,7 +39,7 @@ public class LZMA: DecompressionAlgorithm {
         }
 
         try decoder.decode()
-        return decoder.out
+        return Data(bytes: decoder.out)
     }
 
 }

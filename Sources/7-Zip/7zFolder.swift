@@ -136,35 +136,35 @@ class SevenZipFolder {
 
             let unpackSize = self.unpackSize(for: coder)
 
-            if coder.id == SevenZipCoder.ID.copy || coder.id == SevenZipCoder.ID.zipCopy {
+            switch coder.compressionMethod {
+            case .copy:
                 continue
-            } else if coder.id == SevenZipCoder.ID.deflate {
+            case .deflate:
                 #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_DEFLATE)
                     decodedData = try Deflate.decompress(data: decodedData)
                 #else
                     throw SevenZipError.compressionNotSupported
                 #endif
-            } else if coder.id == SevenZipCoder.ID.bzip2 || coder.id == SevenZipCoder.ID.zipBzip2 {
+            case .bzip2:
                 #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_BZ2)
                     decodedData = try BZip2.decompress(data: decodedData)
                 #else
                     throw SevenZipError.compressionNotSupported
                 #endif
-            } else if coder.id == SevenZipCoder.ID.lzma2 {
+            case .lzma2:
                 // Dictionary size is stored in coder's properties.
-                guard let properties = coder.properties
-                    else { throw LZMA2Error.wrongProperties }
-                guard properties.count == 1
-                    else { throw LZMA2Error.wrongProperties }
+                guard let properties = coder.properties,
+                    properties.count == 1
+                    else { throw LZMA2Error.wrongDictionarySize }
 
                 let pointerData = DataWithPointer(data: decodedData)
 
-                let decoder = try LZMA2Decoder(pointerData)
+                let decoder = LZMA2Decoder(pointerData)
                 try decoder.setDictionarySize(properties[0])
 
                 try decoder.decode()
                 decodedData = Data(bytes: decoder.out)
-            } else if coder.id == SevenZipCoder.ID.lzma {
+            case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties
                     else { throw LZMAError.wrongProperties }
@@ -172,7 +172,7 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 let pointerData = DataWithPointer(data: decodedData)
-                let decoder = try LZMADecoder(pointerData)
+                let decoder = LZMADecoder(pointerData)
 
                 try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()
@@ -183,13 +183,12 @@ class SevenZipFolder {
                 }
                 decoder.dictionarySize = dictionarySize
 
-                // TODO: Make unpackSize (and, probably, other properties) UInt64 and set uncompressed size correctly.
                 decoder.uncompressedSize = unpackSize
 
                 try decoder.decode()
                 decodedData = Data(bytes: decoder.out)
-            } else {
-                if coder.id[0] == 0x06 {
+            default:
+                if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {
                     throw SevenZipError.compressionNotSupported

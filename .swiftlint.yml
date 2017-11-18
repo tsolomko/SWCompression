@@ -21,6 +21,7 @@ opt_in_rules:
   - pattern_matching_keywords
   - redundant_nil_coalescing
   - single_test_class
+  - sorted_first_last
   - strict_fileprivate
   - switch_case_on_newline
   - trailing_closure

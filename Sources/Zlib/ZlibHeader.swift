@@ -8,12 +8,6 @@ import Foundation
 /// Represents a Zlib archive's header.
 public struct ZlibHeader {
 
-    /// Supported compression methods in zlib archive.
-    public enum CompressionMethod: Int {
-        /// The only one supported compression method (Deflate).
-        case deflate = 8
-    }
-
     /// Levels of compression which can be used to create Zlib archive.
     public enum CompressionLevel: Int {
         /// Fastest algorithm.
@@ -26,7 +20,7 @@ public struct ZlibHeader {
         case slowAlgorithm = 3
     }
 
-    /// Compression method of archive. Currently, always equals to `.deflate`.
+    /// Compression method of archive. Always `.deflate` for Zlib archives.
     public let compressionMethod: CompressionMethod
 
     /// Level of compression used in archive.

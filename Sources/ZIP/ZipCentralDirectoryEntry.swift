@@ -71,7 +71,7 @@ struct ZipCentralDirectoryEntry {
 
         self.localHeaderOffset = pointerData.uint64(count: 4)
 
-        guard let fileName = ZipCommon.getStringField(pointerData, fileNameLength, useUtf8)
+        guard let fileName = pointerData.getZipStringField(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
 
@@ -117,7 +117,7 @@ struct ZipCentralDirectoryEntry {
             }
         }
 
-        guard let fileComment = ZipCommon.getStringField(pointerData, fileCommentLength, useUtf8)
+        guard let fileComment = pointerData.getZipStringField(fileCommentLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
 

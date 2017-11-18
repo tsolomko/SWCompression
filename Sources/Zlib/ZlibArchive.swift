@@ -11,17 +11,13 @@ public class ZlibArchive: Archive {
     /**
      Unarchives Zlib archive.
 
-     If data passed is not actually a Zlib archive, `ZlibError` will be thrown.
-
-     If data in archive is not actually compressed with Deflate algorithm, `DeflateError` will be thrown.
-
      - Note: This function is specification compliant.
 
      - Parameter archive: Data archived with Zlib.
 
      - Throws: `DeflateError` or `ZlibError` depending on the type of the problem.
-     It may indicate that either archive is damaged or
-     it might not be archived with Zlib or compressed with Deflate at all.
+     It may indicate that either archive is damaged or it might not be archived with Zlib
+     or compressed with Deflate at all.
 
      - Returns: Unarchived data.
      */
@@ -31,7 +27,8 @@ public class ZlibArchive: Archive {
 
         _ = try ZlibHeader(bitReader)
 
-        let out = Data(bytes: try Deflate.decompress(bitReader))
+        let out = try Deflate.decompress(bitReader)
+        bitReader.align()
 
         let adler32 = bitReader.uint32().reverseBytes()
         guard CheckSums.adler32(out) == adler32 else { throw ZlibError.wrongAdler32(out) }
@@ -40,11 +37,8 @@ public class ZlibArchive: Archive {
     }
 
     /**
-     Archives `data` into Zlib archive.
-     Data will be also compressed with Deflate algorithm.
+     Archives `data` into Zlib archive. Data will be also compressed with Deflate algorithm.
      It will also be specified in archive's header that the compressor used the slowest Deflate algorithm.
-
-     If during compression something goes wrong `DeflateError` will be thrown.
 
      - Note: This function is specification compliant.
 

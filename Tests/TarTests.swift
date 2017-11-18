@@ -38,7 +38,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(result.count, 5)
 
         for entry in result {
-            let name = entry.info.name!.components(separatedBy: ".")[0]
+            let name = entry.info.name.components(separatedBy: ".")[0]
             guard let answerURL = Constants.url(forAnswer: name) else {
                 XCTFail("Unable to get answer's URL.")
                 return

@@ -9,7 +9,7 @@ import Foundation
     import CoreFoundation
 #endif
 
-class ZipCommon {
+class ZipString {
 
     #if os(Linux)
         static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
@@ -18,21 +18,6 @@ class ZipCommon {
         static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
         static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
     #endif
-
-    // TODO: As extension?
-    static func getStringField(_ pointerData: DataWithPointer, _ length: Int, _ useUtf8: Bool) -> String? {
-        if length == 0 {
-            return ""
-        }
-        let bytes = pointerData.bytes(count: length)
-        let bytesAreUtf8 = ZipCommon.needsUtf8(bytes)
-        if !useUtf8 && ZipCommon.cp437Available && !bytesAreUtf8 {
-            return String(data: Data(bytes: bytes), encoding: String.Encoding(rawValue:
-                CFStringConvertEncodingToNSStringEncoding(ZipCommon.cp437Encoding)))
-        } else {
-            return String(data: Data(bytes: bytes), encoding: .utf8)
-        }
-    }
 
     static func needsUtf8(_ bytes: [UInt8]) -> Bool {
         // UTF-8 can have BOM.
@@ -46,7 +31,7 @@ class ZipCommon {
         var ch: UInt32 = 0
         while index < bytes.count {
             let byte = bytes[index]
-            if byte <= 0x7F { // This simple bytes can both exist in CP437 and UTF-8.
+            if byte <= 0x7F { // This simple byte can exist both in CP437 and UTF-8.
                 index += 1
                 continue
             }

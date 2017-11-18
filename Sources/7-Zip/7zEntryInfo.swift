@@ -5,48 +5,44 @@
 
 import Foundation
 
-/// Provides information about 7-Zip entry.
+/// Provides access to information about an entry from the 7-Zip container.
 public struct SevenZipEntryInfo: ContainerEntryInfo {
 
     // MARK: ContainerEntryInfo
 
-    /// Entry's name.
-    public let name: String?
+    public let name: String
 
-    /// Entry's data size.
     public let size: Int?
 
     public let type: ContainerEntryType
 
-    /// Entry's last access time and date.
     public let accessTime: Date?
 
-    /// Entry's creation time and date.
     public let creationTime: Date?
 
-    /// Entry's last modification time and date.
     public let modificationTime: Date?
 
-    /// Entry's UNIX file access permissions.
     public let permissions: Permissions?
 
     // MARK: 7-Zip specific
 
-    /// 7-Zip internal property which may contain UNIX permissions, type and/or DOS attributes.
+    /**
+     Entry's "win attributes". 7-Zip internal property.
+     May be useful when origin file system's attributes weren't POSIX compatible.
+     */
     public let winAttributes: UInt32?
 
-    /// Entry's DOS attributes.
+    /// Entry's attributes in DOS format.
     public let dosAttributes: DosAttributes?
 
-    /// True, if entry has a stream (data) inside container. 7-Zip internal propety.
+    /// True, if entry has a stream (data) inside the container. 7-Zip internal propety.
     public let hasStream: Bool
 
     /// True, if entry is an empty file. 7-Zip internal property.
     public let isEmpty: Bool
 
     /**
-     True if entry is an anti-file.
-     Used in differential backups to indicate that file should be deleted.
+     True, if entry is an anti-file. Used in differential backups to indicate that file should be deleted.
      7-Zip internal property.
      */
     public let isAnti: Bool

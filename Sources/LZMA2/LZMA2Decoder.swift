@@ -14,15 +14,15 @@ class LZMA2Decoder {
         return self.decoder.out
     }
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
-        self.decoder = try LZMADecoder(pointerData)
+        self.decoder = LZMADecoder(pointerData)
     }
 
     func setDictionarySize(_ byte: UInt8) throws {
-        let bits = byte & 0x3F
         guard byte & 0xC0 == 0
-            else { throw LZMA2Error.wrongProperties }
+            else { throw LZMA2Error.wrongDictionarySize }
+        let bits = byte & 0x3F
         guard bits < 40
             else { throw LZMA2Error.wrongDictionarySize }
 

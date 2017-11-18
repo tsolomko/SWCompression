@@ -9,10 +9,6 @@ class LZMADecoder {
 
     private let pointerData: DataWithPointer
 
-    var lc: UInt8 = 0
-    var lp: UInt8 = 0
-    var pb: UInt8 = 0
-
     var dictionarySize = 0 {
         didSet {
             if dictionarySize < 1 << 12 {
@@ -29,6 +25,10 @@ class LZMADecoder {
     // `out` array also serves as dictionary and out window.
     private var dictStart = 0
     private var dictEnd = 0
+
+    private var lc: UInt8 = 0
+    private var lp: UInt8 = 0
+    private var pb: UInt8 = 0
 
     private var rangeDecoder = LZMARangeDecoder()
     private var posSlotDecoder  = [LZMABitTreeDecoder]()
@@ -62,10 +62,10 @@ class LZMADecoder {
     private var rep2 = 0
     private var rep3 = 0
 
-    /// Is used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
+    /// Used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state = 0
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ pointerData: DataWithPointer) {
         self.pointerData = pointerData
     }
 
@@ -121,9 +121,8 @@ class LZMADecoder {
     /// Main LZMA (algorithm) decoder function.
     func decode() throws {
         // First, we need to initialize Rande Decoder.
-        guard let rD = LZMARangeDecoder(pointerData) else {
-            throw LZMAError.rangeDecoderInitError
-        }
+        guard let rD = LZMARangeDecoder(pointerData)
+            else { throw LZMAError.rangeDecoderInitError }
         self.rangeDecoder = rD
 
         // Main decoding cycle.

@@ -58,7 +58,7 @@ struct ZipLocalHeader {
         let fileNameLength = pointerData.uint16().toInt()
         let extraFieldLength = pointerData.uint16().toInt()
 
-        guard let fileName = ZipCommon.getStringField(pointerData, fileNameLength, useUtf8)
+        guard let fileName = pointerData.getZipStringField(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
 

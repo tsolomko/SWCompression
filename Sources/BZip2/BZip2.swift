@@ -11,8 +11,6 @@ public class BZip2: DecompressionAlgorithm {
     /**
      Decompresses `data` using BZip2 algortihm.
 
-     If `data` is not actually compressed with BZip2, `BZip2Error` will be thrown.
-
      - Parameter data: Data compressed with BZip2.
 
      - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `data`.
@@ -137,7 +135,7 @@ public class BZip2: DecompressionAlgorithm {
                 var lengths = [HuffmanLength]()
                 for i in 0..<symbolsInUse {
                     guard length >= 0 && length <= 20
-                        else { throw BZip2Error.wrongHuffmanLengthCode }
+                        else { throw BZip2Error.wrongHuffmanCodeLength }
                     while bitReader.bit() > 0 {
                         length -= (Int(bitReader.bit() * 2) - 1)
                     }

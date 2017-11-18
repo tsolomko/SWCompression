@@ -5,10 +5,9 @@
 
 import Foundation
 
-/// Represents an entry in 7-Zip container.
+/// Represents an entry from the TAR container.
 public struct TarEntry: ContainerEntry {
 
-    /// Various information about entry.
     public let info: TarEntryInfo
 
     public let data: Data?

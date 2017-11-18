@@ -3,11 +3,11 @@ clean: true
 exclude: Tests/
 author: Timofey Solomko
 module: SWCompression
-module_version: 4.0.0-dev
+module_version: 4.0.0
 copyright: '© 2017 Timofey Solomko'
 readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
-github_file_prefix: https://github.com/tsolomko/SWCompression/tree/develop
+github_file_prefix: https://github.com/tsolomko/SWCompression/tree/v4.0.0
 theme: fullwidth
 
 custom_categories:
@@ -31,24 +31,34 @@ custom_categories:
       - SevenZipEntryInfo
       - TarContainer
       - TarEntry
+      - TarEntryInfo
       - ZipContainer
       - ZipEntry
+      - ZipEntryInfo
     - name: Errors
       children:
       - BZip2Error
       - DeflateError
+      - GzipError
       - LZMAError
       - LZMA2Error
       - SevenZipError
       - TarError
-      - ZipError
-      - GzipError
       - XZError
+      - ZipError
       - ZlibError
     - name: Protocols
       children:
       - Archive
       - Container
       - ContainerEntry
+      - ContainerEntryInfo
       - CompressionAlgorithm
       - DecompressionAlgorithm
+    - name: Common Auxiliary Types
+      children:
+      - ContainerEntryType
+      - DosAttributes
+      - Permissions
+      - CompressionMethod
+      - FileSystemType

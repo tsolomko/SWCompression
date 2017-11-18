@@ -5,21 +5,19 @@
 
 import Foundation
 
-/// Provides open function for ZIP containers.
+/// Provides functions for work with ZIP containers.
 public class ZipContainer: Container {
 
     /**
-     Processes ZIP container and returns an array of `ZipEntry`.
+     Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by ZIP container and,
-     particularly, by the creator of a given ZIP container.
-     It is likely that directories will be encountered earlier than files stored in those directories,
-     but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by ZIP container and, particularly,
+     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
 
      - Parameter container: ZIP container's data.
 
-     - Throws: `ZipError` or any other error associated with compression type,
-     depending on the type of the problem.
+     - Throws: `ZipError` or any other error associated with compression type, depending on the type of the problem.
      It may indicate that either container is damaged or it might not be ZIP container at all.
 
      - Returns: Array of `ZipEntry`.
@@ -47,26 +45,22 @@ public class ZipContainer: Container {
 
         // If file has data descriptor, then some values in local header are absent.
         // So we need to use values from CD entry.
-        // TODO: Order in case of data descriptor?
-        // TODO: Remove Int(truncatingIfNeeded:) completely.
         var uncompSize = hasDataDescriptor ? info.cdEntry.uncompSize : info.localHeader.uncompSize
-        var compSize = hasDataDescriptor ?
-            Int(truncatingIfNeeded: info.cdEntry.compSize) :
-            Int(truncatingIfNeeded: info.localHeader.compSize)
+        var compSize = hasDataDescriptor ? info.cdEntry.compSize : info.localHeader.compSize
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
-        let fileBytes: [UInt8]
+        let fileData: Data
         let pointerData = DataWithPointer(data: data)
         pointerData.index = info.localHeader.dataOffset
         switch info.compressionMethod {
         case .copy:
-            fileBytes = pointerData.bytes(count: Int(truncatingIfNeeded: uncompSize))
+            fileData = Data(bytes: pointerData.bytes(count: Int(truncatingIfNeeded: uncompSize)))
         case .deflate:
             let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
             bitReader.index = pointerData.index
-            fileBytes = try Deflate.decompress(bitReader)
-            // Sometimes pointerData stays in not-aligned state after deflate decompression.
-            // Following line ensures that this is not the case.
+            fileData = try Deflate.decompress(bitReader)
+            // Sometimes `bitReader` has not-aligned state after Deflate decompression,
+            //  so we need to align before getting end index back.
             bitReader.align()
             pointerData.index = bitReader.index
         case .bzip2:
@@ -74,8 +68,9 @@ public class ZipContainer: Container {
                 // BZip2 algorithm considers bits in a byte in a different order.
                 let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
                 bitReader.index = pointerData.index
-                // TODO: Remove `toArray`.
-                fileBytes = try BZip2.decompress(bitReader).toArray(type: UInt8.self)
+                fileData = try BZip2.decompress(bitReader)
+                // Sometimes `bitReader` has not-aligned state after BZip2 decompression,
+                //  so we need to align before getting end index back.
                 bitReader.align()
                 pointerData.index = bitReader.index
             #else
@@ -84,21 +79,7 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 pointerData.index += 4 // Skipping LZMA SDK version and size of properties.
-
-                let decoder = try LZMADecoder(pointerData)
-
-                try decoder.setProperties(pointerData.byte())
-                decoder.resetStateAndDecoders()
-                decoder.dictionarySize = pointerData.uint32().toInt()
-
-                if uncompSize == UInt64.max {
-                    decoder.uncompressedSize = -1
-                } else {
-                    decoder.uncompressedSize = Int(truncatingIfNeeded: uncompSize)
-                }
-
-                try decoder.decode()
-                fileBytes = decoder.out
+                fileData = try LZMA.decompress(pointerData, uncompressedSize: uncompSize)
             #else
                 throw ZipError.compressionNotSupported
             #endif
@@ -117,17 +98,30 @@ public class ZipContainer: Container {
             // Now, let's update with values from data descriptor.
             crc32 = pointerData.uint32()
             let sizeOfSizeField: UInt64 = info.localHeader.zip64FieldsArePresent ? 8 : 4
-            compSize = Int(truncatingIfNeeded: pointerData.uint64(count: sizeOfSizeField))
+            compSize = pointerData.uint64(count: sizeOfSizeField)
             uncompSize = pointerData.uint64(count: sizeOfSizeField)
         }
 
-        guard compSize == realCompSize && uncompSize == fileBytes.count
+        guard compSize == realCompSize && uncompSize == fileData.count
             else { throw ZipError.wrongSize }
-        let crcError = crc32 != CheckSums.crc32(fileBytes)
+        let crcError = crc32 != CheckSums.crc32(fileData)
 
-        return (Data(bytes: fileBytes), crcError)
+        return (fileData, crcError)
     }
 
+    /**
+     Processes ZIP container and returns an array of `ZipEntryInfo` with information about entries in this container.
+
+     - Important: The order of entries is defined by ZIP container and, particularly,
+     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
+     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+
+     - Parameter container: ZIP container's data.
+
+     - Throws: `ZipError`, which may indicate that either container is damaged or it might not be ZIP container at all.
+
+     - Returns: Array of `ZipEntryInfo`.
+     */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
         /// Object with input data which supports convenient work with bit shifts.
         let pointerData = DataWithPointer(data: data)

@@ -12,7 +12,7 @@ import Foundation
 public enum BZip2Error: Error {
     /// 'Magic' number is not 0x425a.
     case wrongMagic
-    /// Compression method is not type 'h' (not Huffman).
+    /// BZip version is not 2.
     case wrongVersion
     /// Unsupported block size (not from '0' to '9').
     case wrongBlockSize
@@ -24,8 +24,8 @@ public enum BZip2Error: Error {
     case wrongHuffmanGroups
     /// Selector is greater than the total number of Huffman tables/groups.
     case wrongSelector
-    /// Wrong code of Huffman length (should be between 0 and 20).
-    case wrongHuffmanLengthCode
+    /// Wrong length of Huffman code (should be between 0 and 20).
+    case wrongHuffmanCodeLength
     /// Symbol wasn't found in Huffman tree.
     case symbolNotFound
     /**

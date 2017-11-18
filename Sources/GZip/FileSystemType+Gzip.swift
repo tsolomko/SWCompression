@@ -7,7 +7,7 @@ import Foundation
 
 extension FileSystemType {
 
-    init?(_ gzipOS: UInt8) {
+    init(_ gzipOS: UInt8) {
         switch gzipOS {
         case 0:
             self = .fat
@@ -17,10 +17,8 @@ extension FileSystemType {
             self = .macintosh
         case 11:
             self = .ntfs
-        case 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 255:
-            self = .other
         default:
-            return nil
+            self = .other
         }
     }
 

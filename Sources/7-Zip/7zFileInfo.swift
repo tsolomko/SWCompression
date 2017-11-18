@@ -11,7 +11,7 @@ class SevenZipFileInfo {
         var isEmptyStream = false
         var isEmptyFile = false
         var isAntiFile = false
-        var name: String?
+        var name: String = ""
         var cTime: UInt64?
         var mTime: UInt64?
         var aTime: UInt64?
@@ -57,23 +57,17 @@ class SevenZipFileInfo {
                 let external = bitReader.byte()
                 guard external == 0
                     else { throw SevenZipError.externalNotSupported }
-                guard (propertySize - 1) & 1 == 0
+                guard (propertySize - 1) & 1 == 0,
+                    let names = String(bytes: bitReader.bytes(count: propertySize - 1), encoding: .utf16LittleEndian)
                     else { throw SevenZipError.internalStructureError }
-                let names = bitReader.bytes(count: propertySize - 1)
+
                 var nextFile = 0
-                var nextName = 0
-                for i in stride(from: 0, to: names.count, by: 2) {
-                    // End of file name is identified by two consequent NULL bytes.
-                    // TODO: In Swift 4.0 we may try to convert dat to UTF16LE first,
-                    //  and then split it into strings?
-                    if names[i] == 0 && names[i + 1] == 0 {
-                        files[nextFile].name = String(data: Data(bytes: names[nextName..<i]),
-                                                      encoding: .utf16LittleEndian)
-                        nextName = i + 2
-                        nextFile += 1
-                    }
+                for name in names.split(separator: "\u{0}") {
+                    files[nextFile].name = String(name)
+                    nextFile += 1
                 }
-                guard nextName == names.count && nextFile == numFiles
+
+                guard nextFile == numFiles
                     else { throw SevenZipError.internalStructureError }
             case 0x12: // Creation time
                 let timesDefined = bitReader.defBits(count: numFiles)

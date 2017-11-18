@@ -11,8 +11,6 @@ public class Deflate: DecompressionAlgorithm {
     /**
      Decompresses `data` using Deflate algortihm.
 
-     If `data` is not actually compressed with Deflate, `DeflateError` will be thrown.
-
      - Note: This function is specification compliant.
 
      - Parameter data: Data compressed with Deflate.
@@ -25,10 +23,10 @@ public class Deflate: DecompressionAlgorithm {
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = BitReader(data: data, bitOrder: .reversed)
-        return Data(bytes: try decompress(bitReader))
+        return try decompress(bitReader)
     }
 
-    static func decompress(_ bitReader: BitReader) throws -> [UInt8] {
+    static func decompress(_ bitReader: BitReader) throws -> Data {
         /// An array for storing output data
         var out: [UInt8] = []
 
@@ -204,7 +202,7 @@ public class Deflate: DecompressionAlgorithm {
             }
         }
 
-        return out
+        return Data(bytes: out)
     }
 
 }

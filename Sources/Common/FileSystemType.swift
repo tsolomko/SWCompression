@@ -5,14 +5,21 @@
 
 import Foundation
 
+/**
+ Represents type of the file system on which an archive or container was created.
+ File system determines meaning of file attributes.
+ */
 public enum FileSystemType {
+    /// FAT filesystem.
     case fat
-    /// Older Macintosh systems.
+    /// Filesystem of older Macintosh systems.
     case macintosh
+    /// NTFS.
     case ntfs
+    /// Other/unknown file system.
     case other
     /**
-     One of many UNIX-like systems.
+     One of many file systems of UNIX-like OS.
 
      - Note: Modern macOS systems also fall into this category.
      */
