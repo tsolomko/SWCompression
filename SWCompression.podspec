@@ -2,14 +2,9 @@ Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
   s.version      = "4.0.0-test.2"
-  s.summary      = "Framework with implementations in Swift of different (de)compression algorithms"
-
-  s.description  = <<-DESC
-  A framework which contains native (written in Swift) implementations of compression algorithms.
-  Swift developers currently have access only to various wrappers written in Objective-C
-  around system libraries if they want to decompress something. SWCompression allows to do this with pure Swift
-  without relying on availability of system libraries.
-                   DESC
+  s.summary      = "A framework with functionality for working with compression, archives and containers."
+  
+  s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."
 
   s.homepage     = "https://github.com/tsolomko/SWCompression"
   s.documentation_url = "http://tsolomko.github.io/SWCompression"
