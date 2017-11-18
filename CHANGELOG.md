@@ -1,5 +1,73 @@
 # Changelog
 
+## 4.0.0
+
+- Reworked Container API:
+    - New protocol: `ContainerEntryInfo`.
+    - `ContainerEntry`:
+        - Now has an associated type `Info: ContainerEntryInfo`.
+        - Now has only two members: `info` and `data` properties; all previous members were removed.
+    - `Container`:
+        - Now has an associated type `Entry: ContainerEntry`.
+        - `open` function now returns an array of associated type `Entry`.
+        - Added new function `info`, which returns an array of `Entry.Info`.
+    - All existing ZIP, TAR and 7-Zip types now conform to these protocols.
+        - All `Entry` types now have only two members: `info` and `data` (see `ContainerEntry` protocol).
+    - Added missing types for ZIP, TAR and 7-Zip with conformance to these protocols.
+    - Standardized behavior when `ContainerEntry.data` can be `nil`:
+        - If entry is a directory.
+        - If data is unavailable, but error wasn't thrown for some reason.
+        - 7-Zip only: if entry is an anti-file.
+
+- Added several new common types, which are used across the framework:
+    - `CompressionMethod`.
+        - Used in `GzipHeader.compressionMethod`, `ZlibHeader.compressionMethod`, `ZipEntryInfo.compressionMethod`.
+    - `ContainerEntryType`.
+        - Used in `ContainerEntryInfo.type` and types that conform to `ContainerEntryInfo` protocol.
+    - `DosAttributes`.
+        - It is the same as previous `SevenZipEntryInfo.DosAttributes` type.
+        - Used in `SevenZipEntryInfo.dosAttributes` and `ZipEntryInfo.dosAttributes`.
+    - `Permissions`.
+        - It is the same as previous `SevenZipEntryInfo.Permissions` type.
+        - Used in `ContainerEntryInfo.permissions` and types that conform to `ContainerEntryInfo` protocol.
+    - `FileSystemType`.
+        - Used in `GzipHeader.osType` and `ZipEntryInfo.fileSystemType`.
+- Removed `GzipHeader.FileSystemType`.
+- Removed `GzipHeader.CompressionMethod`.
+- Removed `TarEntry.EntryType`.
+
+- Removed following errors:
+    - `SevenZipError.dataIsUnavailable`
+    - `LZMAError.decoderIsNotInitialised`
+    - `LZMA2Error.wrongProperties` (`LZMA2Error.wrongDictionarySize` is thrown instead).
+    - `TarError.wrongUstarVersion`.
+    - `TarError.notAsciiString` (`TarError.wrongField` is thrown instead).
+    - `XZError.wrongFieldValue` (`XZError.wrongField` is thrown instead).
+- Renamed following errors:
+    - `BZip2Error.wrongHuffmanLengthCode` to `BZip2Error.wrongHuffmanCodeLength`.
+    - `BZip2Error.wrongCompressionMethod` to `BZip2Error.wrongVersion`.
+    - `TarError.fieldIsNotNumber` to `TarError.wrongField`.
+    - `XZError.reservedFieldValue` to `XZError.wrongField`.
+- Standardized behavior for errors named similar to `wrongCRC`:
+    - These errors mean that everything went well, except for comparing the checksum.
+    - Their associated values now contain all "successfully" unpacked data, including the one, which caused such an error.
+        - This change affects `BZip2.decompress`, `GzipArchive.multiUnarchive`, `XZArchive.unarchive`,
+        `XZArchive.splitUnarchive`, `ZipContainer.open`.
+    - Some of these errors now have arrays as associated values to account for the situations with unpacked data split.
+        - This change affects `GzipArchive.multiUnarchive`, `XZArchive.unarchive`, `XZArchive.splitUnarchive`, `ZipContainer.open`.
+
+- Removed `SevenZipEntryInfo.isDirectory`. Use `type` property instead.
+- `SevenZipEntryInfo.name` is no longer `Optional`.
+    - Now throws `SevenZipError.internalStructureError` when file names cannot be properly processed.
+    - Entries now have empty strings as names when no names were found in container.
+- Renamed `XZArchive.multiUnarchive` to `XZArchive.splitUnarchive`.
+- `XZArchive.unarchive` now processes all XZ streams similar to `splitUnarchive`, but combines them into one output `Data`.
+- Fixed "bitReader is not aligned" precondition crash in Zlib.
+- Fixed potential incorrect behavior when opening ZIP containers with size bigger than 4 GB..
+- Updated to use Swift 4.
+- Various improvements to documentation.
+- "swcomp" is now included is as part of this repository.
+
 ## 3.4.0
 
 - Added support for BZip2 compression.
