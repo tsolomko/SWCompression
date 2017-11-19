@@ -24,7 +24,7 @@ class ZipTests: XCTestCase {
     }
 
     func testZip64() throws {
-        guard let testData = Constants.data(forTest: "TestZip64", withType: ZipTests.testType) else {
+        guard let testData = Constants.data(forTest: "test_zip64", withType: ZipTests.testType) else {
             XCTFail("Unable to get test data.")
             return
         }
@@ -34,7 +34,7 @@ class ZipTests: XCTestCase {
     }
 
     func testDataDescriptor() throws {
-        guard let testData = Constants.data(forTest: "TestDataDescriptor", withType: ZipTests.testType) else {
+        guard let testData = Constants.data(forTest: "test_data_descriptor", withType: ZipTests.testType) else {
             XCTFail("Unable to get test data.")
             return
         }
@@ -44,7 +44,7 @@ class ZipTests: XCTestCase {
     }
 
     func testUnicode() throws {
-        guard let testData = Constants.data(forTest: "TestUnicode", withType: ZipTests.testType) else {
+        guard let testData = Constants.data(forTest: "test_unicode", withType: ZipTests.testType) else {
             XCTFail("Unable to get test data.")
             return
         }
