@@ -8,7 +8,7 @@ import SWCompression
 
 class LzmaTests: XCTestCase {
 
-    static let testType: String = "lzma"
+    private static let testType: String = "lzma"
 
     func perform(test testName: String) throws {
         guard let testURL = Constants.url(forTest: testName, withType: LzmaTests.testType) else {

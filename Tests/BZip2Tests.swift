@@ -8,7 +8,7 @@ import SWCompression
 
 class BZip2Tests: XCTestCase {
 
-    static let testType: String = "bz2"
+    private static let testType: String = "bz2"
 
     func perform(test testName: String) throws {
         guard let testURL = Constants.url(forTest: testName, withType: BZip2Tests.testType) else {

@@ -8,7 +8,7 @@ import SWCompression
 
 class ZlibTests: XCTestCase {
 
-    static let testType: String = "zlib"
+    private static let testType: String = "zlib"
 
     func testZlib() throws {
         let testName = "test"

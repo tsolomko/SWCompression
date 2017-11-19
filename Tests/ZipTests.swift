@@ -8,7 +8,7 @@ import SWCompression
 
 class ZipTests: XCTestCase {
 
-    static let testType: String = "zip"
+    private static let testType: String = "zip"
 
     func testBigContainer() throws {
         guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {

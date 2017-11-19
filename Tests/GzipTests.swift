@@ -8,7 +8,7 @@ import SWCompression
 
 class GzipTests: XCTestCase {
 
-    static let testType: String = "gz"
+    private static let testType: String = "gz"
 
     func header(test testName: String, mtime: Int) throws {
         guard let testURL = Constants.url(forTest: testName, withType: GzipTests.testType) else {

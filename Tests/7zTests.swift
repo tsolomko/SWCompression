@@ -8,7 +8,7 @@ import SWCompression
 
 class SevenZipTests: XCTestCase {
 
-    static let testType: String = "7z"
+    private static let testType: String = "7z"
 
     func test1() throws {
         guard let testURL = Constants.url(forTest: "test1", withType: SevenZipTests.testType) else {

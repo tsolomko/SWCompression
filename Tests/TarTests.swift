@@ -8,7 +8,7 @@ import SWCompression
 
 class TarTests: XCTestCase {
 
-    static let testType: String = "tar"
+    private static let testType: String = "tar"
 
     func test() throws {
         guard let testURL = Constants.url(forTest: "test", withType: TarTests.testType) else {
