@@ -11,12 +11,10 @@ class BZip2CompressionTests: XCTestCase {
     private static let testType: String = "bz2"
 
     func answerTest(_ answerName: String) throws {
-        guard let answerURL = Constants.url(forAnswer: answerName) else {
-            XCTFail("Unable to get asnwer's URL.")
+        guard let answerData = Constants.data(forAnswer: answerName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         let compressedData = BZip2.compress(data: answerData)
         let redecompressedData = try BZip2.decompress(data: compressedData)

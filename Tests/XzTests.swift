@@ -11,20 +11,16 @@ class XZTests: XCTestCase {
     private static let testType: String = "xz"
 
     func perform(test testName: String) throws {
-        guard let testURL = Constants.url(forTest: testName, withType: XZTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: XZTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
-        guard let answerURL = Constants.url(forAnswer: testName) else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: testName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
 
@@ -75,23 +71,21 @@ class XZTests: XCTestCase {
 
     func testMultiStreamNoPadding() throws {
         // Doesn't contain any padding.
-        guard let testURL = Constants.url(forTest: "test_multi", withType: XZTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_multi", withType: XZTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
 
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
-            guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer's URL.")
+            guard let currentAnswerData = Constants.data(forAnswer: "test\(i)") else {
+                XCTFail("Unable to get answer data.")
                 return
             }
 
-            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
             answerData.append(currentAnswerData)
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
@@ -105,23 +99,21 @@ class XZTests: XCTestCase {
         // Third - 8 bytes.
         // At the end - 4 bytes.
 
-        guard let testURL = Constants.url(forTest: "test_multi_pad", withType: XZTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_multi_pad", withType: XZTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
 
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
-            guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer's URL.")
+            guard let currentAnswerData = Constants.data(forAnswer: "test\(i)") else {
+                XCTFail("Unable to get answer data.")
                 return
             }
 
-            let currentAnswerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
             answerData.append(currentAnswerData)
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }

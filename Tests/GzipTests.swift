@@ -11,12 +11,10 @@ class GzipTests: XCTestCase {
     private static let testType: String = "gz"
 
     func header(test testName: String, mtime: Int) throws {
-        guard let testURL = Constants.url(forTest: testName, withType: GzipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: GzipTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let testGzipHeader = try GzipHeader(archive: testData)
 
         XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
@@ -28,20 +26,16 @@ class GzipTests: XCTestCase {
     }
 
     func unarchive(test testName: String) throws {
-        guard let testURL = Constants.url(forTest: testName, withType: GzipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: GzipTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try? GzipArchive.unarchive(archive: testData)
 
-        guard let answerURL = Constants.url(forAnswer: testName) else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: testName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
 
@@ -54,12 +48,10 @@ class GzipTests: XCTestCase {
     }
 
     func archive(test testName: String) throws {
-        guard let answerURL = Constants.url(forAnswer: testName) else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: testName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         // Options for archiving.
         let mtimeDate = Date(timeIntervalSinceNow: 0.0)
@@ -139,12 +131,10 @@ class GzipTests: XCTestCase {
     }
 
     func testMultiUnarchive() throws {
-        guard let testURL = Constants.url(forTest: "test_multi", withType: GzipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_multi", withType: GzipTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 4)
@@ -154,24 +144,20 @@ class GzipTests: XCTestCase {
             XCTAssertEqual(header.fileName, "test\(i).answer")
             let data = members[i - 1].data
 
-            guard let answerURL = Constants.url(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer's URL.")
+            guard let answerData = Constants.data(forAnswer: "test\(i)") else {
+                XCTFail("Unable to get answer data.")
                 return
             }
-
-            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(data, answerData)
         }
     }
 
     func testMultiUnarchiveRedundant() throws {
-        guard let testURL = Constants.url(forTest: "test1", withType: GzipTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test1", withType: GzipTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 1)
@@ -180,12 +166,10 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(header.fileName, "test1.answer")
         let data = members[0].data
 
-        guard let answerURL = Constants.url(forAnswer: "test1") else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: "test1") else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(data, answerData)
     }

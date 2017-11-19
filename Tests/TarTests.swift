@@ -11,12 +11,10 @@ class TarTests: XCTestCase {
     private static let testType: String = "tar"
 
     func test() throws {
-        guard let testURL = Constants.url(forTest: "test", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let result = try TarContainer.open(container: testData)
 
         XCTAssertEqual(result.count, 1)
@@ -27,24 +25,20 @@ class TarTests: XCTestCase {
     }
 
     func testPax() throws {
-        guard let testURL = Constants.url(forTest: "full_test", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "full_test", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let result = try TarContainer.open(container: testData)
 
         XCTAssertEqual(result.count, 5)
 
         for entry in result {
             let name = entry.info.name.components(separatedBy: ".")[0]
-            guard let answerURL = Constants.url(forAnswer: name) else {
-                XCTFail("Unable to get answer's URL.")
+            guard let answerData = Constants.data(forAnswer: name) else {
+                XCTFail("Unable to get answer data.")
                 return
             }
-
-            let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
             XCTAssertEqual(entry.data, answerData)
             XCTAssertEqual(entry.info.type, .regular)
@@ -55,20 +49,16 @@ class TarTests: XCTestCase {
     func testFormats() throws {
         let formatTestNames = ["test_gnu", "test_oldgnu", "test_pax", "test_ustar", "test_v7"]
 
-        guard let answerURL = Constants.url(forAnswer: "test1") else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: "test1") else {
+            XCTFail("Unable to get answer data.")
             return
         }
 
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
         for testName in formatTestNames {
-            guard let testURL = Constants.url(forTest: testName, withType: TarTests.testType) else {
-                XCTFail("Unable to get test's URL.")
+            guard let testData = Constants.data(forTest: testName, withType: TarTests.testType) else {
+                XCTFail("Unable to get test data.")
                 return
             }
-
-            let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
             let result = try TarContainer.open(container: testData)
 
             XCTAssertEqual(result.count, 1)
@@ -83,12 +73,10 @@ class TarTests: XCTestCase {
         let formatTestNames = ["long_test_gnu", "long_test_oldgnu", "long_test_pax"]
 
         for testName in formatTestNames {
-            guard let testURL = Constants.url(forTest: testName, withType: TarTests.testType) else {
-                XCTFail("Unable to get test's URL.")
+            guard let testData = Constants.data(forTest: testName, withType: TarTests.testType) else {
+                XCTFail("Unable to get test data.")
                 return
             }
-
-            let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
             let result = try TarContainer.open(container: testData)
 
             XCTAssertEqual(result.count, 6)
@@ -96,12 +84,10 @@ class TarTests: XCTestCase {
     }
 
     func testWinContainer() throws {
-        guard let testURL = Constants.url(forTest: "test_win", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_win", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 2)
@@ -118,12 +104,10 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyFile() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_file", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_empty_file", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -134,12 +118,10 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyDirectory() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_dir", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_empty_dir", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -150,24 +132,20 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyContainer() throws {
-        guard let testURL = Constants.url(forTest: "test_empty_cont", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "test_empty_cont", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.isEmpty, true)
     }
 
     func testBigContainer() throws {
-        guard let testURL = Constants.url(forTest: "SWCompressionSourceCode", withType: TarTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "SWCompressionSourceCode", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
 
         #if LONG_TESTS
             _ = try TarContainer.open(container: testData)

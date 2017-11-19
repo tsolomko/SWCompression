@@ -9,12 +9,11 @@ import SWCompression
 class DeflateTests: XCTestCase {
 
     func perform(compressionTest testName: String) throws {
-        guard let answerURL = Constants.url(forAnswer: testName) else {
-            XCTFail("Unable to get test's URL.")
+        guard let answerData = Constants.data(forAnswer: testName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
 
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
         let deflatedData = Deflate.compress(data: answerData)
         let reUncompData = try Deflate.decompress(data: deflatedData)
 

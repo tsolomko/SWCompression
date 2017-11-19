@@ -13,12 +13,10 @@ class ZlibTests: XCTestCase {
     func testZlib() throws {
         let testName = "test"
 
-        guard let testURL = Constants.url(forTest: testName, withType: ZlibTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: ZlibTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let testZlibHeader = try ZlibHeader(archive: testData)
 
         XCTAssertEqual(testZlibHeader.compressionMethod, .deflate, "Incorrect compression method.")
@@ -27,31 +25,25 @@ class ZlibTests: XCTestCase {
     }
 
     func testZlibFull() throws {
-        guard let testURL = Constants.url(forTest: "random_file", withType: ZlibTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: "random_file", withType: ZlibTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try ZlibArchive.unarchive(archive: testData)
 
-        guard let answerURL = Constants.url(forAnswer: "test9") else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: "test9") else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(decompressedData, answerData, "Unarchiving was incorrect")
     }
 
     func testCreateZlib() throws {
-        guard let testURL = Constants.url(forAnswer: "test9") else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forAnswer: "test9") else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let archiveData = ZlibArchive.archive(data: testData)
         let reextractedData = try ZlibArchive.unarchive(archive: archiveData)
 
