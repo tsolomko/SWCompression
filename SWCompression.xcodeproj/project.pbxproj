@@ -916,6 +916,15 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		06A5918B1FC1DEFC00F59533 /* Zlib */ = {
+			isa = PBXGroup;
+			children = (
+				06CC185F1DE35269003532F5 /* test.zlib */,
+				06B374CA1E0EECD500064853 /* random_file.zlib */,
+			);
+			path = Zlib;
+			sourceTree = "<group>";
+		};
 		06BD0D1F1E3D0C630054AA5C /* ZIP */ = {
 			isa = PBXGroup;
 			children = (
@@ -1081,8 +1090,7 @@
 				06BD0D1F1E3D0C630054AA5C /* ZIP */,
 				0691B93E1EBE3E100037EE58 /* TAR */,
 				064F722D1F1E63D800017297 /* 7z */,
-				06CC185F1DE35269003532F5 /* test.zlib */,
-				06B374CA1E0EECD500064853 /* random_file.zlib */,
+				06A5918B1FC1DEFC00F59533 /* Zlib */,
 			);
 			path = "Test Files";
 			sourceTree = "<group>";
