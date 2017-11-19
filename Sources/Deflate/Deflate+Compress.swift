@@ -29,8 +29,25 @@ extension Deflate: CompressionAlgorithm {
         let uncompBlockSize = 1 + 2 + 2 + bytes.count // Header, length, n-length and data.
 
         // Static Huffman size is more complicated...
+        let staticHuffmanBlockSize = staticHuffmanBitSize(bldCodes.stats)
+
+        // Since `length` of uncompressed block is 16-bit integer,
+        // there is a limitation on size of uncompressed block.
+        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
+        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
+            // If according to our calculations static huffman will not make output smaller than input,
+            // we fallback to creating uncompressed block.
+            // In this case dynamic Huffman encoding can be efficient.
+            // TODO: Implement dynamic Huffman code!
+            return Data(bytes: Deflate.createUncompressedBlock(bytes))
+        } else {
+            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
+        }
+    }
+
+    private static func staticHuffmanBitSize(_ stats: [Int]) -> Int {
         var bitsCount = 3 // Three bits for block's header.
-        for (symbol, symbolCount) in bldCodes.stats.enumerated() {
+        for (symbol, symbolCount) in stats.enumerated() {
             let codeSize: Int
             // There are extra bits for some codes.
             let extraBitsCount: Int
@@ -55,20 +72,7 @@ extension Deflate: CompressionAlgorithm {
             }
             bitsCount += (symbolCount * (codeSize + extraBitsCount))
         }
-        let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
-
-        // Since `length` of uncompressed block is 16-bit integer,
-        // there is a limitation on size of uncompressed block.
-        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
-        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
-            // If according to our calculations static huffman will not make output smaller than input,
-            // we fallback to creating uncompressed block.
-            // In this case dynamic Huffman encoding can be efficient.
-            // TODO: Implement dynamic Huffman code!
-            return Data(bytes: Deflate.createUncompressedBlock(bytes))
-        } else {
-            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
-        }
+        return bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
     }
 
     private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
