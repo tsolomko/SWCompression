@@ -163,7 +163,7 @@
 		064F722B1F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		064F722C1F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		064F722F1F1E63D800017297 /* test1.7z in Resources */ = {isa = PBXBuildFile; fileRef = 064F722E1F1E63D800017297 /* test1.7z */; };
-		064F72311F1E63E200017297 /* 7zTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72301F1E63E200017297 /* 7zTests.swift */; };
+		064F72311F1E63E200017297 /* SevenZipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72301F1E63E200017297 /* SevenZipTests.swift */; };
 		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
 		0651461F1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
 		065146201FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
@@ -536,7 +536,7 @@
 		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		064F722E1F1E63D800017297 /* test1.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.7z; sourceTree = "<group>"; };
-		064F72301F1E63E200017297 /* 7zTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zTests.swift; sourceTree = "<group>"; };
+		064F72301F1E63E200017297 /* SevenZipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SevenZipTests.swift; sourceTree = "<group>"; };
 		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
 		065146221FA8E20C007F83F4 /* XZBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZBlock.swift; sourceTree = "<group>"; };
 		0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerEntryType+Tar.swift"; sourceTree = "<group>"; };
@@ -986,17 +986,17 @@
 			isa = PBXGroup;
 			children = (
 				06CC183D1DE35269003532F5 /* Test Files */,
-				069AC2111E02DDAF0041AC13 /* LzmaTests.swift */,
-				06E2347F1E069ABD00F18798 /* XzTests.swift */,
-				0680E1B41DDA4075005C05EB /* BZip2Tests.swift */,
+				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
 				063D0CA11F5B17EB00D3464C /* BZip2CompressionTests.swift */,
+				0680E1B41DDA4075005C05EB /* BZip2Tests.swift */,
 				06CC187E1DE35607003532F5 /* DeflateTests.swift */,
 				0680E1B21DDA3D0A005C05EB /* GzipTests.swift */,
-				0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */,
-				0675183C1E2A883600D16354 /* ZipTests.swift */,
+				069AC2111E02DDAF0041AC13 /* LzmaTests.swift */,
+				064F72301F1E63E200017297 /* SevenZipTests.swift */,
 				0696E5C51ED0B22F00921D4D /* TarTests.swift */,
-				064F72301F1E63E200017297 /* 7zTests.swift */,
-				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
+				06E2347F1E069ABD00F18798 /* XzTests.swift */,
+				0675183C1E2A883600D16354 /* ZipTests.swift */,
+				0680E1B01DDA2D7C005C05EB /* ZlibTests.swift */,
 				06BE1AD81DB410F100EE0F59 /* Info.plist */,
 			);
 			path = Tests;
@@ -1846,7 +1846,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				064F72311F1E63E200017297 /* 7zTests.swift in Sources */,
+				064F72311F1E63E200017297 /* SevenZipTests.swift in Sources */,
 				0680E1B51DDA4076005C05EB /* BZip2Tests.swift in Sources */,
 				06CC187F1DE35607003532F5 /* DeflateTests.swift in Sources */,
 				061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */,
