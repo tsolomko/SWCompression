@@ -56,9 +56,13 @@ class BZip2Tests: XCTestCase {
         try self.perform(test: "test6")
     }
 
+    #if LONG_TESTS
+
     func test7BZip2() throws {
         try self.perform(test: "test7")
     }
+
+    #endif
 
     func test8BZip2() throws {
         try self.perform(test: "test8")
