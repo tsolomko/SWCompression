@@ -35,11 +35,8 @@ class DataWithPointer {
     }
 
     func bytes(count: Int) -> [UInt8] {
-        var result: [UInt8] = Array(repeating: 0, count: count)
-        for i in 0..<count {
-            result[i] = self.data[self.index]
-            self.index += 1
-        }
+        let result = self.data[self.index..<self.index + count].toArray(type: UInt8.self, count: count)
+        self.index += count
         return result
     }
 
