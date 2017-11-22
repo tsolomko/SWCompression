@@ -97,9 +97,13 @@ public class ZipContainer: Container {
             }
             // Now, let's update with values from data descriptor.
             crc32 = pointerData.uint32()
-            let sizeOfSizeField: UInt64 = info.localHeader.zip64FieldsArePresent ? 8 : 4
-            compSize = pointerData.uint64(count: sizeOfSizeField)
-            uncompSize = pointerData.uint64(count: sizeOfSizeField)
+            if info.localHeader.zip64FieldsArePresent {
+                compSize = pointerData.uint64()
+                uncompSize = pointerData.uint64()
+            } else {
+                compSize = UInt64(truncatingIfNeeded: pointerData.uint32())
+                uncompSize = UInt64(truncatingIfNeeded: pointerData.uint32())
+            }
         }
 
         guard compSize == realCompSize && uncompSize == fileData.count

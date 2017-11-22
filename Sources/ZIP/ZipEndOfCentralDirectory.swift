@@ -20,22 +20,22 @@ struct ZipEndOfCentralDirectory {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
-        self.currentDiskNumber = pointerData.uint32(count: 2)
-        self.cdDiskNumber = pointerData.uint32(count: 2)
+        self.currentDiskNumber = UInt32(truncatingIfNeeded: pointerData.uint16())
+        self.cdDiskNumber = UInt32(truncatingIfNeeded: pointerData.uint16())
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Number of CD entries on the current disk.
-        var cdEntriesCurrentDisk = pointerData.uint64(count: 2)
+        var cdEntriesCurrentDisk = UInt64(truncatingIfNeeded: pointerData.uint16())
         /// Total number of CD entries.
-        self.cdEntries = pointerData.uint64(count: 2)
+        self.cdEntries = UInt64(truncatingIfNeeded: pointerData.uint16())
         guard cdEntries == cdEntriesCurrentDisk
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Size of Central Directory.
-        self.cdSize = pointerData.uint64(count: 4)
+        self.cdSize = UInt64(truncatingIfNeeded: pointerData.uint32())
         /// Offset to the start of Central Directory.
-        self.cdOffset = pointerData.uint64(count: 4)
+        self.cdOffset = UInt64(truncatingIfNeeded: pointerData.uint32())
 
         // There is also a .ZIP file comment, but we don't need it.
         // Here's how it can be processed:
