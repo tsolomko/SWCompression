@@ -19,36 +19,11 @@ extension Data {
 
 }
 
-extension UInt8 {
+extension UnsignedInteger {
 
     func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
+        return Int(truncatingIfNeeded: self)
     }
-
-}
-
-extension UInt16 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
-    }
-
-}
-
-extension UInt32 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
-    }
-
-}
-
-extension UInt64 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
-    }
-
 }
 
 extension Int {
