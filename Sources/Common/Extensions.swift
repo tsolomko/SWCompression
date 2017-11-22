@@ -11,10 +11,14 @@ extension Data {
         return self.withUnsafeBytes { $0.pointee }
     }
 
-    func toArray<T>(type: T.Type) -> [T] {
+    func toArray<T>(type: T.Type, count: Int) -> [T] {
         return self.withUnsafeBytes {
-            [T](UnsafeBufferPointer(start: $0, count: self.count / MemoryLayout<T>.size))
+            [T](UnsafeBufferPointer(start: $0, count: count))
         }
+    }
+
+    func toArray<T>(type: T.Type) -> [T] {
+        return self.toArray(type: type, count: self.count / MemoryLayout<T>.size)
     }
 
 }
