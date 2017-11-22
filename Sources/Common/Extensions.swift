@@ -7,16 +7,19 @@ import Foundation
 
 extension Data {
 
+    @inline(__always)
     func to<T>(type: T.Type) -> T {
         return self.withUnsafeBytes { $0.pointee }
     }
 
+    @inline(__always)
     func toArray<T>(type: T.Type, count: Int) -> [T] {
         return self.withUnsafeBytes {
             [T](UnsafeBufferPointer(start: $0, count: count))
         }
     }
 
+    @inline(__always)
     func toArray<T>(type: T.Type) -> [T] {
         return self.toArray(type: type, count: self.count / MemoryLayout<T>.size)
     }
@@ -25,6 +28,7 @@ extension Data {
 
 extension UnsignedInteger {
 
+    @inline(__always)
     func toInt() -> Int {
         return Int(truncatingIfNeeded: self)
     }
@@ -32,6 +36,7 @@ extension UnsignedInteger {
 
 extension Int {
 
+    @inline(__always)
     func toUInt8() -> UInt8 {
         return UInt8(truncatingIfNeeded: UInt(self))
     }
