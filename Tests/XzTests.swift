@@ -23,13 +23,6 @@ class XZTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
-
-        #if PERF_TESTS
-            print("Performing performance tests for \(XZTests.testType).\(testName)")
-            self.measure {
-                _ = try? XZArchive.unarchive(archive: testData)
-            }
-        #endif
     }
 
     func testXz1() throws {

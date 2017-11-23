@@ -38,13 +38,6 @@ class GzipTests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
-
-        #if PERF_TESTS
-            print("Performing performance tests for gz.\(testName)")
-            self.measure {
-                _ = try? GzipArchive.unarchive(archive: testData)
-            }
-        #endif
     }
 
     func archive(test testName: String) throws {

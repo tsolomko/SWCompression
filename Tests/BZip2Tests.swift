@@ -23,13 +23,6 @@ class BZip2Tests: XCTestCase {
         }
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
-
-        #if PERF_TESTS
-            print("Performing performance tests for \(BZip2Tests.testType).\(testName)")
-            self.measure {
-                _ = try? BZip2.decompress(data: testData)
-            }
-        #endif
     }
 
     func test1BZip2() throws {
