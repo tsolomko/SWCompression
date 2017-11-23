@@ -18,5 +18,6 @@ cli.commands = [XZCommand(),
                 GZipCommand(),
                 ZipCommand(),
                 TarCommand(),
-                SevenZipCommand()]
+                SevenZipCommand(),
+                PerfTestGroup()]
 cli.goAndExit()
