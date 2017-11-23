@@ -71,7 +71,7 @@ fastlane/screenshots
 fastlane/test_output
 
 # Ignore symbolic link to swcomp executable built by SPM.
-swcomp
+/swcomp
 
 # Ignore Package.resolved, because there is no dependencies by default for this package.
 Package.resolved
