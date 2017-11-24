@@ -100,12 +100,12 @@ class GzipTests: XCTestCase {
     }
 
     func testGzip6() throws {
-        try self.header(test: "test6", mtime: 1482698305)
+        try self.header(test: "test6", mtime: 1511554495)
         try self.unarchive(test: "test6")
     }
 
     func testGzip7() throws {
-        try self.header(test: "test7", mtime: 1482698304)
+        try self.header(test: "test7", mtime: 1511554611)
         try self.unarchive(test: "test7")
     }
 
