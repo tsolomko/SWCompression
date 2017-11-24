@@ -16,11 +16,8 @@ class ZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            _ = try ZipContainer.open(container: testData)
-        #else
-            _ = try ZipContainer.info(container: testData)
-        #endif
+        _ = try ZipContainer.info(container: testData)
+        _ = try ZipContainer.open(container: testData)
     }
 
     func testZip64() throws {

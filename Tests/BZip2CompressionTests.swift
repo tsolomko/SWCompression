@@ -77,14 +77,6 @@ class BZip2CompressionTests: XCTestCase {
         try answerTest("test6")
     }
 
-    #if LONG_TESTS
-
-    func testWithAnswer7BZip2Compress() throws {
-        try answerTest("test7")
-    }
-
-    #endif
-
     func testWithAnswer8BZip2Compress() throws {
         try answerTest("test8")
     }

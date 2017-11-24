@@ -67,11 +67,8 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            _ = try SevenZipContainer.open(container: testData)
-        #else
-            _ = try SevenZipContainer.info(container: testData)
-        #endif
+        _ = try SevenZipContainer.info(container: testData)
+        _ = try SevenZipContainer.open(container: testData)
     }
 
     func testAntiFile() throws {
@@ -80,27 +77,16 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            let entries = try SevenZipContainer.open(container: testData)
+        _ = try SevenZipContainer.info(container: testData)
+        let entries = try SevenZipContainer.open(container: testData)
 
-            XCTAssertEqual(entries.count, 6)
+        XCTAssertEqual(entries.count, 6)
 
-            for entry in entries {
-                if entry.info.name == "test_create/test4.answer" {
-                    XCTAssertEqual(entry.info.isAnti, true)
-                }
+        for entry in entries {
+            if entry.info.name == "test_create/test4.answer" {
+                XCTAssertEqual(entry.info.isAnti, true)
             }
-        #else
-            let entries = try SevenZipContainer.info(container: testData)
-
-            XCTAssertEqual(entries.count, 6)
-
-            for entry in entries {
-                if entry.name == "test_create/test4.answer" {
-                    XCTAssertEqual(entry.isAnti, true)
-                }
-            }
-        #endif
+        }
     }
 
     func testMultiBlocks() throws {
@@ -110,15 +96,10 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            let entries = try SevenZipContainer.open(container: testData)
+        _ = try SevenZipContainer.info(container: testData)
+        let entries = try SevenZipContainer.open(container: testData)
 
-            XCTAssertEqual(entries.count, 6)
-        #else
-            let entries = try SevenZipContainer.info(container: testData)
-
-            XCTAssertEqual(entries.count, 6)
-        #endif
+        XCTAssertEqual(entries.count, 6)
     }
 
     func testAllTimestamps() throws {
@@ -128,29 +109,17 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            let entries = try SevenZipContainer.open(container: testData)
+        _ = try SevenZipContainer.info(container: testData)
+        let entries = try SevenZipContainer.open(container: testData)
 
-            XCTAssertEqual(entries.count, 6)
+        XCTAssertEqual(entries.count, 6)
 
-            for entry in entries {
-                XCTAssertNotNil(entry.info.creationTime)
-                XCTAssertNotNil(entry.info.accessTime)
-                // Just in case...
-                XCTAssertNotNil(entry.info.modificationTime)
-            }
-        #else
-            let entries = try SevenZipContainer.info(container: testData)
-
-            XCTAssertEqual(entries.count, 6)
-
-            for entry in entries {
-                XCTAssertNotNil(entry.creationTime)
-                XCTAssertNotNil(entry.accessTime)
-                // Just in case...
-                XCTAssertNotNil(entry.modificationTime)
-            }
-        #endif
+        for entry in entries {
+            XCTAssertNotNil(entry.info.creationTime)
+            XCTAssertNotNil(entry.info.accessTime)
+            // Just in case...
+            XCTAssertNotNil(entry.info.modificationTime)
+        }
     }
 
     func testComplicatedCodingScheme() throws {
@@ -165,11 +134,9 @@ class SevenZipTests: XCTestCase {
 
         // It is expected for `open(container:) function to throw `SevenZipError.compressionNotSupported`,
         //  because of the coders used.
-        #if LONG_TESTS
-            XCTAssertThrowsError(try SevenZipContainer.open(container: testData)) { error in
-                XCTAssertEqual(error as? SevenZipError, SevenZipError.compressionNotSupported)
-            }
-        #endif
+        XCTAssertThrowsError(try SevenZipContainer.open(container: testData)) { error in
+            XCTAssertEqual(error as? SevenZipError, SevenZipError.compressionNotSupported)
+        }
     }
 
     func testEncryptedHeader() throws {
@@ -194,15 +161,8 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            let entries = try SevenZipContainer.open(container: testData)
-
-            XCTAssertEqual(entries.count, 6)
-        #else
-            let entries = try SevenZipContainer.info(container: testData)
-
-            XCTAssertEqual(entries.count, 6)
-        #endif
+        XCTAssertEqual(try SevenZipContainer.info(container: testData).count, 6)
+        XCTAssertEqual(try SevenZipContainer.open(container: testData).count, 6)
     }
 
     func testBigContainer() throws {
@@ -211,11 +171,8 @@ class SevenZipTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            _ = try SevenZipContainer.open(container: testData)
-        #else
-            _ = try SevenZipContainer.info(container: testData)
-        #endif
+        _ = try SevenZipContainer.info(container: testData)
+        _ = try SevenZipContainer.open(container: testData)
     }
 
     func test7zBZip2() throws {

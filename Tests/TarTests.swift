@@ -147,11 +147,8 @@ class TarTests: XCTestCase {
             return
         }
 
-        #if LONG_TESTS
-            _ = try TarContainer.open(container: testData)
-        #else
-            _ = try TarContainer.info(container: testData)
-        #endif
+        _ = try TarContainer.info(container: testData)
+        _ = try TarContainer.open(container: testData)
     }
 
 }
