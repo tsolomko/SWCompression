@@ -157,19 +157,19 @@ class BitReader: DataWithPointer {
         return super.bytes(count: count)
     }
 
-    override func uint64(count: UInt64 = 8) -> UInt64 {
+    override func uint64() -> UInt64 {
         precondition(isAligned, "BitReader is not aligned.")
-        return super.uint64(count: count)
+        return super.uint64()
     }
 
-    override func uint32(count: UInt32 = 4) -> UInt32 {
+    override func uint32() -> UInt32 {
         precondition(isAligned, "BitReader is not aligned.")
-        return super.uint32(count: count)
+        return super.uint32()
     }
 
-    override func uint16(count: UInt16 = 2) -> UInt16 {
+    override func uint16() -> UInt16 {
         precondition(isAligned, "BitReader is not aligned.")
-        return super.uint16(count: count)
+        return super.uint16()
     }
 
 }

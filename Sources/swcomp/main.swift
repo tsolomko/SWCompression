@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-let cli = CLI(name: "swcomp", version: "4.0.0",
+let cli = CLI(name: "swcomp", version: "4.0.1",
               description: """
                            swcomp - small command-line client for SWCompression framework.
                            Serves as an example of SWCompression usage.
@@ -18,5 +18,6 @@ cli.commands = [XZCommand(),
                 GZipCommand(),
                 ZipCommand(),
                 TarCommand(),
-                SevenZipCommand()]
+                SevenZipCommand(),
+                PerfTestGroup()]
 cli.goAndExit()

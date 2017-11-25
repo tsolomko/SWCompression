@@ -75,11 +75,12 @@ class BitWriter {
         }
     }
 
-    func write(number: Int, bitsCount: Int) {
-        var mask = bitOrder == .straight ? 1 << (bitsCount - 1) : 1
+    func write(number: Int, bitsCount: Int, bitOrder: BitReader.BitOrder? = nil) {
+        let bitOrderToUse = (bitOrder ?? self.bitOrder)
+        var mask = bitOrderToUse == .straight ? 1 << (bitsCount - 1) : 1
         for _ in 0..<bitsCount {
             self.write(bit: number & mask > 0 ? 1 : 0)
-            switch bitOrder {
+            switch bitOrderToUse {
             case .straight:
                 mask >>= 1
             case .reversed:

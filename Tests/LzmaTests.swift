@@ -8,23 +8,19 @@ import SWCompression
 
 class LzmaTests: XCTestCase {
 
-    static let testType: String = "lzma"
+    private static let testType: String = "lzma"
 
     func perform(test testName: String) throws {
-        guard let testURL = Constants.url(forTest: testName, withType: LzmaTests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: LzmaTests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try LZMA.decompress(data: testData)
 
-        guard let answerURL = Constants.url(forAnswer: "test8") else {
-            XCTFail("Unable to get answer's URL.")
+        guard let answerData = Constants.data(forAnswer: "test8") else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }

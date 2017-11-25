@@ -70,17 +70,14 @@ struct XZBlock {
             else { throw XZError.wrongInfoCRC }
         pointerData.index += 4
 
-        var intResult = pointerData
+        var out = pointerData
         let compressedDataStart = pointerData.index
-        for filterIndex in 0..<filtersCount - 1 {
-            let intData = try filters[filtersCount.toInt() - filterIndex.toInt() - 1](intResult)
-            intResult = DataWithPointer(data: intData)
+        for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
+            out = DataWithPointer(data: try filters[filterIndex.toInt()](out))
         }
-        guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart
-            else { throw XZError.wrongDataSize }
 
-        let out = try filters[filtersCount.toInt() - 1](intResult)
-        guard uncompressedSize < 0 || uncompressedSize == out.count
+        guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart,
+            uncompressedSize < 0 || uncompressedSize == out.data.count
             else { throw XZError.wrongDataSize }
 
         let unpaddedSize = pointerData.index - blockHeaderStartIndex
@@ -94,7 +91,7 @@ struct XZBlock {
             }
         }
 
-        self.data = out
+        self.data = out.data
         self.unpaddedSize = unpaddedSize + checkSize
     }
 

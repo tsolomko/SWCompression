@@ -136,7 +136,7 @@ public struct GzipHeader {
         // Some archives may contain 2-bytes checksum
         if flags.contains(.fhcrc) {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
-            let crc16 = pointerData.uint32(count: 2)
+            let crc16 = pointerData.uint16()
             guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }

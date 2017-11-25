@@ -35,41 +35,26 @@ class DataWithPointer {
     }
 
     func bytes(count: Int) -> [UInt8] {
-        var result: [UInt8] = Array(repeating: 0, count: count)
-        for i in 0..<count {
-            result[i] = self.data[self.index]
-            self.index += 1
-        }
+        let result = self.data[self.index..<self.index + count].toArray(type: UInt8.self, count: count)
+        self.index += count
         return result
     }
 
-    func uint64(count: UInt64 = 8) -> UInt64 {
-        precondition(count <= 8, "UInt64 cannot store more than 8 bytes of data!")
-        var result: UInt64 = 0
-        for i: UInt64 in 0..<count {
-            result |= UInt64(self.data[self.index]) << (8 * i)
-            self.index += 1
-        }
+    func uint64() -> UInt64 {
+        let result = self.data[self.index..<self.index + 8].to(type: UInt64.self)
+        self.index += 8
         return result
     }
 
-    func uint32(count: UInt32 = 4) -> UInt32 {
-        precondition(count <= 4, "UInt32 cannot store more than 4 bytes of data!")
-        var result: UInt32 = 0
-        for i: UInt32 in 0..<count {
-            result |= UInt32(self.data[self.index]) << (8 * i)
-            self.index += 1
-        }
+    func uint32() -> UInt32 {
+        let result = self.data[self.index..<self.index + 4].to(type: UInt32.self)
+        self.index += 4
         return result
     }
 
-    func uint16(count: UInt16 = 2) -> UInt16 {
-        precondition(count <= 2, "UInt16 cannot store more than 2 bytes of data!")
-        var result: UInt16 = 0
-        for i: UInt16 in 0..<count {
-            result |= UInt16(self.data[self.index]) << (8 * i)
-            self.index += 1
-        }
+    func uint16() -> UInt16 {
+        let result = self.data[self.index..<self.index + 2].to(type: UInt16.self)
+        self.index += 2
         return result
     }
 

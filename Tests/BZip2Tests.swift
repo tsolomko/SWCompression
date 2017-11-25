@@ -8,32 +8,21 @@ import SWCompression
 
 class BZip2Tests: XCTestCase {
 
-    static let testType: String = "bz2"
+    private static let testType: String = "bz2"
 
     func perform(test testName: String) throws {
-        guard let testURL = Constants.url(forTest: testName, withType: BZip2Tests.testType) else {
-            XCTFail("Unable to get test's URL.")
+        guard let testData = Constants.data(forTest: testName, withType: BZip2Tests.testType) else {
+            XCTFail("Unable to get test data.")
             return
         }
-
-        let testData = try Data(contentsOf: testURL, options: .mappedIfSafe)
         let decompressedData = try BZip2.decompress(data: testData)
 
-        guard let answerURL = Constants.url(forAnswer: testName) else {
-            XCTFail("Unable to get asnwer's URL.")
+        guard let answerData = Constants.data(forAnswer: testName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
 
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
-
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
-
-        #if PERF_TESTS
-            print("Performing performance tests for \(BZip2Tests.testType).\(testName)")
-            self.measure {
-                _ = try? BZip2.decompress(data: testData)
-            }
-        #endif
     }
 
     func test1BZip2() throws {

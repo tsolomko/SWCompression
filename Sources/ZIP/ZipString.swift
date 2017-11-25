@@ -19,18 +19,18 @@ class ZipString {
         static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
     #endif
 
-    static func needsUtf8(_ bytes: [UInt8]) -> Bool {
+    static func needsUtf8(_ data: Data) -> Bool {
         // UTF-8 can have BOM.
-        if bytes.count >= 3 {
-            if bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF {
+        if data.count >= 3 {
+            if data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF {
                 return true
             }
         }
         var codeLength = 0
         var index = 0
         var ch: UInt32 = 0
-        while index < bytes.count {
-            let byte = bytes[index]
+        while index < data.count {
+            let byte = data[index]
             if byte <= 0x7F { // This simple byte can exist both in CP437 and UTF-8.
                 index += 1
                 continue
@@ -47,21 +47,21 @@ class ZipString {
             } else {
                 return false
             }
-            if index + codeLength - 1 >= bytes.count {
+            if index + codeLength - 1 >= data.count {
                 return false
             }
 
             for i in 1..<codeLength {
-                if bytes[index + i] & 0xC0 != 0x80 {
+                if data[index + i] & 0xC0 != 0x80 {
                     return false
                 }
             }
 
             if codeLength == 2 {
-                ch = ((UInt32(bytes[index]) & 0x1F) << 6) + (UInt32(bytes[index + 1]) & 0x3F)
+                ch = ((UInt32(data[index]) & 0x1F) << 6) + (UInt32(data[index + 1]) & 0x3F)
             } else if codeLength == 3 {
-                ch = ((UInt32(bytes[index]) & 0x0F) << 12) + ((UInt32(bytes[index + 1]) & 0x3F) << 6) +
-                    (UInt32(bytes[index + 2]) & 0x3F)
+                ch = ((UInt32(data[index]) & 0x0F) << 12) + ((UInt32(data[index + 1]) & 0x3F) << 6) +
+                    (UInt32(data[index + 2]) & 0x3F)
                 if ch < 0x0800 {
                     return false
                 }
@@ -69,8 +69,8 @@ class ZipString {
                     return false
                 }
             } else if codeLength == 4 {
-                ch = ((UInt32(bytes[index]) & 0x07) << 18) + ((UInt32(bytes[index + 1]) & 0x3F) << 12) +
-                    ((UInt32(bytes[index + 2]) & 0x3F) << 6) + (UInt32(bytes[index + 3]) & 0x3F)
+                ch = ((UInt32(data[index]) & 0x07) << 18) + ((UInt32(data[index + 1]) & 0x3F) << 12) +
+                    ((UInt32(data[index + 2]) & 0x3F) << 6) + (UInt32(data[index + 3]) & 0x3F)
                 if ch < 0x10000 || ch > 0x10FFFF {
                     return false
                 }

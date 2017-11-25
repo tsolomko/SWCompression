@@ -61,14 +61,7 @@ class EncodingHuffmanTree {
         guard codingIndex[0] > -1
             else { fatalError("Symbol is not found.") }
 
-        var treeCode = codingIndex[0]
-        let bits = codingIndex[1]
-
-        for _ in 0..<bits {
-            let bit = treeCode & 1
-            self.bitWriter.write(bit: bit == 0 ? 0 : 1)
-            treeCode >>= 1
-        }
+        self.bitWriter.write(number: codingIndex[0], bitsCount: codingIndex[1], bitOrder: .reversed)
     }
 
     func bitSize(for stats: [Int]) -> Int {

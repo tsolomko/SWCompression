@@ -427,15 +427,18 @@ This documentation can be found at its own <a href="http://tsolomko.github.io/SW
 
 <p>There is a small command-line program, <q>swcomp</q>, which is included in this repository in <q>Sources/swcomp</q>.
 To build it you need to uncomment several lines in <q>Package.swift</q> and run <code>swift build -c release</code>.</p>
-<h2 id='performace' class='heading'>Performace</h2>
+<h2 id='contributing' class='heading'>Contributing</h2>
 
-<p>Usage of whole module optimizations is recommended for best performance.
-These optimizations are enabled by default for Release configurations.</p>
+<p>Whether you find a bug, have a suggestion, idea or something else,
+please <a href="https://github.com/tsolomko/SWCompression/issues">create an issue</a> on GitHub.</p>
 
-<p><a href="Tests/Results.md">Tests Results</a> document contains results of performance testing of various algorithms.</p>
-<h2 id='running-tests-locally' class='heading'>Running tests locally</h2>
+<p>In case you have encoutered a bug, it would be especially helpful if you attach a file (archive, etc.)
+that caused the bug to happen.</p>
 
-<p>If you want to run tests locally you need to do some additional steps after cloning this repository:</p>
+<p>If you&rsquo;d like to contribute code, please <a href="https://github.com/tsolomko/SWCompression/pulls">create a pull request</a> on GitHub.</p>
+<h3 id='executing-tests-locally' class='heading'>Executing tests locally</h3>
+
+<p>If you&rsquo;d like to run tests on your computer, you need to do some additional steps after cloning this repository:</p>
 <pre class="highlight shell"><code>git submodule update --init --recursive
 <span class="nb">cd </span>Tests/Test<span class="se">\ </span>Files
 git lfs pull
@@ -446,6 +449,12 @@ These files are stored in a <a href="https://github.com/tsolomko/SWCompression-T
 Git LFS is used for storing them which is the reason for having them in the separate repository,
 since Swift Package Manager have some problems with Git LFS-enabled repositories
 (it requires installing git-lfs <em>locally</em> with <code>--skip-smudge</code> option to solve these problems).</p>
+<h2 id='performace' class='heading'>Performace</h2>
+
+<p>Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.</p>
+
+<p><a href="Tests/Results.md">Tests Results</a> document contains results of performance testing of various functions.</p>
 <h2 id='why' class='heading'>Why?</h2>
 
 <p>First of all, existing solutions for work with compression, archives and containers have some problems.

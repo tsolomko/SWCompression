@@ -7,61 +7,36 @@ import Foundation
 
 extension Data {
 
+    @inline(__always)
     func to<T>(type: T.Type) -> T {
         return self.withUnsafeBytes { $0.pointee }
     }
 
-    func toArray<T>(type: T.Type) -> [T] {
+    @inline(__always)
+    func toArray<T>(type: T.Type, count: Int) -> [T] {
         return self.withUnsafeBytes {
-            [T](UnsafeBufferPointer(start: $0, count: self.count / MemoryLayout<T>.size))
+            [T](UnsafeBufferPointer(start: $0, count: count))
         }
     }
 
-}
-
-extension UInt8 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
+    @inline(__always)
+    func toArray<T>(type: T.Type) -> [T] {
+        return self.toArray(type: type, count: self.count / MemoryLayout<T>.size)
     }
 
 }
 
-extension UInt16 {
+extension UnsignedInteger {
 
+    @inline(__always)
     func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
+        return Int(truncatingIfNeeded: self)
     }
-
-}
-
-extension UInt32 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
-    }
-
-    func reverseBytes() -> UInt32 {
-        var result: UInt32 = 0
-        for i: UInt32 in 0..<4 {
-            let byte = (self & (0xFF << (i * 8))) >> (i * 8)
-            result += byte << (8 * (3 - i))
-        }
-        return result
-    }
-
-}
-
-extension UInt64 {
-
-    func toInt() -> Int {
-        return Int(bitPattern: UInt(self))
-    }
-
 }
 
 extension Int {
 
+    @inline(__always)
     func toUInt8() -> UInt8 {
         return UInt8(truncatingIfNeeded: UInt(self))
     }

@@ -14,13 +14,16 @@ extension DataWithPointer {
     func getZipStringField(_ length: Int, _ useUtf8: Bool) -> String? {
         guard length > 0
             else { return "" }
-        let bytes = self.bytes(count: length)
-        let bytesAreUtf8 = ZipString.needsUtf8(bytes)
-        if !useUtf8 && ZipString.cp437Available && !bytesAreUtf8 {
-            return String(data: Data(bytes: bytes), encoding: String.Encoding(rawValue:
+        let stringData = Data(self.data[self.index..<self.index + length]) // TODO: Remove explicit copying?
+        self.index += length
+        if useUtf8 {
+            return String(data: stringData, encoding: .utf8)
+        }
+        if ZipString.cp437Available && !ZipString.needsUtf8(stringData) {
+            return String(data: stringData, encoding: String.Encoding(rawValue:
                 CFStringConvertEncodingToNSStringEncoding(ZipString.cp437Encoding)))
         } else {
-            return String(data: Data(bytes: bytes), encoding: .utf8)
+            return String(data: stringData, encoding: .utf8)
         }
     }
 

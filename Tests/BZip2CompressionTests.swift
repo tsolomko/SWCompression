@@ -8,27 +8,18 @@ import SWCompression
 
 class BZip2CompressionTests: XCTestCase {
 
-    static let testType: String = "bz2"
+    private static let testType: String = "bz2"
 
     func answerTest(_ answerName: String) throws {
-        guard let answerURL = Constants.url(forAnswer: answerName) else {
-            XCTFail("Unable to get asnwer's URL.")
+        guard let answerData = Constants.data(forAnswer: answerName) else {
+            XCTFail("Unable to get answer data.")
             return
         }
-
-        let answerData = try Data(contentsOf: answerURL, options: .mappedIfSafe)
 
         let compressedData = BZip2.compress(data: answerData)
         let redecompressedData = try BZip2.decompress(data: compressedData)
 
         XCTAssertEqual(redecompressedData, answerData)
-
-        #if PERF_TESTS
-            print("Performing performance tests for cbzip2.\(answerName)")
-            self.measure {
-                _ = BZip2.compress(data: answerData)
-            }
-        #endif
     }
 
     func stringTest(_ string: String) throws {
@@ -85,14 +76,6 @@ class BZip2CompressionTests: XCTestCase {
     func testWithAnswer6BZip2Compress() throws {
         try answerTest("test6")
     }
-
-    #if LONG_TESTS
-
-    func testWithAnswer7BZip2Compress() throws {
-        try answerTest("test7")
-    }
-
-    #endif
 
     func testWithAnswer8BZip2Compress() throws {
         try answerTest("test8")

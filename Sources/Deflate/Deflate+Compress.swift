@@ -19,18 +19,33 @@ extension Deflate: CompressionAlgorithm {
      then static Huffman block will be created.
      */
     public static func compress(data: Data) -> Data {
-        let bytes = data.toArray(type: UInt8.self)
-
-        let bldCodes = Deflate.lengthEncode(bytes)
+        let bldCodes = Deflate.lengthEncode(data)
 
         // Let's count possible sizes according to statistics.
 
         // Uncompressed block size calculation is simple:
-        let uncompBlockSize = 1 + 2 + 2 + bytes.count // Header, length, n-length and data.
+        let uncompBlockSize = 1 + 2 + 2 + data.count // Header, length, n-length and data.
 
         // Static Huffman size is more complicated...
+        let staticHuffmanBlockSize = staticHuffmanBitSize(bldCodes.stats)
+
+        // Since `length` of uncompressed block is 16-bit integer,
+        // there is a limitation on size of uncompressed block.
+        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
+        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
+            // If according to our calculations static huffman will not make output smaller than input,
+            // we fallback to creating uncompressed block.
+            // In this case dynamic Huffman encoding can be efficient.
+            // TODO: Implement dynamic Huffman code!
+            return Deflate.createUncompressedBlock(data)
+        } else {
+            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
+        }
+    }
+
+    private static func staticHuffmanBitSize(_ stats: [Int]) -> Int {
         var bitsCount = 3 // Three bits for block's header.
-        for (symbol, symbolCount) in bldCodes.stats.enumerated() {
+        for (symbol, symbolCount) in stats.enumerated() {
             let codeSize: Int
             // There are extra bits for some codes.
             let extraBitsCount: Int
@@ -55,23 +70,10 @@ extension Deflate: CompressionAlgorithm {
             }
             bitsCount += (symbolCount * (codeSize + extraBitsCount))
         }
-        let staticHuffmanBlockSize = bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
-
-        // Since `length` of uncompressed block is 16-bit integer,
-        // there is a limitation on size of uncompressed block.
-        // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
-        if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
-            // If according to our calculations static huffman will not make output smaller than input,
-            // we fallback to creating uncompressed block.
-            // In this case dynamic Huffman encoding can be efficient.
-            // TODO: Implement dynamic Huffman code!
-            return Data(bytes: Deflate.createUncompressedBlock(bytes))
-        } else {
-            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
-        }
+        return bitsCount % 8 == 0 ? bitsCount / 8 : bitsCount / 8 + 1
     }
 
-    private static func createUncompressedBlock(_ bytes: [UInt8]) -> [UInt8] {
+    private static func createUncompressedBlock(_ data: Data) -> Data {
         let bitWriter = BitWriter(bitOrder: .reversed)
 
         // Write block header.
@@ -83,16 +85,12 @@ extension Deflate: CompressionAlgorithm {
         bitWriter.finish()
 
         // Write data's length.
-        bitWriter.write(number: bytes.count, bitsCount: 16)
+        bitWriter.write(number: data.count, bitsCount: 16)
         // Write data's n-length.
-        bitWriter.write(number: bytes.count ^ (1 << 16 - 1), bitsCount: 16)
+        bitWriter.write(number: data.count ^ (1 << 16 - 1), bitsCount: 16)
 
-        var out = bitWriter.buffer
-
-        // Write actual data.
-        for byte in bytes {
-            out.append(byte)
-        }
+        var out = Data(bytes: bitWriter.buffer)
+        out.append(data)
 
         return out
     }
@@ -148,22 +146,20 @@ extension Deflate: CompressionAlgorithm {
         case lengthDistance(UInt16, UInt16)
     }
 
-    private static func lengthEncode(_ rawBytes: [UInt8]) -> (codes: [BLDCode], stats: [Int]) {
+    private static func lengthEncode(_ data: Data) -> (codes: [BLDCode], stats: [Int]) {
         var buffer: [BLDCode] = []
         var inputIndex = 0
-        /// Keys --- three-byte crc32, values --- positions in `rawBytes`.
+        /// Keys --- three-byte crc32, values --- positions in `data`.
         var dictionary = [UInt32: Int]()
 
         var stats = Array(repeating: 0, count: 316)
 
         // Last two bytes of input will be considered separately.
         // This also allows to use length encoding for arrays with size less than 3.
-        while inputIndex < rawBytes.count - 2 {
-            let byte = rawBytes[inputIndex]
+        while inputIndex < data.count - 2 {
+            let byte = data[inputIndex]
 
-            let threeByteCrc = CheckSums.crc32([rawBytes[inputIndex],
-                                                rawBytes[inputIndex + 1],
-                                                rawBytes[inputIndex + 2]])
+            let threeByteCrc = CheckSums.crc32(data[inputIndex..<inputIndex + 3])
 
             if let matchStartIndex = dictionary[threeByteCrc] {
                 // We need to update position of this match to keep distances as small as possible.
@@ -179,8 +175,8 @@ extension Deflate: CompressionAlgorithm {
 
                 // Again, the distance cannot be greater than 32768.
                 if distance <= 32768 {
-                    while inputIndex + matchLength < rawBytes.count &&
-                        rawBytes[inputIndex + matchLength] == rawBytes[repeatIndex] && matchLength < 258 {
+                    while inputIndex + matchLength < data.count &&
+                        data[inputIndex + matchLength] == data[repeatIndex] && matchLength < 258 {
                             matchLength += 1
                             repeatIndex += 1
                             if repeatIndex > inputIndex {
@@ -210,8 +206,8 @@ extension Deflate: CompressionAlgorithm {
 
         // For last two bytes there certainly will be no match.
         // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
-        while inputIndex < rawBytes.count {
-            let byte = rawBytes[inputIndex]
+        while inputIndex < data.count {
+            let byte = data[inputIndex]
             buffer.append(BLDCode.byte(byte))
             stats[byte.toInt()] += 1
             inputIndex += 1
