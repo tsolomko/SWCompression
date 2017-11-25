@@ -170,16 +170,19 @@ This documentation can be found at its own [website](http://tsolomko.github.io/S
 There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp".
 To build it you need to uncomment several lines in "Package.swift" and run `swift build -c release`.
 
-## Performace
+## Contributing
 
-Usage of whole module optimizations is recommended for best performance.
-These optimizations are enabled by default for Release configurations.
+Whether you find a bug, have a suggestion, idea or something else,
+please [create an issue](https://github.com/tsolomko/SWCompression/issues) on GitHub.
 
-[Tests Results](Tests/Results.md) document contains results of performance testing of various algorithms.
+In case you have encoutered a bug, it would be especially helpful if you attach a file (archive, etc.)
+that caused the bug to happen.
 
-## Running tests locally
+If you'd like to contribute code, please [create a pull request](https://github.com/tsolomko/SWCompression/pulls) on GitHub.
 
-If you want to run tests locally you need to do some additional steps after cloning this repository:
+### Executing tests locally
+
+If you want to run tests on your computer, you need to do some additional steps after cloning this repository:
 
 ```bash
 git submodule update --init --recursive
@@ -192,6 +195,13 @@ These files are stored in a [separate repository](https://github.com/tsolomko/SW
 Git LFS is used for storing them which is the reason for having them in the separate repository,
 since Swift Package Manager have some problems with Git LFS-enabled repositories
 (it requires installing git-lfs _locally_ with `--skip-smudge` option to solve these problems).
+
+## Performace
+
+Usage of whole module optimizations is recommended for best performance.
+These optimizations are enabled by default for Release configurations.
+
+[Tests Results](Tests/Results.md) document contains results of performance testing of various functions.
 
 ## Why?
 
