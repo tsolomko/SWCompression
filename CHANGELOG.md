@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.0.1
+
+- Git tag for updates no longer has "v" prefix.
+- Fixed incorrectly thrown `XZError.wrongDataSize` without actually trying to decompress anything.
+- Fixed crash when opening 7-Zip containers with more than 255 entries with empty streams.
+- No longer verify if ZIP string field needs UTF-8 encoding, if language encoding flag is set.
+- Reduced memory usage by Deflate compression.
+- Added "perf-test" command to swcomp, which is used for measuring performance.
+- Internal changes to tests:
+    - `LONG_TESTS` and `PERF_TESTS` compiler flags are no longer used for testing.
+    - Reduced size of test6 and test7 from 5 megabytes to 1 megabyte.
+    - Removed test7 for BZip2 compression.
+    - Added results for 4.0.0 and 4.0.1 from new performance measuring scheme.
+
 ## 4.0.0
 
 - Reworked Container API:
