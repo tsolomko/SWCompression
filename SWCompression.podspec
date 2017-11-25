@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.watchos.deployment_target = "2.0"
 
-  s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "v#{s.version}" }
+  s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "#{s.version}" }
 
   s.subspec 'Deflate' do |sp|
     sp.source_files = 'Sources/{Deflate/*,Common/*}.swift'
