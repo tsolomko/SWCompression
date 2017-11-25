@@ -182,7 +182,7 @@ If you'd like to contribute code, please [create a pull request](https://github.
 
 ### Executing tests locally
 
-If you want to run tests on your computer, you need to do some additional steps after cloning this repository:
+If you'd like to run tests on your computer, you need to do some additional steps after cloning this repository:
 
 ```bash
 git submodule update --init --recursive
