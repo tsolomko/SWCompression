@@ -369,7 +369,7 @@
 		06BD0D251E3D0C630054AA5C /* test_zip64.zip in Resources */ = {isa = PBXBuildFile; fileRef = 06BD0D221E3D0C630054AA5C /* test_zip64.zip */; };
 		06BE1AD21DB410F100EE0F59 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06CC187D1DE35269003532F5 /* test.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 06CC185F1DE35269003532F5 /* test.zlib */; };
-		06CC187F1DE35607003532F5 /* DeflateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC187E1DE35607003532F5 /* DeflateTests.swift */; };
+		06CC187F1DE35607003532F5 /* DeflateCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC187E1DE35607003532F5 /* DeflateCompressionTests.swift */; };
 		06CC3FDD1F8AAE8B00BD576D /* BitReader+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */; };
 		06CC3FDE1F8AAE8B00BD576D /* BitReader+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */; };
 		06CC3FDF1F8AAE8B00BD576D /* BitReader+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */; };
@@ -630,7 +630,7 @@
 		06BE1AD11DB410F100EE0F59 /* SWCompressionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SWCompressionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06BE1AD81DB410F100EE0F59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06CC185F1DE35269003532F5 /* test.zlib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.zlib; sourceTree = "<group>"; };
-		06CC187E1DE35607003532F5 /* DeflateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateTests.swift; sourceTree = "<group>"; };
+		06CC187E1DE35607003532F5 /* DeflateCompressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateCompressionTests.swift; sourceTree = "<group>"; };
 		06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BitReader+7z.swift"; sourceTree = "<group>"; };
 		06CC3FE11F8AAF3100BD576D /* DataWithPointer+XZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataWithPointer+XZ.swift"; sourceTree = "<group>"; };
 		06CDFC9D1F111D2600292758 /* Deflate+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Deflate+Compress.swift"; sourceTree = "<group>"; };
@@ -989,7 +989,7 @@
 				061FCE2C1DBCC6A30052F7BE /* Constants.swift */,
 				063D0CA11F5B17EB00D3464C /* BZip2CompressionTests.swift */,
 				0680E1B41DDA4075005C05EB /* BZip2Tests.swift */,
-				06CC187E1DE35607003532F5 /* DeflateTests.swift */,
+				06CC187E1DE35607003532F5 /* DeflateCompressionTests.swift */,
 				0680E1B21DDA3D0A005C05EB /* GzipTests.swift */,
 				069AC2111E02DDAF0041AC13 /* LzmaTests.swift */,
 				064F72301F1E63E200017297 /* SevenZipTests.swift */,
@@ -1848,7 +1848,7 @@
 			files = (
 				064F72311F1E63E200017297 /* SevenZipTests.swift in Sources */,
 				0680E1B51DDA4076005C05EB /* BZip2Tests.swift in Sources */,
-				06CC187F1DE35607003532F5 /* DeflateTests.swift in Sources */,
+				06CC187F1DE35607003532F5 /* DeflateCompressionTests.swift in Sources */,
 				061FCE2D1DBCC6A30052F7BE /* Constants.swift in Sources */,
 				063D0CA21F5B17EB00D3464C /* BZip2CompressionTests.swift in Sources */,
 				069AC2121E02DDAF0041AC13 /* LzmaTests.swift in Sources */,

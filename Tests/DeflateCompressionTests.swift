@@ -6,7 +6,7 @@
 import XCTest
 import SWCompression
 
-class DeflateTests: XCTestCase {
+class DeflateCompressionTests: XCTestCase {
 
     func perform(compressionTest testName: String) throws {
         guard let answerData = Constants.data(forAnswer: testName) else {
