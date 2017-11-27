@@ -17,21 +17,28 @@ class BZip2CompressionTests: XCTestCase {
         }
 
         let compressedData = BZip2.compress(data: answerData)
-        let redecompressedData = try BZip2.decompress(data: compressedData)
 
+        if answerName != "test5" { // Compression ratio is always bad for empty file.
+            let compressionRatio = Double(answerData.count) / Double(compressedData.count)
+            print("BZip2.CompressionRatio.test(\(answerName))=\(compressionRatio)")
+        } else {
+            print("No compression ratio for test5.")
+        }
+
+        let redecompressedData = try BZip2.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
 
     func stringTest(_ string: String) throws {
-        guard let stringData = string.data(using: .utf8) else {
+        guard let answerData = string.data(using: .utf8) else {
             XCTFail("Unable to convert String to Data.")
             return
         }
 
-        let compressedData = BZip2.compress(data: stringData)
-        let redecompressedData = try BZip2.decompress(data: compressedData)
+        let compressedData = BZip2.compress(data: answerData)
 
-        XCTAssertEqual(redecompressedData, stringData)
+        let redecompressedData = try BZip2.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
     }
 
     func testBZip2CompressStrings() throws {

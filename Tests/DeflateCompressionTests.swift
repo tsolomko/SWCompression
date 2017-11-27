@@ -14,9 +14,16 @@ class DeflateCompressionTests: XCTestCase {
             return
         }
 
-        let deflatedData = Deflate.compress(data: answerData)
-        let reUncompData = try Deflate.decompress(data: deflatedData)
+        let compressedData = Deflate.compress(data: answerData)
 
+        if testName != "test5" { // Compression ratio is always bad for empty file.
+            let compressionRatio = Double(answerData.count) / Double(compressedData.count)
+            print("BZip2.CompressionRatio.test(\(testName))=\(compressionRatio)")
+        } else {
+            print("No compression ratio for test5.")
+        }
+
+        let reUncompData = try Deflate.decompress(data: compressedData)
         XCTAssertEqual(answerData, reUncompData)
 
         #if PERF_TESTS
