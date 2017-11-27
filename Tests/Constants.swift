@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Constants {
+class Constants {
 
     /* Contents of test files:
      - test1: text file with "Hello, World!\n".
@@ -42,6 +42,6 @@ struct Constants {
         return testBundle.url(forResource: name, withExtension: "answer")
     }
 
-    private static let testBundle: Bundle = Bundle(for: DeflateTests.self)
+    private static let testBundle: Bundle = Bundle(for: Constants.self)
 
 }
