@@ -25,13 +25,19 @@ matrix:
       script:
       - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
       deploy:
-        provider: releases
+      - provider: releases
+        skip_cleanup: true
         api_key:
           secure: lhJi7BsAuhGo9T4rgD/UWlVRnfrO5xLIF3BUuPHb21045tEXk/BGEHgc9a9CTFm2/iR3SmP/GDsmqfJlMzWLvuTlyV5i8otIodwIp5NYstFhyA2JaEVglmnzlkf/2FkNb5KKJDyGM1KuecYmPRTUUzYThVXl59GZ2esgfiCN26pDeDgwRyJt34jeUj0VzK9JDmEJ/ODG/hvuUWyZp0zni+m6WTPZ7dILeazFEc81WATBfMo5oa8ZBChSM6lDKaW8XyKZWrMXjsK6dKfQTcVwnvrplfw2TqfPVA+YfePcq1os5Do5CELnhrUZMSI6qvOmPauzGStjsAVFTiMaYO6HdHO03mn5L9SUuyhhKqHmh2pAkM1zKxbtfKbk6oi4zJJgvbTjIO4K2X5SUwHFgjULijW9JJeCFjsLfwODvFNFHeLeql3jaKNo6kRn2VvT/uNuT3aZa+r+WeFL0HgD6Z/EEkQW5yI6DocjetRP6y9B0rpA+YyALbd0SkVIqvoywztSfxWwp7eKhQHbG/FTIfWlmMbtLq5xULQb6TyjVHO94iSfsDV2rjAeDJY73P+rPsvej4Y9LFS8VOHcsrFhFlbR9E0NjCO2CH2TZcjXPOdLu4gfapPdiqQIdgWjC6ECUwsq+Ux6jJ6QIrGC2TI/Fw58mtLf1G8SdqBRXo+Kw0IAB4g=
         file: "$FRAMEWORK_NAME.framework.zip"
-        skip_cleanup: true
         on:
-          repo: tsolomko/SWCompression
+          tags: true
+      - provider: pages
+        skip_cleanup: true
+        github_token:
+          secure: AyKeaGgdr+B0uwM4qMqi7ywFaDFlCubjBoPdLUEU681SYlhyJPhF5UiAC4DWxE4UrjWYPB4+XcRiZC+dxogQBSuAu8NwlIXHbJML+cjC+6SOS3AmJuo6Yh4nNvqsOMl8mH1PxH+vgO5zHB0OSKFgytpThN4pgzOmBMPaBBnpO7doPWzKWuOxqtjH+5X0lg40fy6e84bo6+6t7r7S6cjD5NUQe5YR+Zz3/69rb43+TnDWeYl2tCCkw+HzhqDiBWxzu1Fyu6XL8/lqXO07Np1uN9ZzlhZEns+uMrqJGMif6lqVRfHP0hdfkNQFYsSB/pJzmqSA2Tp5obfCRqHm/bOpDVVCQK/sgz6u8OKdDgAO0P5jmiRJLiKqC1+0NA1BRAsV5ZtgdemV8RLLy78MHvkJrlcTMCCPic3Udl36c0n9MVEgtae5IrbISFPF1eaVaX2h3ihAmjPHKOOXCMFL5XMmLR5Zarevn8yTDjXJ1J0+Ae3UoCIOvLBnNCz0Bu7zFG+a6zk+1or1Dul3nxvGd62WgpQn/59llKQbyCPrq+VAPXLnYKgbpAmnRwbFgXiJHaAhEIAhql2YlLgrU7rcAMmdkUREopXlE/lPzlc8lPG1YKNOPrgHO0HdGBQL50Aep39kpl2cgyBhGQFWPjmPeoCV2m0ZjOZuhtKsqFh4ovktdYc=
+        local_dir: docs
+        on:
           tags: true
     - language: generic
       os: linux
