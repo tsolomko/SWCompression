@@ -15,10 +15,6 @@ class DataWithPointer {
         return self.data.endIndex == self.index
     }
 
-    var previousByte: UInt8 {
-        return self.data[self.index - 1]
-    }
-
     convenience init(array: inout [UInt8]) {
         self.init(data: Data(bytes: array))
     }
