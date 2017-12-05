@@ -15,10 +15,6 @@ class DataWithPointer {
         return self.data.endIndex == self.index
     }
 
-    convenience init(array: inout [UInt8]) {
-        self.init(data: Data(bytes: array))
-    }
-
     init(data: Data) {
         self.size = data.count
         self.data = data

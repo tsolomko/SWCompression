@@ -24,10 +24,6 @@ class BitReader: DataWithPointer {
         }
     }
 
-    convenience init(array: inout [UInt8], bitOrder: BitOrder) {
-        self.init(data: Data(bytes: array), bitOrder: bitOrder)
-    }
-
     init(data: Data, bitOrder: BitOrder) {
         self.bitOrder = bitOrder
         switch self.bitOrder {
