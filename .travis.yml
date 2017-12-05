@@ -1,6 +1,8 @@
 env:
   global:
   - FRAMEWORK_NAME=SWCompression
+  git:
+    depth: 1
 matrix:
     include:
     - language: objective-c
