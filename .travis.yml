@@ -22,6 +22,7 @@ matrix:
       before_deploy:
       - carthage build --no-skip-current
       - carthage archive $FRAMEWORK_NAME
+      - jazzy
       script:
       - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
       deploy:
