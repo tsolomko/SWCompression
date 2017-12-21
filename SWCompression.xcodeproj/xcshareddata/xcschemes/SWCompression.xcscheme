@@ -29,16 +29,6 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "06BE1AD01DB410F100EE0F59"
-               BuildableName = "SWCompressionTests.xctest"
-               BlueprintName = "SWCompressionTests"
-               ReferencedContainer = "container:SWCompression.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
