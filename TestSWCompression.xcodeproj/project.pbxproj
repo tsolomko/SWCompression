@@ -1,0 +1,789 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		061FFDCB1FEC165700029440 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061FFDCC1FEC165700029440 /* SWCompression.framework */; };
+		061FFE401FEC170700029440 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDCE1FEC170700029440 /* Constants.swift */; };
+		061FFE411FEC170700029440 /* DeflateCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDCF1FEC170700029440 /* DeflateCompressionTests.swift */; };
+		061FFE421FEC170700029440 /* ZlibTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD01FEC170700029440 /* ZlibTests.swift */; };
+		061FFE431FEC170700029440 /* ZipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD11FEC170700029440 /* ZipTests.swift */; };
+		061FFE441FEC170700029440 /* BZip2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD21FEC170700029440 /* BZip2Tests.swift */; };
+		061FFE451FEC170700029440 /* TarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD31FEC170700029440 /* TarTests.swift */; };
+		061FFE461FEC170700029440 /* GzipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD41FEC170700029440 /* GzipTests.swift */; };
+		061FFE481FEC170700029440 /* XzTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD61FEC170700029440 /* XzTests.swift */; };
+		061FFE491FEC170700029440 /* SevenZipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD71FEC170700029440 /* SevenZipTests.swift */; };
+		061FFE4A1FEC170700029440 /* LzmaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD81FEC170700029440 /* LzmaTests.swift */; };
+		061FFE4B1FEC170700029440 /* BZip2CompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061FFDD91FEC170700029440 /* BZip2CompressionTests.swift */; };
+		061FFE4C1FEC170700029440 /* test3.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDDC1FEC170700029440 /* test3.answer */; };
+		061FFE4D1FEC170700029440 /* test1.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDDD1FEC170700029440 /* test1.answer */; };
+		061FFE4E1FEC170700029440 /* test9.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDDE1FEC170700029440 /* test9.answer */; };
+		061FFE4F1FEC170700029440 /* test5.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDDF1FEC170700029440 /* test5.answer */; };
+		061FFE501FEC170700029440 /* test7.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE01FEC170700029440 /* test7.answer */; };
+		061FFE511FEC170700029440 /* test2.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE11FEC170700029440 /* test2.answer */; };
+		061FFE521FEC170700029440 /* test8.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE21FEC170700029440 /* test8.answer */; };
+		061FFE531FEC170700029440 /* test4.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE31FEC170700029440 /* test4.answer */; };
+		061FFE541FEC170700029440 /* test6.answer in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE41FEC170700029440 /* test6.answer */; };
+		061FFE551FEC170700029440 /* test5.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE61FEC170700029440 /* test5.gz */; };
+		061FFE561FEC170700029440 /* test1.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE71FEC170700029440 /* test1.gz */; };
+		061FFE571FEC170700029440 /* test4.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE81FEC170700029440 /* test4.gz */; };
+		061FFE581FEC170700029440 /* test3.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDE91FEC170700029440 /* test3.gz */; };
+		061FFE591FEC170700029440 /* test7.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDEA1FEC170700029440 /* test7.gz */; };
+		061FFE5A1FEC170700029440 /* test6.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDEB1FEC170700029440 /* test6.gz */; };
+		061FFE5B1FEC170700029440 /* test2.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDEC1FEC170700029440 /* test2.gz */; };
+		061FFE5C1FEC170700029440 /* test9.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDED1FEC170700029440 /* test9.gz */; };
+		061FFE5D1FEC170700029440 /* test_multi.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDEE1FEC170700029440 /* test_multi.gz */; };
+		061FFE5E1FEC170700029440 /* test8.gz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDEF1FEC170700029440 /* test8.gz */; };
+		061FFE5F1FEC170700029440 /* test.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF11FEC170700029440 /* test.zlib */; };
+		061FFE601FEC170700029440 /* random_file.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF21FEC170700029440 /* random_file.zlib */; };
+		061FFE611FEC170700029440 /* test1.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF41FEC170700029440 /* test1.xz */; };
+		061FFE621FEC170700029440 /* test5.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF51FEC170700029440 /* test5.xz */; };
+		061FFE631FEC170700029440 /* test4.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF61FEC170700029440 /* test4.xz */; };
+		061FFE641FEC170700029440 /* test_multi_pad.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF71FEC170700029440 /* test_multi_pad.xz */; };
+		061FFE651FEC170700029440 /* test9.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF81FEC170700029440 /* test9.xz */; };
+		061FFE661FEC170700029440 /* test8.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDF91FEC170700029440 /* test8.xz */; };
+		061FFE671FEC170700029440 /* test_multi.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDFA1FEC170700029440 /* test_multi.xz */; };
+		061FFE681FEC170700029440 /* test7.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDFB1FEC170700029440 /* test7.xz */; };
+		061FFE691FEC170700029440 /* test3.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDFC1FEC170700029440 /* test3.xz */; };
+		061FFE6A1FEC170700029440 /* test2.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDFD1FEC170700029440 /* test2.xz */; };
+		061FFE6B1FEC170700029440 /* test6.xz in Resources */ = {isa = PBXBuildFile; fileRef = 061FFDFE1FEC170700029440 /* test6.xz */; };
+		061FFE6D1FEC170700029440 /* test_zip_bzip2.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE011FEC170700029440 /* test_zip_bzip2.zip */; };
+		061FFE6E1FEC170700029440 /* test_empty_dir.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE021FEC170700029440 /* test_empty_dir.zip */; };
+		061FFE6F1FEC170700029440 /* test_win.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE031FEC170700029440 /* test_win.zip */; };
+		061FFE701FEC170700029440 /* test_unicode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE041FEC170700029440 /* test_unicode.zip */; };
+		061FFE711FEC170700029440 /* test_data_descriptor.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE051FEC170700029440 /* test_data_descriptor.zip */; };
+		061FFE721FEC170700029440 /* test_zip_lzma.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE061FEC170700029440 /* test_zip_lzma.zip */; };
+		061FFE731FEC170700029440 /* test_empty_file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE071FEC170700029440 /* test_empty_file.zip */; };
+		061FFE741FEC170700029440 /* test_empty_cont.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE081FEC170700029440 /* test_empty_cont.zip */; };
+		061FFE751FEC170700029440 /* SWCompressionSourceCode.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE091FEC170700029440 /* SWCompressionSourceCode.zip */; };
+		061FFE761FEC170700029440 /* test_zip64.zip in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE0A1FEC170700029440 /* test_zip64.zip */; };
+		061FFE781FEC170700029440 /* test.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE0D1FEC170700029440 /* test.tar */; };
+		061FFE791FEC170700029440 /* test_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE0F1FEC170700029440 /* test_pax.tar */; };
+		061FFE7A1FEC170700029440 /* test_ustar.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE101FEC170700029440 /* test_ustar.tar */; };
+		061FFE7B1FEC170700029440 /* test_v7.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE111FEC170700029440 /* test_v7.tar */; };
+		061FFE7C1FEC170700029440 /* test_oldgnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE121FEC170700029440 /* test_oldgnu.tar */; };
+		061FFE7D1FEC170700029440 /* test_gnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE131FEC170700029440 /* test_gnu.tar */; };
+		061FFE7E1FEC170700029440 /* test_empty_dir.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE141FEC170700029440 /* test_empty_dir.tar */; };
+		061FFE7F1FEC170700029440 /* long_test_gnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE161FEC170700029440 /* long_test_gnu.tar */; };
+		061FFE801FEC170700029440 /* long_test_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE171FEC170700029440 /* long_test_pax.tar */; };
+		061FFE811FEC170700029440 /* long_test_oldgnu.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE181FEC170700029440 /* long_test_oldgnu.tar */; };
+		061FFE821FEC170700029440 /* test_empty_cont.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE191FEC170700029440 /* test_empty_cont.tar */; };
+		061FFE831FEC170700029440 /* SWCompressionSourceCode.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE1A1FEC170700029440 /* SWCompressionSourceCode.tar */; };
+		061FFE841FEC170700029440 /* test_empty_file.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE1B1FEC170700029440 /* test_empty_file.tar */; };
+		061FFE851FEC170700029440 /* full_test.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE1C1FEC170700029440 /* full_test.tar */; };
+		061FFE861FEC170700029440 /* test_win.tar in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE1D1FEC170700029440 /* test_win.tar */; };
+		061FFE871FEC170700029440 /* test11.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE1F1FEC170700029440 /* test11.lzma */; };
+		061FFE881FEC170700029440 /* test10.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE201FEC170700029440 /* test10.lzma */; };
+		061FFE891FEC170700029440 /* test9.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE211FEC170700029440 /* test9.lzma */; };
+		061FFE8A1FEC170700029440 /* test8.lzma in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE221FEC170700029440 /* test8.lzma */; };
+		061FFE8B1FEC170700029440 /* test_empty_cont.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE241FEC170700029440 /* test_empty_cont.7z */; };
+		061FFE8C1FEC170700029440 /* test_multi_blocks.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE251FEC170700029440 /* test_multi_blocks.7z */; };
+		061FFE8D1FEC170700029440 /* test_7z_copy.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE261FEC170700029440 /* test_7z_copy.7z */; };
+		061FFE8E1FEC170700029440 /* test_single_thread.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE271FEC170700029440 /* test_single_thread.7z */; };
+		061FFE8F1FEC170700029440 /* test_all_timestamps.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE281FEC170700029440 /* test_all_timestamps.7z */; };
+		061FFE901FEC170700029440 /* test_complicated_coding_scheme.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE291FEC170700029440 /* test_complicated_coding_scheme.7z */; };
+		061FFE911FEC170700029440 /* test_anti_file.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2A1FEC170700029440 /* test_anti_file.7z */; };
+		061FFE921FEC170700029440 /* test_encrypted_header.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2B1FEC170700029440 /* test_encrypted_header.7z */; };
+		061FFE931FEC170700029440 /* test3.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2C1FEC170700029440 /* test3.7z */; };
+		061FFE941FEC170700029440 /* test2.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2D1FEC170700029440 /* test2.7z */; };
+		061FFE951FEC170700029440 /* test_7z_bzip2.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2E1FEC170700029440 /* test_7z_bzip2.7z */; };
+		061FFE961FEC170700029440 /* test_7z_deflate.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE2F1FEC170700029440 /* test_7z_deflate.7z */; };
+		061FFE971FEC170700029440 /* test1.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE301FEC170700029440 /* test1.7z */; };
+		061FFE981FEC170700029440 /* test_empty_file.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE311FEC170700029440 /* test_empty_file.7z */; };
+		061FFE991FEC170700029440 /* test_empty_dir.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE321FEC170700029440 /* test_empty_dir.7z */; };
+		061FFE9A1FEC170700029440 /* test_win.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE331FEC170700029440 /* test_win.7z */; };
+		061FFE9B1FEC170700029440 /* SWCompressionSourceCode.7z in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE341FEC170700029440 /* SWCompressionSourceCode.7z */; };
+		061FFE9C1FEC170700029440 /* test5.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE361FEC170700029440 /* test5.bz2 */; };
+		061FFE9D1FEC170700029440 /* test4.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE371FEC170700029440 /* test4.bz2 */; };
+		061FFE9E1FEC170700029440 /* test6.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE381FEC170700029440 /* test6.bz2 */; };
+		061FFE9F1FEC170700029440 /* test7.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE391FEC170700029440 /* test7.bz2 */; };
+		061FFEA01FEC170700029440 /* test3.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE3A1FEC170700029440 /* test3.bz2 */; };
+		061FFEA11FEC170700029440 /* test2.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE3B1FEC170700029440 /* test2.bz2 */; };
+		061FFEA21FEC170700029440 /* test1.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE3C1FEC170700029440 /* test1.bz2 */; };
+		061FFEA31FEC170700029440 /* test9.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE3D1FEC170700029440 /* test9.bz2 */; };
+		061FFEA41FEC170700029440 /* test8.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 061FFE3E1FEC170700029440 /* test8.bz2 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		061FFDC11FEC163A00029440 /* TestSWCompression.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestSWCompression.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		061FFDCC1FEC165700029440 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		061FFDCE1FEC170700029440 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		061FFDCF1FEC170700029440 /* DeflateCompressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateCompressionTests.swift; sourceTree = "<group>"; };
+		061FFDD01FEC170700029440 /* ZlibTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibTests.swift; sourceTree = "<group>"; };
+		061FFDD11FEC170700029440 /* ZipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipTests.swift; sourceTree = "<group>"; };
+		061FFDD21FEC170700029440 /* BZip2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2Tests.swift; sourceTree = "<group>"; };
+		061FFDD31FEC170700029440 /* TarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarTests.swift; sourceTree = "<group>"; };
+		061FFDD41FEC170700029440 /* GzipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipTests.swift; sourceTree = "<group>"; };
+		061FFDD51FEC170700029440 /* Results.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Results.md; sourceTree = "<group>"; };
+		061FFDD61FEC170700029440 /* XzTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XzTests.swift; sourceTree = "<group>"; };
+		061FFDD71FEC170700029440 /* SevenZipTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SevenZipTests.swift; sourceTree = "<group>"; };
+		061FFDD81FEC170700029440 /* LzmaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LzmaTests.swift; sourceTree = "<group>"; };
+		061FFDD91FEC170700029440 /* BZip2CompressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2CompressionTests.swift; sourceTree = "<group>"; };
+		061FFDDC1FEC170700029440 /* test3.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test3.answer; sourceTree = "<group>"; };
+		061FFDDD1FEC170700029440 /* test1.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test1.answer; sourceTree = "<group>"; };
+		061FFDDE1FEC170700029440 /* test9.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.answer; sourceTree = "<group>"; };
+		061FFDDF1FEC170700029440 /* test5.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test5.answer; sourceTree = "<group>"; };
+		061FFDE01FEC170700029440 /* test7.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.answer; sourceTree = "<group>"; };
+		061FFDE11FEC170700029440 /* test2.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.answer; sourceTree = "<group>"; };
+		061FFDE21FEC170700029440 /* test8.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.answer; sourceTree = "<group>"; };
+		061FFDE31FEC170700029440 /* test4.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test4.answer; sourceTree = "<group>"; };
+		061FFDE41FEC170700029440 /* test6.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6.answer; sourceTree = "<group>"; };
+		061FFDE61FEC170700029440 /* test5.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test5.gz; sourceTree = "<group>"; };
+		061FFDE71FEC170700029440 /* test1.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test1.gz; sourceTree = "<group>"; };
+		061FFDE81FEC170700029440 /* test4.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test4.gz; sourceTree = "<group>"; };
+		061FFDE91FEC170700029440 /* test3.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test3.gz; sourceTree = "<group>"; };
+		061FFDEA1FEC170700029440 /* test7.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test7.gz; sourceTree = "<group>"; };
+		061FFDEB1FEC170700029440 /* test6.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test6.gz; sourceTree = "<group>"; };
+		061FFDEC1FEC170700029440 /* test2.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test2.gz; sourceTree = "<group>"; };
+		061FFDED1FEC170700029440 /* test9.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test9.gz; sourceTree = "<group>"; };
+		061FFDEE1FEC170700029440 /* test_multi.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test_multi.gz; sourceTree = "<group>"; };
+		061FFDEF1FEC170700029440 /* test8.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test8.gz; sourceTree = "<group>"; };
+		061FFDF11FEC170700029440 /* test.zlib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.zlib; sourceTree = "<group>"; };
+		061FFDF21FEC170700029440 /* random_file.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = random_file.zlib; sourceTree = "<group>"; };
+		061FFDF41FEC170700029440 /* test1.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.xz; sourceTree = "<group>"; };
+		061FFDF51FEC170700029440 /* test5.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.xz; sourceTree = "<group>"; };
+		061FFDF61FEC170700029440 /* test4.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.xz; sourceTree = "<group>"; };
+		061FFDF71FEC170700029440 /* test_multi_pad.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi_pad.xz; sourceTree = "<group>"; };
+		061FFDF81FEC170700029440 /* test9.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.xz; sourceTree = "<group>"; };
+		061FFDF91FEC170700029440 /* test8.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.xz; sourceTree = "<group>"; };
+		061FFDFA1FEC170700029440 /* test_multi.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi.xz; sourceTree = "<group>"; };
+		061FFDFB1FEC170700029440 /* test7.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.xz; sourceTree = "<group>"; };
+		061FFDFC1FEC170700029440 /* test3.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.xz; sourceTree = "<group>"; };
+		061FFDFD1FEC170700029440 /* test2.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.xz; sourceTree = "<group>"; };
+		061FFDFE1FEC170700029440 /* test6.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6.xz; sourceTree = "<group>"; };
+		061FFDFF1FEC170700029440 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		061FFE011FEC170700029440 /* test_zip_bzip2.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_bzip2.zip; sourceTree = "<group>"; };
+		061FFE021FEC170700029440 /* test_empty_dir.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_empty_dir.zip; sourceTree = "<group>"; };
+		061FFE031FEC170700029440 /* test_win.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_win.zip; sourceTree = "<group>"; };
+		061FFE041FEC170700029440 /* test_unicode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_unicode.zip; sourceTree = "<group>"; };
+		061FFE051FEC170700029440 /* test_data_descriptor.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_data_descriptor.zip; sourceTree = "<group>"; };
+		061FFE061FEC170700029440 /* test_zip_lzma.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip_lzma.zip; sourceTree = "<group>"; };
+		061FFE071FEC170700029440 /* test_empty_file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_empty_file.zip; sourceTree = "<group>"; };
+		061FFE081FEC170700029440 /* test_empty_cont.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_empty_cont.zip; sourceTree = "<group>"; };
+		061FFE091FEC170700029440 /* SWCompressionSourceCode.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = SWCompressionSourceCode.zip; sourceTree = "<group>"; };
+		061FFE0A1FEC170700029440 /* test_zip64.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_zip64.zip; sourceTree = "<group>"; };
+		061FFE0B1FEC170700029440 /* .gitattributes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
+		061FFE0D1FEC170700029440 /* test.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test.tar; sourceTree = "<group>"; };
+		061FFE0F1FEC170700029440 /* test_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_pax.tar; sourceTree = "<group>"; };
+		061FFE101FEC170700029440 /* test_ustar.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_ustar.tar; sourceTree = "<group>"; };
+		061FFE111FEC170700029440 /* test_v7.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_v7.tar; sourceTree = "<group>"; };
+		061FFE121FEC170700029440 /* test_oldgnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_oldgnu.tar; sourceTree = "<group>"; };
+		061FFE131FEC170700029440 /* test_gnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_gnu.tar; sourceTree = "<group>"; };
+		061FFE141FEC170700029440 /* test_empty_dir.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_dir.tar; sourceTree = "<group>"; };
+		061FFE161FEC170700029440 /* long_test_gnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_gnu.tar; sourceTree = "<group>"; };
+		061FFE171FEC170700029440 /* long_test_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_pax.tar; sourceTree = "<group>"; };
+		061FFE181FEC170700029440 /* long_test_oldgnu.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = long_test_oldgnu.tar; sourceTree = "<group>"; };
+		061FFE191FEC170700029440 /* test_empty_cont.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_cont.tar; sourceTree = "<group>"; };
+		061FFE1A1FEC170700029440 /* SWCompressionSourceCode.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = SWCompressionSourceCode.tar; sourceTree = "<group>"; };
+		061FFE1B1FEC170700029440 /* test_empty_file.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_empty_file.tar; sourceTree = "<group>"; };
+		061FFE1C1FEC170700029440 /* full_test.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = full_test.tar; sourceTree = "<group>"; };
+		061FFE1D1FEC170700029440 /* test_win.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_win.tar; sourceTree = "<group>"; };
+		061FFE1F1FEC170700029440 /* test11.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test11.lzma; sourceTree = "<group>"; };
+		061FFE201FEC170700029440 /* test10.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test10.lzma; sourceTree = "<group>"; };
+		061FFE211FEC170700029440 /* test9.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.lzma; sourceTree = "<group>"; };
+		061FFE221FEC170700029440 /* test8.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.lzma; sourceTree = "<group>"; };
+		061FFE241FEC170700029440 /* test_empty_cont.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_cont.7z; sourceTree = "<group>"; };
+		061FFE251FEC170700029440 /* test_multi_blocks.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi_blocks.7z; sourceTree = "<group>"; };
+		061FFE261FEC170700029440 /* test_7z_copy.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_7z_copy.7z; sourceTree = "<group>"; };
+		061FFE271FEC170700029440 /* test_single_thread.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_single_thread.7z; sourceTree = "<group>"; };
+		061FFE281FEC170700029440 /* test_all_timestamps.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_all_timestamps.7z; sourceTree = "<group>"; };
+		061FFE291FEC170700029440 /* test_complicated_coding_scheme.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_complicated_coding_scheme.7z; sourceTree = "<group>"; };
+		061FFE2A1FEC170700029440 /* test_anti_file.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_anti_file.7z; sourceTree = "<group>"; };
+		061FFE2B1FEC170700029440 /* test_encrypted_header.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_encrypted_header.7z; sourceTree = "<group>"; };
+		061FFE2C1FEC170700029440 /* test3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.7z; sourceTree = "<group>"; };
+		061FFE2D1FEC170700029440 /* test2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.7z; sourceTree = "<group>"; };
+		061FFE2E1FEC170700029440 /* test_7z_bzip2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_7z_bzip2.7z; sourceTree = "<group>"; };
+		061FFE2F1FEC170700029440 /* test_7z_deflate.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_7z_deflate.7z; sourceTree = "<group>"; };
+		061FFE301FEC170700029440 /* test1.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.7z; sourceTree = "<group>"; };
+		061FFE311FEC170700029440 /* test_empty_file.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_file.7z; sourceTree = "<group>"; };
+		061FFE321FEC170700029440 /* test_empty_dir.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty_dir.7z; sourceTree = "<group>"; };
+		061FFE331FEC170700029440 /* test_win.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_win.7z; sourceTree = "<group>"; };
+		061FFE341FEC170700029440 /* SWCompressionSourceCode.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = SWCompressionSourceCode.7z; sourceTree = "<group>"; };
+		061FFE361FEC170700029440 /* test5.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.bz2; sourceTree = "<group>"; };
+		061FFE371FEC170700029440 /* test4.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.bz2; sourceTree = "<group>"; };
+		061FFE381FEC170700029440 /* test6.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6.bz2; sourceTree = "<group>"; };
+		061FFE391FEC170700029440 /* test7.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.bz2; sourceTree = "<group>"; };
+		061FFE3A1FEC170700029440 /* test3.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.bz2; sourceTree = "<group>"; };
+		061FFE3B1FEC170700029440 /* test2.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.bz2; sourceTree = "<group>"; };
+		061FFE3C1FEC170700029440 /* test1.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.bz2; sourceTree = "<group>"; };
+		061FFE3D1FEC170700029440 /* test9.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.bz2; sourceTree = "<group>"; };
+		061FFE3E1FEC170700029440 /* test8.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.bz2; sourceTree = "<group>"; };
+		061FFE3F1FEC170700029440 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		061FFDBE1FEC163A00029440 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				061FFDCB1FEC165700029440 /* SWCompression.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		061FFDB61FEC161900029440 = {
+			isa = PBXGroup;
+			children = (
+				061FFDCD1FEC170700029440 /* Tests */,
+				061FFDC21FEC163A00029440 /* Products */,
+				061FFDCA1FEC165700029440 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		061FFDC21FEC163A00029440 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDC11FEC163A00029440 /* TestSWCompression.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		061FFDCA1FEC165700029440 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDCC1FEC165700029440 /* SWCompression.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		061FFDCD1FEC170700029440 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDCE1FEC170700029440 /* Constants.swift */,
+				061FFDCF1FEC170700029440 /* DeflateCompressionTests.swift */,
+				061FFDD01FEC170700029440 /* ZlibTests.swift */,
+				061FFDD11FEC170700029440 /* ZipTests.swift */,
+				061FFDD21FEC170700029440 /* BZip2Tests.swift */,
+				061FFDD31FEC170700029440 /* TarTests.swift */,
+				061FFDD41FEC170700029440 /* GzipTests.swift */,
+				061FFDD51FEC170700029440 /* Results.md */,
+				061FFDD61FEC170700029440 /* XzTests.swift */,
+				061FFDD71FEC170700029440 /* SevenZipTests.swift */,
+				061FFDD81FEC170700029440 /* LzmaTests.swift */,
+				061FFDD91FEC170700029440 /* BZip2CompressionTests.swift */,
+				061FFDDA1FEC170700029440 /* Test Files */,
+				061FFE3F1FEC170700029440 /* Info.plist */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		061FFDDA1FEC170700029440 /* Test Files */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDDB1FEC170700029440 /* Answers */,
+				061FFDE51FEC170700029440 /* GZip */,
+				061FFDF01FEC170700029440 /* Zlib */,
+				061FFDF31FEC170700029440 /* XZ */,
+				061FFDFF1FEC170700029440 /* README.md */,
+				061FFE001FEC170700029440 /* ZIP */,
+				061FFE0B1FEC170700029440 /* .gitattributes */,
+				061FFE0C1FEC170700029440 /* TAR */,
+				061FFE1E1FEC170700029440 /* LZMA */,
+				061FFE231FEC170700029440 /* 7z */,
+				061FFE351FEC170700029440 /* BZip2 */,
+			);
+			path = "Test Files";
+			sourceTree = "<group>";
+		};
+		061FFDDB1FEC170700029440 /* Answers */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDDC1FEC170700029440 /* test3.answer */,
+				061FFDDD1FEC170700029440 /* test1.answer */,
+				061FFDDE1FEC170700029440 /* test9.answer */,
+				061FFDDF1FEC170700029440 /* test5.answer */,
+				061FFDE01FEC170700029440 /* test7.answer */,
+				061FFDE11FEC170700029440 /* test2.answer */,
+				061FFDE21FEC170700029440 /* test8.answer */,
+				061FFDE31FEC170700029440 /* test4.answer */,
+				061FFDE41FEC170700029440 /* test6.answer */,
+			);
+			path = Answers;
+			sourceTree = "<group>";
+		};
+		061FFDE51FEC170700029440 /* GZip */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDE61FEC170700029440 /* test5.gz */,
+				061FFDE71FEC170700029440 /* test1.gz */,
+				061FFDE81FEC170700029440 /* test4.gz */,
+				061FFDE91FEC170700029440 /* test3.gz */,
+				061FFDEA1FEC170700029440 /* test7.gz */,
+				061FFDEB1FEC170700029440 /* test6.gz */,
+				061FFDEC1FEC170700029440 /* test2.gz */,
+				061FFDED1FEC170700029440 /* test9.gz */,
+				061FFDEE1FEC170700029440 /* test_multi.gz */,
+				061FFDEF1FEC170700029440 /* test8.gz */,
+			);
+			path = GZip;
+			sourceTree = "<group>";
+		};
+		061FFDF01FEC170700029440 /* Zlib */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDF11FEC170700029440 /* test.zlib */,
+				061FFDF21FEC170700029440 /* random_file.zlib */,
+			);
+			path = Zlib;
+			sourceTree = "<group>";
+		};
+		061FFDF31FEC170700029440 /* XZ */ = {
+			isa = PBXGroup;
+			children = (
+				061FFDF41FEC170700029440 /* test1.xz */,
+				061FFDF51FEC170700029440 /* test5.xz */,
+				061FFDF61FEC170700029440 /* test4.xz */,
+				061FFDF71FEC170700029440 /* test_multi_pad.xz */,
+				061FFDF81FEC170700029440 /* test9.xz */,
+				061FFDF91FEC170700029440 /* test8.xz */,
+				061FFDFA1FEC170700029440 /* test_multi.xz */,
+				061FFDFB1FEC170700029440 /* test7.xz */,
+				061FFDFC1FEC170700029440 /* test3.xz */,
+				061FFDFD1FEC170700029440 /* test2.xz */,
+				061FFDFE1FEC170700029440 /* test6.xz */,
+			);
+			path = XZ;
+			sourceTree = "<group>";
+		};
+		061FFE001FEC170700029440 /* ZIP */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE011FEC170700029440 /* test_zip_bzip2.zip */,
+				061FFE021FEC170700029440 /* test_empty_dir.zip */,
+				061FFE031FEC170700029440 /* test_win.zip */,
+				061FFE041FEC170700029440 /* test_unicode.zip */,
+				061FFE051FEC170700029440 /* test_data_descriptor.zip */,
+				061FFE061FEC170700029440 /* test_zip_lzma.zip */,
+				061FFE071FEC170700029440 /* test_empty_file.zip */,
+				061FFE081FEC170700029440 /* test_empty_cont.zip */,
+				061FFE091FEC170700029440 /* SWCompressionSourceCode.zip */,
+				061FFE0A1FEC170700029440 /* test_zip64.zip */,
+			);
+			path = ZIP;
+			sourceTree = "<group>";
+		};
+		061FFE0C1FEC170700029440 /* TAR */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE0D1FEC170700029440 /* test.tar */,
+				061FFE0E1FEC170700029440 /* Formats */,
+				061FFE141FEC170700029440 /* test_empty_dir.tar */,
+				061FFE151FEC170700029440 /* Long names */,
+				061FFE191FEC170700029440 /* test_empty_cont.tar */,
+				061FFE1A1FEC170700029440 /* SWCompressionSourceCode.tar */,
+				061FFE1B1FEC170700029440 /* test_empty_file.tar */,
+				061FFE1C1FEC170700029440 /* full_test.tar */,
+				061FFE1D1FEC170700029440 /* test_win.tar */,
+			);
+			path = TAR;
+			sourceTree = "<group>";
+		};
+		061FFE0E1FEC170700029440 /* Formats */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE0F1FEC170700029440 /* test_pax.tar */,
+				061FFE101FEC170700029440 /* test_ustar.tar */,
+				061FFE111FEC170700029440 /* test_v7.tar */,
+				061FFE121FEC170700029440 /* test_oldgnu.tar */,
+				061FFE131FEC170700029440 /* test_gnu.tar */,
+			);
+			path = Formats;
+			sourceTree = "<group>";
+		};
+		061FFE151FEC170700029440 /* Long names */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE161FEC170700029440 /* long_test_gnu.tar */,
+				061FFE171FEC170700029440 /* long_test_pax.tar */,
+				061FFE181FEC170700029440 /* long_test_oldgnu.tar */,
+			);
+			path = "Long names";
+			sourceTree = "<group>";
+		};
+		061FFE1E1FEC170700029440 /* LZMA */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE1F1FEC170700029440 /* test11.lzma */,
+				061FFE201FEC170700029440 /* test10.lzma */,
+				061FFE211FEC170700029440 /* test9.lzma */,
+				061FFE221FEC170700029440 /* test8.lzma */,
+			);
+			path = LZMA;
+			sourceTree = "<group>";
+		};
+		061FFE231FEC170700029440 /* 7z */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE241FEC170700029440 /* test_empty_cont.7z */,
+				061FFE251FEC170700029440 /* test_multi_blocks.7z */,
+				061FFE261FEC170700029440 /* test_7z_copy.7z */,
+				061FFE271FEC170700029440 /* test_single_thread.7z */,
+				061FFE281FEC170700029440 /* test_all_timestamps.7z */,
+				061FFE291FEC170700029440 /* test_complicated_coding_scheme.7z */,
+				061FFE2A1FEC170700029440 /* test_anti_file.7z */,
+				061FFE2B1FEC170700029440 /* test_encrypted_header.7z */,
+				061FFE2C1FEC170700029440 /* test3.7z */,
+				061FFE2D1FEC170700029440 /* test2.7z */,
+				061FFE2E1FEC170700029440 /* test_7z_bzip2.7z */,
+				061FFE2F1FEC170700029440 /* test_7z_deflate.7z */,
+				061FFE301FEC170700029440 /* test1.7z */,
+				061FFE311FEC170700029440 /* test_empty_file.7z */,
+				061FFE321FEC170700029440 /* test_empty_dir.7z */,
+				061FFE331FEC170700029440 /* test_win.7z */,
+				061FFE341FEC170700029440 /* SWCompressionSourceCode.7z */,
+			);
+			path = 7z;
+			sourceTree = "<group>";
+		};
+		061FFE351FEC170700029440 /* BZip2 */ = {
+			isa = PBXGroup;
+			children = (
+				061FFE361FEC170700029440 /* test5.bz2 */,
+				061FFE371FEC170700029440 /* test4.bz2 */,
+				061FFE381FEC170700029440 /* test6.bz2 */,
+				061FFE391FEC170700029440 /* test7.bz2 */,
+				061FFE3A1FEC170700029440 /* test3.bz2 */,
+				061FFE3B1FEC170700029440 /* test2.bz2 */,
+				061FFE3C1FEC170700029440 /* test1.bz2 */,
+				061FFE3D1FEC170700029440 /* test9.bz2 */,
+				061FFE3E1FEC170700029440 /* test8.bz2 */,
+			);
+			path = BZip2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		061FFDC01FEC163A00029440 /* TestSWCompression */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 061FFDC71FEC163A00029440 /* Build configuration list for PBXNativeTarget "TestSWCompression" */;
+			buildPhases = (
+				061FFDBD1FEC163A00029440 /* Sources */,
+				061FFDBE1FEC163A00029440 /* Frameworks */,
+				061FFDBF1FEC163A00029440 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestSWCompression;
+			productName = TestSWCompression;
+			productReference = 061FFDC11FEC163A00029440 /* TestSWCompression.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		061FFDB71FEC161900029440 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					061FFDC01FEC163A00029440 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 061FFDBA1FEC161900029440 /* Build configuration list for PBXProject "TestSWCompression" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 061FFDB61FEC161900029440;
+			productRefGroup = 061FFDC21FEC163A00029440 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				061FFDC01FEC163A00029440 /* TestSWCompression */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		061FFDBF1FEC163A00029440 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				061FFE561FEC170700029440 /* test1.gz in Resources */,
+				061FFE991FEC170700029440 /* test_empty_dir.7z in Resources */,
+				061FFE4D1FEC170700029440 /* test1.answer in Resources */,
+				061FFE7B1FEC170700029440 /* test_v7.tar in Resources */,
+				061FFE5B1FEC170700029440 /* test2.gz in Resources */,
+				061FFE891FEC170700029440 /* test9.lzma in Resources */,
+				061FFE931FEC170700029440 /* test3.7z in Resources */,
+				061FFE781FEC170700029440 /* test.tar in Resources */,
+				061FFE7D1FEC170700029440 /* test_gnu.tar in Resources */,
+				061FFE611FEC170700029440 /* test1.xz in Resources */,
+				061FFE8C1FEC170700029440 /* test_multi_blocks.7z in Resources */,
+				061FFE9E1FEC170700029440 /* test6.bz2 in Resources */,
+				061FFE9B1FEC170700029440 /* SWCompressionSourceCode.7z in Resources */,
+				061FFE5E1FEC170700029440 /* test8.gz in Resources */,
+				061FFE6F1FEC170700029440 /* test_win.zip in Resources */,
+				061FFE681FEC170700029440 /* test7.xz in Resources */,
+				061FFE8D1FEC170700029440 /* test_7z_copy.7z in Resources */,
+				061FFE9C1FEC170700029440 /* test5.bz2 in Resources */,
+				061FFE981FEC170700029440 /* test_empty_file.7z in Resources */,
+				061FFE721FEC170700029440 /* test_zip_lzma.zip in Resources */,
+				061FFEA11FEC170700029440 /* test2.bz2 in Resources */,
+				061FFE9F1FEC170700029440 /* test7.bz2 in Resources */,
+				061FFE881FEC170700029440 /* test10.lzma in Resources */,
+				061FFE691FEC170700029440 /* test3.xz in Resources */,
+				061FFE861FEC170700029440 /* test_win.tar in Resources */,
+				061FFE8F1FEC170700029440 /* test_all_timestamps.7z in Resources */,
+				061FFE521FEC170700029440 /* test8.answer in Resources */,
+				061FFE511FEC170700029440 /* test2.answer in Resources */,
+				061FFE811FEC170700029440 /* long_test_oldgnu.tar in Resources */,
+				061FFE821FEC170700029440 /* test_empty_cont.tar in Resources */,
+				061FFE541FEC170700029440 /* test6.answer in Resources */,
+				061FFE5F1FEC170700029440 /* test.zlib in Resources */,
+				061FFE941FEC170700029440 /* test2.7z in Resources */,
+				061FFE4C1FEC170700029440 /* test3.answer in Resources */,
+				061FFE551FEC170700029440 /* test5.gz in Resources */,
+				061FFE631FEC170700029440 /* test4.xz in Resources */,
+				061FFE6E1FEC170700029440 /* test_empty_dir.zip in Resources */,
+				061FFE7F1FEC170700029440 /* long_test_gnu.tar in Resources */,
+				061FFE701FEC170700029440 /* test_unicode.zip in Resources */,
+				061FFE761FEC170700029440 /* test_zip64.zip in Resources */,
+				061FFEA31FEC170700029440 /* test9.bz2 in Resources */,
+				061FFE571FEC170700029440 /* test4.gz in Resources */,
+				061FFE5D1FEC170700029440 /* test_multi.gz in Resources */,
+				061FFE641FEC170700029440 /* test_multi_pad.xz in Resources */,
+				061FFE921FEC170700029440 /* test_encrypted_header.7z in Resources */,
+				061FFE7E1FEC170700029440 /* test_empty_dir.tar in Resources */,
+				061FFE971FEC170700029440 /* test1.7z in Resources */,
+				061FFE9D1FEC170700029440 /* test4.bz2 in Resources */,
+				061FFE8E1FEC170700029440 /* test_single_thread.7z in Resources */,
+				061FFE961FEC170700029440 /* test_7z_deflate.7z in Resources */,
+				061FFE531FEC170700029440 /* test4.answer in Resources */,
+				061FFE751FEC170700029440 /* SWCompressionSourceCode.zip in Resources */,
+				061FFE8A1FEC170700029440 /* test8.lzma in Resources */,
+				061FFE7C1FEC170700029440 /* test_oldgnu.tar in Resources */,
+				061FFE4E1FEC170700029440 /* test9.answer in Resources */,
+				061FFE4F1FEC170700029440 /* test5.answer in Resources */,
+				061FFE591FEC170700029440 /* test7.gz in Resources */,
+				061FFE951FEC170700029440 /* test_7z_bzip2.7z in Resources */,
+				061FFE801FEC170700029440 /* long_test_pax.tar in Resources */,
+				061FFE661FEC170700029440 /* test8.xz in Resources */,
+				061FFE5C1FEC170700029440 /* test9.gz in Resources */,
+				061FFEA21FEC170700029440 /* test1.bz2 in Resources */,
+				061FFE5A1FEC170700029440 /* test6.gz in Resources */,
+				061FFE7A1FEC170700029440 /* test_ustar.tar in Resources */,
+				061FFE871FEC170700029440 /* test11.lzma in Resources */,
+				061FFE6D1FEC170700029440 /* test_zip_bzip2.zip in Resources */,
+				061FFE731FEC170700029440 /* test_empty_file.zip in Resources */,
+				061FFE601FEC170700029440 /* random_file.zlib in Resources */,
+				061FFE831FEC170700029440 /* SWCompressionSourceCode.tar in Resources */,
+				061FFE6A1FEC170700029440 /* test2.xz in Resources */,
+				061FFE621FEC170700029440 /* test5.xz in Resources */,
+				061FFE901FEC170700029440 /* test_complicated_coding_scheme.7z in Resources */,
+				061FFE911FEC170700029440 /* test_anti_file.7z in Resources */,
+				061FFE8B1FEC170700029440 /* test_empty_cont.7z in Resources */,
+				061FFEA01FEC170700029440 /* test3.bz2 in Resources */,
+				061FFE741FEC170700029440 /* test_empty_cont.zip in Resources */,
+				061FFE6B1FEC170700029440 /* test6.xz in Resources */,
+				061FFE9A1FEC170700029440 /* test_win.7z in Resources */,
+				061FFE841FEC170700029440 /* test_empty_file.tar in Resources */,
+				061FFE711FEC170700029440 /* test_data_descriptor.zip in Resources */,
+				061FFE851FEC170700029440 /* full_test.tar in Resources */,
+				061FFE581FEC170700029440 /* test3.gz in Resources */,
+				061FFE791FEC170700029440 /* test_pax.tar in Resources */,
+				061FFE671FEC170700029440 /* test_multi.xz in Resources */,
+				061FFE651FEC170700029440 /* test9.xz in Resources */,
+				061FFE501FEC170700029440 /* test7.answer in Resources */,
+				061FFEA41FEC170700029440 /* test8.bz2 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		061FFDBD1FEC163A00029440 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				061FFE421FEC170700029440 /* ZlibTests.swift in Sources */,
+				061FFE411FEC170700029440 /* DeflateCompressionTests.swift in Sources */,
+				061FFE441FEC170700029440 /* BZip2Tests.swift in Sources */,
+				061FFE451FEC170700029440 /* TarTests.swift in Sources */,
+				061FFE461FEC170700029440 /* GzipTests.swift in Sources */,
+				061FFE4A1FEC170700029440 /* LzmaTests.swift in Sources */,
+				061FFE481FEC170700029440 /* XzTests.swift in Sources */,
+				061FFE4B1FEC170700029440 /* BZip2CompressionTests.swift in Sources */,
+				061FFE401FEC170700029440 /* Constants.swift in Sources */,
+				061FFE491FEC170700029440 /* SevenZipTests.swift in Sources */,
+				061FFE431FEC170700029440 /* ZipTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		061FFDBB1FEC161900029440 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		061FFDBC1FEC161900029440 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		061FFDC81FEC163A00029440 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		061FFDC91FEC163A00029440 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9KL2W72SQF;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		061FFDBA1FEC161900029440 /* Build configuration list for PBXProject "TestSWCompression" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				061FFDBB1FEC161900029440 /* Debug */,
+				061FFDBC1FEC161900029440 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		061FFDC71FEC163A00029440 /* Build configuration list for PBXNativeTarget "TestSWCompression" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				061FFDC81FEC163A00029440 /* Debug */,
+				061FFDC91FEC163A00029440 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 061FFDB71FEC161900029440 /* Project object */;
+}
