@@ -39,6 +39,8 @@ matrix:
         local_dir: docs
         on:
           tags: true
+          # Don't upload documentation if it is a test release.
+          condition: $(git describe) != *"test"*
     - language: generic
       os: linux
       sudo: required
