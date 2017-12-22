@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:TestSWCompression.xcodeproj">
+      location = "group:SWCompression.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SWCompression.xcodeproj">
+      location = "group:TestSWCompression.xcodeproj">
    </FileRef>
 </Workspace>
