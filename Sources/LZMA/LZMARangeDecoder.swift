@@ -7,7 +7,7 @@ import Foundation
 
 class LZMARangeDecoder {
 
-    private var pointerData: DataWithPointer
+    private var pointerData: ByteReader
 
     private var range: UInt32 = 0xFFFFFFFF
     private var code: UInt32 = 0
@@ -17,7 +17,7 @@ class LZMARangeDecoder {
         return self.code == 0
     }
 
-    init?(_ pointerData: DataWithPointer) {
+    init?(_ pointerData: ByteReader) {
         self.pointerData = pointerData
 
         let byte = self.pointerData.byte()
@@ -30,7 +30,7 @@ class LZMARangeDecoder {
     }
 
     init() {
-        self.pointerData = DataWithPointer(data: Data())
+        self.pointerData = ByteReader(data: Data())
         self.range = 0xFFFFFFFF
         self.code = 0
         self.isCorrupted = false

@@ -50,7 +50,7 @@ public class ZipContainer: Container {
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
         let fileData: Data
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
         pointerData.index = info.localHeader.dataOffset
         switch info.compressionMethod {
         case .copy:
@@ -128,7 +128,7 @@ public class ZipContainer: Container {
      */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
         var entries = [ZipEntryInfo]()
 
         pointerData.index = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.

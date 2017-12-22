@@ -58,7 +58,7 @@ public class TarContainer: Container {
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
 
         var entries = [TarEntryInfo]()
 

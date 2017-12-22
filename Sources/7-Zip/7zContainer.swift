@@ -51,9 +51,9 @@ public class SevenZipContainer: Container {
         var folderCRC = CheckSums.crc32(Data())
 
         /// `DataWithPointer` object with unpacked stream's data.
-        var rawFileData = DataWithPointer(data: Data())
+        var rawFileData = ByteReader(data: Data())
 
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
 
         for fileIndex in 0..<files.count {
             let file = files[fileIndex]
@@ -114,7 +114,7 @@ public class SevenZipContainer: Container {
 
                     // One stream can contain data of several files,
                     //  so we need to decode the stream first, then split it into files.
-                    rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
+                    rawFileData = ByteReader(data: try folder.unpack(data: streamData))
                 }
 
                 // `SevenZipSubstreamInfo` object must contain information about file's size

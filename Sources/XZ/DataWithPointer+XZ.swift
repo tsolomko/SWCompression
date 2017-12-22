@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension DataWithPointer {
+extension ByteReader {
 
     func multiByteDecode() throws -> Int {
         var i = 1

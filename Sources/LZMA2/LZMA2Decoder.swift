@@ -7,14 +7,14 @@ import Foundation
 
 class LZMA2Decoder {
 
-    private let pointerData: DataWithPointer
+    private let pointerData: ByteReader
     private let decoder: LZMADecoder
 
     var out: [UInt8] {
         return self.decoder.out
     }
 
-    init(_ pointerData: DataWithPointer) {
+    init(_ pointerData: ByteReader) {
         self.pointerData = pointerData
         self.decoder = LZMADecoder(pointerData)
     }

@@ -9,7 +9,7 @@ import Foundation
     import CoreFoundation
 #endif
 
-extension DataWithPointer {
+extension ByteReader {
 
     func getZipStringField(_ length: Int, _ useUtf8: Bool) -> String? {
         guard length > 0

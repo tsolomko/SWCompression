@@ -14,7 +14,7 @@ struct XZBlock {
         return data.count
     }
 
-    init(_ blockHeaderSize: UInt8, _ pointerData: DataWithPointer, _ checkSize: Int) throws {
+    init(_ blockHeaderSize: UInt8, _ pointerData: ByteReader, _ checkSize: Int) throws {
         let blockHeaderStartIndex = pointerData.index - 1
         let realBlockHeaderSize = (blockHeaderSize.toInt() + 1) * 4
 
@@ -33,7 +33,7 @@ struct XZBlock {
         /// Should match the size of data after decompression.
         let uncompressedSize = blockFlags & 0x80 != 0 ? try pointerData.multiByteDecode() : -1
 
-        var filters: [(DataWithPointer) throws -> Data] = []
+        var filters: [(ByteReader) throws -> Data] = []
         for _ in 0..<filtersCount {
             let filterID = try pointerData.multiByteDecode()
             guard UInt64(filterID) < 0x4000000000000000
@@ -44,7 +44,7 @@ struct XZBlock {
                 _ = try pointerData.multiByteDecode()
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = pointerData.byte()
-                let closure = { (dwp: DataWithPointer) -> Data in
+                let closure = { (dwp: ByteReader) -> Data in
                     let decoder = LZMA2Decoder(pointerData)
                     try decoder.setDictionarySize(filterPropeties)
 
@@ -73,7 +73,7 @@ struct XZBlock {
         var out = pointerData
         let compressedDataStart = pointerData.index
         for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
-            out = DataWithPointer(data: try filters[filterIndex.toInt()](out))
+            out = ByteReader(data: try filters[filterIndex.toInt()](out))
         }
 
         guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart,

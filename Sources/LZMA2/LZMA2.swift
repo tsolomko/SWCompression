@@ -20,12 +20,12 @@ public class LZMA2: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
 
         return Data(bytes: try decompress(pointerData))
     }
 
-    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
+    static func decompress(_ pointerData: ByteReader) throws -> [UInt8] {
         let decoder = LZMA2Decoder(pointerData)
         try decoder.setDictionarySize(pointerData.byte())
         try decoder.decode()

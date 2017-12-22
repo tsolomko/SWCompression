@@ -33,7 +33,7 @@ struct ZipLocalHeader {
 
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int) throws {
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
         pointerData.index = offset
 
         // Check signature.

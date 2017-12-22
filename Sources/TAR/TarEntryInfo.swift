@@ -83,7 +83,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let blockStartIndex: Int
 
-    init(_ pointerData: DataWithPointer, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
+    init(_ pointerData: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         blockStartIndex = pointerData.index
         var linkName: String

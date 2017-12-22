@@ -5,7 +5,7 @@
 
 import Foundation
 
-class BitReader: DataWithPointer {
+class BitReader: ByteReader {
 
     enum BitOrder {
         case straight

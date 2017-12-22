@@ -7,7 +7,7 @@ import Foundation
 
 class LZMADecoder {
 
-    private let pointerData: DataWithPointer
+    private let pointerData: ByteReader
 
     var dictionarySize = 0 {
         didSet {
@@ -65,7 +65,7 @@ class LZMADecoder {
     /// Used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state = 0
 
-    init(_ pointerData: DataWithPointer) {
+    init(_ pointerData: ByteReader) {
         self.pointerData = pointerData
     }
 

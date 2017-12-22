@@ -20,11 +20,11 @@ public class LZMA: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let pointerData = ByteReader(data: data)
         return try decompress(pointerData)
     }
 
-    static func decompress(_ pointerData: DataWithPointer, uncompressedSize: UInt64? = nil) throws -> Data {
+    static func decompress(_ pointerData: ByteReader, uncompressedSize: UInt64? = nil) throws -> Data {
         let decoder = LZMADecoder(pointerData)
 
         try decoder.setProperties(pointerData.byte())

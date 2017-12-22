@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension DataWithPointer {
+extension ByteReader {
 
     private func buffer(_ cutoff: Int, endingWith ends: UInt8...) -> [UInt8] {
         let startIndex = index

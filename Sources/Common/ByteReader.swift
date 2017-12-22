@@ -5,7 +5,7 @@
 
 import Foundation
 
-class DataWithPointer {
+class ByteReader {
 
     let size: Int
     let data: Data
