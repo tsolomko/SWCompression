@@ -23,7 +23,7 @@ matrix:
       - carthage archive SWCompression
       - jazzy
       script:
-      - xcodebuild clean build test -project SWCompression.xcodeproj -scheme SWCompression
+      - xcodebuild clean build test -workspace SWCompression.xcworkspace -scheme TestSWCompression
       deploy:
       - provider: releases
         skip_cleanup: true
