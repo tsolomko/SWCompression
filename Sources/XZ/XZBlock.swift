@@ -15,7 +15,7 @@ struct XZBlock {
     }
 
     init(_ blockHeaderSize: UInt8, _ pointerData: ByteReader, _ checkSize: Int) throws {
-        let blockHeaderStartIndex = pointerData.index - 1
+        let blockHeaderStartIndex = pointerData.offset - 1
         let realBlockHeaderSize = (blockHeaderSize.toInt() + 1) * 4
 
         let blockFlags = pointerData.byte()
@@ -58,29 +58,29 @@ struct XZBlock {
         }
 
         // We need to take into account 4 bytes for CRC32 so thats why "-4".
-        while pointerData.index - blockHeaderStartIndex < realBlockHeaderSize - 4 {
+        while pointerData.offset - blockHeaderStartIndex < realBlockHeaderSize - 4 {
             let byte = pointerData.byte()
             guard byte == 0x00
                 else { throw XZError.wrongPadding }
         }
 
         let blockHeaderCRC = pointerData.uint32()
-        pointerData.index = blockHeaderStartIndex
+        pointerData.offset = blockHeaderStartIndex
         guard CheckSums.crc32(pointerData.bytes(count: realBlockHeaderSize - 4)) == blockHeaderCRC
             else { throw XZError.wrongInfoCRC }
-        pointerData.index += 4
+        pointerData.offset += 4
 
         var out = pointerData
-        let compressedDataStart = pointerData.index
+        let compressedDataStart = pointerData.offset
         for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
             out = ByteReader(data: try filters[filterIndex.toInt()](out))
         }
 
-        guard compressedSize < 0 || compressedSize == pointerData.index - compressedDataStart,
+        guard compressedSize < 0 || compressedSize == pointerData.offset - compressedDataStart,
             uncompressedSize < 0 || uncompressedSize == out.data.count
             else { throw XZError.wrongDataSize }
 
-        let unpaddedSize = pointerData.index - blockHeaderStartIndex
+        let unpaddedSize = pointerData.offset - blockHeaderStartIndex
 
         if unpaddedSize % 4 != 0 {
             let paddingSize = 4 - unpaddedSize % 4

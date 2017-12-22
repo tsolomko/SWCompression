@@ -42,19 +42,19 @@ class BitReader: ByteReader {
 
         var array: [UInt8] = Array(repeating: 0, count: count)
         for i in 0..<count {
-            array[i] = self.data[self.index] & self.bitMask > 0 ? 1 : 0
+            array[i] = self.data[self.offset] & self.bitMask > 0 ? 1 : 0
 
             switch self.bitOrder {
             case .reversed:
                 if self.bitMask == 128 {
-                    self.index += 1
+                    self.offset += 1
                     self.bitMask = 1
                 } else {
                     self.bitMask <<= 1
                 }
             case .straight:
                 if self.bitMask == 1 {
-                    self.index += 1
+                    self.offset += 1
                     self.bitMask = 128
                 } else {
                     self.bitMask >>= 1
@@ -80,20 +80,20 @@ class BitReader: ByteReader {
                 power = i
             }
 
-            let bit = self.data[self.index] & self.bitMask > 0 ? 1 : 0
+            let bit = self.data[self.offset] & self.bitMask > 0 ? 1 : 0
             result += (1 << power) * bit
 
             switch self.bitOrder {
             case .reversed:
                 if self.bitMask == 128 {
-                    self.index += 1
+                    self.offset += 1
                     self.bitMask = 1
                 } else {
                     self.bitMask <<= 1
                 }
             case .straight:
                 if self.bitMask == 1 {
-                    self.index += 1
+                    self.offset += 1
                     self.bitMask = 128
                 } else {
                     self.bitMask >>= 1
@@ -105,19 +105,19 @@ class BitReader: ByteReader {
     }
 
     func bit() -> Int {
-        let bit = self.data[self.index] & self.bitMask > 0 ? 1 : 0
+        let bit = self.data[self.offset] & self.bitMask > 0 ? 1 : 0
 
         switch self.bitOrder {
         case .reversed:
             if self.bitMask == 128 {
-                self.index += 1
+                self.offset += 1
                 self.bitMask = 1
             } else {
                 self.bitMask <<= 1
             }
         case .straight:
             if self.bitMask == 1 {
-                self.index += 1
+                self.offset += 1
                 self.bitMask = 128
             } else {
                 self.bitMask >>= 1
@@ -140,7 +140,7 @@ class BitReader: ByteReader {
             }
             self.bitMask = 128
         }
-        self.index += 1
+        self.offset += 1
     }
 
     override func byte() -> UInt8 {

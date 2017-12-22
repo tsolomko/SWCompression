@@ -85,7 +85,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     init(_ pointerData: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
-        blockStartIndex = pointerData.index
+        blockStartIndex = pointerData.offset
         var linkName: String
         var name: String
 
@@ -144,13 +144,13 @@ public struct TarEntryInfo: ContainerEntryInfo {
         guard let checksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
             else { throw TarError.wrongField }
 
-        let currentIndex = pointerData.index
-        pointerData.index = blockStartIndex
+        let currentIndex = pointerData.offset
+        pointerData.offset = blockStartIndex
         var headerDataForChecksum = pointerData.bytes(count: 512)
         for i in 148..<156 {
             headerDataForChecksum[i] = 0x20
         }
-        pointerData.index = currentIndex
+        pointerData.offset = currentIndex
 
         // Some implementations treat bytes as signed integers, but some don't.
         // So we check both cases, coincedence in one of them will pass the checksum test.
@@ -184,14 +184,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
             if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
                 self.ownerUserName = uname
-                pointerData.index += 32
+                pointerData.offset += 32
             } else {
                 ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
             }
 
             if let gname = local?.entries["gname"] ?? global?.entries["gname"] {
                 ownerGroupName = gname
-                pointerData.index += 32
+                pointerData.offset += 32
             } else {
                 ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
             }

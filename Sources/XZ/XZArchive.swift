@@ -120,7 +120,7 @@ public class XZArchive: Archive {
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
                                      _ pointerData: ByteReader) throws -> Int {
-        let indexStartIndex = pointerData.index - 1
+        let indexStartIndex = pointerData.offset - 1
         let recordsCount = try pointerData.multiByteDecode()
         guard recordsCount == blockInfos.count
             else { throw XZError.wrongField }
@@ -135,7 +135,7 @@ public class XZArchive: Archive {
                 else { throw XZError.wrongDataSize }
         }
 
-        var indexSize = pointerData.index - indexStartIndex
+        var indexSize = pointerData.offset - indexStartIndex
         if indexSize % 4 != 0 {
             let paddingSize = 4 - indexSize % 4
             for _ in 0..<paddingSize {
@@ -147,10 +147,10 @@ public class XZArchive: Archive {
         }
 
         let indexCRC = pointerData.uint32()
-        pointerData.index = indexStartIndex
+        pointerData.offset = indexStartIndex
         guard CheckSums.crc32(pointerData.bytes(count: indexSize)) == indexCRC
             else { throw XZError.wrongInfoCRC }
-        pointerData.index += 4
+        pointerData.offset += 4
 
         return indexSize + 4
     }
@@ -162,7 +162,7 @@ public class XZArchive: Archive {
         let backwardSize = (pointerData.uint32().toInt() + 1) * 4
         let streamFooterFlags = pointerData.uint16().toInt()
 
-        pointerData.index -= 6
+        pointerData.offset -= 6
         guard CheckSums.crc32(pointerData.bytes(count: 6)) == footerCRC
             else { throw XZError.wrongInfoCRC }
 
@@ -204,7 +204,7 @@ public class XZArchive: Archive {
             }
             paddingBytes += 1
         }
-        pointerData.index -= 1
+        pointerData.offset -= 1
     }
 
 }

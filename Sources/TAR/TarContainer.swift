@@ -68,7 +68,7 @@ public class TarContainer: Container {
         var longName: String?
 
         // Container ends with two zero-filled records.
-        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {
+        while pointerData.data[pointerData.offset..<pointerData.offset + 1024] != Data(count: 1024) {
             let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
 
@@ -77,28 +77,28 @@ public class TarContainer: Container {
                 let dataEndIndex = dataStartIndex + info.size!
 
                 lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+                pointerData.offset = dataEndIndex - info.size! + info.size!.roundTo512()
             } else if info.isLocalExtendedHeader {
                 let dataStartIndex = info.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + info.size!
 
                 lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+                pointerData.offset = dataEndIndex - info.size! + info.size!.roundTo512()
             } else if info.isLongLinkName {
                 let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
+                pointerData.offset = dataStartIndex
 
                 longLinkName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
+                pointerData.offset = dataStartIndex + info.size!.roundTo512()
             } else if info.isLongName {
                 let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
+                pointerData.offset = dataStartIndex
 
                 longName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
+                pointerData.offset = dataStartIndex + info.size!.roundTo512()
             } else {
                 // Skip file data.
-                pointerData.index = info.blockStartIndex + 512 + info.size!.roundTo512()
+                pointerData.offset = info.blockStartIndex + 512 + info.size!.roundTo512()
                 entries.append(info)
                 lastLocalExtendedHeader = nil
                 longName = nil

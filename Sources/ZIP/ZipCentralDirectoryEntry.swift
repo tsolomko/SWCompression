@@ -38,7 +38,7 @@ struct ZipCentralDirectoryEntry {
     // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int) throws {
         let pointerData = ByteReader(data: data)
-        pointerData.index = offset
+        pointerData.offset = offset
 
         // Check signature.
         guard pointerData.uint32() == 0x02014b50
@@ -75,8 +75,8 @@ struct ZipCentralDirectoryEntry {
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
 
-        let extraFieldStart = pointerData.index
-        while pointerData.index - extraFieldStart < extraFieldLength {
+        let extraFieldStart = pointerData.offset
+        while pointerData.offset - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
             let headerID = pointerData.uint16()
             let size = pointerData.uint16().toInt()
@@ -101,11 +101,11 @@ struct ZipCentralDirectoryEntry {
                     self.modificationTimestamp = pointerData.uint32()
                 }
             case 0x000a: // NTFS Extra Fields
-                let ntfsExtraFieldsStartIndex = pointerData.index
-                pointerData.index += 4 // Skipping reserved bytes.
-                while pointerData.index - ntfsExtraFieldsStartIndex < size {
+                let ntfsExtraFieldsStartIndex = pointerData.offset
+                pointerData.offset += 4 // Skipping reserved bytes.
+                while pointerData.offset - ntfsExtraFieldsStartIndex < size {
                     let tag = pointerData.uint16()
-                    pointerData.index += 2 // Skipping size of attributes for this tag.
+                    pointerData.offset += 2 // Skipping size of attributes for this tag.
                     if tag == 0x0001 {
                         self.ntfsMtime = pointerData.uint64()
                         self.ntfsAtime = pointerData.uint64()
@@ -113,7 +113,7 @@ struct ZipCentralDirectoryEntry {
                     }
                 }
             default:
-                pointerData.index += size
+                pointerData.offset += size
             }
         }
 
@@ -121,7 +121,7 @@ struct ZipCentralDirectoryEntry {
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
 
-        self.nextEntryIndex = pointerData.index
+        self.nextEntryIndex = pointerData.offset
     }
 
 }

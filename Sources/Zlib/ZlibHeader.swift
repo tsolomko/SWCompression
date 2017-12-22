@@ -80,7 +80,7 @@ public struct ZlibHeader {
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
-            bitReader.index += 4
+            bitReader.offset += 4
         }
     }
 

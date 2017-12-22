@@ -95,10 +95,10 @@ public class SevenZipContainer: Container {
                     //  as they are placed in the container.
                     // Thus, we have to start moving to stream's offset from the beginning.
                     // (Or, maybe, this is incorrect and the order of streams is guaranteed).
-                    pointerData.index = signatureHeaderSize + packInfo.packPosition // Pack offset.
+                    pointerData.offset = signatureHeaderSize + packInfo.packPosition // Pack offset.
                     if streamIndex != 0 {
                         for i in 0..<streamIndex {
-                            pointerData.index += packInfo.packSizes[i]
+                            pointerData.offset += packInfo.packSizes[i]
                         }
                     }
 
@@ -128,7 +128,7 @@ public class SevenZipContainer: Container {
                 let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
 
                 // Check, if we aren't about to read too much from a stream.
-                guard rawFileData.index + fileSize <= rawFileData.size
+                guard rawFileData.offset + fileSize <= rawFileData.size
                     else { throw SevenZipError.internalStructureError }
 
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
@@ -235,13 +235,13 @@ public class SevenZipContainer: Container {
         let nextHeaderSize = Int(bitReader.uint64())
         let nextHeaderCRC = bitReader.uint32()
 
-        bitReader.index = 12
+        bitReader.offset = 12
         guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
             else { throw SevenZipError.wrongCRC }
 
         // **Header**
-        bitReader.index += nextHeaderOffset
-        let headerStartIndex = bitReader.index
+        bitReader.offset += nextHeaderOffset
+        let headerStartIndex = bitReader.offset
         let headerEndIndex: Int
 
         if bitReader.isAtTheEnd {
@@ -253,11 +253,11 @@ public class SevenZipContainer: Container {
 
         if type == 0x17 {
             let packedHeaderStreamInfo = try SevenZipStreamInfo(bitReader)
-            headerEndIndex = bitReader.index
+            headerEndIndex = bitReader.offset
             header = try SevenZipHeader(bitReader, using: packedHeaderStreamInfo)
         } else if type == 0x01 {
             header = try SevenZipHeader(bitReader)
-            headerEndIndex = bitReader.index
+            headerEndIndex = bitReader.offset
         } else {
             throw SevenZipError.internalStructureError
         }
@@ -267,7 +267,7 @@ public class SevenZipContainer: Container {
             else { throw SevenZipError.wrongSize }
 
         // Check header CRC
-        bitReader.index = headerStartIndex
+        bitReader.offset = headerStartIndex
         guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
             else { throw SevenZipError.wrongCRC }
 

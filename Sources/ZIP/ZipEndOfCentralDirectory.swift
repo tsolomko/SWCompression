@@ -52,9 +52,9 @@ struct ZipEndOfCentralDirectory {
 
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
             // Back to start of end of CD record.
-            pointerData.index -= 20
+            pointerData.offset -= 20
             // Zip64 locator takes exactly 20 bytes.
-            pointerData.index -= 20
+            pointerData.offset -= 20
 
             // Check signature.
             guard pointerData.uint32() == 0x07064b50
@@ -70,7 +70,7 @@ struct ZipEndOfCentralDirectory {
                 else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
-            pointerData.index = Int(UInt(truncatingIfNeeded: zip64CDEndOffset))
+            pointerData.offset = Int(UInt(truncatingIfNeeded: zip64CDEndOffset))
 
             // Check signature.
             guard pointerData.uint32() == 0x06064b50

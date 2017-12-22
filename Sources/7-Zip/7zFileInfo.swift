@@ -115,11 +115,11 @@ class SevenZipFileInfo {
             case 0x18: // StartPos
                 throw SevenZipError.startPosNotSupported
             case 0x19: // "Dummy". Used for alignment/padding.
-                guard bitReader.size - bitReader.index >= propertySize
+                guard bitReader.size - bitReader.offset >= propertySize
                     else { throw SevenZipError.internalStructureError }
-                bitReader.index += propertySize
+                bitReader.offset += propertySize
             default: // Unknown property
-                guard bitReader.size - bitReader.index >= propertySize
+                guard bitReader.size - bitReader.offset >= propertySize
                     else { throw SevenZipError.internalStructureError }
                 unknownProperties.append(SevenZipProperty(propertyType, propertySize,
                                                           bitReader.bytes(count: propertySize)))

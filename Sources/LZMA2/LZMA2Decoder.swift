@@ -83,10 +83,10 @@ class LZMA2Decoder {
         }
         self.decoder.uncompressedSize = unpackSize
         let outStartIndex = self.decoder.out.count
-        let inStartIndex = self.pointerData.index
+        let inStartIndex = self.pointerData.offset
         try self.decoder.decode()
         guard unpackSize == self.decoder.out.count - outStartIndex &&
-            self.pointerData.index - inStartIndex == compressedSize
+            self.pointerData.offset - inStartIndex == compressedSize
             else { throw LZMA2Error.wrongSizes }
     }
 

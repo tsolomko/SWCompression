@@ -45,7 +45,7 @@ class SevenZipHeader {
             else { throw SevenZipError.internalStructureError }
 
         let folderOffset = SevenZipContainer.signatureHeaderSize + packInfo.packPosition
-        bitReader.index = folderOffset
+        bitReader.offset = folderOffset
 
         let packedHeaderData = Data(bitReader.bytes(count: packInfo.packSizes[0]))
         let headerData = try folder.unpack(data: packedHeaderData)
