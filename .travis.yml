@@ -1,16 +1,25 @@
+env:
+  global:
+    secure: iavIkrus2Xd3b086nz2srMGl52yqzLuCdhyEAhMODVqkzqMQ17s10y1TNb+vkepd0HgxI9j57d5X7tfChjWuWDwE2hZKjr/Kx2DfiUr1AKQD6ymuGrq/0Vv6yL9dfPU8goFArcrsBcyVKczLtTuLCKL498ZqokkQc/3kGvzW74lv+z410MfHS9/tvToO/yXJckL6qJ2XBAiElfOO0rEkllTeCo6N3bjcHZ2o7PE0K+CHYxwNKj0TmPmuNWZ3U4fzoWzkk01re1C1l5cpSb20g+2aGyi0yYX+PomX7fIIqNq9vmmyoeNdr35yqoQv/0zFeFnps83NKmZLAjSUhiUdhlbuBLBE+w8544LOaZnMDlFmpDjgyaVnRrOh0NrBB1FwU48aGfX5ljRQmk/07FTEUjvwvGGoOpz8lrLZi148FMHEospL3Sf7d8K+Q9WdtLTGk7HCnbOVcxS6oB/SWF/Cj6n5wu+EI1floBaZEsNPR40Gd4eM/Ik/E3lDrZThGDCWQsao981wm7IfEDBR1nuMME8gpZINFANNS1+5miFaGdTnDTp4Yd5MGEFZm+K8x+TG1891NwNH1ZmKXlypJXiUzvSjbh2ViNJGekdQj9q2gj2ZFlCfHJ05adwJ4w9qRuF00HpAOD6At6EnsjDXFJeTZS5dj8fi2YsU9or8KfTFoNY=
 git:
   depth: 1
   submodules: false
 matrix:
     include:
     - language: objective-c
-      osx_image: xcode9.1
-      xcode_project: SWCompression.xcodeproj
+      osx_image: xcode9.2
+      xcode_workspace: SWCompression.xcworkspace
       xcode_scheme: SWCompression
+      xcode_sdk:
+      - macosx10.13
+      - iphoneos11.2
+      - iphonesimulator11.2
+      - appletvos11.2
+      - appletvsimulator11.2
+      - watchos4.2
+      - watchsimulator4.2
       before_install:
       - brew update
-      # `brew outdated` is necessary to prevent build error when there is no updates for Carthage.
-      - brew outdated carthage || brew upgrade carthage
       - brew install git-lfs
       - git lfs install
       before_script:
@@ -19,23 +28,27 @@ matrix:
       - git lfs pull
       - cd ../..
       before_deploy:
+      # Update Carthage.
+      - brew outdated carthage || brew upgrade carthage
+      # Install SourceKitten and Jazzy.
+      - brew install sourcekitten
+      - gem install jazzy
+      # Generate documentation.
+      - sourcekitten doc --spm-module SWCompression > docs.json
+      - jazzy
+      # Build Carthage archive.
       - carthage build --no-skip-current
       - carthage archive SWCompression
-      - jazzy
-      script:
-      - xcodebuild clean build test -workspace SWCompression.xcworkspace -scheme TestSWCompression
       deploy:
       - provider: releases
         skip_cleanup: true
-        api_key:
-          secure: lhJi7BsAuhGo9T4rgD/UWlVRnfrO5xLIF3BUuPHb21045tEXk/BGEHgc9a9CTFm2/iR3SmP/GDsmqfJlMzWLvuTlyV5i8otIodwIp5NYstFhyA2JaEVglmnzlkf/2FkNb5KKJDyGM1KuecYmPRTUUzYThVXl59GZ2esgfiCN26pDeDgwRyJt34jeUj0VzK9JDmEJ/ODG/hvuUWyZp0zni+m6WTPZ7dILeazFEc81WATBfMo5oa8ZBChSM6lDKaW8XyKZWrMXjsK6dKfQTcVwnvrplfw2TqfPVA+YfePcq1os5Do5CELnhrUZMSI6qvOmPauzGStjsAVFTiMaYO6HdHO03mn5L9SUuyhhKqHmh2pAkM1zKxbtfKbk6oi4zJJgvbTjIO4K2X5SUwHFgjULijW9JJeCFjsLfwODvFNFHeLeql3jaKNo6kRn2VvT/uNuT3aZa+r+WeFL0HgD6Z/EEkQW5yI6DocjetRP6y9B0rpA+YyALbd0SkVIqvoywztSfxWwp7eKhQHbG/FTIfWlmMbtLq5xULQb6TyjVHO94iSfsDV2rjAeDJY73P+rPsvej4Y9LFS8VOHcsrFhFlbR9E0NjCO2CH2TZcjXPOdLu4gfapPdiqQIdgWjC6ECUwsq+Ux6jJ6QIrGC2TI/Fw58mtLf1G8SdqBRXo+Kw0IAB4g=
+        api_key: $GITHUB_TOKEN
         file: "SWCompression.framework.zip"
         on:
           tags: true
       - provider: pages
         skip_cleanup: true
-        github_token:
-          secure: AyKeaGgdr+B0uwM4qMqi7ywFaDFlCubjBoPdLUEU681SYlhyJPhF5UiAC4DWxE4UrjWYPB4+XcRiZC+dxogQBSuAu8NwlIXHbJML+cjC+6SOS3AmJuo6Yh4nNvqsOMl8mH1PxH+vgO5zHB0OSKFgytpThN4pgzOmBMPaBBnpO7doPWzKWuOxqtjH+5X0lg40fy6e84bo6+6t7r7S6cjD5NUQe5YR+Zz3/69rb43+TnDWeYl2tCCkw+HzhqDiBWxzu1Fyu6XL8/lqXO07Np1uN9ZzlhZEns+uMrqJGMif6lqVRfHP0hdfkNQFYsSB/pJzmqSA2Tp5obfCRqHm/bOpDVVCQK/sgz6u8OKdDgAO0P5jmiRJLiKqC1+0NA1BRAsV5ZtgdemV8RLLy78MHvkJrlcTMCCPic3Udl36c0n9MVEgtae5IrbISFPF1eaVaX2h3ihAmjPHKOOXCMFL5XMmLR5Zarevn8yTDjXJ1J0+Ae3UoCIOvLBnNCz0Bu7zFG+a6zk+1or1Dul3nxvGd62WgpQn/59llKQbyCPrq+VAPXLnYKgbpAmnRwbFgXiJHaAhEIAhql2YlLgrU7rcAMmdkUREopXlE/lPzlc8lPG1YKNOPrgHO0HdGBQL50Aep39kpl2cgyBhGQFWPjmPeoCV2m0ZjOZuhtKsqFh4ovktdYc=
+        github_token: $GITHUB_TOKEN
         local_dir: docs
         on:
           tags: true
@@ -48,6 +61,5 @@ matrix:
       install:
       - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
       script:
-      - swift build && swift build -c release
-notifications:
-  email: false
+      - swift build
+      - swift build -c release
