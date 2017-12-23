@@ -47,6 +47,7 @@ class ZipString {
             } else {
                 return false
             }
+
             if index + codeLength - 1 >= data.endIndex {
                 return false
             }
@@ -58,14 +59,17 @@ class ZipString {
             }
 
             if codeLength == 3 {
-                let ch = ((UInt32(data[index]) & 0x0F) << 12) + ((UInt32(data[index + 1]) & 0x3F) << 6) +
-                    (UInt32(data[index + 2]) & 0x3F)
+                let ch = (UInt32(truncatingIfNeeded: data[index]) & 0x0F) << 12 +
+                    (UInt32(truncatingIfNeeded: data[index + 1]) & 0x3F) << 6 +
+                    UInt32(truncatingIfNeeded: data[index + 2]) & 0x3F
                 if ch < 0x0800 || ch >> 11 == 0x1B {
                     return false
                 }
             } else if codeLength == 4 {
-                let ch = ((UInt32(data[index]) & 0x07) << 18) + ((UInt32(data[index + 1]) & 0x3F) << 12) +
-                    ((UInt32(data[index + 2]) & 0x3F) << 6) + (UInt32(data[index + 3]) & 0x3F)
+                let ch = (UInt32(truncatingIfNeeded: data[index]) & 0x07) << 18 +
+                    (UInt32(truncatingIfNeeded: data[index + 1]) & 0x3F) << 12 +
+                    (UInt32(truncatingIfNeeded: data[index + 2]) & 0x3F) << 6 +
+                    UInt32(truncatingIfNeeded: data[index + 3]) & 0x3F
                 if ch < 0x10000 || ch > 0x10FFFF {
                     return false
                 }

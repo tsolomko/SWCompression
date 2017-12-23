@@ -57,7 +57,7 @@ public class ZlibArchive: Archive {
         let adler32 = CheckSums.adler32(data)
         var adlerBytes = [UInt8]()
         for i in 0..<4 {
-            adlerBytes.append(UInt8((adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
+            adlerBytes.append(UInt8(truncatingIfNeeded: (adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
         }
         outData.append(Data(bytes: adlerBytes))
 

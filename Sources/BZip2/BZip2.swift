@@ -207,7 +207,7 @@ public class BZip2: DecompressionAlgorithm {
         var i = 0
         var out: [UInt8] = []
         while i < nt.count {
-            if (i < nt.count - 4) && (nt[i] == nt[i + 1]) && (nt[i] == nt[i + 2]) && (nt[i] == nt[i + 3]) {
+            if i < nt.count - 4 && nt[i] == nt[i + 1] && nt[i] == nt[i + 2] && nt[i] == nt[i + 3] {
                 let runLength = nt[i + 4] + 4
                 for _ in 0..<runLength {
                     out.append(nt[i])

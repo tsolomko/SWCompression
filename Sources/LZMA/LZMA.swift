@@ -31,11 +31,11 @@ public class LZMA: DecompressionAlgorithm {
         decoder.resetStateAndDecoders()
         decoder.dictionarySize = pointerData.uint32().toInt()
 
-        let uncompressedSize = uncompressedSize ?? pointerData.uint64()
-        if uncompressedSize == UInt64.max {
+        let uncompSize = uncompressedSize ?? pointerData.uint64()
+        if uncompSize == UInt64.max {
             decoder.uncompressedSize = -1
         } else {
-            decoder.uncompressedSize = Int(truncatingIfNeeded: uncompressedSize)
+            decoder.uncompressedSize = Int(truncatingIfNeeded: uncompSize)
         }
 
         try decoder.decode()
