@@ -39,7 +39,7 @@ extension Deflate: CompressionAlgorithm {
             // TODO: Implement dynamic Huffman code!
             return Deflate.createUncompressedBlock(data)
         } else {
-            return Data(bytes: Deflate.encodeHuffmanBlock(bldCodes.codes))
+            return Deflate.encodeHuffmanBlock(bldCodes.codes)
         }
     }
 
@@ -95,7 +95,7 @@ extension Deflate: CompressionAlgorithm {
         return out
     }
 
-    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> [UInt8] {
+    private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> Data {
         let bitWriter = BitWriter(bitOrder: .reversed)
 
         // Write block header.
@@ -138,7 +138,7 @@ extension Deflate: CompressionAlgorithm {
         mainLiterals.code(symbol: 256)
         bitWriter.finish()
 
-        return bitWriter.buffer
+        return Data(bytes: bitWriter.buffer)
     }
 
     private enum BLDCode {
