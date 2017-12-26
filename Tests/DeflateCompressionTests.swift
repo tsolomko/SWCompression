@@ -8,7 +8,7 @@ import SWCompression
 
 class DeflateCompressionTests: XCTestCase {
 
-    func perform(compressionTest testName: String) throws {
+    func answerTest(_ testName: String) throws {
         guard let answerData = Constants.data(forAnswer: testName) else {
             XCTFail("Unable to get answer data.")
             return
@@ -25,50 +25,42 @@ class DeflateCompressionTests: XCTestCase {
 
         let reUncompData = try Deflate.decompress(data: compressedData)
         XCTAssertEqual(answerData, reUncompData)
-
-        #if PERF_TESTS
-            print("Performing performance tests for deflate.\(testName)")
-            self.measure {
-                _ = Deflate.compress(data: answerData)
-            }
-        #endif
-
     }
 
     func testDeflate1() throws {
-        try self.perform(compressionTest: "test1")
+        try self.answerTest("test1")
     }
 
     func testDeflate2() throws {
-        try self.perform(compressionTest: "test2")
+        try self.answerTest("test2")
     }
 
     func testDeflate3() throws {
-        try self.perform(compressionTest: "test3")
+        try self.answerTest("test3")
     }
 
     func testDeflate4() throws {
-        try self.perform(compressionTest: "test4")
+        try self.answerTest("test4")
     }
 
     func testDeflate5() throws {
-        try self.perform(compressionTest: "test5")
+        try self.answerTest("test5")
     }
 
     func testDeflate6() throws {
-        try self.perform(compressionTest: "test6")
+        try self.answerTest("test6")
     }
 
     func testDeflate7() throws {
-        try self.perform(compressionTest: "test7")
+        try self.answerTest("test7")
     }
 
     func testDeflate8() throws {
-        try self.perform(compressionTest: "test8")
+        try self.answerTest("test8")
     }
 
     func testDeflate9() throws {
-        try self.perform(compressionTest: "test9")
+        try self.answerTest("test9")
     }
 
 }

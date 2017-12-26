@@ -10,15 +10,15 @@ class BZip2CompressionTests: XCTestCase {
 
     private static let testType: String = "bz2"
 
-    func answerTest(_ answerName: String) throws {
-        guard let answerData = Constants.data(forAnswer: answerName) else {
+    func answerTest(_ testName: String) throws {
+        guard let answerData = Constants.data(forAnswer: testName) else {
             XCTFail("Unable to get answer data.")
             return
         }
 
         let compressedData = BZip2.compress(data: answerData)
 
-        if answerName != "test5" { // Compression ratio is always bad for empty file.
+        if testName != "test5" { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print("BZip2.\(testName).compressionRatio = \(compressionRatio)")
         } else {
