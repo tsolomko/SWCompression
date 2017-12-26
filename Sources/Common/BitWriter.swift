@@ -7,7 +7,7 @@ import Foundation
 
 class BitWriter {
 
-    private(set) var buffer: [UInt8] = []
+    private(set) var data = Data()
     private var bitMask: UInt8
     private var currentByte: UInt8 = 0
     private var bitOrder: BitReader.BitOrder
@@ -32,7 +32,7 @@ class BitWriter {
         case .reversed:
             if self.bitMask == 128 {
                 self.bitMask = 1
-                self.buffer.append(self.currentByte)
+                self.data.append(self.currentByte)
                 self.currentByte = 0
             } else {
                 self.bitMask <<= 1
@@ -40,7 +40,7 @@ class BitWriter {
         case .straight:
             if self.bitMask == 1 {
                 self.bitMask = 128
-                self.buffer.append(self.currentByte)
+                self.data.append(self.currentByte)
                 self.currentByte = 0
             } else {
                 self.bitMask >>= 1
@@ -58,7 +58,7 @@ class BitWriter {
             case .reversed:
                 if self.bitMask == 128 {
                     self.bitMask = 1
-                    self.buffer.append(self.currentByte)
+                    self.data.append(self.currentByte)
                     self.currentByte = 0
                 } else {
                     self.bitMask <<= 1
@@ -66,7 +66,7 @@ class BitWriter {
             case .straight:
                 if self.bitMask == 1 {
                     self.bitMask = 128
-                    self.buffer.append(self.currentByte)
+                    self.data.append(self.currentByte)
                     self.currentByte = 0
                 } else {
                     self.bitMask >>= 1
@@ -89,7 +89,7 @@ class BitWriter {
     }
 
     func finish() {
-        self.buffer.append(self.currentByte)
+        self.data.append(self.currentByte)
         self.currentByte = 0
 
         switch self.bitOrder {

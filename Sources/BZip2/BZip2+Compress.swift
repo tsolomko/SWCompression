@@ -66,7 +66,7 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(number: totalCRC.toInt(), bitsCount: 32)
 
         bitWriter.finish()
-        return Data(bytes: bitWriter.buffer)
+        return bitWriter.data
     }
 
     private static func process(block data: Data, _ bitWriter: BitWriter) {

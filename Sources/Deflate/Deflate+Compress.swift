@@ -89,7 +89,7 @@ extension Deflate: CompressionAlgorithm {
         // Write data's n-length.
         bitWriter.write(number: data.count ^ (1 << 16 - 1), bitsCount: 16)
 
-        var out = Data(bytes: bitWriter.buffer)
+        var out = bitWriter.data
         out.append(data)
 
         return out
@@ -138,7 +138,7 @@ extension Deflate: CompressionAlgorithm {
         mainLiterals.code(symbol: 256)
         bitWriter.finish()
 
-        return Data(bytes: bitWriter.buffer)
+        return bitWriter.data
     }
 
     private enum BLDCode {
