@@ -88,7 +88,7 @@ class BitWriter {
         }
     }
 
-    func finish() {
+    func align() {
         self.data.append(self.currentByte)
         self.currentByte = 0
 

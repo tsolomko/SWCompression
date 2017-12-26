@@ -82,7 +82,7 @@ extension Deflate: CompressionAlgorithm {
         bitWriter.write(bits: [0, 0])
 
         // Before writing lengths we need to discard remaining bits in current byte.
-        bitWriter.finish()
+        bitWriter.align()
 
         // Write data's length.
         bitWriter.write(number: data.count, bitsCount: 16)
@@ -136,7 +136,7 @@ extension Deflate: CompressionAlgorithm {
 
         // End data symbol.
         mainLiterals.code(symbol: 256)
-        bitWriter.finish()
+        bitWriter.align()
 
         return bitWriter.data
     }

@@ -65,7 +65,7 @@ extension BZip2: CompressionAlgorithm {
         // Total crc32.
         bitWriter.write(number: totalCRC.toInt(), bitsCount: 32)
 
-        bitWriter.finish()
+        bitWriter.align()
         return bitWriter.data
     }
 
