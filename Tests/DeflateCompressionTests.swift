@@ -18,7 +18,7 @@ class DeflateCompressionTests: XCTestCase {
 
         if testName != "test5" { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("Deflate.CompressionRatio.test(\(testName))=\(compressionRatio)")
+            print("Deflate.\(testName).compressionRatio = \(compressionRatio)")
         } else {
             print("No compression ratio for test5.")
         }

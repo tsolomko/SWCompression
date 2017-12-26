@@ -20,7 +20,7 @@ class BZip2CompressionTests: XCTestCase {
 
         if answerName != "test5" { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("BZip2.CompressionRatio.test(\(answerName))=\(compressionRatio)")
+            print("BZip2.\(testName).compressionRatio = \(compressionRatio)")
         } else {
             print("No compression ratio for test5.")
         }
