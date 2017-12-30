@@ -13,7 +13,7 @@ class BitReader: ByteReader {
     }
 
     let bitOrder: BitOrder
-    private(set) var bitMask: UInt8
+    private var bitMask: UInt8
 
     var isAligned: Bool {
         switch self.bitOrder {
