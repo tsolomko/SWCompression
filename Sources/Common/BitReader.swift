@@ -104,8 +104,8 @@ class BitReader: ByteReader {
         return result
     }
 
-    func bit() -> Int {
-        let bit = self.data[self.offset] & self.bitMask > 0 ? 1 : 0
+    func bit() -> UInt8 {
+        let bit: UInt8 = self.data[self.offset] & self.bitMask > 0 ? 1 : 0
 
         switch self.bitOrder {
         case .reversed:

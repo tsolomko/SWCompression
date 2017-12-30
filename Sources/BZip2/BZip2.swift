@@ -137,7 +137,7 @@ public class BZip2: DecompressionAlgorithm {
                     guard length >= 0 && length <= 20
                         else { throw BZip2Error.wrongHuffmanCodeLength }
                     while bitReader.bit() > 0 {
-                        length -= (Int(bitReader.bit() * 2) - 1)
+                        length -= (bitReader.bit().toInt() * 2 - 1)
                     }
                     if length > 0 {
                         lengths.append(HuffmanLength(symbol: i, codeLength: length))
