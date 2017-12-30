@@ -33,7 +33,7 @@ public class XZArchive: Archive {
         //  guarantee correctness of other streams.
 
         var result = Data()
-        while !pointerData.isAtTheEnd {
+        while !pointerData.isFinished {
             let streamResult = try processStream(pointerData)
             result.append(streamResult.data)
             guard !streamResult.checkError
@@ -66,7 +66,7 @@ public class XZArchive: Archive {
         let pointerData = ByteReader(data: data)
 
         var result = [Data]()
-        while !pointerData.isAtTheEnd {
+        while !pointerData.isFinished {
             let streamResult = try processStream(pointerData)
             result.append(streamResult.data)
             guard !streamResult.checkError
@@ -182,7 +182,7 @@ public class XZArchive: Archive {
 
     /// Returns `true` if end of archive is reached, `false` otherwise.
     private static func processPadding(_ pointerData: ByteReader) throws {
-        guard !pointerData.isAtTheEnd
+        guard !pointerData.isFinished
             else { return }
 
         var paddingBytes = 0
@@ -195,7 +195,7 @@ public class XZArchive: Archive {
                     break
                 }
             }
-            if pointerData.isAtTheEnd {
+            if pointerData.isFinished {
                 if byte != 0 || paddingBytes % 4 != 3 {
                     throw XZError.wrongPadding
                 } else {

@@ -11,7 +11,7 @@ class ByteReader {
     let data: Data
     var offset: Int
 
-    var isAtTheEnd: Bool {
+    var isFinished: Bool {
         return self.data.endIndex == self.offset
     }
 

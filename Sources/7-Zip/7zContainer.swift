@@ -87,7 +87,7 @@ public class SevenZipContainer: Container {
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
                 // If we switched folders or completed reading of a stream we need to move to the next stream.
-                if fileInFolderCount == 0 || rawFileData.isAtTheEnd {
+                if fileInFolderCount == 0 || rawFileData.isFinished {
                     streamIndex += 1
 
                     // First, we move to the stream's offset.
@@ -244,7 +244,7 @@ public class SevenZipContainer: Container {
         let headerStartIndex = bitReader.offset
         let headerEndIndex: Int
 
-        if bitReader.isAtTheEnd {
+        if bitReader.isFinished {
             return nil // In case of completely empty container.
         }
 

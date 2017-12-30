@@ -63,7 +63,7 @@ public class GzipArchive: Archive {
         let bitReader = BitReader(data: data, bitOrder: .reversed)
 
         var result = [Member]()
-        while !bitReader.isAtTheEnd {
+        while !bitReader.isFinished {
             let member = try processMember(bitReader)
 
             result.append(member)
