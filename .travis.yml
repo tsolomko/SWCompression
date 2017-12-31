@@ -9,48 +9,30 @@ jobs:
       before_install:
       - brew update
       install:
-      - brew install git-lfs
-      - git lfs install
-      - gem install xcpretty-travis-formatter
+      - Utils/ci-install-macos.sh
       before_script:
-      - git submodule update --init --recursive --depth 1
-      - cd Tests/Test\ Files
-      - git lfs pull
-      - cd ../..
+      - Utils/prepare-workspace-macos.sh
       script:
-      - set -o pipefail && xcodebuild -workspace SWCompression.xcworkspace -scheme SWCompression -destination "platform=OS X" clean test | xcpretty -f `xcpretty-travis-formatter`
-      - set -o pipefail && xcodebuild -workspace SWCompression.xcworkspace -scheme SWCompression -destination "platform=iOS Simulator,name=iPhone 6S" clean test | xcpretty -f `xcpretty-travis-formatter`
-      - set -o pipefail && xcodebuild -workspace SWCompression.xcworkspace -scheme SWCompression -destination "platform=watchOS Simulator,name=Apple Watch - 38mm" clean build | xcpretty -f `xcpretty-travis-formatter`
-      - set -o pipefail && xcodebuild -workspace SWCompression.xcworkspace -scheme SWCompression -destination "platform=tvOS Simulator,name=Apple TV" clean test | xcpretty -f `xcpretty-travis-formatter`
+      - Utils/ci-script-macos.sh
     - language: generic
       os: linux
       dist: trusty
       install:
       - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
       script:
-      - swift build
-      - swift build -c release
+      - Utils/ci-script-linux.sh
     - stage: deploy
-      if: env(TRAVIS_TAG) IS present
-      language: objective-c
+      if: tag IS present
+      language: generic
       osx_image: xcode9.2
       env:
         secure: iavIkrus2Xd3b086nz2srMGl52yqzLuCdhyEAhMODVqkzqMQ17s10y1TNb+vkepd0HgxI9j57d5X7tfChjWuWDwE2hZKjr/Kx2DfiUr1AKQD6ymuGrq/0Vv6yL9dfPU8goFArcrsBcyVKczLtTuLCKL498ZqokkQc/3kGvzW74lv+z410MfHS9/tvToO/yXJckL6qJ2XBAiElfOO0rEkllTeCo6N3bjcHZ2o7PE0K+CHYxwNKj0TmPmuNWZ3U4fzoWzkk01re1C1l5cpSb20g+2aGyi0yYX+PomX7fIIqNq9vmmyoeNdr35yqoQv/0zFeFnps83NKmZLAjSUhiUdhlbuBLBE+w8544LOaZnMDlFmpDjgyaVnRrOh0NrBB1FwU48aGfX5ljRQmk/07FTEUjvwvGGoOpz8lrLZi148FMHEospL3Sf7d8K+Q9WdtLTGk7HCnbOVcxS6oB/SWF/Cj6n5wu+EI1floBaZEsNPR40Gd4eM/Ik/E3lDrZThGDCWQsao981wm7IfEDBR1nuMME8gpZINFANNS1+5miFaGdTnDTp4Yd5MGEFZm+K8x+TG1891NwNH1ZmKXlypJXiUzvSjbh2ViNJGekdQj9q2gj2ZFlCfHJ05adwJ4w9qRuF00HpAOD6At6EnsjDXFJeTZS5dj8fi2YsU9or8KfTFoNY=
       before_install:
       - brew update
       install:
-      # Update Carthage.
-      - brew outdated carthage || brew upgrade carthage
-      # Install SourceKitten and Jazzy.
-      - brew install sourcekitten
-      - gem install jazzy
+      - Utils/ci-install-deploy.sh
       before_deploy:
-      # Build Carthage archive.
-      - carthage build --no-skip-current
-      - carthage archive SWCompression
-      # Generate documentation.
-      - sourcekitten doc --spm-module SWCompression > docs.json
-      - jazzy
+      - Utils/ci-before-deploy.sh
       deploy:
       - provider: releases
         skip_cleanup: true
