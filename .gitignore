@@ -50,6 +50,7 @@ Pods/
 # Avoid checking in source code from Carthage dependencies.
 Carthage/Checkouts
 Carthage/Build
+Cartfile.resolved
 
 # fastlane
 #
