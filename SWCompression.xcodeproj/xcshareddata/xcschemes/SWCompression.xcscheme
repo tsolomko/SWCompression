@@ -33,10 +33,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "061FFDC01FEC163A00029440"
+               BlueprintIdentifier = "06F065941FFB761600312A82"
                BuildableName = "TestSWCompression.xctest"
                BlueprintName = "TestSWCompression"
-               ReferencedContainer = "container:TestSWCompression.xcodeproj">
+               ReferencedContainer = "container:SWCompression.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
