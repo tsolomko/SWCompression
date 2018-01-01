@@ -31,79 +31,80 @@ struct ZipLocalHeader {
 
     let dataOffset: Int
 
-    // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
+    // TODO:
+    // We don't use `ByteReader` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int) throws {
-        let pointerData = ByteReader(data: data)
-        pointerData.offset = offset
+        let byteReader = ByteReader(data: data)
+        byteReader.offset = offset
 
         // Check signature.
-        guard pointerData.uint32() == 0x04034b50
+        guard byteReader.uint32() == 0x04034b50
             else { throw ZipError.wrongSignature }
 
-        self.versionNeeded = pointerData.uint16()
+        self.versionNeeded = byteReader.uint16()
 
-        self.generalPurposeBitFlags = pointerData.uint16()
+        self.generalPurposeBitFlags = byteReader.uint16()
         let useUtf8 = generalPurposeBitFlags & 0x800 != 0
 
-        self.compressionMethod = pointerData.uint16()
+        self.compressionMethod = byteReader.uint16()
 
-        self.lastModFileTime = pointerData.uint16()
-        self.lastModFileDate = pointerData.uint16()
+        self.lastModFileTime = byteReader.uint16()
+        self.lastModFileDate = byteReader.uint16()
 
-        self.crc32 = pointerData.uint32()
+        self.crc32 = byteReader.uint32()
 
-        self.compSize = UInt64(truncatingIfNeeded: pointerData.uint32())
-        self.uncompSize = UInt64(truncatingIfNeeded: pointerData.uint32())
+        self.compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
 
-        let fileNameLength = pointerData.uint16().toInt()
-        let extraFieldLength = pointerData.uint16().toInt()
+        let fileNameLength = byteReader.uint16().toInt()
+        let extraFieldLength = byteReader.uint16().toInt()
 
-        guard let fileName = pointerData.getZipStringField(fileNameLength, useUtf8)
+        guard let fileName = byteReader.getZipStringField(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
 
-        let extraFieldStart = pointerData.offset
-        while pointerData.offset - extraFieldStart < extraFieldLength {
+        let extraFieldStart = byteReader.offset
+        while byteReader.offset - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
-            let headerID = pointerData.uint16()
-            let size = pointerData.uint16().toInt()
+            let headerID = byteReader.uint16()
+            let size = byteReader.uint16().toInt()
             switch headerID {
             case 0x0001: // Zip64
                 // In local header both uncompressed size and compressed size fields are required.
-                self.uncompSize = pointerData.uint64()
-                self.compSize = pointerData.uint64()
+                self.uncompSize = byteReader.uint64()
+                self.compSize = byteReader.uint64()
 
                 self.zip64FieldsArePresent = true
             case 0x5455: // Extended Timestamp
-                let flags = pointerData.byte()
+                let flags = byteReader.byte()
                 guard flags & 0xF8 == 0 else { break }
                 if flags & 0x01 != 0 {
-                    self.modificationTimestamp = pointerData.uint32()
+                    self.modificationTimestamp = byteReader.uint32()
                 }
                 if flags & 0x02 != 0 {
-                    self.accessTimestamp = pointerData.uint32()
+                    self.accessTimestamp = byteReader.uint32()
                 }
                 if flags & 0x04 != 0 {
-                    self.creationTimestamp = pointerData.uint32()
+                    self.creationTimestamp = byteReader.uint32()
                 }
             case 0x000a: // NTFS Extra Fields
-                let ntfsExtraFieldsStartIndex = pointerData.offset
-                pointerData.offset += 4 // Skipping reserved bytes.
-                while pointerData.offset - ntfsExtraFieldsStartIndex < size {
-                    let tag = pointerData.uint16()
-                    pointerData.offset += 2 // Skipping size of attributes for this tag.
+                let ntfsExtraFieldsStartIndex = byteReader.offset
+                byteReader.offset += 4 // Skipping reserved bytes.
+                while byteReader.offset - ntfsExtraFieldsStartIndex < size {
+                    let tag = byteReader.uint16()
+                    byteReader.offset += 2 // Skipping size of attributes for this tag.
                     if tag == 0x0001 {
-                        self.ntfsMtime = pointerData.uint64()
-                        self.ntfsAtime = pointerData.uint64()
-                        self.ntfsCtime = pointerData.uint64()
+                        self.ntfsMtime = byteReader.uint64()
+                        self.ntfsAtime = byteReader.uint64()
+                        self.ntfsCtime = byteReader.uint64()
                     }
                 }
             default:
-                pointerData.offset += size
+                byteReader.offset += size
             }
         }
 
-        self.dataOffset = pointerData.offset
+        self.dataOffset = byteReader.offset
     }
 
     func validate(with cdEntry: ZipCentralDirectoryEntry, _ currentDiskNumber: UInt32) throws {

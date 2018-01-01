@@ -14,11 +14,11 @@ struct XZBlock {
         return data.count
     }
 
-    init(_ blockHeaderSize: UInt8, _ pointerData: ByteReader, _ checkSize: Int) throws {
-        let blockHeaderStartIndex = pointerData.offset - 1
+    init(_ blockHeaderSize: UInt8, _ byteReader: ByteReader, _ checkSize: Int) throws {
+        let blockHeaderStartIndex = byteReader.offset - 1
         let realBlockHeaderSize = (blockHeaderSize.toInt() + 1) * 4
 
-        let blockFlags = pointerData.byte()
+        let blockFlags = byteReader.byte()
         /**
          Bit values 00, 01, 10, 11 indicate filters number from 1 to 4,
          so we actually need to add 1 to get filters' number.
@@ -28,24 +28,24 @@ struct XZBlock {
             else { throw XZError.wrongField }
 
         /// Should match size of compressed data.
-        let compressedSize = blockFlags & 0x40 != 0 ? try pointerData.multiByteDecode() : -1
+        let compressedSize = blockFlags & 0x40 != 0 ? try byteReader.multiByteDecode() : -1
 
         /// Should match the size of data after decompression.
-        let uncompressedSize = blockFlags & 0x80 != 0 ? try pointerData.multiByteDecode() : -1
+        let uncompressedSize = blockFlags & 0x80 != 0 ? try byteReader.multiByteDecode() : -1
 
         var filters: [(ByteReader) throws -> Data] = []
         for _ in 0..<filtersCount {
-            let filterID = try pointerData.multiByteDecode()
+            let filterID = try byteReader.multiByteDecode()
             guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
             if filterID == 0x21 {
                 // First, we need to skip byte with the size of filter's properties
-                _ = try pointerData.multiByteDecode()
+                _ = try byteReader.multiByteDecode()
                 /// In case of LZMA2 filters property is a dicitonary size.
-                let filterPropeties = pointerData.byte()
+                let filterPropeties = byteReader.byte()
                 let closure = { (dwp: ByteReader) -> Data in
-                    let decoder = LZMA2Decoder(pointerData)
+                    let decoder = LZMA2Decoder(byteReader)
                     try decoder.setDictionarySize(filterPropeties)
 
                     try decoder.decode()
@@ -58,34 +58,34 @@ struct XZBlock {
         }
 
         // We need to take into account 4 bytes for CRC32 so thats why "-4".
-        while pointerData.offset - blockHeaderStartIndex < realBlockHeaderSize - 4 {
-            let byte = pointerData.byte()
+        while byteReader.offset - blockHeaderStartIndex < realBlockHeaderSize - 4 {
+            let byte = byteReader.byte()
             guard byte == 0x00
                 else { throw XZError.wrongPadding }
         }
 
-        let blockHeaderCRC = pointerData.uint32()
-        pointerData.offset = blockHeaderStartIndex
-        guard CheckSums.crc32(pointerData.bytes(count: realBlockHeaderSize - 4)) == blockHeaderCRC
+        let blockHeaderCRC = byteReader.uint32()
+        byteReader.offset = blockHeaderStartIndex
+        guard CheckSums.crc32(byteReader.bytes(count: realBlockHeaderSize - 4)) == blockHeaderCRC
             else { throw XZError.wrongInfoCRC }
-        pointerData.offset += 4
+        byteReader.offset += 4
 
-        var out = pointerData
-        let compressedDataStart = pointerData.offset
+        var out = byteReader
+        let compressedDataStart = byteReader.offset
         for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
             out = ByteReader(data: try filters[filterIndex.toInt()](out))
         }
 
-        guard compressedSize < 0 || compressedSize == pointerData.offset - compressedDataStart,
+        guard compressedSize < 0 || compressedSize == byteReader.offset - compressedDataStart,
             uncompressedSize < 0 || uncompressedSize == out.data.count
             else { throw XZError.wrongDataSize }
 
-        let unpaddedSize = pointerData.offset - blockHeaderStartIndex
+        let unpaddedSize = byteReader.offset - blockHeaderStartIndex
 
         if unpaddedSize % 4 != 0 {
             let paddingSize = 4 - unpaddedSize % 4
             for _ in 0..<paddingSize {
-                let byte = pointerData.byte()
+                let byte = byteReader.byte()
                 guard byte == 0x00
                     else { throw XZError.wrongPadding }
             }

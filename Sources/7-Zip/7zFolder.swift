@@ -157,9 +157,9 @@ class SevenZipFolder {
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
 
-                let pointerData = ByteReader(data: decodedData)
+                let byteReader = ByteReader(data: decodedData)
 
-                let decoder = LZMA2Decoder(pointerData)
+                let decoder = LZMA2Decoder(byteReader)
                 try decoder.setDictionarySize(properties[0])
 
                 try decoder.decode()
@@ -171,8 +171,8 @@ class SevenZipFolder {
                 guard properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
-                let pointerData = ByteReader(data: decodedData)
-                let decoder = LZMADecoder(pointerData)
+                let byteReader = ByteReader(data: decodedData)
+                let decoder = LZMADecoder(byteReader)
 
                 try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()

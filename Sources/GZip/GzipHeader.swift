@@ -53,23 +53,23 @@ public struct GzipHeader {
      it might not be archived with GZip at all.
      */
     public init(archive data: Data) throws {
-        let pointerData = ByteReader(data: data)
-        try self.init(pointerData)
+        let byteReader = ByteReader(data: data)
+        try self.init(byteReader)
     }
 
-    init(_ pointerData: ByteReader) throws {
+    init(_ byteReader: ByteReader) throws {
         // First two bytes should be correct 'magic' bytes
-        let magic = pointerData.uint16()
+        let magic = byteReader.uint16()
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported for GZip archives.
-        let method = pointerData.byte()
+        let method = byteReader.byte()
         guard method == 8 else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
         self.compressionMethod = .deflate
 
-        let rawFlags = pointerData.byte()
+        let rawFlags = byteReader.byte()
         guard rawFlags & 0xE0 == 0
             else { throw GzipError.wrongFlags }
         let flags = Flags(rawValue: rawFlags)
@@ -77,16 +77,16 @@ public struct GzipHeader {
 
         var mtime = 0
         for i in 0..<4 {
-            let byte = pointerData.byte()
+            let byte = byteReader.byte()
             mtime |= byte.toInt() << (8 * i)
             headerBytes.append(byte)
         }
         self.modificationTime = mtime == 0 ? nil : Date(timeIntervalSince1970: TimeInterval(mtime))
 
-        let extraFlags = pointerData.byte()
+        let extraFlags = byteReader.byte()
         headerBytes.append(extraFlags)
 
-        let rawOsType = pointerData.byte()
+        let rawOsType = byteReader.byte()
         self.osType = FileSystemType(rawOsType)
         headerBytes.append(rawOsType)
 
@@ -96,12 +96,12 @@ public struct GzipHeader {
         if flags.contains(.fextra) {
             var xlen = 0
             for i in 0..<2 {
-                let byte = pointerData.byte()
+                let byte = byteReader.byte()
                 xlen |= byte.toInt() << (8 * i)
                 headerBytes.append(byte)
             }
             for _ in 0..<xlen {
-                headerBytes.append(pointerData.byte())
+                headerBytes.append(byteReader.byte())
             }
         }
 
@@ -109,7 +109,7 @@ public struct GzipHeader {
         if flags.contains(.fname) {
             var fnameBytes: [UInt8] = []
             while true {
-                let byte = pointerData.byte()
+                let byte = byteReader.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fnameBytes.append(byte)
@@ -123,7 +123,7 @@ public struct GzipHeader {
         if flags.contains(.fcomment) {
             var fcommentBytes: [UInt8] = []
             while true {
-                let byte = pointerData.byte()
+                let byte = byteReader.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
                 fcommentBytes.append(byte)
@@ -136,7 +136,7 @@ public struct GzipHeader {
         // Some archives may contain 2-bytes checksum
         if flags.contains(.fhcrc) {
             // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
-            let crc16 = pointerData.uint16()
+            let crc16 = byteReader.uint16()
             guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
         }
     }

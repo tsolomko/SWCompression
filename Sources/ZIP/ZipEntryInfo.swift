@@ -76,7 +76,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
-    // We don't use `DataWithPointer` as argument, because it doesn't work well in asynchronous environment.
+    // We don't use `ByteReader` as argument, because it doesn't work well in asynchronous environment.
     init(_ data: Data, _ offset: Int, _ currentDiskNumber: UInt32) throws {
         // Load and save Central Directory entry and Local Header.
         let cdEntry = try ZipCentralDirectoryEntry(data, offset)

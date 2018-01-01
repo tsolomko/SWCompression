@@ -50,10 +50,10 @@ public class SevenZipContainer: Container {
         /// Combined calculated CRC of entire folder == all files in folder.
         var folderCRC = CheckSums.crc32(Data())
 
-        /// `DataWithPointer` object with unpacked stream's data.
+        /// `ByteReader` object with unpacked stream's data.
         var rawFileData = ByteReader(data: Data())
 
-        let pointerData = ByteReader(data: data)
+        let byteReader = ByteReader(data: data)
 
         for fileIndex in 0..<files.count {
             let file = files[fileIndex]
@@ -95,15 +95,15 @@ public class SevenZipContainer: Container {
                     //  as they are placed in the container.
                     // Thus, we have to start moving to stream's offset from the beginning.
                     // (Or, maybe, this is incorrect and the order of streams is guaranteed).
-                    pointerData.offset = signatureHeaderSize + packInfo.packPosition // Pack offset.
+                    byteReader.offset = signatureHeaderSize + packInfo.packPosition // Pack offset.
                     if streamIndex != 0 {
                         for i in 0..<streamIndex {
-                            pointerData.offset += packInfo.packSizes[i]
+                            byteReader.offset += packInfo.packSizes[i]
                         }
                     }
 
                     // Load the stream.
-                    let streamData = Data(bytes: pointerData.bytes(count: packInfo.packSizes[streamIndex]))
+                    let streamData = Data(bytes: byteReader.bytes(count: packInfo.packSizes[streamIndex]))
 
                     // Check stream's CRC, if it's available.
                     if streamIndex < packInfo.digests.count,

@@ -50,59 +50,59 @@ public class ZipContainer: Container {
         var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
 
         let fileData: Data
-        let pointerData = ByteReader(data: data)
-        pointerData.offset = info.localHeader.dataOffset
+        let byteReader = ByteReader(data: data)
+        byteReader.offset = info.localHeader.dataOffset
         switch info.compressionMethod {
         case .copy:
-            fileData = Data(bytes: pointerData.bytes(count: Int(truncatingIfNeeded: uncompSize)))
+            fileData = Data(bytes: byteReader.bytes(count: Int(truncatingIfNeeded: uncompSize)))
         case .deflate:
-            let bitReader = BitReader(data: pointerData.data, bitOrder: .reversed)
-            bitReader.offset = pointerData.offset
+            let bitReader = BitReader(data: byteReader.data, bitOrder: .reversed)
+            bitReader.offset = byteReader.offset
             fileData = try Deflate.decompress(bitReader)
             // Sometimes `bitReader` has not-aligned state after Deflate decompression,
             //  so we need to align before getting end index back.
             bitReader.align()
-            pointerData.offset = bitReader.offset
+            byteReader.offset = bitReader.offset
         case .bzip2:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm considers bits in a byte in a different order.
-                let bitReader = BitReader(data: pointerData.data, bitOrder: .straight)
-                bitReader.offset = pointerData.offset
+                let bitReader = BitReader(data: byteReader.data, bitOrder: .straight)
+                bitReader.offset = byteReader.offset
                 fileData = try BZip2.decompress(bitReader)
                 // Sometimes `bitReader` has not-aligned state after BZip2 decompression,
                 //  so we need to align before getting end index back.
                 bitReader.align()
-                pointerData.offset = bitReader.offset
+                byteReader.offset = bitReader.offset
             #else
                 throw ZipError.compressionNotSupported
             #endif
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
-                pointerData.offset += 4 // Skipping LZMA SDK version and size of properties.
-                fileData = try LZMA.decompress(pointerData, uncompressedSize: uncompSize)
+                byteReader.offset += 4 // Skipping LZMA SDK version and size of properties.
+                fileData = try LZMA.decompress(byteReader, uncompressedSize: uncompSize)
             #else
                 throw ZipError.compressionNotSupported
             #endif
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = pointerData.offset - info.localHeader.dataOffset
+        let realCompSize = byteReader.offset - info.localHeader.dataOffset
 
         if hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
-            let ddSignature = pointerData.uint32()
+            let ddSignature = byteReader.uint32()
             if ddSignature != 0x08074b50 {
-                pointerData.offset -= 4
+                byteReader.offset -= 4
             }
             // Now, let's update with values from data descriptor.
-            crc32 = pointerData.uint32()
+            crc32 = byteReader.uint32()
             if info.localHeader.zip64FieldsArePresent {
-                compSize = pointerData.uint64()
-                uncompSize = pointerData.uint64()
+                compSize = byteReader.uint64()
+                uncompSize = byteReader.uint64()
             } else {
-                compSize = UInt64(truncatingIfNeeded: pointerData.uint32())
-                uncompSize = UInt64(truncatingIfNeeded: pointerData.uint32())
+                compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+                uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
             }
         }
 
@@ -128,32 +128,32 @@ public class ZipContainer: Container {
      */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = ByteReader(data: data)
+        let byteReader = ByteReader(data: data)
         var entries = [ZipEntryInfo]()
 
-        pointerData.offset = pointerData.size - 22 // 22 is a minimum amount which could take end of CD record.
+        byteReader.offset = byteReader.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
             // Check signature.
-            if pointerData.uint32() == 0x06054b50 {
+            if byteReader.uint32() == 0x06054b50 {
                 // We found it!
                 break
             }
-            if pointerData.offset == 0 {
+            if byteReader.offset == 0 {
                 throw ZipError.notFoundCentralDirectoryEnd
             }
-            pointerData.offset -= 5
+            byteReader.offset -= 5
         }
 
-        let endOfCD = try ZipEndOfCentralDirectory(pointerData)
+        let endOfCD = try ZipEndOfCentralDirectory(byteReader)
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
         var entryIndex = Int(truncatingIfNeeded: endOfCD.cdOffset)
 
         // First, check for "Archive extra data record" and skip it if present.
-        pointerData.offset = entryIndex
-        if pointerData.uint32() == 0x08064b50 {
-            entryIndex += Int(truncatingIfNeeded: pointerData.uint32())
+        byteReader.offset = entryIndex
+        if byteReader.uint32() == 0x08064b50 {
+            entryIndex += Int(truncatingIfNeeded: byteReader.uint32())
         }
 
         for _ in 0..<cdEntries {
