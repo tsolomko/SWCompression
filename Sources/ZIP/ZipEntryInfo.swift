@@ -82,7 +82,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         let cdEntry = try ZipCentralDirectoryEntry(data, offset)
         self.cdEntry = cdEntry
 
-        let localHeader = try ZipLocalHeader(data, Int(truncatingIfNeeded: cdEntry.localHeaderOffset))
+        let localHeader = try ZipLocalHeader(data, cdEntry.localHeaderOffset.toInt())
         try localHeader.validate(with: cdEntry, currentDiskNumber)
         self.localHeader = localHeader
 

@@ -232,8 +232,8 @@ public class SevenZipContainer: Container {
         let startHeaderCRC = bitReader.uint32()
 
         /// - Note: Relative to SignatureHeader
-        let nextHeaderOffset = Int(bitReader.uint64())
-        let nextHeaderSize = Int(bitReader.uint64())
+        let nextHeaderOffset = bitReader.uint64().toInt()
+        let nextHeaderSize = bitReader.uint64().toInt()
         let nextHeaderCRC = bitReader.uint32()
 
         bitReader.offset = 12

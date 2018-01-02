@@ -55,7 +55,7 @@ public class ZipContainer: Container {
         byteReader.offset = info.localHeader.dataOffset
         switch info.compressionMethod {
         case .copy:
-            fileData = Data(bytes: byteReader.bytes(count: Int(truncatingIfNeeded: uncompSize)))
+            fileData = Data(bytes: byteReader.bytes(count: uncompSize.toInt()))
         case .deflate:
             let bitReader = LsbBitReader(data: byteReader.data)
             bitReader.offset = byteReader.offset
@@ -149,12 +149,12 @@ public class ZipContainer: Container {
         let cdEntries = endOfCD.cdEntries
 
         // OK, now we are ready to read Central Directory itself.
-        var entryIndex = Int(truncatingIfNeeded: endOfCD.cdOffset)
+        var entryIndex = endOfCD.cdOffset.toInt()
 
         // First, check for "Archive extra data record" and skip it if present.
         byteReader.offset = entryIndex
         if byteReader.uint32() == 0x08064b50 {
-            entryIndex += Int(truncatingIfNeeded: byteReader.uint32())
+            entryIndex += byteReader.uint32().toInt()
         }
 
         for _ in 0..<cdEntries {

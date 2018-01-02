@@ -71,7 +71,7 @@ struct ZipEndOfCentralDirectory {
                 else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
-            byteReader.offset = Int(UInt(truncatingIfNeeded: zip64CDEndOffset))
+            byteReader.offset = zip64CDEndOffset.toInt()
 
             // Check signature.
             guard byteReader.uint32() == 0x06064b50

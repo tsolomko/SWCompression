@@ -36,7 +36,7 @@ public class LZMA: DecompressionAlgorithm {
         if uncompSize == UInt64.max {
             decoder.uncompressedSize = -1
         } else {
-            decoder.uncompressedSize = Int(truncatingIfNeeded: uncompSize)
+            decoder.uncompressedSize = uncompSize.toInt()
         }
 
         try decoder.decode()

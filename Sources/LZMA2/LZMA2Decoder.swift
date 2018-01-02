@@ -35,7 +35,7 @@ class LZMA2Decoder {
             dictSize <<= UInt32(bits.toInt() / 2 + 11)
         }
 
-        self.decoder.dictionarySize = Int(dictSize)
+        self.decoder.dictionarySize = dictSize.toInt()
     }
 
     /// Main LZMA2 decoder function.

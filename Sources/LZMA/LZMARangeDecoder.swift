@@ -65,7 +65,7 @@ class LZMARangeDecoder {
             res = res &+ (t &+ 1)
             count -= 1
         } while count > 0
-        return Int(res)
+        return res.toInt()
     }
 
     /// Decodes binary symbol (bit) with predicted (estimated) probability.
