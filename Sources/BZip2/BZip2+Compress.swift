@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 extension BZip2: CompressionAlgorithm {
 
@@ -38,7 +39,7 @@ extension BZip2: CompressionAlgorithm {
      - Parameter blockSize: Size of blocks in which `data` will be split.
      */
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
-        let bitWriter = BitWriter(bitOrder: .straight)
+        let bitWriter = MsbBitWriter()
         let rawBlockSize = blockSize.rawValue * 100 * 1024
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.

@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 extension Deflate: CompressionAlgorithm {
 
@@ -74,7 +75,7 @@ extension Deflate: CompressionAlgorithm {
     }
 
     private static func createUncompressedBlock(_ data: Data) -> Data {
-        let bitWriter = BitWriter(bitOrder: .reversed)
+        let bitWriter = LsbBitWriter()
 
         // Write block header.
         // Note: Only one block is supported for now.
@@ -96,7 +97,7 @@ extension Deflate: CompressionAlgorithm {
     }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> Data {
-        let bitWriter = BitWriter(bitOrder: .reversed)
+        let bitWriter = LsbBitWriter()
 
         // Write block header.
         // Note: For now it is only static huffman blocks.
