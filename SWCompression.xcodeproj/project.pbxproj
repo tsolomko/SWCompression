@@ -30,6 +30,7 @@
 		0620F4BE1F8E24AA001C9B7A /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4BD1F8E24AA001C9B7A /* Archive.swift */; };
 		0620F4C31F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4C21F8E24B6001C9B7A /* CompressionAlgorithm.swift */; };
 		0620F4C81F8E24BF001C9B7A /* DecompressionAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4C71F8E24BF001C9B7A /* DecompressionAlgorithm.swift */; };
+		062521CE1FFB82C900172448 /* BitByteData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 062521CD1FFB82C900172448 /* BitByteData.framework */; };
 		0625C49F1FB4B92F00A52C43 /* CompressionMethod+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0625C49E1FB4B92F00A52C43 /* CompressionMethod+7z.swift */; };
 		062C1D7C1F8FCA9300917968 /* TarExtendedHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062C1D7B1F8FCA9300917968 /* TarExtendedHeader.swift */; };
 		0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0631CB051F81109E00A2E0AB /* Deflate+Constants.swift */; };
@@ -232,6 +233,7 @@
 		0620F4BD1F8E24AA001C9B7A /* Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Archive.swift; sourceTree = "<group>"; };
 		0620F4C21F8E24B6001C9B7A /* CompressionAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionAlgorithm.swift; sourceTree = "<group>"; };
 		0620F4C71F8E24BF001C9B7A /* DecompressionAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecompressionAlgorithm.swift; sourceTree = "<group>"; };
+		062521CD1FFB82C900172448 /* BitByteData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BitByteData.framework; path = Carthage/Build/Mac/BitByteData.framework; sourceTree = "<group>"; };
 		0625C49E1FB4B92F00A52C43 /* CompressionMethod+7z.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompressionMethod+7z.swift"; sourceTree = "<group>"; };
 		062C1D7B1F8FCA9300917968 /* TarExtendedHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarExtendedHeader.swift; sourceTree = "<group>"; };
 		0631CB051F81109E00A2E0AB /* Deflate+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Deflate+Constants.swift"; sourceTree = "<group>"; };
@@ -400,6 +402,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		062521CB1FFB82AD00172448 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				062521CE1FFB82C900172448 /* BitByteData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06F065921FFB761600312A82 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -422,6 +432,14 @@
 				0620F4A71F8E2450001C9B7A /* ContainerEntryType.swift */,
 			);
 			path = Container;
+			sourceTree = "<group>";
+		};
+		062521CC1FFB82C800172448 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				062521CD1FFB82C900172448 /* BitByteData.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		0680B4C01F88140500C5F253 /* Common */ = {
@@ -514,6 +532,7 @@
 				06BE1ACA1DB410F100EE0F59 /* Sources */,
 				06F065A01FFB763300312A82 /* Tests */,
 				06BE1AC91DB410F100EE0F59 /* Products */,
+				062521CC1FFB82C800172448 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -830,6 +849,7 @@
 			buildConfigurationList = 06BE1ADC1DB410F100EE0F59 /* Build configuration list for PBXNativeTarget "SWCompression" */;
 			buildPhases = (
 				06BE1AC31DB410F100EE0F59 /* Sources */,
+				062521CB1FFB82AD00172448 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1208,8 +1228,37 @@
 				DYLIB_CURRENT_VERSION = 50;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1226,8 +1275,37 @@
 				DYLIB_CURRENT_VERSION = 50;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
