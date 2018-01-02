@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipFileInfo {
 
@@ -23,7 +24,7 @@ class SevenZipFileInfo {
 
     var unknownProperties = [SevenZipProperty]()
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         numFiles = bitReader.szMbd()
         for _ in 0..<numFiles {
             files.append(File())

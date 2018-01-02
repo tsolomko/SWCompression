@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {

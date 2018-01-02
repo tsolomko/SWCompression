@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive function for XZ archives.
 public class XZArchive: Archive {

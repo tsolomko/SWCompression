@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Represents a GZip archive's header.
 public struct GzipHeader {

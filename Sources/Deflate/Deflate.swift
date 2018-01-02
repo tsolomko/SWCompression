@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides functions for compression and decompression for Deflate algorithm.
 public class Deflate: DecompressionAlgorithm {
@@ -22,7 +23,7 @@ public class Deflate: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
         return try decompress(bitReader)
     }
 
@@ -34,7 +35,7 @@ public class Deflate: DecompressionAlgorithm {
             /// Is this a last block?
             let isLastBit = bitReader.bit()
             /// Type of the current block.
-            let blockType = bitReader.intFromBits(count: 2)
+            let blockType = bitReader.int(fromBits: 2)
 
             if blockType == 0 { // Uncompressed block.
                 bitReader.align()
@@ -69,18 +70,18 @@ public class Deflate: DecompressionAlgorithm {
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
 
                     /// Number of literals codes.
-                    let literals = bitReader.intFromBits(count: 5) + 257
+                    let literals = bitReader.int(fromBits: 5) + 257
                     /// Number of distances codes.
-                    let distances = bitReader.intFromBits(count: 5) + 1
+                    let distances = bitReader.int(fromBits: 5) + 1
                     /// Number of code lengths codes.
-                    let codeLengthsLength = bitReader.intFromBits(count: 4) + 4
+                    let codeLengthsLength = bitReader.int(fromBits: 4) + 4
 
                     // Read code lengths codes.
                     // Moreover, they are stored in a very specific order,
                     //  defined by HuffmanTree.Constants.codeLengthOrders.
                     var lengthsForOrder = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsLength {
-                        lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.intFromBits(count: 3)
+                        lengthsForOrder[Constants.codeLengthOrders[i]] = bitReader.int(fromBits: 3)
                     }
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
                     let dynamicCodes = DecodingHuffmanTree(lengths: Deflate.lengths(from: lengthsForOrder), bitReader)
@@ -102,17 +103,17 @@ public class Deflate: DecompressionAlgorithm {
                         } else if symbol == 16 {
                             // Copy previous code length 3 to 6 times.
                             // Next two bits show how many times we need to copy.
-                            count = bitReader.intFromBits(count: 2) + 3
+                            count = bitReader.int(fromBits: 2) + 3
                             what = codeLengths.last!
                         } else if symbol == 17 {
                             // Repeat code length 0 for from 3 to 10 times.
                             // Next three bits show how many times we need to copy.
-                            count = bitReader.intFromBits(count: 3) + 3
+                            count = bitReader.int(fromBits: 3) + 3
                             what = 0
                         } else if symbol == 18 {
                             // Repeat code length 0 for from 11 to 138 times.
                             // Next seven bits show how many times we need to do this.
-                            count = bitReader.intFromBits(count: 7) + 11
+                            count = bitReader.int(fromBits: 7) + 11
                             what = 0
                         } else {
                             throw DeflateError.wrongSymbol
@@ -152,7 +153,7 @@ public class Deflate: DecompressionAlgorithm {
                         // Actually, nextSymbol is not a starting value of length,
                         //  but an index for special array of starting values.
                         let length = Constants.lengthBase[nextSymbol - 257] +
-                            bitReader.intFromBits(count: extraLength)
+                            bitReader.int(fromBits: extraLength)
 
                         // Then we need to get distance code.
                         let distanceCode = mainDistances.findNextSymbol()
@@ -165,7 +166,7 @@ public class Deflate: DecompressionAlgorithm {
                         let extraDistance = distanceCode == 0 || distanceCode == 1 ? 0 : ((distanceCode >> 1) - 1)
                         // And yes, distanceCode is not a first part of distance but rather an index for special array.
                         let distance = Constants.distanceBase[distanceCode] +
-                            bitReader.intFromBits(count: extraDistance)
+                            bitReader.int(fromBits: extraDistance)
 
                         // We should repeat last 'distance' amount of data.
                         // The amount of times we do this is round(length / distance).

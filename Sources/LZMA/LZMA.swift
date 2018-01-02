@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides decompression function for LZMA algorithm.
 public class LZMA: DecompressionAlgorithm {

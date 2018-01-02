@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipHeader {
 
@@ -12,7 +13,7 @@ class SevenZipHeader {
     var mainStreams: SevenZipStreamInfo?
     var fileInfo: SevenZipFileInfo?
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         var type = bitReader.byte()
 
         if type == 0x02 {
@@ -39,7 +40,7 @@ class SevenZipHeader {
         }
     }
 
-    convenience init(_ bitReader: BitReader, using streamInfo: SevenZipStreamInfo) throws {
+    convenience init(_ bitReader: MsbBitReader, using streamInfo: SevenZipStreamInfo) throws {
         let folder = streamInfo.coderInfo.folders[0]
         guard let packInfo = streamInfo.packInfo
             else { throw SevenZipError.internalStructureError }
@@ -57,7 +58,7 @@ class SevenZipHeader {
                 else { throw SevenZipError.wrongCRC }
         }
 
-        let headerBitReader = BitReader(data: headerData, bitOrder: .straight)
+        let headerBitReader = MsbBitReader(data: headerData)
 
         guard headerBitReader.byte() == 0x01
             else { throw SevenZipError.internalStructureError }

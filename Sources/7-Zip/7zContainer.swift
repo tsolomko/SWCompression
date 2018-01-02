@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides functions for work with 7-Zip containers.
 public class SevenZipContainer: Container {
@@ -216,7 +217,7 @@ public class SevenZipContainer: Container {
 
     private static func readHeader(_ data: Data) throws -> SevenZipHeader? {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .straight)
+        let bitReader = MsbBitReader(data: data)
 
         // **SignatureHeader**
 

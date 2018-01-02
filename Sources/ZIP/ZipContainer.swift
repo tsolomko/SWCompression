@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides functions for work with ZIP containers.
 public class ZipContainer: Container {
@@ -56,7 +57,7 @@ public class ZipContainer: Container {
         case .copy:
             fileData = Data(bytes: byteReader.bytes(count: Int(truncatingIfNeeded: uncompSize)))
         case .deflate:
-            let bitReader = BitReader(data: byteReader.data, bitOrder: .reversed)
+            let bitReader = LsbBitReader(data: byteReader.data)
             bitReader.offset = byteReader.offset
             fileData = try Deflate.decompress(bitReader)
             // Sometimes `bitReader` has not-aligned state after Deflate decompression,
@@ -66,7 +67,7 @@ public class ZipContainer: Container {
         case .bzip2:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm considers bits in a byte in a different order.
-                let bitReader = BitReader(data: byteReader.data, bitOrder: .straight)
+                let bitReader = MsbBitReader(data: byteReader.data)
                 bitReader.offset = byteReader.offset
                 fileData = try BZip2.decompress(bitReader)
                 // Sometimes `bitReader` has not-aligned state after BZip2 decompression,
