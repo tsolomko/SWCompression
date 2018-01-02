@@ -17,3 +17,6 @@ if [[ $# -ne 1 || $1 != "-T"  ]]; then
         exit 1
     fi
 fi
+
+echo "=> Downloading dependency (BitByteData) using Carthage"
+(set -x; carthage bootstrap)
