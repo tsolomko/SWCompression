@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-(set +x; echo "=> Removing dependencies\' bcsymbolmap files.")
+(set +x; echo "=> Removing dependencies' bcsymbolmap files.")
 rm -f Carthage/Build/Mac/*.bcsymbolmap
 rm -f Carthage/Build/watchOS/*.bcsymbolmap
 rm -f Carthage/Build/tvOS/*.bcsymbolmap
