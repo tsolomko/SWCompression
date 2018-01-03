@@ -46,7 +46,7 @@ public class BZip2: DecompressionAlgorithm {
             let blockCRC32 = UInt32(truncatingIfNeeded: bitReader.int(fromBits: 32))
 
             if blockType == 0x314159265359 {
-                let blockData = try decode(bitReader)
+                let blockData = try decode(bitReader, blockSize)
                 out.append(blockData)
                 guard CheckSums.bzip2CRC32(blockData) == blockCRC32
                     else { throw BZip2Error.wrongCRC(out) }
@@ -64,7 +64,7 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decode(_ bitReader: BitReader) throws -> Data {
+    private static func decode(_ bitReader: BitReader, _ blockSize: BlockSize) throws -> Data {
         let isRandomized = bitReader.bit()
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }
@@ -202,7 +202,8 @@ public class BZip2: DecompressionAlgorithm {
 
         // Run Length Decoding
         var i = 0
-        var out: [UInt8] = []
+        var out = [UInt8]()
+        out.reserveCapacity(blockSize.sizeInBytes)
         while i < nt.count {
             if i < nt.count - 4 && nt[i] == nt[i + 1] && nt[i] == nt[i + 2] && nt[i] == nt[i + 3] {
                 let runLength = nt[i + 4] + 4

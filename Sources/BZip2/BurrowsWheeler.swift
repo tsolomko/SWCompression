@@ -11,6 +11,7 @@ class BurrowsWheeler {
         let doubleBytes = bytes + bytes
         let suffixArray = SuffixArray.make(from: doubleBytes, with: 256)
         var bwt = [Int]()
+        bwt.reserveCapacity(bytes.count)
         var pointer = 0
         for i in 1..<suffixArray.count {
             if suffixArray[i] < bytes.count {
@@ -27,14 +28,15 @@ class BurrowsWheeler {
     }
 
     static func reverse(bytes: [UInt8], _ pointer: Int) -> [UInt8] {
-        var resultBytes: [UInt8] = []
+        guard bytes.count > 0
+            else { return [] }
+        var resultBytes = [UInt8]()
+        resultBytes.reserveCapacity(bytes.count)
         var end = pointer
-        if bytes.count > 0 {
-            let T = bwt(transform: bytes)
-            for _ in 0..<bytes.count {
-                end = T[end]
-                resultBytes.append(bytes[end])
-            }
+        let T = bwt(transform: bytes)
+        for _ in 0..<bytes.count {
+            end = T[end]
+            resultBytes.append(bytes[end])
         }
         return resultBytes
     }
