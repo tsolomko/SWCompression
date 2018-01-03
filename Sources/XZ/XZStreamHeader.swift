@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 struct XZStreamHeader {
 
@@ -30,16 +31,16 @@ struct XZStreamHeader {
     let checkType: CheckType
     let flagsCRC: UInt32
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ byteReader: ByteReader) throws {
         // Check magic number.
-        guard pointerData.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
+        guard byteReader.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
             else { throw XZError.wrongMagic }
 
-        let flagsBytes = pointerData.bytes(count: 2)
+        let flagsBytes = byteReader.bytes(count: 2)
 
         // First, we need to check for corruption in flags,
         //  so we compare CRC32 of flags to the value stored in archive.
-        let flagsCRC = pointerData.uint32()
+        let flagsCRC = byteReader.uint32()
         guard CheckSums.crc32(flagsBytes) == flagsCRC
             else { throw XZError.wrongInfoCRC }
         self.flagsCRC = flagsCRC

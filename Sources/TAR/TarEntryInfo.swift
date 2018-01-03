@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {
@@ -83,24 +84,24 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let blockStartIndex: Int
 
-    init(_ pointerData: DataWithPointer, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
+    init(_ byteReader: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
-        blockStartIndex = pointerData.index
+        blockStartIndex = byteReader.offset
         var linkName: String
         var name: String
 
         // File name
-        name = try pointerData.nullEndedAsciiString(cutoff: 100)
+        name = try byteReader.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let octalPosixAttributes = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
+        guard let octalPosixAttributes = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
             else { throw TarError.wrongField }
         // Sometimes file mode also contains unix type, so we need to filter it out.
         let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
         permissions = Permissions(rawValue: posixAttributes & 0xFFF)
 
         // Owner's user ID
-        guard let ownerAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let ownerAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "uid" attribute.
         if let uidString = local?.entries["uid"] ?? global?.entries["uid"] {
@@ -110,7 +111,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Group's user ID
-        guard let groupAccountID = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let groupAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "gid" attribute.
         if let gidString = local?.entries["gid"] ?? global?.entries["gid"] {
@@ -120,7 +121,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // File size
-        guard let octalFileSize = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))
+        guard let octalFileSize = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
         if let sizeString = local?.entries["size"] ?? global?.entries["size"],
@@ -131,7 +132,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Modification time
-        guard let mtime = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
+        guard let mtime = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
             else { throw TarError.wrongField }
         if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"],
             let paxMtime = Double(mtimeString) {
@@ -141,16 +142,16 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Checksum
-        guard let checksum = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
+        guard let checksum = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
             else { throw TarError.wrongField }
 
-        let currentIndex = pointerData.index
-        pointerData.index = blockStartIndex
-        var headerDataForChecksum = pointerData.bytes(count: 512)
+        let currentIndex = byteReader.offset
+        byteReader.offset = blockStartIndex
+        var headerDataForChecksum = byteReader.bytes(count: 512)
         for i in 148..<156 {
             headerDataForChecksum[i] = 0x20
         }
-        pointerData.index = currentIndex
+        byteReader.offset = currentIndex
 
         // Some implementations treat bytes as signed integers, but some don't.
         // So we check both cases, coincedence in one of them will pass the checksum test.
@@ -163,7 +164,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
             else { throw TarError.wrongHeaderChecksum }
 
         // File type
-        let fileTypeIndicator = pointerData.byte()
+        let fileTypeIndicator = byteReader.byte()
         self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
         self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
         self.isLongLinkName = fileTypeIndicator == 75 // "K"
@@ -171,34 +172,34 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.type = ContainerEntryType(fileTypeIndicator)
 
         // Linked file name
-        linkName = try pointerData.nullEndedAsciiString(cutoff: 100)
+        linkName = try byteReader.nullEndedAsciiString(cutoff: 100)
 
         // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
         // They differ in `magic` field value and how other fields are padded.
-        // Padding is taken care of in Data extension functions in "DataWithPointer+Tar.swift" file.
+        // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
         // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
-        let magic = pointerData.bytes(count: 8)
+        let magic = byteReader.bytes(count: 8)
 
         if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
             magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
             if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
                 self.ownerUserName = uname
-                pointerData.index += 32
+                byteReader.offset += 32
             } else {
-                ownerUserName = try pointerData.nullEndedAsciiString(cutoff: 32)
+                ownerUserName = try byteReader.nullEndedAsciiString(cutoff: 32)
             }
 
             if let gname = local?.entries["gname"] ?? global?.entries["gname"] {
                 ownerGroupName = gname
-                pointerData.index += 32
+                byteReader.offset += 32
             } else {
-                ownerGroupName = try pointerData.nullEndedAsciiString(cutoff: 32)
+                ownerGroupName = try byteReader.nullEndedAsciiString(cutoff: 32)
             }
 
-            deviceMajorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
-            deviceMinorNumber = Int(try pointerData.nullSpaceEndedAsciiString(cutoff: 8))
-            name = try pointerData.nullEndedAsciiString(cutoff: 155) + name
+            deviceMajorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
+            deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
+            name = try byteReader.nullEndedAsciiString(cutoff: 155) + name
         } else {
             ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
             ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]

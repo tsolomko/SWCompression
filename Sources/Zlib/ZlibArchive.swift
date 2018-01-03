@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive and archive functions for Zlib archives.
 public class ZlibArchive: Archive {
@@ -23,7 +24,7 @@ public class ZlibArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         _ = try ZlibHeader(bitReader)
 

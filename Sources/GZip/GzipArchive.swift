@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive and archive functions for GZip archives.
 public class GzipArchive: Archive {
@@ -36,7 +37,7 @@ public class GzipArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         let member = try processMember(bitReader)
 
@@ -60,10 +61,10 @@ public class GzipArchive: Archive {
      */
     public static func multiUnarchive(archive data: Data) throws -> [Member] {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         var result = [Member]()
-        while !bitReader.isAtTheEnd {
+        while !bitReader.isFinished {
             let member = try processMember(bitReader)
 
             result.append(member)
@@ -75,7 +76,7 @@ public class GzipArchive: Archive {
         return result
     }
 
-    private static func processMember(_ bitReader: BitReader) throws -> Member {
+    private static func processMember(_ bitReader: LsbBitReader) throws -> Member {
         let header = try GzipHeader(bitReader)
 
         let memberData = try Deflate.decompress(bitReader)

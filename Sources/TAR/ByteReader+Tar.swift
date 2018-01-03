@@ -4,21 +4,22 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
-extension DataWithPointer {
+extension ByteReader {
 
     private func buffer(_ cutoff: Int, endingWith ends: UInt8...) -> [UInt8] {
-        let startIndex = index
+        let startIndex = offset
         var buffer = [UInt8]()
-        while index - startIndex < cutoff {
+        while offset - startIndex < cutoff {
             let byte = self.byte()
             if ends.contains(byte) {
-                index -= 1
+                offset -= 1
                 break
             }
             buffer.append(byte)
         }
-        index += cutoff - (index - startIndex)
+        offset += cutoff - (offset - startIndex)
         return buffer
     }
 

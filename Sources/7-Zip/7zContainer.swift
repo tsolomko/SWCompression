@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides functions for work with 7-Zip containers.
 public class SevenZipContainer: Container {
@@ -50,10 +51,10 @@ public class SevenZipContainer: Container {
         /// Combined calculated CRC of entire folder == all files in folder.
         var folderCRC = CheckSums.crc32(Data())
 
-        /// `DataWithPointer` object with unpacked stream's data.
-        var rawFileData = DataWithPointer(data: Data())
+        /// `ByteReader` object with unpacked stream's data.
+        var rawFileData = ByteReader(data: Data())
 
-        let pointerData = DataWithPointer(data: data)
+        let byteReader = ByteReader(data: data)
 
         for fileIndex in 0..<files.count {
             let file = files[fileIndex]
@@ -87,7 +88,7 @@ public class SevenZipContainer: Container {
                 // There may be several streams corresponding to a single folder,
                 //  so we have to iterate over them, if necessary.
                 // If we switched folders or completed reading of a stream we need to move to the next stream.
-                if fileInFolderCount == 0 || rawFileData.isAtTheEnd {
+                if fileInFolderCount == 0 || rawFileData.isFinished {
                     streamIndex += 1
 
                     // First, we move to the stream's offset.
@@ -95,15 +96,15 @@ public class SevenZipContainer: Container {
                     //  as they are placed in the container.
                     // Thus, we have to start moving to stream's offset from the beginning.
                     // (Or, maybe, this is incorrect and the order of streams is guaranteed).
-                    pointerData.index = signatureHeaderSize + packInfo.packPosition // Pack offset.
+                    byteReader.offset = signatureHeaderSize + packInfo.packPosition // Pack offset.
                     if streamIndex != 0 {
                         for i in 0..<streamIndex {
-                            pointerData.index += packInfo.packSizes[i]
+                            byteReader.offset += packInfo.packSizes[i]
                         }
                     }
 
                     // Load the stream.
-                    let streamData = Data(bytes: pointerData.bytes(count: packInfo.packSizes[streamIndex]))
+                    let streamData = Data(bytes: byteReader.bytes(count: packInfo.packSizes[streamIndex]))
 
                     // Check stream's CRC, if it's available.
                     if streamIndex < packInfo.digests.count,
@@ -114,7 +115,7 @@ public class SevenZipContainer: Container {
 
                     // One stream can contain data of several files,
                     //  so we need to decode the stream first, then split it into files.
-                    rawFileData = DataWithPointer(data: try folder.unpack(data: streamData))
+                    rawFileData = ByteReader(data: try folder.unpack(data: streamData))
                 }
 
                 // `SevenZipSubstreamInfo` object must contain information about file's size
@@ -128,7 +129,7 @@ public class SevenZipContainer: Container {
                 let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
 
                 // Check, if we aren't about to read too much from a stream.
-                guard rawFileData.index + fileSize <= rawFileData.size
+                guard rawFileData.offset + fileSize <= rawFileData.size
                     else { throw SevenZipError.internalStructureError }
 
                 let fileData = Data(bytes: rawFileData.bytes(count: fileSize))
@@ -216,7 +217,7 @@ public class SevenZipContainer: Container {
 
     private static func readHeader(_ data: Data) throws -> SevenZipHeader? {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .straight)
+        let bitReader = MsbBitReader(data: data)
 
         // **SignatureHeader**
 
@@ -231,20 +232,20 @@ public class SevenZipContainer: Container {
         let startHeaderCRC = bitReader.uint32()
 
         /// - Note: Relative to SignatureHeader
-        let nextHeaderOffset = Int(bitReader.uint64())
-        let nextHeaderSize = Int(bitReader.uint64())
+        let nextHeaderOffset = bitReader.uint64().toInt()
+        let nextHeaderSize = bitReader.uint64().toInt()
         let nextHeaderCRC = bitReader.uint32()
 
-        bitReader.index = 12
+        bitReader.offset = 12
         guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
             else { throw SevenZipError.wrongCRC }
 
         // **Header**
-        bitReader.index += nextHeaderOffset
-        let headerStartIndex = bitReader.index
+        bitReader.offset += nextHeaderOffset
+        let headerStartIndex = bitReader.offset
         let headerEndIndex: Int
 
-        if bitReader.isAtTheEnd {
+        if bitReader.isFinished {
             return nil // In case of completely empty container.
         }
 
@@ -253,11 +254,11 @@ public class SevenZipContainer: Container {
 
         if type == 0x17 {
             let packedHeaderStreamInfo = try SevenZipStreamInfo(bitReader)
-            headerEndIndex = bitReader.index
+            headerEndIndex = bitReader.offset
             header = try SevenZipHeader(bitReader, using: packedHeaderStreamInfo)
         } else if type == 0x01 {
             header = try SevenZipHeader(bitReader)
-            headerEndIndex = bitReader.index
+            headerEndIndex = bitReader.offset
         } else {
             throw SevenZipError.internalStructureError
         }
@@ -267,7 +268,7 @@ public class SevenZipContainer: Container {
             else { throw SevenZipError.wrongSize }
 
         // Check header CRC
-        bitReader.index = headerStartIndex
+        bitReader.offset = headerStartIndex
         guard CheckSums.crc32(bitReader.bytes(count: nextHeaderSize)) == nextHeaderCRC
             else { throw SevenZipError.wrongCRC }
 

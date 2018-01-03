@@ -4,10 +4,11 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class LZMADecoder {
 
-    private let pointerData: DataWithPointer
+    private let byteReader: ByteReader
 
     var dictionarySize = 0 {
         didSet {
@@ -65,8 +66,8 @@ class LZMADecoder {
     /// Used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state = 0
 
-    init(_ pointerData: DataWithPointer) {
-        self.pointerData = pointerData
+    init(_ byteReader: ByteReader) {
+        self.byteReader = byteReader
     }
 
     /**
@@ -121,7 +122,7 @@ class LZMADecoder {
     /// Main LZMA (algorithm) decoder function.
     func decode() throws {
         // First, we need to initialize Rande Decoder.
-        guard let rD = LZMARangeDecoder(pointerData)
+        guard let rD = LZMARangeDecoder(byteReader)
             else { throw LZMAError.rangeDecoderInitError }
         self.rangeDecoder = rD
 

@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive function for XZ archives.
 public class XZArchive: Archive {
@@ -25,7 +26,7 @@ public class XZArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bytes.
-        let pointerData = DataWithPointer(data: data)
+        let byteReader = ByteReader(data: data)
 
         // Note: We don't check footer's magic bytes at the beginning,
         //  because it is impossible to determine the end of each stream in multi-stream archives
@@ -33,13 +34,13 @@ public class XZArchive: Archive {
         //  guarantee correctness of other streams.
 
         var result = Data()
-        while !pointerData.isAtTheEnd {
-            let streamResult = try processStream(pointerData)
+        while !byteReader.isFinished {
+            let streamResult = try processStream(byteReader)
             result.append(streamResult.data)
             guard !streamResult.checkError
                 else { throw XZError.wrongCheck([result]) }
 
-            try processPadding(pointerData)
+            try processPadding(byteReader)
         }
 
         return result
@@ -63,46 +64,46 @@ public class XZArchive: Archive {
      */
     public static func splitUnarchive(archive data: Data) throws -> [Data] {
         // Same code as in `unarchive(archive:)` but with different type of `result`.
-        let pointerData = DataWithPointer(data: data)
+        let byteReader = ByteReader(data: data)
 
         var result = [Data]()
-        while !pointerData.isAtTheEnd {
-            let streamResult = try processStream(pointerData)
+        while !byteReader.isFinished {
+            let streamResult = try processStream(byteReader)
             result.append(streamResult.data)
             guard !streamResult.checkError
                 else { throw XZError.wrongCheck(result) }
 
-            try processPadding(pointerData)
+            try processPadding(byteReader)
         }
 
         return result
     }
 
-    private static func processStream(_ pointerData: DataWithPointer) throws -> (data: Data, checkError: Bool) {
+    private static func processStream(_ byteReader: ByteReader) throws -> (data: Data, checkError: Bool) {
         var out = Data()
 
-        let streamHeader = try XZStreamHeader(pointerData)
+        let streamHeader = try XZStreamHeader(byteReader)
 
         // BLOCKS AND INDEX
         var blockInfos: [(unpaddedSize: Int, uncompSize: Int)] = []
         var indexSize = -1
         while true {
-            let blockHeaderSize = pointerData.byte()
+            let blockHeaderSize = byteReader.byte()
             if blockHeaderSize == 0 { /// Zero value of blockHeaderSize means that we've encountered INDEX.
-                indexSize = try processIndex(blockInfos, pointerData)
+                indexSize = try processIndex(blockInfos, byteReader)
                 break
             } else {
-                let block = try XZBlock(blockHeaderSize, pointerData, streamHeader.checkType.size)
+                let block = try XZBlock(blockHeaderSize, byteReader, streamHeader.checkType.size)
                 out.append(block.data)
                 switch streamHeader.checkType {
                 case .none:
                     break
                 case .crc32:
-                    let check = pointerData.uint32()
+                    let check = byteReader.uint32()
                     guard CheckSums.crc32(block.data) == check
                         else { return (out, true) }
                 case .crc64:
-                    let check = pointerData.uint64()
+                    let check = byteReader.uint64()
                     guard CheckSums.crc64(block.data) == check
                         else { return (out, true) }
                 case .sha256:
@@ -113,57 +114,57 @@ public class XZArchive: Archive {
         }
 
         // STREAM FOOTER
-        try processFooter(streamHeader, indexSize, pointerData)
+        try processFooter(streamHeader, indexSize, byteReader)
 
         return (out, false)
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
-                                     _ pointerData: DataWithPointer) throws -> Int {
-        let indexStartIndex = pointerData.index - 1
-        let recordsCount = try pointerData.multiByteDecode()
+                                     _ byteReader: ByteReader) throws -> Int {
+        let indexStartIndex = byteReader.offset - 1
+        let recordsCount = try byteReader.multiByteDecode()
         guard recordsCount == blockInfos.count
             else { throw XZError.wrongField }
 
         for blockInfo in blockInfos {
-            let unpaddedSize = try pointerData.multiByteDecode()
+            let unpaddedSize = try byteReader.multiByteDecode()
             guard unpaddedSize == blockInfo.unpaddedSize
                 else { throw XZError.wrongField }
 
-            let uncompSize = try pointerData.multiByteDecode()
+            let uncompSize = try byteReader.multiByteDecode()
             guard uncompSize == blockInfo.uncompSize
                 else { throw XZError.wrongDataSize }
         }
 
-        var indexSize = pointerData.index - indexStartIndex
+        var indexSize = byteReader.offset - indexStartIndex
         if indexSize % 4 != 0 {
             let paddingSize = 4 - indexSize % 4
             for _ in 0..<paddingSize {
-                let byte = pointerData.byte()
+                let byte = byteReader.byte()
                 guard byte == 0x00
                     else { throw XZError.wrongPadding }
                 indexSize += 1
             }
         }
 
-        let indexCRC = pointerData.uint32()
-        pointerData.index = indexStartIndex
-        guard CheckSums.crc32(pointerData.bytes(count: indexSize)) == indexCRC
+        let indexCRC = byteReader.uint32()
+        byteReader.offset = indexStartIndex
+        guard CheckSums.crc32(byteReader.bytes(count: indexSize)) == indexCRC
             else { throw XZError.wrongInfoCRC }
-        pointerData.index += 4
+        byteReader.offset += 4
 
         return indexSize + 4
     }
 
     private static func processFooter(_ streamHeader: XZStreamHeader, _ indexSize: Int,
-                                      _ pointerData: DataWithPointer) throws {
-        let footerCRC = pointerData.uint32()
+                                      _ byteReader: ByteReader) throws {
+        let footerCRC = byteReader.uint32()
         /// Indicates the size of Index field. Should match its real size.
-        let backwardSize = (pointerData.uint32().toInt() + 1) * 4
-        let streamFooterFlags = pointerData.uint16().toInt()
+        let backwardSize = (byteReader.uint32().toInt() + 1) * 4
+        let streamFooterFlags = byteReader.uint16().toInt()
 
-        pointerData.index -= 6
-        guard CheckSums.crc32(pointerData.bytes(count: 6)) == footerCRC
+        byteReader.offset -= 6
+        guard CheckSums.crc32(byteReader.bytes(count: 6)) == footerCRC
             else { throw XZError.wrongInfoCRC }
 
         guard backwardSize == indexSize
@@ -176,18 +177,18 @@ public class XZArchive: Archive {
             else { throw XZError.wrongField }
 
         // Check footer's magic number
-        guard pointerData.bytes(count: 2) == [0x59, 0x5A]
+        guard byteReader.bytes(count: 2) == [0x59, 0x5A]
             else { throw XZError.wrongMagic }
     }
 
     /// Returns `true` if end of archive is reached, `false` otherwise.
-    private static func processPadding(_ pointerData: DataWithPointer) throws {
-        guard !pointerData.isAtTheEnd
+    private static func processPadding(_ byteReader: ByteReader) throws {
+        guard !byteReader.isFinished
             else { return }
 
         var paddingBytes = 0
         while true {
-            let byte = pointerData.byte()
+            let byte = byteReader.byte()
             if byte != 0 {
                 if paddingBytes % 4 != 0 {
                     throw XZError.wrongPadding
@@ -195,7 +196,7 @@ public class XZArchive: Archive {
                     break
                 }
             }
-            if pointerData.isAtTheEnd {
+            if byteReader.isFinished {
                 if byte != 0 || paddingBytes % 4 != 3 {
                     throw XZError.wrongPadding
                 } else {
@@ -204,7 +205,7 @@ public class XZArchive: Archive {
             }
             paddingBytes += 1
         }
-        pointerData.index -= 1
+        byteReader.offset -= 1
     }
 
 }

@@ -35,7 +35,6 @@
 		0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0631CB051F81109E00A2E0AB /* Deflate+Constants.swift */; };
 		0634D9831F5207C30002B675 /* SuffixArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0634D9821F5207C30002B675 /* SuffixArray.swift */; };
 		06393DF51F1A7F8E00A647A0 /* ZipString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06393DF41F1A7F8E00A647A0 /* ZipString.swift */; };
-		063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1051DE1F07800F38082 /* DataWithPointer.swift */; };
 		063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
 		063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */; };
 		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
@@ -45,13 +44,12 @@
 		065146231FA8E20C007F83F4 /* XZBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065146221FA8E20C007F83F4 /* XZBlock.swift */; };
 		0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
 		0656B8261F8A960700111605 /* TarEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B8251F8A960700111605 /* TarEntryInfo.swift */; };
-		0656B82B1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82A1F8A979A00111605 /* DataWithPointer+Tar.swift */; };
+		0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */; };
 		0656B8301F8A97BB00111605 /* Int+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82F1F8A97BB00111605 /* Int+Tar.swift */; };
 		06595E0E1F1E8252006501C2 /* 7zFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06595E0D1F1E8252006501C2 /* 7zFolder.swift */; };
 		06595E131F1E90C2006501C2 /* 7zCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06595E121F1E90C2006501C2 /* 7zCoder.swift */; };
 		065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */; };
 		067518361E2A86F700D16354 /* ZipContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067518351E2A86F700D16354 /* ZipContainer.swift */; };
-		0681B3DE1E44F674001A9D79 /* BitWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0681B3DD1E44F674001A9D79 /* BitWriter.swift */; };
 		0686A63B1FA4C07D00E89C9E /* FileSystemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0686A63A1FA4C07D00E89C9E /* FileSystemType.swift */; };
 		0686A6401FA4C18800E89C9E /* FileSystemType+Gzip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0686A63F1FA4C18800E89C9E /* FileSystemType+Gzip.swift */; };
 		0686A6451FA4C47300E89C9E /* FileSystemType+Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0686A6441FA4C47300E89C9E /* FileSystemType+Zip.swift */; };
@@ -80,16 +78,15 @@
 		06BAC5941F8CFF28002443F4 /* ZipEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BAC5931F8CFF28002443F4 /* ZipEntryInfo.swift */; };
 		06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
 		06CC3FDD1F8AAE8B00BD576D /* BitReader+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */; };
-		06CC3FE21F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FE11F8AAF3100BD576D /* DataWithPointer+XZ.swift */; };
+		06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */; };
 		06CDFC9E1F111D2600292758 /* Deflate+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFC9D1F111D2600292758 /* Deflate+Compress.swift */; };
 		06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA21F111D6C00292758 /* BZip2Error.swift */; };
 		06CDFCA81F111D9700292758 /* DeflateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA71F111D9700292758 /* DeflateError.swift */; };
 		06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCAC1F111DBE00292758 /* LZMAError.swift */; };
 		06CDFCB21F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
-		06CDFCB71F111E6900292758 /* BitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB61F111E6900292758 /* BitReader.swift */; };
 		06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */; };
 		06DDB1711F8190D400035BEF /* BZip2+BlockSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DDB1701F8190D400035BEF /* BZip2+BlockSize.swift */; };
-		06DE29B81FB7024C0098A761 /* DataWithPointer+ZipString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DE29B71FB7024C0098A761 /* DataWithPointer+ZipString.swift */; };
+		06DE29B81FB7024C0098A761 /* ByteReader+ZipString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DE29B71FB7024C0098A761 /* ByteReader+ZipString.swift */; };
 		06E2346C1E068E9600F18798 /* XZArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E2346B1E068E9600F18798 /* XZArchive.swift */; };
 		06E234821E06A6C200F18798 /* CheckSums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E234811E06A6C200F18798 /* CheckSums.swift */; };
 		06E30F391F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */; };
@@ -238,7 +235,6 @@
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		0634D9821F5207C30002B675 /* SuffixArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuffixArray.swift; sourceTree = "<group>"; };
 		06393DF41F1A7F8E00A647A0 /* ZipString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipString.swift; sourceTree = "<group>"; };
-		063DF1051DE1F07800F38082 /* DataWithPointer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataWithPointer.swift; path = Sources/Common/DataWithPointer.swift; sourceTree = SOURCE_ROOT; };
 		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Common/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DecodingHuffmanTree.swift; path = Sources/Common/DecodingHuffmanTree.swift; sourceTree = SOURCE_ROOT; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
@@ -249,13 +245,12 @@
 		065146221FA8E20C007F83F4 /* XZBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZBlock.swift; sourceTree = "<group>"; };
 		0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerEntryType+Tar.swift"; sourceTree = "<group>"; };
 		0656B8251F8A960700111605 /* TarEntryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarEntryInfo.swift; sourceTree = "<group>"; };
-		0656B82A1F8A979A00111605 /* DataWithPointer+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataWithPointer+Tar.swift"; sourceTree = "<group>"; };
+		0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+Tar.swift"; sourceTree = "<group>"; };
 		0656B82F1F8A97BB00111605 /* Int+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Tar.swift"; sourceTree = "<group>"; };
 		06595E0D1F1E8252006501C2 /* 7zFolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zFolder.swift; sourceTree = "<group>"; };
 		06595E121F1E90C2006501C2 /* 7zCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zCoder.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntryInfo.swift; sourceTree = "<group>"; };
 		067518351E2A86F700D16354 /* ZipContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipContainer.swift; sourceTree = "<group>"; };
-		0681B3DD1E44F674001A9D79 /* BitWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitWriter.swift; path = Sources/Common/BitWriter.swift; sourceTree = SOURCE_ROOT; };
 		0686A63A1FA4C07D00E89C9E /* FileSystemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemType.swift; sourceTree = "<group>"; };
 		0686A63F1FA4C18800E89C9E /* FileSystemType+Gzip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileSystemType+Gzip.swift"; sourceTree = "<group>"; };
 		0686A6441FA4C47300E89C9E /* FileSystemType+Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileSystemType+Zip.swift"; sourceTree = "<group>"; };
@@ -281,16 +276,15 @@
 		06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CC3FDC1F8AAE8B00BD576D /* BitReader+7z.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BitReader+7z.swift"; sourceTree = "<group>"; };
-		06CC3FE11F8AAF3100BD576D /* DataWithPointer+XZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataWithPointer+XZ.swift"; sourceTree = "<group>"; };
+		06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+XZ.swift"; sourceTree = "<group>"; };
 		06CDFC9D1F111D2600292758 /* Deflate+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Deflate+Compress.swift"; sourceTree = "<group>"; };
 		06CDFCA21F111D6C00292758 /* BZip2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2Error.swift; sourceTree = "<group>"; };
 		06CDFCA71F111D9700292758 /* DeflateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateError.swift; sourceTree = "<group>"; };
 		06CDFCAC1F111DBE00292758 /* LZMAError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAError.swift; sourceTree = "<group>"; };
 		06CDFCB11F111DEC00292758 /* LZMA2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2Error.swift; sourceTree = "<group>"; };
-		06CDFCB61F111E6900292758 /* BitReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitReader.swift; path = Sources/Common/BitReader.swift; sourceTree = SOURCE_ROOT; };
 		06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BZip2+Compress.swift"; sourceTree = "<group>"; };
 		06DDB1701F8190D400035BEF /* BZip2+BlockSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BZip2+BlockSize.swift"; sourceTree = "<group>"; };
-		06DE29B71FB7024C0098A761 /* DataWithPointer+ZipString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataWithPointer+ZipString.swift"; sourceTree = "<group>"; };
+		06DE29B71FB7024C0098A761 /* ByteReader+ZipString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+ZipString.swift"; sourceTree = "<group>"; };
 		06E2346B1E068E9600F18798 /* XZArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZArchive.swift; sourceTree = "<group>"; };
 		06E234811E06A6C200F18798 /* CheckSums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckSums.swift; path = Sources/Common/CheckSums.swift; sourceTree = SOURCE_ROOT; };
 		06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "HuffmanLength+Comparable.swift"; path = "Sources/Common/HuffmanLength+Comparable.swift"; sourceTree = SOURCE_ROOT; };
@@ -435,9 +429,6 @@
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */,
 				0686A63A1FA4C07D00E89C9E /* FileSystemType.swift */,
-				063DF1051DE1F07800F38082 /* DataWithPointer.swift */,
-				06CDFCB61F111E6900292758 /* BitReader.swift */,
-				0681B3DD1E44F674001A9D79 /* BitWriter.swift */,
 				06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */,
 				06E30F381F82D2DD00F80167 /* HuffmanLength+Comparable.swift */,
 				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
@@ -493,7 +484,7 @@
 				061C06201F0E89D900832F0C /* XZError.swift */,
 				065146221FA8E20C007F83F4 /* XZBlock.swift */,
 				0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */,
-				06CC3FE11F8AAF3100BD576D /* DataWithPointer+XZ.swift */,
+				06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */,
 			);
 			path = XZ;
 			sourceTree = "<group>";
@@ -577,7 +568,7 @@
 				061C06471F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift */,
 				061C06511F0E904600832F0C /* ZipEndOfCentralDirectory.swift */,
 				06092A231FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift */,
-				06DE29B71FB7024C0098A761 /* DataWithPointer+ZipString.swift */,
+				06DE29B71FB7024C0098A761 /* ByteReader+ZipString.swift */,
 				0686A6441FA4C47300E89C9E /* FileSystemType+Zip.swift */,
 			);
 			path = ZIP;
@@ -592,7 +583,7 @@
 				062C1D7B1F8FCA9300917968 /* TarExtendedHeader.swift */,
 				061C06561F0E90C800832F0C /* TarError.swift */,
 				0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */,
-				0656B82A1F8A979A00111605 /* DataWithPointer+Tar.swift */,
+				0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */,
 				0656B82F1F8A97BB00111605 /* Int+Tar.swift */,
 			);
 			path = TAR;
@@ -847,6 +838,7 @@
 				06F065911FFB761600312A82 /* Sources */,
 				06F065921FFB761600312A82 /* Frameworks */,
 				06F065931FFB761600312A82 /* Resources */,
+				062BE32F1FFBADB300343CAD /* Copy BitByteData.framework into test bundle */,
 			);
 			buildRules = (
 			);
@@ -992,13 +984,30 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		062BE32F1FFBADB300343CAD /* Copy BitByteData.framework into test bundle */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy BitByteData.framework into test bundle";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    cp -r ${PROJECT_DIR}/Carthage/Build/iOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    cp -r ${PROJECT_DIR}/Carthage/Build/tvOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    cp -r ${PROJECT_DIR}/Carthage/Build/watchOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    cp -r ${PROJECT_DIR}/Carthage/Build/Mac/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		06BE1AC31DB410F100EE0F59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				061C06521F0E904600832F0C /* ZipEndOfCentralDirectory.swift in Sources */,
-				06CDFCB71F111E6900292758 /* BitReader.swift in Sources */,
 				06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */,
 				0620F4C31F8E24B6001C9B7A /* CompressionAlgorithm.swift in Sources */,
 				06955E491F65C761004D5D79 /* BZip2+Lengths.swift in Sources */,
@@ -1024,7 +1033,7 @@
 				06A172831FA5D3770048A89C /* LZMA2Decoder.swift in Sources */,
 				061C06571F0E90C800832F0C /* TarError.swift in Sources */,
 				06A960561F1E7D0B0078E6D1 /* 7zPackInfo.swift in Sources */,
-				06DE29B81FB7024C0098A761 /* DataWithPointer+ZipString.swift in Sources */,
+				06DE29B81FB7024C0098A761 /* ByteReader+ZipString.swift in Sources */,
 				06BAC5941F8CFF28002443F4 /* ZipEntryInfo.swift in Sources */,
 				0625C49F1FB4B92F00A52C43 /* CompressionMethod+7z.swift in Sources */,
 				0620F4B31F8E2477001C9B7A /* ContainerEntry.swift in Sources */,
@@ -1037,7 +1046,6 @@
 				0686A6401FA4C18800E89C9E /* FileSystemType+Gzip.swift in Sources */,
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
 				06E30F391F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
-				0681B3DE1E44F674001A9D79 /* BitWriter.swift in Sources */,
 				061C063D1F0E8AB700832F0C /* ZipError.swift in Sources */,
 				0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,
 				06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */,
@@ -1060,7 +1068,7 @@
 				0656B8301F8A97BB00111605 /* Int+Tar.swift in Sources */,
 				06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */,
 				06393DF51F1A7F8E00A647A0 /* ZipString.swift in Sources */,
-				06CC3FE21F8AAF3100BD576D /* DataWithPointer+XZ.swift in Sources */,
+				06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */,
 				065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
 				0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
@@ -1078,9 +1086,8 @@
 				061C065C1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				064F72291F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */,
-				063DF10A1DE1F07800F38082 /* DataWithPointer.swift in Sources */,
 				06E6A6391F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
-				0656B82B1F8A979A00111605 /* DataWithPointer+Tar.swift in Sources */,
+				0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */,
 				06B689581F278815007C9316 /* 7zProperty.swift in Sources */,
 				0686A63B1FA4C07D00E89C9E /* FileSystemType.swift in Sources */,
 				061C06261F0E8A0300832F0C /* GzipError.swift in Sources */,
@@ -1191,7 +1198,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SDKROOT = macosx;
-				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos";
+				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1207,9 +1214,20 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 50;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/Carthage/Build/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/Carthage/Build/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/Mac\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/watchOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/watchOS\"";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					BitByteData,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1225,9 +1243,20 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 50;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/Carthage/Build/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/Carthage/Build/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/Mac\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/watchOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/watchOS\"";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks @loader_path/../Frameworks @executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					BitByteData,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

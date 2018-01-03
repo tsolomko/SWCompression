@@ -4,10 +4,11 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class LZMARangeDecoder {
 
-    private var pointerData: DataWithPointer
+    private var byteReader: ByteReader
 
     private var range: UInt32 = 0xFFFFFFFF
     private var code: UInt32 = 0
@@ -17,12 +18,12 @@ class LZMARangeDecoder {
         return self.code == 0
     }
 
-    init?(_ pointerData: DataWithPointer) {
-        self.pointerData = pointerData
+    init?(_ byteReader: ByteReader) {
+        self.byteReader = byteReader
 
-        let byte = self.pointerData.byte()
+        let byte = self.byteReader.byte()
         for _ in 0..<4 {
-            self.code = (self.code << 8) | UInt32(self.pointerData.byte())
+            self.code = (self.code << 8) | UInt32(self.byteReader.byte())
         }
         if byte != 0 || self.code == self.range {
             return nil
@@ -30,7 +31,7 @@ class LZMARangeDecoder {
     }
 
     init() {
-        self.pointerData = DataWithPointer(data: Data())
+        self.byteReader = ByteReader(data: Data())
         self.range = 0xFFFFFFFF
         self.code = 0
         self.isCorrupted = false
@@ -40,7 +41,7 @@ class LZMARangeDecoder {
     func normalize() {
         if self.range < UInt32(LZMAConstants.topValue) {
             self.range <<= 8
-            self.code = (self.code << 8) | UInt32(pointerData.byte())
+            self.code = (self.code << 8) | UInt32(byteReader.byte())
         }
     }
 
@@ -64,7 +65,7 @@ class LZMARangeDecoder {
             res = res &+ (t &+ 1)
             count -= 1
         } while count > 0
-        return Int(res)
+        return res.toInt()
     }
 
     /// Decodes binary symbol (bit) with predicted (estimated) probability.

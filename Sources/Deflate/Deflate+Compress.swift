@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 extension Deflate: CompressionAlgorithm {
 
@@ -74,7 +75,7 @@ extension Deflate: CompressionAlgorithm {
     }
 
     private static func createUncompressedBlock(_ data: Data) -> Data {
-        let bitWriter = BitWriter(bitOrder: .reversed)
+        let bitWriter = LsbBitWriter()
 
         // Write block header.
         // Note: Only one block is supported for now.
@@ -82,21 +83,21 @@ extension Deflate: CompressionAlgorithm {
         bitWriter.write(bits: [0, 0])
 
         // Before writing lengths we need to discard remaining bits in current byte.
-        bitWriter.finish()
+        bitWriter.align()
 
         // Write data's length.
         bitWriter.write(number: data.count, bitsCount: 16)
         // Write data's n-length.
         bitWriter.write(number: data.count ^ (1 << 16 - 1), bitsCount: 16)
 
-        var out = Data(bytes: bitWriter.buffer)
+        var out = bitWriter.data
         out.append(data)
 
         return out
     }
 
     private static func encodeHuffmanBlock(_ bldCodes: [BLDCode]) -> Data {
-        let bitWriter = BitWriter(bitOrder: .reversed)
+        let bitWriter = LsbBitWriter()
 
         // Write block header.
         // Note: For now it is only static huffman blocks.
@@ -118,15 +119,15 @@ extension Deflate: CompressionAlgorithm {
             case let .byte(byte):
                 mainLiterals.code(symbol: byte.toInt())
             case let .lengthDistance(length, distance):
-                let lengthSymbol = Constants.lengthCode[Int(length) - 3]
-                let lengthExtraBits = Int(length) - Constants.lengthBase[lengthSymbol - 257]
+                let lengthSymbol = Constants.lengthCode[length.toInt() - 3]
+                let lengthExtraBits = length.toInt() - Constants.lengthBase[lengthSymbol - 257]
                 let lengthExtraBitsCount = (257 <= lengthSymbol && lengthSymbol <= 260) || lengthSymbol == 285 ?
                     0 : (((lengthSymbol - 257) >> 2) - 1)
                 mainLiterals.code(symbol: lengthSymbol)
                 bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
 
-                let distanceSymbol = ((Constants.distanceBase.index { $0 > Int(distance) }) ?? 30) - 1
-                let distanceExtraBits = Int(distance) - Constants.distanceBase[distanceSymbol]
+                let distanceSymbol = ((Constants.distanceBase.index { $0 > distance.toInt() }) ?? 30) - 1
+                let distanceExtraBits = distance.toInt() - Constants.distanceBase[distanceSymbol]
                 let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ?
                     0 : ((distanceSymbol >> 1) - 1)
                 mainDistances.code(symbol: distanceSymbol)
@@ -136,9 +137,9 @@ extension Deflate: CompressionAlgorithm {
 
         // End data symbol.
         mainLiterals.code(symbol: 256)
-        bitWriter.finish()
+        bitWriter.align()
 
-        return Data(bytes: bitWriter.buffer)
+        return bitWriter.data
     }
 
     private enum BLDCode {

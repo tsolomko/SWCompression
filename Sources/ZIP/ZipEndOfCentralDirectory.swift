@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 struct ZipEndOfCentralDirectory {
 
@@ -16,31 +17,31 @@ struct ZipEndOfCentralDirectory {
     private(set) var cdSize: UInt64
     private(set) var cdOffset: UInt64
 
-    init(_ pointerData: DataWithPointer) throws {
+    init(_ byteReader: ByteReader) throws {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
-        self.currentDiskNumber = UInt32(truncatingIfNeeded: pointerData.uint16())
-        self.cdDiskNumber = UInt32(truncatingIfNeeded: pointerData.uint16())
+        self.currentDiskNumber = UInt32(truncatingIfNeeded: byteReader.uint16())
+        self.cdDiskNumber = UInt32(truncatingIfNeeded: byteReader.uint16())
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Number of CD entries on the current disk.
-        var cdEntriesCurrentDisk = UInt64(truncatingIfNeeded: pointerData.uint16())
+        var cdEntriesCurrentDisk = UInt64(truncatingIfNeeded: byteReader.uint16())
         /// Total number of CD entries.
-        self.cdEntries = UInt64(truncatingIfNeeded: pointerData.uint16())
+        self.cdEntries = UInt64(truncatingIfNeeded: byteReader.uint16())
         guard cdEntries == cdEntriesCurrentDisk
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Size of Central Directory.
-        self.cdSize = UInt64(truncatingIfNeeded: pointerData.uint32())
+        self.cdSize = UInt64(truncatingIfNeeded: byteReader.uint32())
         /// Offset to the start of Central Directory.
-        self.cdOffset = UInt64(truncatingIfNeeded: pointerData.uint32())
+        self.cdOffset = UInt64(truncatingIfNeeded: byteReader.uint32())
 
         // There is also a .ZIP file comment, but we don't need it.
         // Here's how it can be processed:
-        // let zipCommentLength = pointerData.uint16().toInt()
-        // let zipComment = String(data: Data(bytes: pointerData.bytes(count: zipCommentLength)),
+        // let zipCommentLength = byteReader.uint16().toInt()
+        // let zipComment = String(data: Data(bytes: byteReader.bytes(count: zipCommentLength)),
         //                         encoding: .utf8)
 
         // Check if zip64 records are present.
@@ -52,52 +53,52 @@ struct ZipEndOfCentralDirectory {
 
         if zip64RecordExists { // We need to find Zip64 end of CD locator.
             // Back to start of end of CD record.
-            pointerData.index -= 20
+            byteReader.offset -= 20
             // Zip64 locator takes exactly 20 bytes.
-            pointerData.index -= 20
+            byteReader.offset -= 20
 
             // Check signature.
-            guard pointerData.uint32() == 0x07064b50
+            guard byteReader.uint32() == 0x07064b50
                 else { throw ZipError.wrongSignature }
 
-            let zip64CDStartDisk = pointerData.uint32()
+            let zip64CDStartDisk = byteReader.uint32()
             guard self.currentDiskNumber == zip64CDStartDisk
                 else { throw ZipError.multiVolumesNotSupported }
 
-            let zip64CDEndOffset = pointerData.uint64()
-            let totalDisks = pointerData.uint32()
+            let zip64CDEndOffset = byteReader.uint64()
+            let totalDisks = byteReader.uint32()
             guard totalDisks == 1
                 else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
-            pointerData.index = Int(UInt(truncatingIfNeeded: zip64CDEndOffset))
+            byteReader.offset = zip64CDEndOffset.toInt()
 
             // Check signature.
-            guard pointerData.uint32() == 0x06064b50
+            guard byteReader.uint32() == 0x06064b50
                 else { throw ZipError.wrongSignature }
 
             // Following 8 bytes are size of end of zip64 CD, but we don't need it.
-            _ = pointerData.uint64()
+            _ = byteReader.uint64()
 
             // Next two bytes are version of compressor, but we don't need it.
-            _ = pointerData.uint16()
-            let versionNeeded = pointerData.uint16()
+            _ = byteReader.uint16()
+            let versionNeeded = byteReader.uint16()
             guard versionNeeded & 0xFF <= 63
                 else { throw ZipError.wrongVersion }
 
             // Update values read from basic End of CD with the ones from Zip64 End of CD.
-            self.currentDiskNumber = pointerData.uint32()
-            self.cdDiskNumber = pointerData.uint32()
+            self.currentDiskNumber = byteReader.uint32()
+            self.cdDiskNumber = byteReader.uint32()
             guard currentDiskNumber == cdDiskNumber
                 else { throw ZipError.multiVolumesNotSupported }
 
-            cdEntriesCurrentDisk = pointerData.uint64()
-            self.cdEntries = pointerData.uint64()
+            cdEntriesCurrentDisk = byteReader.uint64()
+            self.cdEntries = byteReader.uint64()
             guard cdEntries == cdEntriesCurrentDisk
                 else { throw ZipError.multiVolumesNotSupported }
 
-            self.cdSize = pointerData.uint64()
-            self.cdOffset = pointerData.uint64()
+            self.cdSize = byteReader.uint64()
+            self.cdOffset = byteReader.uint64()
 
             // Then, there might be 'zip64 extensible data sector' with 'special purpose data'.
             // But we don't need them currently, so let's skip them.

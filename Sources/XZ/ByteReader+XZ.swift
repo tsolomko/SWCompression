@@ -4,8 +4,9 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
-extension DataWithPointer {
+extension ByteReader {
 
     func multiByteDecode() throws -> Int {
         var i = 1
