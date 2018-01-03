@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.watchos.deployment_target = "2.0"
 
-  s.dependency 'BitByteData', '~> 1.0.0-test.3'
+  s.dependency 'BitByteData', '~> 1.0'
 
   s.subspec 'Deflate' do |sp|
     sp.source_files = 'Sources/{Deflate/*,Common/*}.swift'

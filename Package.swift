@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         // SWCOMP: Uncomment the line below to build swcomp example program.
         // .package(url: "https://github.com/jakeheis/SwiftCLI", from: "4.0.0"),
-        .package(url: "https://github.com/tsolomko/BitByteData", .branch("release-1.0.0"))
+        .package(url: "https://github.com/tsolomko/BitByteData", from: "1.0.0")
     ],
     targets: [
         // SWCOMP: Uncomment the lines below to build swcomp example program.
