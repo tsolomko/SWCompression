@@ -35,12 +35,8 @@ public class BZip2: DecompressionAlgorithm {
         let method = bitReader.byte()
         guard method == 104 else { throw BZip2Error.wrongVersion }
 
-        var blockSize = bitReader.byte()
-        if blockSize >= 49 && blockSize <= 57 {
-            blockSize -= 48
-        } else {
-            throw BZip2Error.wrongBlockSize
-        }
+        guard let blockSize = BlockSize(bitReader.byte())
+            else { throw BZip2Error.wrongBlockSize }
 
         var totalCRC: UInt32 = 0
         while true {

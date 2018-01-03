@@ -30,6 +30,31 @@ public extension BZip2 {
         /// 900 KB.
         case nine = 9
 
+        init?(_ headerByte: UInt8) {
+            switch headerByte {
+            case 0x31:
+                self = .one
+            case 0x32:
+                self = .two
+            case 0x33:
+                self = .three
+            case 0x34:
+                self = .four
+            case 0x35:
+                self = .five
+            case 0x36:
+                self = .six
+            case 0x37:
+                self = .seven
+            case 0x38:
+                self = .eight
+            case 0x39:
+                self = .nine
+            default:
+                return nil
+            }
+        }
+
         func headerByte() -> Int {
             switch self {
             case .one:
