@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.0
+
+### Test 1
+
+Some internal classes were extracted and published as a separate project, [BitByteData](https://github.com/tsolomko/BitByteData).
+This project is now used by SWCompression.
+
 ## 4.0.1
 
 - Git tag for updates no longer has "v" prefix.
