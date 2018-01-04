@@ -55,7 +55,7 @@ public extension BZip2 {
             }
         }
 
-        func headerByte() -> Int {
+        var headerByte: Int {
             switch self {
             case .one:
                 return 0x31

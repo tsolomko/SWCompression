@@ -44,7 +44,7 @@ extension BZip2: CompressionAlgorithm {
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
         bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
-        bitWriter.write(number: blockSize.headerByte(), bitsCount: 8) // Block size.
+        bitWriter.write(number: blockSize.headerByte, bitsCount: 8) // Block size.
 
         var totalCRC: UInt32 = 0
         for i in stride(from: data.startIndex, to: data.endIndex, by: rawBlockSize) {
