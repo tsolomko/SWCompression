@@ -617,16 +617,16 @@
 			children = (
 				06F065AD1FFB763300312A82 /* Test Files */,
 				06F065A11FFB763300312A82 /* Constants.swift */,
-				06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */,
-				06F065A31FFB763300312A82 /* ZlibTests.swift */,
-				06F065A41FFB763300312A82 /* ZipTests.swift */,
 				06F065A51FFB763300312A82 /* BZip2Tests.swift */,
-				06F065A61FFB763300312A82 /* TarTests.swift */,
-				06F065A71FFB763300312A82 /* GzipTests.swift */,
-				06F065A91FFB763300312A82 /* XzTests.swift */,
-				06F065AA1FFB763300312A82 /* SevenZipTests.swift */,
-				06F065AB1FFB763300312A82 /* LzmaTests.swift */,
 				06F065AC1FFB763300312A82 /* BZip2CompressionTests.swift */,
+				06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */,
+				06F065A71FFB763300312A82 /* GzipTests.swift */,
+				06F065AB1FFB763300312A82 /* LzmaTests.swift */,
+				06F065AA1FFB763300312A82 /* SevenZipTests.swift */,
+				06F065A61FFB763300312A82 /* TarTests.swift */,
+				06F065A91FFB763300312A82 /* XzTests.swift */,
+				06F065A41FFB763300312A82 /* ZipTests.swift */,
+				06F065A31FFB763300312A82 /* ZlibTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
