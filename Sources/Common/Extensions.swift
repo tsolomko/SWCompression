@@ -20,6 +20,20 @@ extension Int {
         return UInt8(truncatingIfNeeded: UInt(self))
     }
 
+    /// Returns an integer with reversed order of bits.
+    func reversed(bits count: Int) -> Int {
+        var a = 1 << 0
+        var b = 1 << (count - 1)
+        var z = 0
+        for i in Swift.stride(from: count - 1, to: -1, by: -2) {
+            z |= (self >> i) & a
+            z |= (self << i) & b
+            a <<= 1
+            b >>= 1
+        }
+        return z
+    }
+
 }
 
 extension Date {
