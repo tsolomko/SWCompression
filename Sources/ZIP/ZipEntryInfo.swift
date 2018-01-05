@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides access to information about an entry from the ZIP container.
 public struct ZipEntryInfo: ContainerEntryInfo {
@@ -76,13 +77,15 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
-    // We don't use `ByteReader` as argument, because it doesn't work well in asynchronous environment.
-    init(_ data: Data, _ offset: Int, _ currentDiskNumber: UInt32) throws {
-        // Load and save Central Directory entry and Local Header.
-        let cdEntry = try ZipCentralDirectoryEntry(data, offset)
+    init(_ byteReader: ByteReader, _ currentDiskNumber: UInt32) throws {
+        // Load and save Central Directory entry.
+        let cdEntry = try ZipCentralDirectoryEntry(byteReader)
         self.cdEntry = cdEntry
 
-        let localHeader = try ZipLocalHeader(data, cdEntry.localHeaderOffset.toInt())
+        // Move to the location of Local Header.
+        byteReader.offset = cdEntry.localHeaderOffset.toInt()
+        // Load and save Local Header.
+        let localHeader = try ZipLocalHeader(byteReader)
         try localHeader.validate(with: cdEntry, currentDiskNumber)
         self.localHeader = localHeader
 

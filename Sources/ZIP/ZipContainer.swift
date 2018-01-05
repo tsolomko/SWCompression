@@ -128,10 +128,10 @@ public class ZipContainer: Container {
      - Returns: Array of `ZipEntryInfo`.
      */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
-        /// Object with input data which supports convenient work with bit shifts.
         let byteReader = ByteReader(data: data)
         var entries = [ZipEntryInfo]()
 
+        // First, we are looking for End of Central Directory record, specifically, for its signature.
         byteReader.offset = byteReader.size - 22 // 22 is a minimum amount which could take end of CD record.
         while true {
             // Check signature.
@@ -145,22 +145,24 @@ public class ZipContainer: Container {
             byteReader.offset -= 5
         }
 
+        // Then we are reading End of Central Directory record.
         let endOfCD = try ZipEndOfCentralDirectory(byteReader)
         let cdEntries = endOfCD.cdEntries
 
-        // OK, now we are ready to read Central Directory itself.
-        var entryIndex = endOfCD.cdOffset.toInt()
-
-        // First, check for "Archive extra data record" and skip it if present.
-        byteReader.offset = entryIndex
+        // Now we are ready to read Central Directory itself.
+        // But first, we should check for "Archive extra data record" and skip it if present.
+        byteReader.offset = endOfCD.cdOffset.toInt()
         if byteReader.uint32() == 0x08064b50 {
-            entryIndex += byteReader.uint32().toInt()
+            byteReader.offset += byteReader.uint32().toInt()
+        } else {
+            byteReader.offset -= 4
         }
 
         for _ in 0..<cdEntries {
-            let info = try ZipEntryInfo(data, entryIndex, endOfCD.currentDiskNumber)
+            let info = try ZipEntryInfo(byteReader, endOfCD.currentDiskNumber)
             entries.append(info)
-            entryIndex = info.cdEntry.nextEntryIndex
+            // Move to the next Central Directory entry.
+            byteReader.offset = info.cdEntry.nextEntryOffset
         }
 
         return entries
