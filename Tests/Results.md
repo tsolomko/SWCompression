@@ -27,7 +27,7 @@ __Note:__ All results are averages over 6 iterations.
 ## BZip2 Decompress
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|6.821 ± 0.042|54.214 ± 1.398|7.255 ± 0.117|
 |4.0.1|&mdash;|6.797 ± 0.080|54.046 ± 1.070|7.177 ± 0.029|
 |4.1.0-test.2-dev|1.0.1|4.619 ± 0.111|37.149 ± 0.354|4.961 ± 0.085|
@@ -35,7 +35,7 @@ __Note:__ All results are averages over 6 iterations.
 ## XZ Unarchive (LZMA/LZMA2 Decompress)
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|error|24.663 ± 2.349|2.904 ± 0.076|
 |4.0.1|&mdash;|2.475 ± 0.067|23.507 ± 0.423|2.901 ± 0.049|
 |4.1.0-test.2-dev|1.0.1|2.487 ± 0.100|23.497 ± 0.121|2.927 ± 0.062|
@@ -43,7 +43,7 @@ __Note:__ All results are averages over 6 iterations.
 ## GZip Unarchive (Deflate Decompress)
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|4.007 ± 0.196|32.043 ± 0.581|4.303 ± 0.045|
 |4.0.1|&mdash;|3.886 ± 0.100|32.390 ± 0.896|4.295 ± 0.040|
 |4.1.0-test.2-dev|1.0.1|2.400 ± 0.108|21.439 ± 0.192|2.614 ± 0.077|
@@ -51,7 +51,7 @@ __Note:__ All results are averages over 6 iterations.
 ## 7-Zip Info Function
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|0.270 ± 0.010|crash|0.601 ± 0.057|
 |4.0.1|&mdash;|0.258 ± 0.003|0.601 ± 0.010|0.473 ± 0.008|
 |4.1.0-test.2-dev|1.0.1|0.265 ± 0.012|0.603 ± 0.015|0.479 ± 0.011|
@@ -59,7 +59,7 @@ __Note:__ All results are averages over 6 iterations.
 ## TAR Info Function
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|0.248 ± 0.172|1.563 ± 0.442|1.254 ± 0.277|
 |4.0.1|&mdash;|0.187 ± 0.177|1.257 ± 0.404|1.016 ± 0.325|
 |4.1.0-test.2-dev|1.0.1|0.184 ± 0.182|1.265 ± 0.435|1.024 ± 0.357|
@@ -67,7 +67,7 @@ __Note:__ All results are averages over 6 iterations.
 ## ZIP Info Function
 
 |SWCompression<br>version|BitByteData<br>version|Test 1|Test 2|Test 3|
-|---|---|---|---|
+|:---:|:---:|---|---|---|
 |4.0.0|&mdash;|0.072 ± 0.065|0.669 ± 0.147|0.120 ± 0.081|
 |4.0.1|&mdash;|0.076 ± 0.064|0.670 ± 0.142|0.123 ± 0.080|
 |4.1.0-test.2-dev|1.0.1|0.062 ± 0.073|0.638 ± 0.148|0.105 ± 0.090|
