@@ -30,18 +30,10 @@ class BurrowsWheeler {
     static func reverse(bytes: [UInt8], _ pointer: Int) -> [UInt8] {
         guard bytes.count > 0
             else { return [] }
+
         var resultBytes = [UInt8]()
         resultBytes.reserveCapacity(bytes.count)
-        var end = pointer
-        let T = bwt(transform: bytes)
-        for _ in 0..<bytes.count {
-            end = T[end]
-            resultBytes.append(bytes[end])
-        }
-        return resultBytes
-    }
 
-    private static func bwt(transform bytes: [UInt8]) -> [Int] {
         var counts = Array(repeating: 0, count: 256)
         for byte in bytes {
             counts[byte.toInt()] += 1
@@ -64,7 +56,12 @@ class BurrowsWheeler {
             base[char.toInt()] += 1
         }
 
-        return pointers
+        var end = pointer
+        for _ in 0..<bytes.count {
+            end = pointers[end]
+            resultBytes.append(bytes[end])
+        }
+        return resultBytes
     }
 
 }
