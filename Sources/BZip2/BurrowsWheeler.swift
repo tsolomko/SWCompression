@@ -42,18 +42,23 @@ class BurrowsWheeler {
     }
 
     private static func bwt(transform bytes: [UInt8]) -> [Int] {
-        let sortedBytes = bytes.sorted()
-        var base: [Int] = Array(repeating: -1, count: 256)
+        var counts = Array(repeating: 0, count: 256)
+        for byte in bytes {
+            counts[byte.toInt()] += 1
+        }
 
-        var byteType = -1
-        for i in 0..<sortedBytes.count {
-            if byteType < sortedBytes[i].toInt() {
-                byteType = sortedBytes[i].toInt()
-                base[byteType] = i
+        var base = Array(repeating: -1, count: 256)
+        var sum = 0
+        for byteType in 0..<256 {
+            if counts[byteType] == 0 {
+                continue
+            } else {
+                base[byteType] = sum
+                sum += counts[byteType]
             }
         }
 
-        var pointers: [Int] = Array(repeating: -1, count: bytes.count)
+        var pointers = Array(repeating: -1, count: bytes.count)
         for (i, char) in bytes.enumerated() {
             pointers[base[char.toInt()]] = i
             base[char.toInt()] += 1
