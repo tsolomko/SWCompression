@@ -25,7 +25,7 @@ public class BZip2: DecompressionAlgorithm {
         return try decompress(bitReader)
     }
 
-    static func decompress(_ bitReader: BitReader) throws -> Data {
+    static func decompress(_ bitReader: MsbBitReader) throws -> Data {
         /// An array for storing output data
         var out = Data()
 
@@ -64,7 +64,7 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decode(_ bitReader: BitReader, _ blockSize: BlockSize) throws -> Data {
+    private static func decode(_ bitReader: MsbBitReader, _ blockSize: BlockSize) throws -> Data {
         let isRandomized = bitReader.bit()
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }

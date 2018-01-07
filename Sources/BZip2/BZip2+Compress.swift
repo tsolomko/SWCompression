@@ -70,7 +70,7 @@ extension BZip2: CompressionAlgorithm {
         return bitWriter.data
     }
 
-    private static func process(block data: Data, _ bitWriter: BitWriter) {
+    private static func process(block data: Data, _ bitWriter: MsbBitWriter) {
         var out: [Int]
 
         out = initialRle(data)

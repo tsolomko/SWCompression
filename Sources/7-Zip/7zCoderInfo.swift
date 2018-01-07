@@ -18,7 +18,7 @@ class SevenZipCoderInfo {
         external = 0
     }
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         var type = bitReader.byte()
         guard type == 0x0B else { throw SevenZipError.internalStructureError }
 

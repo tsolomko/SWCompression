@@ -12,7 +12,7 @@ class SevenZipStreamInfo {
     var coderInfo: SevenZipCoderInfo
     var substreamInfo: SevenZipSubstreamInfo?
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         var type = bitReader.byte()
 
         if type == 0x06 {

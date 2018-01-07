@@ -27,7 +27,7 @@ public class Deflate: DecompressionAlgorithm {
         return try decompress(bitReader)
     }
 
-    static func decompress(_ bitReader: BitReader) throws -> Data {
+    static func decompress(_ bitReader: LsbBitReader) throws -> Data {
         /// An array for storing output data
         var out: [UInt8] = []
 

@@ -22,7 +22,7 @@ class SevenZipCoder {
     var propertiesSize: Int?
     var properties: [UInt8]?
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         let flags = bitReader.byte()
         guard flags & 0xC0 == 0
             else { throw SevenZipError.internalStructureError }

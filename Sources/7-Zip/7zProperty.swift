@@ -18,7 +18,7 @@ class SevenZipProperty {
         self.bytes = bytes
     }
 
-    static func getProperties(_ bitReader: BitReader) throws -> [SevenZipProperty] {
+    static func getProperties(_ bitReader: MsbBitReader) throws -> [SevenZipProperty] {
         var properties = [SevenZipProperty]()
         while true {
             let propertyType = bitReader.byte()
