@@ -94,11 +94,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
         name = try byteReader.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let octalPosixAttributes = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
+        guard let posixAttributes = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8), radix: 8)
             else { throw TarError.wrongField }
         // Sometimes file mode also contains unix type, so we need to filter it out.
-        let posixAttributes = UInt32(truncatingIfNeeded: octalPosixAttributes)
-        permissions = Permissions(rawValue: posixAttributes & 0xFFF)
+        permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
 
         // Owner's user ID
         guard let ownerAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
@@ -121,18 +120,18 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // File size
-        guard let octalFileSize = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12))
+        guard let fileSize = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
         if let sizeString = local?.entries["size"] ?? global?.entries["size"],
             let size = Int(sizeString) {
             self.size = size
         } else {
-            self.size = octalFileSize.octalToDecimal()
+            self.size = fileSize
         }
 
         // Modification time
-        guard let mtime = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12))?.octalToDecimal()
+        guard let mtime = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
             else { throw TarError.wrongField }
         if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"],
             let paxMtime = Double(mtimeString) {
@@ -142,7 +141,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Checksum
-        guard let checksum = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))?.octalToDecimal()
+        guard let checksum = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8), radix: 8)
             else { throw TarError.wrongField }
 
         let currentIndex = byteReader.offset
