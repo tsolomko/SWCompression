@@ -222,15 +222,12 @@ extension BZip2: CompressionAlgorithm {
                 runLength += 1
                 index += 1
             }
+            let byte = data[index].toInt()
+            for _ in 0..<min(4, runLength) {
+                out.append(byte)
+            }
             if runLength >= 4 {
-                for _ in 0..<4 {
-                    out.append(data[index].toInt())
-                }
                 out.append(runLength - 4)
-            } else {
-                for _ in 0..<runLength {
-                    out.append(data[index].toInt())
-                }
             }
             index += 1
         }
