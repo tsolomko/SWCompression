@@ -14,12 +14,13 @@ class GZipCommand: Command {
 
     let compress = Flag("-c", "--compress", description: "Compress input file into GZip archive")
     let decompress = Flag("-d", "--decompress", description: "Decompress GZip archive")
+    let info = Flag("-i", "--info", description: "Print information from GZip header")
 
     let useGZipName = Flag("-n", "--use-gzip-name",
                            description: "Use name saved inside GZip archive as output path, if possible")
 
     var optionGroups: [OptionGroup] {
-        let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
+        let actions = OptionGroup(options: [compress, decompress, info], restriction: .exactlyOne)
         return [actions]
     }
 
@@ -74,6 +75,12 @@ class GZipCommand: Command {
                                                         fileName: fileName.isEmpty ? nil : fileName,
                                                         writeHeaderCRC: true)
             try compressedData.write(to: outputURL)
+        } else if info.value {
+            let inputURL = URL(fileURLWithPath: self.input.value)
+            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            
+            let header = try GzipHeader(archive: fileData)
+            print(header)
         }
     }
 
