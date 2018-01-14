@@ -74,9 +74,6 @@ class GZipCommand: Command {
                                                         fileName: fileName.isEmpty ? nil : fileName,
                                                         writeHeaderCRC: true)
             try compressedData.write(to: outputURL)
-        } else {
-            print("ERROR: Neither compress nor decompress option in GZipCommand.")
-            exit(1)
         }
     }
 

@@ -57,9 +57,6 @@ class BZip2Command: Command {
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             let compressedData = BZip2.compress(data: fileData)
             try compressedData.write(to: outputURL)
-        } else {
-            print("ERROR: Neither compress nor decompress option in BZip2Command.")
-            exit(1)
         }
     }
 
