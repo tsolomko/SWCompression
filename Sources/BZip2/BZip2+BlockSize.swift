@@ -60,7 +60,7 @@ public extension BZip2 {
         }
 
         var sizeInBytes: Int {
-            return self.rawValue * 100 * 1024
+            return self.rawValue * 100 * 1000
         }
 
     }
