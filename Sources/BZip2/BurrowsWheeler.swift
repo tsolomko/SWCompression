@@ -31,9 +31,6 @@ class BurrowsWheeler {
         guard bytes.count > 0
             else { return [] }
 
-        var resultBytes = [UInt8]()
-        resultBytes.reserveCapacity(bytes.count)
-
         var counts = Array(repeating: 0, count: 256)
         for byte in bytes {
             counts[byte.toInt()] += 1
@@ -55,6 +52,9 @@ class BurrowsWheeler {
             pointers[base[char.toInt()]] = i
             base[char.toInt()] += 1
         }
+
+        var resultBytes = [UInt8]()
+        resultBytes.reserveCapacity(bytes.count)
 
         var end = pointer
         for _ in 0..<bytes.count {
