@@ -13,8 +13,7 @@ class ZipCommand: Command {
     let shortDescription = "Extracts ZIP container"
 
     let info = Flag("-i", "--info", description: "Print list of entries in container and their attributes")
-    let extract = Key<String>("-e", "--extract",
-                              description: "Extract container into specified directory (it must be empty or not exist)")
+    let extract = Key<String>("-e", "--extract", description: "Extract container into specified directory")
 
     let verbose = Flag("--verbose", description: "Print the list of extracted files and directories.")
 
