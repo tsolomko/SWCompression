@@ -111,7 +111,7 @@ func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: B
             }
         #endif
 
-        if let permissions = entry.info.permissions?.rawValue {
+        if let permissions = entry.info.permissions?.rawValue, permissions > 0 {
             attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
         }
 
@@ -172,7 +172,7 @@ func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: B
             }
         #endif
 
-        if let permissions = entry.info.permissions?.rawValue {
+        if let permissions = entry.info.permissions?.rawValue, permissions > 0 {
             attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
         }
 
