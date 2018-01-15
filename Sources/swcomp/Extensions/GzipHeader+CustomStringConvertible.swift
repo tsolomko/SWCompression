@@ -22,5 +22,5 @@ extension GzipHeader: CustomStringConvertible {
         output += "Is text file: \(self.isTextFile)"
         return output
     }
-    
+
 }

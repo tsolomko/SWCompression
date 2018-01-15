@@ -78,7 +78,7 @@ class GZipCommand: Command {
         } else if info.value {
             let inputURL = URL(fileURLWithPath: self.input.value)
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-            
+
             let header = try GzipHeader(archive: fileData)
             print(header)
         }
