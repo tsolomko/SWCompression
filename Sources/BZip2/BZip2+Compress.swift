@@ -40,7 +40,7 @@ extension BZip2: CompressionAlgorithm {
      */
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = MsbBitWriter()
-        let rawBlockSize = blockSize.sizeInBytes
+        let rawBlockSize = blockSize.sizeInKilobytes * 800
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
         bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.

@@ -59,8 +59,8 @@ public extension BZip2 {
             return self.rawValue + 0x30
         }
 
-        var sizeInBytes: Int {
-            return self.rawValue * 100 * 800
+        var sizeInKilobytes: Int {
+            return self.rawValue * 100
         }
 
     }

@@ -203,7 +203,7 @@ public class BZip2: DecompressionAlgorithm {
         // Run Length Decoding
         var i = 0
         var out = [UInt8]()
-        out.reserveCapacity(blockSize.sizeInBytes)
+        out.reserveCapacity(blockSize.sizeInKilobytes * 1000)
         while i < nt.count {
             if i < nt.count - 4 && nt[i] == nt[i + 1] && nt[i] == nt[i + 2] && nt[i] == nt[i + 3] {
                 let runLength = nt[i + 4] + 4
