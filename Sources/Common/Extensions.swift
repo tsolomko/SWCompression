@@ -20,6 +20,15 @@ extension Int {
         return UInt8(truncatingIfNeeded: UInt(self))
     }
 
+    @inline(__always)
+    func roundTo512() -> Int {
+        if self >= Int.max - 510 {
+            return Int.max
+        } else {
+            return (self + 511) & (~511)
+        }
+    }
+
     /// Returns an integer with reversed order of bits.
     func reversed(bits count: Int) -> Int {
         var a = 1 << 0
