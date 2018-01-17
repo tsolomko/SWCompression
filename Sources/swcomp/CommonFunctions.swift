@@ -24,57 +24,7 @@ func isValidOutputDirectory(_ outputPath: String, create: Bool) throws -> Bool {
 
 func printInfo(_ entries: [ContainerEntryInfo]) {
     for entry in entries {
-        print("Name: \(entry.name)")
-
-        switch entry.type {
-        case .blockSpecial:
-            print("Type: block device file")
-        case .characterSpecial:
-            print("Type: character device file")
-        case .contiguous:
-            print("Type: contiguous file")
-        case .directory:
-            print("Type: directory")
-        case .fifo:
-            print("Type: fifo file")
-        case .hardLink:
-            print("Type: hard link")
-        case .regular:
-            print("Type: regular file")
-        case .socket:
-            print("Type: socket")
-        case .symbolicLink:
-            print("Type: symbolic link")
-        case .unknown:
-            print("Type: unknown")
-        }
-
-        if let tarEntry = entry as? TarEntryInfo {
-            if tarEntry.type == .symbolicLink {
-                print("Linked path: \(tarEntry.linkName)")
-            }
-        }
-
-        if let size = entry.size {
-            print("Size: \(size) bytes")
-        }
-
-        if let mtime = entry.modificationTime {
-            print("Mtime: \(mtime)")
-        }
-
-        if let atime = entry.accessTime {
-            print("Atime: \(atime)")
-        }
-
-        if let ctime = entry.creationTime {
-            print("Ctime: \(ctime)")
-        }
-
-        if let permissions = entry.permissions?.rawValue {
-            print(String(format: "Permissions: %o", permissions))
-        }
-
+        print(entry)
         print("------------------\n")
     }
 }
