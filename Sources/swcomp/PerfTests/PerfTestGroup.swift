@@ -11,6 +11,6 @@ class PerfTestGroup: CommandGroup {
     let name = "perf-test"
     let shortDescription = "Commands for performance testing"
 
-    let children: [Routable] = [UnGzip(), UnXz(), UnBz2(), InfoTar(), InfoZip(), Info7z()]
+    let children: [Routable] = [UnGzip(), UnXz(), UnBz2(), InfoTar(), InfoZip(), Info7z(), CompDeflate(), CompBz2()]
 
 }
