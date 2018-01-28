@@ -18,7 +18,7 @@ class SevenZipCommand: ContainerCommand {
 
     let archive = Parameter()
 
-    let openFunction: (Data) throws -> [ZipEntry] = ZipContainer.open
-    let infoFunction: (Data) throws -> [ZipEntryInfo] = ZipContainer.info
+    let openFunction: (Data) throws -> [SevenZipEntry] = SevenZipContainer.open
+    let infoFunction: (Data) throws -> [SevenZipEntryInfo] = SevenZipContainer.info
 
 }
