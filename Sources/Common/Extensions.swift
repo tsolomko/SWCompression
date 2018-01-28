@@ -47,13 +47,14 @@ extension Int {
 
 extension Date {
 
+    private static let ntfsReferenceDate = DateComponents(calendar: Calendar(identifier: .iso8601),
+                                                          timeZone: TimeZone(abbreviation: "UTC"),
+                                                          year: 1601, month: 1, day: 1,
+                                                          hour: 0, minute: 0, second: 0).date
+
     init?(_ ntfsTime: UInt64?) {
-        if let time = ntfsTime,
-            let ntfsStartDate = DateComponents(calendar: Calendar(identifier: .iso8601),
-                                               timeZone: TimeZone(abbreviation: "UTC"),
-                                               year: 1601, month: 1, day: 1,
-                                               hour: 0, minute: 0, second: 0).date {
-            self.init(timeInterval: TimeInterval(time) / 10_000_000, since: ntfsStartDate)
+        if let time = ntfsTime, let ntfsReferenceDate = Date.ntfsReferenceDate {
+            self.init(timeInterval: TimeInterval(time) / 10_000_000, since: ntfsReferenceDate)
         } else {
             return nil
         }
