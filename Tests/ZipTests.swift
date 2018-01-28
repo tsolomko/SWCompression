@@ -16,7 +16,6 @@ class ZipTests: XCTestCase {
             return
         }
 
-        _ = try ZipContainer.info(container: testData)
         _ = try ZipContainer.open(container: testData)
     }
 
