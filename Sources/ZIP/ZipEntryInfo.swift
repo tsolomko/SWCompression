@@ -113,8 +113,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
             let minutes = (dosTime & 0x7E0) >> 5
             let hours = (dosTime & 0xF800) >> 11
 
-            self.modificationTime = DateComponents(calendar: Calendar(identifier: .iso8601),
-                                                   timeZone: TimeZone(abbreviation: "UTC"),
+            self.modificationTime = DateComponents(calendar: Calendar.current, timeZone: TimeZone.current,
                                                    year: year, month: month, day: day,
                                                    hour: hours, minute: minutes, second: seconds).date
         }
