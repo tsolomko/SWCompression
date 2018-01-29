@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-extension BitReader {
+extension MsbBitReader {
 
     /// Abbreviation for "sevenZipMultiByteDecode".
     func szMbd() -> Int {

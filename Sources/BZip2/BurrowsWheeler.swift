@@ -11,6 +11,7 @@ class BurrowsWheeler {
         let doubleBytes = bytes + bytes
         let suffixArray = SuffixArray.make(from: doubleBytes, with: 256)
         var bwt = [Int]()
+        bwt.reserveCapacity(bytes.count)
         var pointer = 0
         for i in 1..<suffixArray.count {
             if suffixArray[i] < bytes.count {
@@ -27,37 +28,40 @@ class BurrowsWheeler {
     }
 
     static func reverse(bytes: [UInt8], _ pointer: Int) -> [UInt8] {
-        var resultBytes: [UInt8] = []
-        var end = pointer
-        if bytes.count > 0 {
-            let T = bwt(transform: bytes)
-            for _ in 0..<bytes.count {
-                end = T[end]
-                resultBytes.append(bytes[end])
-            }
+        guard bytes.count > 0
+            else { return [] }
+
+        var counts = Array(repeating: 0, count: 256)
+        for byte in bytes {
+            counts[byte.toInt()] += 1
         }
-        return resultBytes
-    }
 
-    private static func bwt(transform bytes: [UInt8]) -> [Int] {
-        let sortedBytes = bytes.sorted()
-        var base: [Int] = Array(repeating: -1, count: 256)
-
-        var byteType = -1
-        for i in 0..<sortedBytes.count {
-            if byteType < sortedBytes[i].toInt() {
-                byteType = sortedBytes[i].toInt()
-                base[byteType] = i
+        var base = Array(repeating: -1, count: 256)
+        var sum = 0
+        for byteType in 0..<256 {
+            if counts[byteType] == 0 {
+                continue
+            } else {
+                base[byteType] = sum
+                sum += counts[byteType]
             }
         }
 
-        var pointers: [Int] = Array(repeating: -1, count: bytes.count)
+        var pointers = Array(repeating: -1, count: bytes.count)
         for (i, char) in bytes.enumerated() {
             pointers[base[char.toInt()]] = i
             base[char.toInt()] += 1
         }
 
-        return pointers
+        var resultBytes = [UInt8]()
+        resultBytes.reserveCapacity(bytes.count)
+
+        var end = pointer
+        for _ in 0..<bytes.count {
+            end = pointers[end]
+            resultBytes.append(bytes[end])
+        }
+        return resultBytes
     }
 
 }

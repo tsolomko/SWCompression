@@ -13,7 +13,7 @@ class SevenZipFolder {
         let inIndex: Int
         let outIndex: Int
 
-        init(_ bitReader: BitReader) throws {
+        init(_ bitReader: MsbBitReader) throws {
             inIndex = bitReader.szMbd()
             outIndex = bitReader.szMbd()
         }
@@ -39,7 +39,7 @@ class SevenZipFolder {
     // This property is stored in SubstreamInfo.
     var numUnpackSubstreams = 1
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         numCoders = bitReader.szMbd()
         for _ in 0..<numCoders {
             let coder = try SevenZipCoder(bitReader)

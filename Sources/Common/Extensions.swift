@@ -20,17 +20,41 @@ extension Int {
         return UInt8(truncatingIfNeeded: UInt(self))
     }
 
+    @inline(__always)
+    func roundTo512() -> Int {
+        if self >= Int.max - 510 {
+            return Int.max
+        } else {
+            return (self + 511) & (~511)
+        }
+    }
+
+    /// Returns an integer with reversed order of bits.
+    func reversed(bits count: Int) -> Int {
+        var a = 1 << 0
+        var b = 1 << (count - 1)
+        var z = 0
+        for i in Swift.stride(from: count - 1, to: -1, by: -2) {
+            z |= (self >> i) & a
+            z |= (self << i) & b
+            a <<= 1
+            b >>= 1
+        }
+        return z
+    }
+
 }
 
 extension Date {
 
+    private static let ntfsReferenceDate = DateComponents(calendar: Calendar(identifier: .iso8601),
+                                                          timeZone: TimeZone(abbreviation: "UTC"),
+                                                          year: 1601, month: 1, day: 1,
+                                                          hour: 0, minute: 0, second: 0).date
+
     init?(_ ntfsTime: UInt64?) {
-        if let time = ntfsTime,
-            let ntfsStartDate = DateComponents(calendar: Calendar(identifier: .iso8601),
-                                               timeZone: TimeZone(abbreviation: "UTC"),
-                                               year: 1601, month: 1, day: 1,
-                                               hour: 0, minute: 0, second: 0).date {
-            self.init(timeInterval: TimeInterval(time) / 10_000_000, since: ntfsStartDate)
+        if let time = ntfsTime, let ntfsReferenceDate = Date.ntfsReferenceDate {
+            self.init(timeInterval: TimeInterval(time) / 10_000_000, since: ntfsReferenceDate)
         } else {
             return nil
         }

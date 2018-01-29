@@ -51,7 +51,9 @@ class SuffixArray {
             self.bucketSizes = bucketSizes
 
             var bucketHeads = [Int]()
+            bucketHeads.reserveCapacity(alphabetSize)
             var bucketTails = [Int]()
+            bucketTails.reserveCapacity(alphabetSize)
             var offset = 1
             for size in bucketSizes {
                 bucketHeads.append(offset)

@@ -13,7 +13,7 @@ class SevenZipPackInfo {
     private(set) var packSizes = [Int]()
     private(set) var digests = [UInt32?]()
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         packPosition = bitReader.szMbd()
         numPackStreams = bitReader.szMbd()
 

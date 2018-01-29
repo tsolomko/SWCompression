@@ -34,13 +34,9 @@ struct ZipCentralDirectoryEntry {
     private(set) var ntfsAtime: UInt64?
     private(set) var ntfsCtime: UInt64?
 
-    let nextEntryIndex: Int
+    let nextEntryOffset: Int
 
-    // We don't use `ByteReader` as argument, because it doesn't work well in asynchronous environment.
-    init(_ data: Data, _ offset: Int) throws {
-        let byteReader = ByteReader(data: data)
-        byteReader.offset = offset
-
+    init(_ byteReader: ByteReader) throws {
         // Check signature.
         guard byteReader.uint32() == 0x02014b50
             else { throw ZipError.wrongSignature }
@@ -122,7 +118,7 @@ struct ZipCentralDirectoryEntry {
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
 
-        self.nextEntryIndex = byteReader.offset
+        self.nextEntryOffset = byteReader.offset
     }
 
 }

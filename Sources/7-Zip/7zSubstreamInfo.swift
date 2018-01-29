@@ -12,7 +12,7 @@ class SevenZipSubstreamInfo {
     var unpackSizes = [Int]()
     var digests = [UInt32?]()
 
-    init(_ bitReader: BitReader, _ coderInfo: SevenZipCoderInfo) throws {
+    init(_ bitReader: MsbBitReader, _ coderInfo: SevenZipCoderInfo) throws {
         var totalUnpackStreams = coderInfo.folders.count
 
         var type = bitReader.byte()

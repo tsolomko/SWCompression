@@ -124,7 +124,8 @@ class SevenZipTests: XCTestCase {
 
     func testComplicatedCodingScheme() throws {
         // Container was created with these options: "-mf=BCJ -m0=Copy -m1=Deflate -m2=Delta -m3=LZMA -m4=LZMA2"
-        guard let testData = Constants.data(forTest: "test_complicated_coding_scheme", withType: SevenZipTests.testType) else {
+        guard let testData = Constants.data(forTest: "test_complicated_coding_scheme",
+                                            withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test data.")
             return
         }

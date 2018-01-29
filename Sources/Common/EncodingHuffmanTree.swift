@@ -20,20 +20,6 @@ class EncodingHuffmanTree {
         // Sort `lengths` array to calculate canonical Huffman code.
         let sortedLengths = lengths.sorted()
 
-        func reverse(bits: Int, in symbol: Int) -> Int {
-            // Auxiliarly function, which generates reversed order of bits in a number.
-            var a = 1 << 0
-            var b = 1 << (bits - 1)
-            var z = 0
-            for i in stride(from: bits - 1, to: -1, by: -2) {
-                z |= (symbol >> i) & a
-                z |= (symbol << i) & b
-                a <<= 1
-                b >>= 1
-            }
-            return z
-        }
-
         self.codingIndices = Array(repeating: [-1, -1], count: sortedLengths.count)
 
         // Calculates symbols for each length in 'sortedLengths' array and put them in the tree.
@@ -49,7 +35,7 @@ class EncodingHuffmanTree {
                 loopBits = bits
             }
             // Then we reverse bit order of the symbol, if necessary.
-            let treeCode = reverseCodes ? reverse(bits: loopBits, in: symbol) : symbol
+            let treeCode = reverseCodes ? symbol.reversed(bits: loopBits) : symbol
             self.codingIndices[length.symbol] = [treeCode, bits]
         }
     }
