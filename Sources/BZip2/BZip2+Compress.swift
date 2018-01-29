@@ -40,6 +40,9 @@ extension BZip2: CompressionAlgorithm {
      */
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = MsbBitWriter()
+        // We intentionally use smaller block size for compression to account for potential data size expansion
+        //  after intial RLE, which seems to be not being expected by original BZip2 implementation.
+        // TODO: This may point to some other problem in this implementation.
         let rawBlockSize = blockSize.sizeInKilobytes * 800
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
