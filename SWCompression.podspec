@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "4.0.1"
+  s.version      = "4.1.0"
   s.summary      = "A framework with functions for working with compression, archives and containers."
   
   s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."
@@ -13,12 +13,16 @@ Pod::Spec.new do |s|
 
   s.author       = { "Timofey Solomko" => "tsolomko@gmail.com" }
 
+  s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "#{s.version}" }
+
   s.ios.deployment_target = "8.0"
   s.osx.deployment_target = "10.10"
   s.tvos.deployment_target = "9.0"
   s.watchos.deployment_target = "2.0"
 
-  s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "#{s.version}" }
+  s.swift_version = '4.0'
+
+  s.dependency 'BitByteData', '~> 1.0'
 
   s.subspec 'Deflate' do |sp|
     sp.source_files = 'Sources/{Deflate/*,Common/*}.swift'

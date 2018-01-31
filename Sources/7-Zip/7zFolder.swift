@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipFolder {
 
@@ -12,7 +13,7 @@ class SevenZipFolder {
         let inIndex: Int
         let outIndex: Int
 
-        init(_ bitReader: BitReader) throws {
+        init(_ bitReader: MsbBitReader) throws {
             inIndex = bitReader.szMbd()
             outIndex = bitReader.szMbd()
         }
@@ -38,7 +39,7 @@ class SevenZipFolder {
     // This property is stored in SubstreamInfo.
     var numUnpackSubstreams = 1
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         numCoders = bitReader.szMbd()
         for _ in 0..<numCoders {
             let coder = try SevenZipCoder(bitReader)
@@ -157,9 +158,9 @@ class SevenZipFolder {
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
 
-                let pointerData = DataWithPointer(data: decodedData)
+                let byteReader = ByteReader(data: decodedData)
 
-                let decoder = LZMA2Decoder(pointerData)
+                let decoder = LZMA2Decoder(byteReader)
                 try decoder.setDictionarySize(properties[0])
 
                 try decoder.decode()
@@ -171,8 +172,8 @@ class SevenZipFolder {
                 guard properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
-                let pointerData = DataWithPointer(data: decodedData)
-                let decoder = LZMADecoder(pointerData)
+                let byteReader = ByteReader(data: decodedData)
+                let decoder = LZMADecoder(byteReader)
 
                 try decoder.setProperties(properties[0])
                 decoder.resetStateAndDecoders()

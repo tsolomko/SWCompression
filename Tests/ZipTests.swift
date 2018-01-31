@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -16,7 +16,6 @@ class ZipTests: XCTestCase {
             return
         }
 
-        _ = try ZipContainer.info(container: testData)
         _ = try ZipContainer.open(container: testData)
     }
 

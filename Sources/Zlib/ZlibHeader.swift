@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Represents a Zlib archive's header.
 public struct ZlibHeader {
@@ -40,11 +41,11 @@ public struct ZlibHeader {
      it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
         try self.init(bitReader)
     }
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: LsbBitReader) throws {
         // compressionMethod and compressionInfo combined are needed later for integrity check.
         let cmf = bitReader.byte()
         // First four bits are compression method.
@@ -80,7 +81,7 @@ public struct ZlibHeader {
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
-            bitReader.index += 4
+            bitReader.offset += 4
         }
     }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -10,28 +10,35 @@ class BZip2CompressionTests: XCTestCase {
 
     private static let testType: String = "bz2"
 
-    func answerTest(_ answerName: String) throws {
-        guard let answerData = Constants.data(forAnswer: answerName) else {
+    func answerTest(_ testName: String) throws {
+        guard let answerData = Constants.data(forAnswer: testName) else {
             XCTFail("Unable to get answer data.")
             return
         }
 
         let compressedData = BZip2.compress(data: answerData)
-        let redecompressedData = try BZip2.decompress(data: compressedData)
 
+        if testName != "test5" { // Compression ratio is always bad for empty file.
+            let compressionRatio = Double(answerData.count) / Double(compressedData.count)
+            print("BZip2.\(testName).compressionRatio = \(compressionRatio)")
+        } else {
+            print("No compression ratio for test5.")
+        }
+
+        let redecompressedData = try BZip2.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
 
     func stringTest(_ string: String) throws {
-        guard let stringData = string.data(using: .utf8) else {
+        guard let answerData = string.data(using: .utf8) else {
             XCTFail("Unable to convert String to Data.")
             return
         }
 
-        let compressedData = BZip2.compress(data: stringData)
-        let redecompressedData = try BZip2.decompress(data: compressedData)
+        let compressedData = BZip2.compress(data: answerData)
 
-        XCTAssertEqual(redecompressedData, stringData)
+        let redecompressedData = try BZip2.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
     }
 
     func testBZip2CompressStrings() throws {

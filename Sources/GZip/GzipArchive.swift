@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive and archive functions for GZip archives.
 public class GzipArchive: Archive {
@@ -36,7 +37,7 @@ public class GzipArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         let member = try processMember(bitReader)
 
@@ -60,10 +61,10 @@ public class GzipArchive: Archive {
      */
     public static func multiUnarchive(archive data: Data) throws -> [Member] {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         var result = [Member]()
-        while !bitReader.isAtTheEnd {
+        while !bitReader.isFinished {
             let member = try processMember(bitReader)
 
             result.append(member)
@@ -75,15 +76,16 @@ public class GzipArchive: Archive {
         return result
     }
 
-    private static func processMember(_ bitReader: BitReader) throws -> Member {
+    private static func processMember(_ bitReader: LsbBitReader) throws -> Member {
         let header = try GzipHeader(bitReader)
 
         let memberData = try Deflate.decompress(bitReader)
         bitReader.align()
 
         let crc32 = bitReader.uint32()
-        let isize = bitReader.uint32()
-        guard UInt64(memberData.count) % (UInt64(1) << 32) == isize else { throw GzipError.wrongISize }
+        let isize = UInt64(truncatingIfNeeded: bitReader.uint32())
+        guard UInt64(truncatingIfNeeded: memberData.count) % (UInt64(truncatingIfNeeded: 1) << 32) == isize
+            else { throw GzipError.wrongISize }
 
         return Member(header: header, data: memberData,
                       crcError: CheckSums.crc32(memberData) != crc32)
@@ -176,7 +178,7 @@ public class GzipArchive: Archive {
         if writeHeaderCRC {
             let headerCRC = CheckSums.crc32(outData)
             for i: UInt32 in 0..<2 {
-                outData.append(UInt8((headerCRC & (0xFF << (i * 8))) >> (i * 8)))
+                outData.append(UInt8(truncatingIfNeeded: (headerCRC & (0xFF << (i * 8))) >> (i * 8)))
             }
         }
 
@@ -185,14 +187,14 @@ public class GzipArchive: Archive {
         let crc32 = CheckSums.crc32(data)
         var crcBytes = [UInt8]()
         for i: UInt32 in 0..<4 {
-            crcBytes.append(UInt8((crc32 & (0xFF << (i * 8))) >> (i * 8)))
+            crcBytes.append(UInt8(truncatingIfNeeded: (crc32 & (0xFF << (i * 8))) >> (i * 8)))
         }
         outData.append(Data(bytes: crcBytes))
 
         let isize = UInt64(data.count) % UInt64(1) << 32
         var isizeBytes = [UInt8]()
         for i: UInt64 in 0..<4 {
-            isizeBytes.append(UInt8((isize & (0xFF << (i * 8))) >> (i * 8)))
+            isizeBytes.append(UInt8(truncatingIfNeeded: (isize & (0xFF << (i * 8))) >> (i * 8)))
         }
         outData.append(Data(bytes: isizeBytes))
 

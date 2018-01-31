@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -12,8 +12,8 @@ struct CheckSums {
     static func crc32(_ array: [UInt8], prevValue: UInt32 = 0) -> UInt32 {
         var crc = ~prevValue
         for byte in array {
-            let index = (crc & 0xFF) ^ (UInt32(byte))
-            crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
+            let index = (crc & 0xFF) ^ (UInt32(truncatingIfNeeded: byte))
+            crc = CheckSums.crc32table[index.toInt()] ^ (crc >> 8)
         }
         return ~crc
     }
@@ -21,8 +21,8 @@ struct CheckSums {
     static func crc32(_ data: Data, prevValue: UInt32 = 0) -> UInt32 {
         var crc = ~prevValue
         for byte in data {
-            let index = (crc & 0xFF) ^ (UInt32(byte))
-            crc = CheckSums.crc32table[Int(index)] ^ (crc >> 8)
+            let index = (crc & 0xFF) ^ (UInt32(truncatingIfNeeded: byte))
+            crc = CheckSums.crc32table[index.toInt()] ^ (crc >> 8)
         }
         return ~crc
     }
@@ -39,8 +39,8 @@ struct CheckSums {
     static func crc64(_ data: Data) -> UInt64 {
         var crc: UInt64 = ~0
         for byte in data {
-            let index = (crc & 0xFF) ^ (UInt64(byte))
-            crc = CheckSums.crc64table[Int(bitPattern: UInt(truncatingIfNeeded: index))] ^ (crc >> 8)
+            let index = (crc & 0xFF) ^ (UInt64(truncatingIfNeeded: byte))
+            crc = CheckSums.crc64table[index.toInt()] ^ (crc >> 8)
         }
         return ~crc
     }

@@ -1,3 +1,5 @@
+excluded:
+  - .build/
 disabled_rules:
   - cyclomatic_complexity
   - file_length
@@ -9,6 +11,7 @@ opt_in_rules:
   - conditional_returns_on_newline
   - contains_over_first_not_nil
   - discouraged_direct_init
+  - discouraged_object_literal
   - explicit_init
   - fatal_error_message
   - first_where
@@ -25,3 +28,4 @@ opt_in_rules:
   - strict_fileprivate
   - switch_case_on_newline
   - trailing_closure
+  - yoda_condition

@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -30,27 +30,37 @@ public extension BZip2 {
         /// 900 KB.
         case nine = 9
 
-        func headerByte() -> Int {
-            switch self {
-            case .one:
-                return 0x31
-            case .two:
-                return 0x32
-            case .three:
-                return 0x33
-            case .four:
-                return 0x34
-            case .five:
-                return 0x35
-            case .six:
-                return 0x36
-            case .seven:
-                return 0x37
-            case .eight:
-                return 0x38
-            case .nine:
-                return 0x39
+        init?(_ headerByte: UInt8) {
+            switch headerByte {
+            case 0x31:
+                self = .one
+            case 0x32:
+                self = .two
+            case 0x33:
+                self = .three
+            case 0x34:
+                self = .four
+            case 0x35:
+                self = .five
+            case 0x36:
+                self = .six
+            case 0x37:
+                self = .seven
+            case 0x38:
+                self = .eight
+            case 0x39:
+                self = .nine
+            default:
+                return nil
             }
+        }
+
+        var headerByte: Int {
+            return self.rawValue + 0x30
+        }
+
+        var sizeInKilobytes: Int {
+            return self.rawValue * 100
         }
 
     }

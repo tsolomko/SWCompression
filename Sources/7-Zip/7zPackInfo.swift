@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipPackInfo {
 
@@ -12,7 +13,7 @@ class SevenZipPackInfo {
     private(set) var packSizes = [Int]()
     private(set) var digests = [UInt32?]()
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         packPosition = bitReader.szMbd()
         numPackStreams = bitReader.szMbd()
 

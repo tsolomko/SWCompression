@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides functions for work with TAR containers.
 public class TarContainer: Container {
@@ -58,7 +59,7 @@ public class TarContainer: Container {
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
 
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let byteReader = ByteReader(data: data)
 
         var entries = [TarEntryInfo]()
 
@@ -68,8 +69,8 @@ public class TarContainer: Container {
         var longName: String?
 
         // Container ends with two zero-filled records.
-        while pointerData.data[pointerData.index..<pointerData.index + 1024] != Data(count: 1024) {
-            let info = try TarEntryInfo(pointerData, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+        while byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024) {
+            let info = try TarEntryInfo(byteReader, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
 
             if info.isGlobalExtendedHeader {
@@ -77,28 +78,28 @@ public class TarContainer: Container {
                 let dataEndIndex = dataStartIndex + info.size!
 
                 lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+                byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
             } else if info.isLocalExtendedHeader {
                 let dataStartIndex = info.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + info.size!
 
                 lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                pointerData.index = dataEndIndex - info.size! + info.size!.roundTo512()
+                byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
             } else if info.isLongLinkName {
                 let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
+                byteReader.offset = dataStartIndex
 
-                longLinkName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
+                longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                byteReader.offset = dataStartIndex + info.size!.roundTo512()
             } else if info.isLongName {
                 let dataStartIndex = info.blockStartIndex + 512
-                pointerData.index = dataStartIndex
+                byteReader.offset = dataStartIndex
 
-                longName = try pointerData.nullEndedAsciiString(cutoff: info.size!)
-                pointerData.index = dataStartIndex + info.size!.roundTo512()
+                longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                byteReader.offset = dataStartIndex + info.size!.roundTo512()
             } else {
                 // Skip file data.
-                pointerData.index = info.blockStartIndex + 512 + info.size!.roundTo512()
+                byteReader.offset = info.blockStartIndex + 512 + info.size!.roundTo512()
                 entries.append(info)
                 lastLocalExtendedHeader = nil
                 longName = nil

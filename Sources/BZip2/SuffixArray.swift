@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -51,7 +51,9 @@ class SuffixArray {
             self.bucketSizes = bucketSizes
 
             var bucketHeads = [Int]()
+            bucketHeads.reserveCapacity(alphabetSize)
             var bucketTails = [Int]()
+            bucketTails.reserveCapacity(alphabetSize)
             var offset = 1
             for size in bucketSizes {
                 bucketHeads.append(offset)

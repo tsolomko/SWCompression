@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipSubstreamInfo {
 
@@ -11,7 +12,7 @@ class SevenZipSubstreamInfo {
     var unpackSizes = [Int]()
     var digests = [UInt32?]()
 
-    init(_ bitReader: BitReader, _ coderInfo: SevenZipCoderInfo) throws {
+    init(_ bitReader: MsbBitReader, _ coderInfo: SevenZipCoderInfo) throws {
         var totalUnpackStreams = coderInfo.folders.count
 
         var type = bitReader.byte()

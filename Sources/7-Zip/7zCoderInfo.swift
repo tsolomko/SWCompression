@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipCoderInfo {
 
@@ -17,7 +18,7 @@ class SevenZipCoderInfo {
         external = 0
     }
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         var type = bitReader.byte()
         guard type == 0x0B else { throw SevenZipError.internalStructureError }
 

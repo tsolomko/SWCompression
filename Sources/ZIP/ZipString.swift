@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -22,14 +22,13 @@ class ZipString {
     static func needsUtf8(_ data: Data) -> Bool {
         // UTF-8 can have BOM.
         if data.count >= 3 {
-            if data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF {
+            if data[data.startIndex] == 0xEF && data[data.startIndex + 1] == 0xBB && data[data.startIndex + 2] == 0xBF {
                 return true
             }
         }
-        var codeLength = 0
-        var index = 0
-        var ch: UInt32 = 0
-        while index < data.count {
+
+        var index = data.startIndex
+        while index < data.endIndex {
             let byte = data[index]
             if byte <= 0x7F { // This simple byte can exist both in CP437 and UTF-8.
                 index += 1
@@ -38,6 +37,7 @@ class ZipString {
 
             // Otherwise, it has to be correct code sequence in case of UTF-8.
             // If code sequence is incorrect, then it is CP437.
+            let codeLength: Int
             if byte >= 0xC2 && byte <= 0xDF {
                 codeLength = 2
             } else if byte >= 0xE0 && byte <= 0xEF {
@@ -47,7 +47,8 @@ class ZipString {
             } else {
                 return false
             }
-            if index + codeLength - 1 >= data.count {
+
+            if index + codeLength - 1 >= data.endIndex {
                 return false
             }
 
@@ -57,25 +58,22 @@ class ZipString {
                 }
             }
 
-            if codeLength == 2 {
-                ch = ((UInt32(data[index]) & 0x1F) << 6) + (UInt32(data[index + 1]) & 0x3F)
-            } else if codeLength == 3 {
-                ch = ((UInt32(data[index]) & 0x0F) << 12) + ((UInt32(data[index + 1]) & 0x3F) << 6) +
-                    (UInt32(data[index + 2]) & 0x3F)
-                if ch < 0x0800 {
-                    return false
-                }
-                if ch >> 11 == 0x1B {
+            if codeLength == 3 {
+                let ch = (UInt32(truncatingIfNeeded: data[index]) & 0x0F) << 12 +
+                    (UInt32(truncatingIfNeeded: data[index + 1]) & 0x3F) << 6 +
+                    UInt32(truncatingIfNeeded: data[index + 2]) & 0x3F
+                if ch < 0x0800 || ch >> 11 == 0x1B {
                     return false
                 }
             } else if codeLength == 4 {
-                ch = ((UInt32(data[index]) & 0x07) << 18) + ((UInt32(data[index + 1]) & 0x3F) << 12) +
-                    ((UInt32(data[index + 2]) & 0x3F) << 6) + (UInt32(data[index + 3]) & 0x3F)
+                let ch = (UInt32(truncatingIfNeeded: data[index]) & 0x07) << 18 +
+                    (UInt32(truncatingIfNeeded: data[index + 1]) & 0x3F) << 12 +
+                    (UInt32(truncatingIfNeeded: data[index + 2]) & 0x3F) << 6 +
+                    UInt32(truncatingIfNeeded: data[index + 3]) & 0x3F
                 if ch < 0x10000 || ch > 0x10FFFF {
                     return false
                 }
             }
-            index += codeLength
             return true
         }
         // All bytes were in range 0...0x7F, which can be both in CP437 and UTF-8.

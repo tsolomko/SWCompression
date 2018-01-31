@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipStreamInfo {
 
@@ -11,7 +12,7 @@ class SevenZipStreamInfo {
     var coderInfo: SevenZipCoderInfo
     var substreamInfo: SevenZipSubstreamInfo?
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         var type = bitReader.byte()
 
         if type == 0x06 {

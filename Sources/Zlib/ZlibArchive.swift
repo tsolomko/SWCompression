@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides unarchive and archive functions for Zlib archives.
 public class ZlibArchive: Archive {
@@ -23,7 +24,7 @@ public class ZlibArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let bitReader = BitReader(data: data, bitOrder: .reversed)
+        let bitReader = LsbBitReader(data: data)
 
         _ = try ZlibHeader(bitReader)
 
@@ -57,7 +58,7 @@ public class ZlibArchive: Archive {
         let adler32 = CheckSums.adler32(data)
         var adlerBytes = [UInt8]()
         for i in 0..<4 {
-            adlerBytes.append(UInt8((adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
+            adlerBytes.append(UInt8(truncatingIfNeeded: (adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
         }
         outData.append(Data(bytes: adlerBytes))
 

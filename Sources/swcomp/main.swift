@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-let cli = CLI(name: "swcomp", version: "4.0.1",
+let cli = CLI(name: "swcomp", version: "4.1.0",
               description: """
                            swcomp - small command-line client for SWCompression framework.
                            Serves as an example of SWCompression usage.

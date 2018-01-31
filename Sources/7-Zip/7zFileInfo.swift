@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 class SevenZipFileInfo {
 
@@ -23,7 +24,7 @@ class SevenZipFileInfo {
 
     var unknownProperties = [SevenZipProperty]()
 
-    init(_ bitReader: BitReader) throws {
+    init(_ bitReader: MsbBitReader) throws {
         numFiles = bitReader.szMbd()
         for _ in 0..<numFiles {
             files.append(File())
@@ -115,11 +116,11 @@ class SevenZipFileInfo {
             case 0x18: // StartPos
                 throw SevenZipError.startPosNotSupported
             case 0x19: // "Dummy". Used for alignment/padding.
-                guard bitReader.size - bitReader.index >= propertySize
+                guard bitReader.size - bitReader.offset >= propertySize
                     else { throw SevenZipError.internalStructureError }
-                bitReader.index += propertySize
+                bitReader.offset += propertySize
             default: // Unknown property
-                guard bitReader.size - bitReader.index >= propertySize
+                guard bitReader.size - bitReader.offset >= propertySize
                     else { throw SevenZipError.internalStructureError }
                 unknownProperties.append(SevenZipProperty(propertyType, propertySize,
                                                           bitReader.bytes(count: propertySize)))

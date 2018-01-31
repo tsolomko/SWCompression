@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 extension BZip2: CompressionAlgorithm {
 
@@ -38,16 +39,19 @@ extension BZip2: CompressionAlgorithm {
      - Parameter blockSize: Size of blocks in which `data` will be split.
      */
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
-        let bitWriter = BitWriter(bitOrder: .straight)
-        let rawBlockSize = blockSize.rawValue * 100 * 1024
+        let bitWriter = MsbBitWriter()
+        // We intentionally use smaller block size for compression to account for potential data size expansion
+        //  after intial RLE, which seems to be not being expected by original BZip2 implementation.
+        // TODO: This may point to some other problem in this implementation.
+        let rawBlockSize = blockSize.sizeInKilobytes * 800
         // BZip2 Header.
         bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
         bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
-        bitWriter.write(number: blockSize.headerByte(), bitsCount: 8) // Block size. We use '9' = 900 KB for now.
+        bitWriter.write(number: blockSize.headerByte, bitsCount: 8) // Block size.
 
         var totalCRC: UInt32 = 0
-        for i in stride(from: 0, to: data.count, by: rawBlockSize) {
-            let blockData = data[i..<min(data.count, i + rawBlockSize)]
+        for i in stride(from: data.startIndex, to: data.endIndex, by: rawBlockSize) {
+            let blockData = data[i..<min(data.endIndex, i + rawBlockSize)]
             let blockCRC = CheckSums.bzip2CRC32(blockData)
 
             totalCRC = (totalCRC << 1) | (totalCRC >> 31)
@@ -65,14 +69,12 @@ extension BZip2: CompressionAlgorithm {
         // Total crc32.
         bitWriter.write(number: totalCRC.toInt(), bitsCount: 32)
 
-        bitWriter.finish()
-        return Data(bytes: bitWriter.buffer)
+        bitWriter.align()
+        return bitWriter.data
     }
 
-    private static func process(block data: Data, _ bitWriter: BitWriter) {
-        var out: [Int]
-
-        out = initialRle(data)
+    private static func process(block data: Data, _ bitWriter: MsbBitWriter) {
+        var out = initialRle(data)
 
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
@@ -223,15 +225,12 @@ extension BZip2: CompressionAlgorithm {
                 runLength += 1
                 index += 1
             }
+            let byte = data[index].toInt()
+            for _ in 0..<min(4, runLength) {
+                out.append(byte)
+            }
             if runLength >= 4 {
-                for _ in 0..<4 {
-                    out.append(data[index].toInt())
-                }
                 out.append(runLength - 4)
-            } else {
-                for _ in 0..<runLength {
-                    out.append(data[index].toInt())
-                }
             }
             index += 1
         }
@@ -253,17 +252,17 @@ extension BZip2: CompressionAlgorithm {
 
     private static func rleOfMtf(_ array: [Int]) -> ([Int], Int) {
         var out = [Int]()
-        var lengthofZerosRun = 0
+        var lengthOfZerosRun = 0
         var maxSymbol = 1
         for i in 0..<array.count {
             let byte = array[i]
             if byte == 0 {
-                lengthofZerosRun += 1
+                lengthOfZerosRun += 1
             }
             if (byte == 0 && i == array.count - 1) || byte != 0 {
-                if lengthofZerosRun > 0 {
-                    let digitsNumber = floor(log2(Double(lengthofZerosRun) + 1))
-                    var remainder = lengthofZerosRun
+                if lengthOfZerosRun > 0 {
+                    let digitsNumber = floor(log2(Double(lengthOfZerosRun) + 1))
+                    var remainder = lengthOfZerosRun
                     for _ in 0..<Int(digitsNumber) {
                         let quotient = Int(ceil(Double(remainder) / 2) - 1)
                         let digit = remainder - quotient * 2
@@ -274,14 +273,13 @@ extension BZip2: CompressionAlgorithm {
                         }
                         remainder = quotient
                     }
-                    lengthofZerosRun = 0
+                    lengthOfZerosRun = 0
                 }
             }
             if byte != 0 {
                 let newSymbol = byte + 1
                 // We add one because, 1 is used as RUNB.
-                // We don't add two instead, because 0 is never encountered as separate symbol,
-                //  without RUNA meaning.
+                // We don't add two instead, because 0 is never encountered as separate symbol, without RUNA meaning.
                 out.append(newSymbol)
                 if newSymbol > maxSymbol {
                     maxSymbol = newSymbol

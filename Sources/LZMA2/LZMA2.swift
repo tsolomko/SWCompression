@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides decompression function for LZMA2 algorithm.
 public class LZMA2: DecompressionAlgorithm {
@@ -20,14 +21,14 @@ public class LZMA2: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
+        let byteReader = ByteReader(data: data)
 
-        return Data(bytes: try decompress(pointerData))
+        return Data(bytes: try decompress(byteReader))
     }
 
-    static func decompress(_ pointerData: DataWithPointer) throws -> [UInt8] {
-        let decoder = LZMA2Decoder(pointerData)
-        try decoder.setDictionarySize(pointerData.byte())
+    static func decompress(_ byteReader: ByteReader) throws -> [UInt8] {
+        let decoder = LZMA2Decoder(byteReader)
+        try decoder.setDictionarySize(byteReader.byte())
         try decoder.decode()
         return decoder.out
     }

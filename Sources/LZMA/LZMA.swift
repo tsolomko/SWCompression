@@ -1,9 +1,10 @@
-// Copyright (c) 2017 Timofey Solomko
+// Copyright (c) 2018 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+import BitByteData
 
 /// Provides decompression function for LZMA algorithm.
 public class LZMA: DecompressionAlgorithm {
@@ -20,22 +21,22 @@ public class LZMA: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
-        let pointerData = DataWithPointer(data: data)
-        return try decompress(pointerData)
+        let byteReader = ByteReader(data: data)
+        return try decompress(byteReader)
     }
 
-    static func decompress(_ pointerData: DataWithPointer, uncompressedSize: UInt64? = nil) throws -> Data {
-        let decoder = LZMADecoder(pointerData)
+    static func decompress(_ byteReader: ByteReader, uncompressedSize: UInt64? = nil) throws -> Data {
+        let decoder = LZMADecoder(byteReader)
 
-        try decoder.setProperties(pointerData.byte())
+        try decoder.setProperties(byteReader.byte())
         decoder.resetStateAndDecoders()
-        decoder.dictionarySize = pointerData.uint32().toInt()
+        decoder.dictionarySize = byteReader.uint32().toInt()
 
-        let uncompressedSize = uncompressedSize ?? pointerData.uint64()
-        if uncompressedSize == UInt64.max {
+        let uncompSize = uncompressedSize ?? byteReader.uint64()
+        if uncompSize == UInt64.max {
             decoder.uncompressedSize = -1
         } else {
-            decoder.uncompressedSize = Int(truncatingIfNeeded: uncompressedSize)
+            decoder.uncompressedSize = uncompSize.toInt()
         }
 
         try decoder.decode()
