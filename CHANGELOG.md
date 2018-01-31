@@ -2,25 +2,18 @@
 
 ## 4.1.0
 
-### Test 2
-
-- Performance improvements:
-    - Preallocate byte arrays when input size is known.
-    - Inverse Burrows-Wheeler transform without sorting.
-    - Store ntfs reference date as a static constant.
+- Some internal classes were published as a separate project, [BitByteData](https://github.com/tsolomko/BitByteData).
+  This project is now used by SWCompression.
+- Several performance improvements have been made.
 - "Fixed" a problem when some BZip2 archives created by SWCompression could not be opened by original BZip2 implementation.
 - Modification time stored in ZIP's "native" field is now calculated relative to current system's calendar and time zone.
 - swcomp additions:
-    - Added options (`-1`...`-9`) to specify block size for BZip2 compression.
-    - Added option (`-i`, `--info`) to print GZip's header.
-    - Added commands (`comp-deflate`, `comp-bz2`) for performance testing of Deflate and BZip2 compression.
-    - Corrected descriptions of extract options of container commands.
+    - Added `-1`...`-9` options to `bz2 -c` command which specifies what block size to use for BZip2 compression.
+    - Added `-i`, `--info` option to `gz` command which prints GZip's header.
+    - Added `comp-deflate` and `comp-bz2` subcommands to `perf-test` command
+      which can be used for performance testing of Deflate and BZip2 compression.
+    - Corrected descriptions of `-e` options for `zip`, `tar` and `7z` commands.
     - Now sets permissions for extracted files only if they are greater than 0.
-
-### Test 1
-
-Some internal classes were extracted and published as a separate project, [BitByteData](https://github.com/tsolomko/BitByteData).
-This project is now used by SWCompression.
 
 ## 4.0.1
 
