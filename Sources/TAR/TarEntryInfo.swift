@@ -177,11 +177,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // They differ in `magic` field value and how other fields are padded.
         // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
         // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
-        let magic = byteReader.bytes(count: 8)
+        let magic = byteReader.uint64()
 
-        if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
-            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
-            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
+        if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
             if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
                 self.ownerUserName = uname
                 byteReader.offset += 32
