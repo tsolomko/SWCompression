@@ -187,22 +187,20 @@ was created manually and you shouldn't use `swift package generate-xcodeproj` co
 
 ### Executing tests locally
 
-If you'd like to run tests on your computer, you need to do some additional steps after cloning this repository:
+If you'd like to run tests on your computer, you need to do an additional step after cloning this repository:
 
 ```bash
 git submodule update --init --recursive
-cd Tests/Test\ Files
-git lfs pull
 ```
 
-These commands fetch example archives and other files which are used for testing.
-These files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
+This command downloads files which are used for testing. These files are stored in a
+[separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
 Git LFS is used for storing them which is the reason for having them in the separate repository,
 since Swift Package Manager have some problems with Git LFS-enabled repositories
-(it requires installing git-lfs _locally_ with `--skip-smudge` option to solve these problems).
+(installing git-lfs _locally_ with `--skip-smudge` option is required to solve these problems).
 
 __Note:__ You can also use "Utils/prepare-workspace-macos.sh" script from the repository,
-which not only downloads test files but also downloads framework's dependencies.
+which not only downloads test files but also downloads dependencies.
 
 ## Performace
 
