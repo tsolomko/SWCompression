@@ -53,10 +53,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// Name of the group of entry's owner.
     public let ownerGroupName: String?
 
-    /// Device major number.
+    /// Device major number (used when `type` is either `blockSpecial` or `characterSpecial`).
     public let deviceMajorNumber: Int?
 
-    /// Device minor number.
+    /// Device minor number (used when `type` is either `blockSpecial` or `characterSpecial`).
     public let deviceMinorNumber: Int?
 
     /// Name of the character set used to encode entry's data (can only be available for PAX format).
@@ -173,10 +173,11 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Linked file name
         linkName = try byteReader.nullEndedAsciiString(cutoff: 100)
 
-        // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
-        // They differ in `magic` field value and how other fields are padded.
+        // There are two POSIX-like formats: pre-POSIX used by GNU tools (aka "old-GNU") and POSIX (aka "ustar").
+        // They differ in `magic` field value and how other fields are padded (either SPACEs or NULLs).
         // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
-        // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
+        // Here we deal with magic. First one is "old-GNU", second is "ustar", third is for compatiblity with strange
+        //  implementations of "ustar", which used SPACEs instead of NULLs.
         let magic = byteReader.uint64()
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
@@ -196,7 +197,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
             deviceMajorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
-            name = try byteReader.nullEndedAsciiString(cutoff: 155) + name
+            let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
+            if prefix != "" {
+                name = prefix + "/" + name
+            }
         } else {
             ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
             ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]
