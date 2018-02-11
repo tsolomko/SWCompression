@@ -28,10 +28,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     public let type: ContainerEntryType
 
-    /// Entry's last access time (`nil`, if not available; can only be available for PAX format).
+    /// Entry's last access time (only available for PAX format; `nil` otherwise).
     public let accessTime: Date?
 
-    /// Entry's creation time (`nil`, if not available; can only be available for PAX format).
+    /// Entry's creation time (only available for PAX format; `nil` otherwise).
     public let creationTime: Date?
 
     /// Entry's last modification time.
@@ -53,16 +53,16 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// Name of the group of entry's owner.
     public let ownerGroupName: String?
 
-    /// Device major number (used when `type` is either `blockSpecial` or `characterSpecial`).
+    /// Device major number (used when entry is either block or character special file).
     public let deviceMajorNumber: Int?
 
-    /// Device minor number (used when `type` is either `blockSpecial` or `characterSpecial`).
+    /// Device minor number (used when entry is either block or character special file).
     public let deviceMinorNumber: Int?
 
-    /// Name of the character set used to encode entry's data (can only be available for PAX format).
+    /// Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
     public let charset: String?
 
-    /// Entry's comment (can only be available for PAX format).
+    /// Entry's comment (only available for PAX format; `nil` otherwise).
     public let comment: String?
 
     /**
