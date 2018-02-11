@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.1
+
+- Fixed incorrect value of `TarEntryInfo.name` when ustar format's "prefix" field was used.
+- Updated documentation for `TarEntryInfo`.
+
 ## 4.1.0
 
 - Some internal classes were published as a separate project, [BitByteData](https://github.com/tsolomko/BitByteData).
