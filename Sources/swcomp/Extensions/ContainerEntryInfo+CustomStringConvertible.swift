@@ -9,8 +9,7 @@ import SWCompression
 extension ContainerEntryInfo where Self: CustomStringConvertible {
 
     public var description: String {
-        var output = ""
-        output += "Name: \(self.name)\n"
+        var output = "Name: \(self.name)\n"
 
         switch self.type {
         case .blockSpecial:

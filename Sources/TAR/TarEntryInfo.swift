@@ -28,10 +28,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     public let type: ContainerEntryType
 
-    /// Entry's last access time (`nil`, if not available; can only be available for PAX format).
+    /// Entry's last access time (only available for PAX format; `nil` otherwise).
     public let accessTime: Date?
 
-    /// Entry's creation time (`nil`, if not available; can only be available for PAX format).
+    /// Entry's creation time (only available for PAX format; `nil` otherwise).
     public let creationTime: Date?
 
     /// Entry's last modification time.
@@ -53,16 +53,16 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// Name of the group of entry's owner.
     public let ownerGroupName: String?
 
-    /// Device major number.
+    /// Device major number (used when entry is either block or character special file).
     public let deviceMajorNumber: Int?
 
-    /// Device minor number.
+    /// Device minor number (used when entry is either block or character special file).
     public let deviceMinorNumber: Int?
 
-    /// Name of the character set used to encode entry's data (can only be available for PAX format).
+    /// Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
     public let charset: String?
 
-    /// Entry's comment (can only be available for PAX format).
+    /// Entry's comment (only available for PAX format; `nil` otherwise).
     public let comment: String?
 
     /**
@@ -173,15 +173,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Linked file name
         linkName = try byteReader.nullEndedAsciiString(cutoff: 100)
 
-        // There are two POSIX-like formats: pre-POSIX used by GNU tools and POSIX.
-        // They differ in `magic` field value and how other fields are padded.
+        // There are two POSIX-like formats: pre-POSIX used by GNU tools (aka "old-GNU") and POSIX (aka "ustar").
+        // They differ in `magic` field value and how other fields are padded (either SPACEs or NULLs).
         // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
-        // Here we deal with magic. First one is of pre-POSIX, second and third are two variations of POSIX.
-        let magic = byteReader.bytes(count: 8)
+        // Here we deal with magic. First one is "old-GNU", second is "ustar", third is for compatiblity with strange
+        //  implementations of "ustar", which used SPACEs instead of NULLs.
+        let magic = byteReader.uint64()
 
-        if magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00] ||
-            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30] ||
-            magic == [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x30, 0x30] {
+        if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
             if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
                 self.ownerUserName = uname
                 byteReader.offset += 32
@@ -198,7 +197,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
             deviceMajorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
-            name = try byteReader.nullEndedAsciiString(cutoff: 155) + name
+            let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
+            if prefix != "" {
+                name = prefix + "/" + name
+            }
         } else {
             ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
             ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]

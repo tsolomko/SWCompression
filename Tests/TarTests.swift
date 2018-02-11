@@ -42,7 +42,10 @@ class TarTests: XCTestCase {
 
             XCTAssertEqual(entry.data, answerData)
             XCTAssertEqual(entry.info.type, .regular)
+            XCTAssertNotNil(entry.info.ownerUserName)
+            XCTAssertNotNil(entry.info.ownerGroupName)
             XCTAssertNotNil(entry.info.accessTime)
+            XCTAssertNotNil(entry.info.creationTime)
         }
     }
 
