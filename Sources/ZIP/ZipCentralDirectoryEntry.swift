@@ -109,6 +109,8 @@ struct ZipCentralDirectoryEntry {
                         self.ntfsCtime = byteReader.uint64()
                     }
                 }
+            case 0x7855: // Info-ZIP Unix Extra Field
+                break // It doesn't contain any information in Central Directory.
             default:
                 byteReader.offset += size
             }

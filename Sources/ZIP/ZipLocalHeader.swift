@@ -22,13 +22,19 @@ struct ZipLocalHeader {
 
     let fileName: String
 
+    // 0x5455 extra field.
     private(set) var modificationTimestamp: UInt32?
     private(set) var accessTimestamp: UInt32?
     private(set) var creationTimestamp: UInt32?
 
+    // 0x000a extra field.
     private(set) var ntfsMtime: UInt64?
     private(set) var ntfsAtime: UInt64?
     private(set) var ntfsCtime: UInt64?
+
+    // 0x7855 extra field.
+    private(set) var infoZipUid: UInt16?
+    private(set) var infoZipGid: UInt16?
 
     let dataOffset: Int
 
@@ -95,6 +101,9 @@ struct ZipLocalHeader {
                         self.ntfsCtime = byteReader.uint64()
                     }
                 }
+            case 0x7855: // Info-ZIP Unix Extra Field
+                self.infoZipUid = byteReader.uint16()
+                self.infoZipGid = byteReader.uint16()
             default:
                 byteReader.offset += size
             }
