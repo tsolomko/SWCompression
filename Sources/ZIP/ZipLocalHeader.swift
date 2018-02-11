@@ -36,6 +36,10 @@ struct ZipLocalHeader {
     private(set) var infoZipUid: UInt16?
     private(set) var infoZipGid: UInt16?
 
+    // 0x7875 extra field.
+    private(set) var infoZipNewUid: Int?
+    private(set) var infoZipNewGid: Int?
+
     let dataOffset: Int
 
     init(_ byteReader: ByteReader) throws {
@@ -79,7 +83,8 @@ struct ZipLocalHeader {
                 self.zip64FieldsArePresent = true
             case 0x5455: // Extended Timestamp
                 let flags = byteReader.byte()
-                guard flags & 0xF8 == 0 else { break }
+                guard flags & 0xF8 == 0
+                    else { break }
                 if flags & 0x01 != 0 {
                     self.modificationTimestamp = byteReader.uint32()
                 }
@@ -104,6 +109,32 @@ struct ZipLocalHeader {
             case 0x7855: // Info-ZIP Unix Extra Field
                 self.infoZipUid = byteReader.uint16()
                 self.infoZipGid = byteReader.uint16()
+            case 0x7875: // Info-ZIP New Unix Extra Field
+                guard byteReader.byte() == 1 // Version must be 1.
+                    else { break }
+                let uidSize = byteReader.byte().toInt()
+                if uidSize > 8 {
+                    byteReader.offset += uidSize
+                } else {
+                    var uid = 0
+                    for i in 0..<uidSize {
+                        let byte = byteReader.byte()
+                        uid |= byte.toInt() << (8 * i)
+                    }
+                    self.infoZipNewUid = uid
+                }
+
+                let gidSize = byteReader.byte().toInt()
+                if gidSize > 8 {
+                    byteReader.offset += gidSize
+                } else {
+                    var gid = 0
+                    for i in 0..<gidSize {
+                        let byte = byteReader.byte()
+                        gid |= byte.toInt() << (8 * i)
+                    }
+                    self.infoZipNewGid = gid
+                }
             default:
                 byteReader.offset += size
             }
