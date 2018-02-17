@@ -27,7 +27,8 @@ class BZip2Command: Command {
 
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
-        let blockSizes = OptionGroup(options: [one, two, three, four, five, six, seven, eight, nine], restriction: .atMostOne)
+        let blockSizes = OptionGroup(options: [one, two, three, four, five, six, seven, eight, nine],
+                                     restriction: .atMostOne)
         return [actions, blockSizes]
     }
 
