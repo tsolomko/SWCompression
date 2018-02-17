@@ -4,6 +4,7 @@ disabled_rules:
   - cyclomatic_complexity
   - file_length
   - function_body_length
+  - identifier_name
   - type_body_length
 opt_in_rules:
   - array_init
@@ -12,6 +13,7 @@ opt_in_rules:
   - contains_over_first_not_nil
   - discouraged_direct_init
   - discouraged_object_literal
+  - discouraged_optional_boolean
   - explicit_init
   - fatal_error_message
   - first_where
