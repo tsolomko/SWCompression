@@ -51,6 +51,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.fileSystemType, .unix)
         XCTAssertTrue(entries[0].info.isTextFile)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
         XCTAssertNotNil(entries[0].data)
     }
 
@@ -67,6 +69,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.fileSystemType, .unix)
         XCTAssertFalse(entries[0].info.isTextFile)
         XCTAssertEqual(entries[0].info.compressionMethod, .lzma)
+        XCTAssertNil(entries[0].info.ownerID)
+        XCTAssertNil(entries[0].info.groupID)
 
         guard let answerData = Constants.data(forAnswer: "test4") else {
             XCTFail("Unable to get answer data.")
@@ -89,6 +93,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.fileSystemType, .unix)
         XCTAssertFalse(entries[0].info.isTextFile)
         XCTAssertEqual(entries[0].info.compressionMethod, .bzip2)
+        XCTAssertNil(entries[0].info.ownerID)
+        XCTAssertNil(entries[0].info.groupID)
 
         guard let answerData = Constants.data(forAnswer: "test4") else {
             XCTFail("Unable to get answer data.")
@@ -113,6 +119,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.dosAttributes?.contains(.directory), true)
         XCTAssertEqual(entries[0].info.fileSystemType, .fat)
         XCTAssertFalse(entries[0].info.isTextFile)
+        XCTAssertNil(entries[0].info.ownerID)
+        XCTAssertNil(entries[0].info.groupID)
         XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
@@ -121,6 +129,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[1].info.dosAttributes?.contains(.directory), false)
         XCTAssertEqual(entries[1].info.fileSystemType, .fat)
         XCTAssertFalse(entries[1].info.isTextFile)
+        XCTAssertNil(entries[0].info.ownerID)
+        XCTAssertNil(entries[0].info.groupID)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
 
@@ -137,6 +147,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].info.fileSystemType, .unix)
         XCTAssertFalse(entries[0].info.isTextFile)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
         XCTAssertEqual(entries[0].data, Data())
     }
 
@@ -153,6 +165,8 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.size, 0)
         XCTAssertEqual(entries[0].info.fileSystemType, .unix)
         XCTAssertFalse(entries[0].info.isTextFile)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
         XCTAssertEqual(entries[0].data, nil)
     }
 
