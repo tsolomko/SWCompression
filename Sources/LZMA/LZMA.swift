@@ -22,10 +22,24 @@ public class LZMA: DecompressionAlgorithm {
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         let byteReader = ByteReader(data: data)
-        return try decompress(byteReader)
+        return try decompress(from: byteReader)
     }
 
-    static func decompress(_ byteReader: ByteReader, uncompressedSize: UInt64? = nil) throws -> Data {
+    /**
+     Decompresses data using LZMA algortihm, starting from the current byte offset of `byteReader`.
+
+     - Parameter byteReader: `ByteReader` with LZMA compressed data starting from its current byte offset.
+
+     - Throws: `LZMAError` if unexpected byte (bit) sequence was encountered in `data`.
+     It may indicate that either data is damaged or it might not be compressed with LZMA at all.
+
+     - Returns: Decompressed data.
+     */
+    public static func decompress(from byteReader: ByteReader) throws -> Data {
+        return try decompress(byteReader, uncompressedSize: nil)
+    }
+
+    static func decompress(_ byteReader: ByteReader, uncompressedSize: UInt64?) throws -> Data {
         let decoder = LZMADecoder(byteReader)
 
         try decoder.setProperties(byteReader.byte())

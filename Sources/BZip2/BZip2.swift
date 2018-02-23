@@ -26,7 +26,7 @@ public class BZip2: DecompressionAlgorithm {
     }
 
     /**
-     Decompresses data using BZip2 algortihm, starting from the current bit and byte offset in `bitReader`.
+     Decompresses data using BZip2 algortihm, starting from the current bit and byte offset of `bitReader`.
 
      - Parameter bitReader: `MsbBitReader` with BZip2 compressed data starting from its current bit-byte offset.
 
