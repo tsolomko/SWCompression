@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.2.0
+
+### Test 1
+
+- Added several public APIs which use BitByteData's classes as its arguments:
+    - `ZlibArchive.unarchive(from:)`
+    - `BZip2.decompress(from:)`
+    - `LZMA.decompress(from:)`
+- Added support for Info-ZIP New Unix and Info-Zip Unix extra fields in ZIP containers.
+- Fixed storing BitByteData's bcsymbolmaps in Carthage generated binary archives
+  (which are distributed on GitHub Releases).
+
 ## 4.1.1
 
 - Fixed incorrect value of `TarEntryInfo.name` when ustar format's "prefix" field was used.
