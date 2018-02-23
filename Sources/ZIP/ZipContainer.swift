@@ -67,7 +67,7 @@ public class ZipContainer: Container {
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
                 // BZip2 algorithm uses different bit numbering scheme.
                 let bitReader = MsbBitReader(byteReader)
-                fileData = try BZip2.decompress(bitReader)
+                fileData = try BZip2.decompress(from: bitReader)
                 // Sometimes `bitReader` has misaligned state after BZip2 decompression,
                 //  so we need to align before getting the end index back.
                 bitReader.align()
