@@ -2,6 +2,25 @@
 
 ## 4.2.0
 
+### Test 2
+
+- Minuimum required version of BitByteData is now 1.1.0.
+- (Reverted Test 1 change) Removed "several public APIs which use BitByteData's classes as its arguments":
+    - `ZlibArchive.unarchive(from:)`
+    - `BZip2.decompress(from:)`
+    - `LZMA.decompress(from:)`
+- Added `unknownExtendedHeaderRecords` property to `TarEntryInfo` which includes unrecognized entries from PAX
+  extended headers.
+- Prevent double slashes in `TarEntryInfo.name` when prefix header's field was used, but it had trailing slash,
+  which, by the way, contradicts TAR format.
+- Additionally improved speed of BZip2 compression: Now doesn't create more Huffman trees when they cannot be used.
+  since maximum amount of Huffman tables was generated.
+- swcomp changes:
+    - Replaced 9 block size options of `bz2` command with a single one: `-b` (`--block-size`).
+    - Now prints entry type-specific properties in output of `tar`, `zip` and `7z` commands with
+      `-i` (`--info`) option.
+    - Renamed `perf-test` command group to `benchmark`.
+
 ### Test 1
 
 - Added several public APIs which use BitByteData's classes as its arguments:
@@ -9,8 +28,6 @@
     - `BZip2.decompress(from:)`
     - `LZMA.decompress(from:)`
 - Added support for Info-ZIP New Unix and Info-Zip Unix extra fields in ZIP containers.
-- Fixed storing BitByteData's bcsymbolmaps in Carthage generated binary archives
-  (which are distributed on GitHub Releases).
 
 ## 4.1.1
 
