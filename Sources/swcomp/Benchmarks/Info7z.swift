@@ -11,16 +11,16 @@ import SwiftCLI
     import CoreFoundation
 #endif
 
-class InfoZip: Command {
+class Info7z: Command {
 
-    let name = "info-zip"
-    let shortDescription = "Performs performance testing for ZIP info function using specified files"
+    let name = "info-7z"
+    let shortDescription = "Performs benchmarking of 7-Zip info function using specified files"
 
     let files = CollectedParameter()
 
     func execute() throws {
-        print("ZIP info function Performance Testing")
-        print("=====================================")
+        print("7-Zip info function Benchmark")
+        print("=============================")
 
         for file in self.files.value {
             print("File: \(file)\n")
@@ -36,7 +36,7 @@ class InfoZip: Command {
             for i in 1...6 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try ZipContainer.info(container: fileData)
+                _ = try SevenZipContainer.info(container: fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f", timeElapsed))
                 totalTime += timeElapsed
@@ -48,7 +48,7 @@ class InfoZip: Command {
                 }
             }
             print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
-            print("-------------------------------------")
+            print("---------------------------------------")
         }
     }
 
