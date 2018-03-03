@@ -179,7 +179,11 @@ public struct TarEntryInfo: ContainerEntryInfo {
             deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
             if prefix != "" {
-                name = prefix + "/" + name
+                if prefix.last == "/" {
+                    name = prefix + name
+                } else {
+                    name = prefix + "/" + name
+                }
             }
         } else {
             ownerUserName = local?.uname ?? global?.uname
