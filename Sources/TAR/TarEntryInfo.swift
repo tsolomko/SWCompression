@@ -77,6 +77,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
      */
     public let linkName: String
 
+    public let unknownExtendedHeaderRecords: [String: String]?
+
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
     let isLongLinkName: Bool
@@ -205,6 +207,15 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         charset = local?.charset ?? global?.charset
         comment = local?.comment ?? global?.comment
+        if let localUnknownRecords = local?.unknownRecords {
+            if let globalUnknownRecords = global?.unknownRecords {
+                unknownExtendedHeaderRecords = globalUnknownRecords.merging(localUnknownRecords) { $1 }
+            } else {
+                unknownExtendedHeaderRecords = localUnknownRecords
+            }
+        } else {
+            unknownExtendedHeaderRecords = global?.unknownRecords
+        }
     }
 
 }

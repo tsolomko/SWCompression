@@ -7,7 +7,7 @@ import Foundation
 
 struct TarExtendedHeader {
 
-    let entries: [String: String]
+    let unknownRecords: [String: String]
 
     var atime: Double?
     var ctime: Double?
@@ -46,7 +46,6 @@ struct TarExtendedHeader {
                                                        omittingEmptySubsequences: false)
             let key = String(keywordValueSplit[0])
             let value = String(keywordValueSplit[1])
-            entries[key] = value
 
             switch key {
             case "uid":
@@ -74,11 +73,11 @@ struct TarExtendedHeader {
             case "comment":
                 self.comment = value
             default:
-                break
+                entries[key] = value
             }
         }
 
-        self.entries = entries
+        self.unknownRecords = entries
     }
 
 }
