@@ -1,8 +1,10 @@
 excluded:
   - .build/
+  - Package.swift
 disabled_rules:
   - cyclomatic_complexity
   - file_length
+  - for_where
   - function_body_length
   - identifier_name
   - type_body_length

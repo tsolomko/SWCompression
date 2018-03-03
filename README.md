@@ -207,7 +207,7 @@ which not only downloads test files but also downloads dependencies.
 Usage of whole module optimizations is recommended for best performance.
 These optimizations are enabled by default for Release configurations.
 
-[Tests Results](Tests/Results.md) document contains results of performance testing of various functions.
+[Tests Results](Tests/Results.md) document contains results of benchmarking of various functions.
 
 ## Why?
 

@@ -11,16 +11,16 @@ import SwiftCLI
     import CoreFoundation
 #endif
 
-class InfoTar: Command {
+class UnGzip: Command {
 
-    let name = "info-tar"
-    let shortDescription = "Performs performance testing for TAR info function using specified files"
+    let name = "un-gzip"
+    let shortDescription = "Performs benchmarking of GZip unarchiving using specified files"
 
     let files = CollectedParameter()
 
     func execute() throws {
-        print("TAR info function Performance Testing")
-        print("=====================================")
+        print("GZip Unarchive Benchmark")
+        print("========================")
 
         for file in self.files.value {
             print("File: \(file)\n")
@@ -36,7 +36,7 @@ class InfoTar: Command {
             for i in 1...6 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try TarContainer.info(container: fileData)
+                _ = try GzipArchive.unarchive(archive: fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f", timeElapsed))
                 totalTime += timeElapsed
@@ -48,7 +48,7 @@ class InfoTar: Command {
                 }
             }
             print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
-            print("-------------------------------------")
+            print("----------------------------------")
         }
     }
 

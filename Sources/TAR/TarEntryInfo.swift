@@ -77,6 +77,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
      */
     public let linkName: String
 
+    public let unknownExtendedHeaderRecords: [String: String]?
+
     let isGlobalExtendedHeader: Bool
     let isLocalExtendedHeader: Bool
     let isLongLinkName: Bool
@@ -103,39 +105,25 @@ public struct TarEntryInfo: ContainerEntryInfo {
         guard let ownerAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "uid" attribute.
-        if let uidString = local?.entries["uid"] ?? global?.entries["uid"] {
-            ownerID = Int(uidString)
-        } else {
-            ownerID = ownerAccountID
-        }
+        ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
 
         // Group's user ID
         guard let groupAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "gid" attribute.
-        if let gidString = local?.entries["gid"] ?? global?.entries["gid"] {
-            groupID = Int(gidString)
-        } else {
-            groupID = groupAccountID
-        }
+        groupID = (local?.gid ?? global?.gid) ?? groupAccountID
 
         // File size
         guard let fileSize = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
-        if let sizeString = local?.entries["size"] ?? global?.entries["size"],
-            let size = Int(sizeString) {
-            self.size = size
-        } else {
-            self.size = fileSize
-        }
+        size = (local?.size ?? global?.size) ?? fileSize
 
         // Modification time
         guard let mtime = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
             else { throw TarError.wrongField }
-        if let mtimeString = local?.entries["mtime"] ?? global?.entries["mtime"],
-            let paxMtime = Double(mtimeString) {
-            self.modificationTime = Date(timeIntervalSince1970: paxMtime)
+        if let paxMtime = local?.mtime ?? global?.mtime {
+            modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else {
             modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
         }
@@ -181,54 +169,57 @@ public struct TarEntryInfo: ContainerEntryInfo {
         let magic = byteReader.uint64()
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
-            if let uname = local?.entries["uname"] ?? global?.entries["uname"] {
-                self.ownerUserName = uname
-                byteReader.offset += 32
-            } else {
-                ownerUserName = try byteReader.nullEndedAsciiString(cutoff: 32)
-            }
+            let uname = try byteReader.nullEndedAsciiString(cutoff: 32)
+            self.ownerUserName = (local?.uname ?? global?.uname) ?? uname
 
-            if let gname = local?.entries["gname"] ?? global?.entries["gname"] {
-                ownerGroupName = gname
-                byteReader.offset += 32
-            } else {
-                ownerGroupName = try byteReader.nullEndedAsciiString(cutoff: 32)
-            }
+            let gname = try byteReader.nullEndedAsciiString(cutoff: 32)
+            self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
             deviceMajorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
             let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
             if prefix != "" {
-                name = prefix + "/" + name
+                if prefix.last == "/" {
+                    name = prefix + name
+                } else {
+                    name = prefix + "/" + name
+                }
             }
         } else {
-            ownerUserName = local?.entries["uname"] ?? global?.entries["uname"]
-            ownerGroupName = local?.entries["gname"] ?? global?.entries["gname"]
+            ownerUserName = local?.uname ?? global?.uname
+            ownerGroupName = local?.gname ?? global?.gname
             deviceMajorNumber = nil
             deviceMinorNumber = nil
         }
 
         // Set `name` and `linkName` to values from PAX or GNU format if possible.
-        self.name = ((local?.entries["path"] ?? global?.entries["path"]) ?? longName) ?? name
-        self.linkName = ((local?.entries["linkpath"] ?? global?.entries["linkpath"]) ?? longLinkName) ?? linkName
+        self.name = ((local?.path ?? global?.path) ?? longName) ?? name
+        self.linkName = ((local?.linkpath ?? global?.linkpath) ?? longLinkName) ?? linkName
 
         // Set additional properties from PAX extended headers.
-        if let atimeString = local?.entries["atime"] ?? global?.entries["atime"],
-            let atime = Double(atimeString) {
+        if let atime = local?.atime ?? global?.atime {
             accessTime = Date(timeIntervalSince1970: atime)
         } else {
             accessTime = nil
         }
 
-        if let ctimeString = local?.entries["ctime"] ?? global?.entries["ctime"],
-            let ctime = Double(ctimeString) {
+        if let ctime = local?.ctime ?? global?.ctime {
             creationTime = Date(timeIntervalSince1970: ctime)
         } else {
             creationTime = nil
         }
 
-        charset = local?.entries["charset"] ?? global?.entries["charset"]
-        comment = local?.entries["comment"] ?? global?.entries["comment"]
+        charset = local?.charset ?? global?.charset
+        comment = local?.comment ?? global?.comment
+        if let localUnknownRecords = local?.unknownRecords {
+            if let globalUnknownRecords = global?.unknownRecords {
+                unknownExtendedHeaderRecords = globalUnknownRecords.merging(localUnknownRecords) { $1 }
+            } else {
+                unknownExtendedHeaderRecords = localUnknownRecords
+            }
+        } else {
+            unknownExtendedHeaderRecords = global?.unknownRecords
+        }
     }
 
 }

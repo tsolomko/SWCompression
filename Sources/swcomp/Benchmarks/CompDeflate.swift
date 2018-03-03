@@ -11,16 +11,16 @@ import SwiftCLI
     import CoreFoundation
 #endif
 
-class UnXz: Command {
+class CompDeflate: Command {
 
-    let name = "un-xz"
-    let shortDescription = "Performs performance testing for XZ unarchiving using specified files"
+    let name = "comp-deflate"
+    let shortDescription = "Performs benchmarking of Deflate compression using specified files"
 
     let files = CollectedParameter()
 
     func execute() throws {
-        print("XZ Unarchive Performance Testing")
-        print("================================")
+        print("Deflate Compression Benchmark")
+        print("=============================")
 
         for file in self.files.value {
             print("File: \(file)\n")
@@ -36,7 +36,7 @@ class UnXz: Command {
             for i in 1...6 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try XZArchive.unarchive(archive: fileData)
+                _ = Deflate.compress(data: fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f", timeElapsed))
                 totalTime += timeElapsed
@@ -48,7 +48,7 @@ class UnXz: Command {
                 }
             }
             print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
-            print("--------------------------------")
+            print("----------------------------------")
         }
     }
 

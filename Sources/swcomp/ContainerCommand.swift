@@ -12,7 +12,7 @@ protocol ContainerCommand: Command {
     associatedtype Entry: ContainerEntry
 
     var info: Flag { get }
-    var extract: Key<String> { get}
+    var extract: Key<String> { get }
     var verbose: Flag { get }
 
     var archive: Parameter { get }
@@ -35,9 +35,7 @@ extension ContainerCommand {
         if info.value {
             let entries = try infoFunction(fileData)
             swcomp.printInfo(entries)
-        } else {
-            let outputPath = self.extract.value!
-
+        } else if let outputPath = self.extract.value {
             if try !isValidOutputDirectory(outputPath, create: true) {
                 print("ERROR: Specified path already exists and is not a directory.")
                 exit(1)

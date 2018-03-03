@@ -23,25 +23,10 @@ public class ZlibArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archive data: Data) throws -> Data {
-        return try unarchive(from: ByteReader(data: data))
-    }
+        /// Object with input data which supports convenient work with bit shifts.
+        let bitReader = LsbBitReader(data: data)
 
-    /**
-     Unarchives Zlib archive, starting from the current byte offset of `byteReader`.
-
-     - Note: This function is specification compliant.
-
-     - Parameter byteReader: `ByteReader` with Zlib archived data starting from its current byte offset.
-
-     - Throws: `DeflateError` or `ZlibError` depending on the type of the problem.
-     It may indicate that either archive is damaged or it might not be archived with Zlib
-     or compressed with Deflate at all.
-
-     - Returns: Unarchived data.
-     */
-    public static func unarchive(from byteReader: ByteReader) throws -> Data {
-        _ = try ZlibHeader(byteReader)
-        let bitReader = LsbBitReader(byteReader)
+        _ = try ZlibHeader(bitReader)
 
         let out = try Deflate.decompress(bitReader)
         bitReader.align()

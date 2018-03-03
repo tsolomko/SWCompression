@@ -22,20 +22,10 @@ public class BZip2: DecompressionAlgorithm {
     public static func decompress(data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = MsbBitReader(data: data)
-        return try decompress(from: bitReader)
+        return try decompress(bitReader)
     }
 
-    /**
-     Decompresses data using BZip2 algortihm, starting from the current bit and byte offset of `bitReader`.
-
-     - Parameter bitReader: `MsbBitReader` with BZip2 compressed data starting from its current bit-byte offset.
-
-     - Throws: `BZip2Error` if unexpected byte (bit) sequence was encountered in `data`.
-     It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
-
-     - Returns: Decompressed data.
-     */
-    public static func decompress(from bitReader: MsbBitReader) throws -> Data {
+    static func decompress(_ bitReader: MsbBitReader) throws -> Data {
         /// An array for storing output data
         var out = Data()
 
