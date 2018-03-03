@@ -73,7 +73,7 @@ extension ContainerEntryInfo where Self: CustomStringConvertible {
             if let groupID = zipEntry.groupID {
                 output += "Gid: \(groupID)\n"
             }
-            
+
         }
 
         if let sevenZipEntry = self as? SevenZipEntryInfo {
