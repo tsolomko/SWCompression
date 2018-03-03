@@ -1,5 +1,6 @@
 excluded:
   - .build/
+  - Package.swift
 disabled_rules:
   - cyclomatic_complexity
   - file_length
