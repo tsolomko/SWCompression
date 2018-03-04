@@ -77,6 +77,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
      */
     public let linkName: String
 
+    /// All unknown records from global and local PAX extended headers. `nil`, if there were no headers.
     public let unknownExtendedHeaderRecords: [String: String]?
 
     let isGlobalExtendedHeader: Bool
