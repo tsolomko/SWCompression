@@ -11,16 +11,16 @@ import SwiftCLI
     import CoreFoundation
 #endif
 
-class UnBz2: Command {
+class InfoZip: Command {
 
-    let name = "un-bz2"
-    let shortDescription = "Performs performance testing for BZip2 unarchiving using specified files"
+    let name = "info-zip"
+    let shortDescription = "Performs benchmarking of ZIP info function using specified files"
 
     let files = CollectedParameter()
 
     func execute() throws {
-        print("BZip2 Unarchive Performance Testing")
-        print("===================================")
+        print("ZIP info function Benchmark")
+        print("===========================")
 
         for file in self.files.value {
             print("File: \(file)\n")
@@ -36,7 +36,7 @@ class UnBz2: Command {
             for i in 1...6 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try BZip2.decompress(data: fileData)
+                _ = try ZipContainer.info(container: fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f", timeElapsed))
                 totalTime += timeElapsed
@@ -48,7 +48,7 @@ class UnBz2: Command {
                 }
             }
             print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
-            print("-----------------------------------")
+            print("-------------------------------------")
         }
     }
 

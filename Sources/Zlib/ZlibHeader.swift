@@ -22,7 +22,7 @@ public struct ZlibHeader {
     }
 
     /// Compression method of archive. Always `.deflate` for Zlib archives.
-    public let compressionMethod: CompressionMethod
+    public let compressionMethod: CompressionMethod = .deflate
 
     /// Level of compression used in archive.
     public let compressionLevel: CompressionLevel
@@ -37,34 +37,33 @@ public struct ZlibHeader {
 
      - Parameter archive: Data archived with zlib.
 
-     - Throws: `ZlibError`. It may indicate that either archive is damaged or
-     it might not be archived with Zlib at all.
+     - Throws: `ZlibError`. It may indicate that either archive is damaged or it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        let bitReader = LsbBitReader(data: data)
-        try self.init(bitReader)
+        let byteReader = ByteReader(data: data)
+        try self.init(byteReader)
     }
 
-    init(_ bitReader: LsbBitReader) throws {
+    init(_ byteReader: ByteReader) throws {
         // compressionMethod and compressionInfo combined are needed later for integrity check.
-        let cmf = bitReader.byte()
+        let cmf = byteReader.byte()
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
         let compressionMethod = cmf & 0xF
-        guard compressionMethod == 8 else { throw ZlibError.wrongCompressionMethod }
-
-        self.compressionMethod = .deflate
+        guard compressionMethod == 8
+            else { throw ZlibError.wrongCompressionMethod }
 
         // Remaining four bits indicate window size.
         // For Deflate it must not be more than 7.
         let compressionInfo = (cmf & 0xF0) >> 4
-        guard compressionInfo <= 7 else { throw ZlibError.wrongCompressionInfo }
+        guard compressionInfo <= 7
+            else { throw ZlibError.wrongCompressionInfo }
 
         let windowSize = 1 << (compressionInfo.toInt() + 8)
         self.windowSize = windowSize
 
         // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check.
-        let flags = bitReader.byte()
+        let flags = byteReader.byte()
 
         // First five bits are fcheck bits which are supposed to be integrity check:
         //  let fcheck = flags & 0x1F
@@ -77,11 +76,12 @@ public struct ZlibHeader {
             else { throw ZlibError.wrongCompressionLevel }
         self.compressionLevel = compressionLevel
 
-        guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0 else { throw ZlibError.wrongFcheck }
+        guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0
+            else { throw ZlibError.wrongFcheck }
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
-            bitReader.offset += 4
+            byteReader.offset += 4
         }
     }
 

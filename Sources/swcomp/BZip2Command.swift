@@ -15,20 +15,15 @@ class BZip2Command: Command {
     let compress = Flag("-c", "--compress", description: "Compress input file into BZip2 archive")
     let decompress = Flag("-d", "--decompress", description: "Decompress BZip2 archive")
 
-    let one = Flag("-1", description: "Set block size to 100k (default); only used for compression")
-    let two = Flag("-2", description: "Set block size to 200k; only used for compression")
-    let three = Flag("-3", description: "Set block size to 300k; only used for compression")
-    let four = Flag("-4", description: "Set block size to 400k; only used for compression")
-    let five = Flag("-5", description: "Set block size to 500k; only used for compression")
-    let six = Flag("-6", description: "Set block size to 600k; only used for compression")
-    let seven = Flag("-7", description: "Set block size to 700k; only used for compression")
-    let eight = Flag("-8", description: "Set block size to 800k; only used for compression")
-    let nine = Flag("-9", description: "Set block size to 900k; only used for compression")
+    let blockSize = Key<BZip2.BlockSize>("-b", "--block-size",
+                                         description: """
+                                         Set block size for compression to a multiple of 100k bytes; \
+                                         possible values are from '1' (default) to '9'
+                                         """)
 
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
-        let blockSizes = OptionGroup(options: [one, two, three, four, five, six, seven, eight, nine], restriction: .atMostOne)
-        return [actions, blockSizes]
+        return [actions]
     }
 
     let input = Parameter()
@@ -67,30 +62,7 @@ class BZip2Command: Command {
 
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
 
-            let blockSize: BZip2.BlockSize
-            if one.value {
-                blockSize = .one
-            } else if two.value {
-                blockSize = .two
-            } else if three.value {
-                blockSize = .three
-            } else if four.value {
-                blockSize = .four
-            } else if five.value {
-                blockSize = .five
-            } else if six.value {
-                blockSize = .six
-            } else if seven.value {
-                blockSize = .seven
-            } else if eight.value {
-                blockSize = .eight
-            } else if nine.value {
-                blockSize = .nine
-            } else {
-                blockSize = .one
-            }
-
-            let compressedData = BZip2.compress(data: fileData, blockSize: blockSize)
+            let compressedData = BZip2.compress(data: fileData, blockSize: blockSize.value ?? .one)
             try compressedData.write(to: outputURL)
         }
     }

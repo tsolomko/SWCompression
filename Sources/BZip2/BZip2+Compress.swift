@@ -105,11 +105,8 @@ extension BZip2: CompressionAlgorithm {
             processed -= 1
             if processed <= 0 || i == out.count - 1 {
                 processed = 50
-                // We need to calculate code lengths for our current stats.
-                let lengths = BZip2.lengths(from: stats)
-                // Using these code lengths we can create new Huffman tree, which we may use.
-                let table = EncodingHuffmanTree(lengths: lengths, bitWriter)
-                // Let's compute possible sizes for our stats using new tree and existing trees.
+
+                // Let's find minimum possible sizes for our stats using existing tables.
                 var minimumSize = Int.max
                 var minimumSelector = -1
                 for tableIndex in 0..<tables.count {
@@ -119,12 +116,23 @@ extension BZip2: CompressionAlgorithm {
                         minimumSelector = tableIndex
                     }
                 }
-                if table.bitSize(for: stats) < minimumSize && tables.count < 6 {
-                    tables.append(table)
-                    tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
-                    selectors.append(tables.count - 1)
-                } else {
+
+                // If we already have 6 tables, we cannot create more, thus we choose one of the existing tables.
+                if tables.count == 6 {
                     selectors.append(minimumSelector)
+                } else {
+                    // Otherwise, let's create a new table and check if it gives us better results.
+                    // First, we calculate code lengths for our current stats.
+                    let lengths = BZip2.lengths(from: stats)
+                    // Then, using these code lengths, we create a new Huffman tree.
+                    let table = EncodingHuffmanTree(lengths: lengths, bitWriter)
+                    if table.bitSize(for: stats) < minimumSize {
+                        tables.append(table)
+                        tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
+                        selectors.append(tables.count - 1)
+                    } else {
+                        selectors.append(minimumSelector)
+                    }
                 }
 
                 // Clear stats.

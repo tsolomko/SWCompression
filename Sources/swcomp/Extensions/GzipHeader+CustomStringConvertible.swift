@@ -13,7 +13,7 @@ extension GzipHeader: CustomStringConvertible {
         File name: \(self.fileName ?? "")
         File system type: \(self.osType)
         Compression method: \(self.compressionMethod)
-        
+
         """
         if let mtime = self.modificationTime {
             output += "Modification time: \(mtime)\n"

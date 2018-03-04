@@ -32,7 +32,8 @@ public class ZlibArchive: Archive {
         bitReader.align()
 
         let adler32 = bitReader.uint32().byteSwapped
-        guard CheckSums.adler32(out) == adler32 else { throw ZlibError.wrongAdler32(out) }
+        guard CheckSums.adler32(out) == adler32
+            else { throw ZlibError.wrongAdler32(out) }
 
         return out
     }

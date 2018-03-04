@@ -6,10 +6,10 @@
 import Foundation
 import SwiftCLI
 
-class PerfTestGroup: CommandGroup {
+class BenchmarkGroup: CommandGroup {
 
-    let name = "perf-test"
-    let shortDescription = "Commands for performance testing"
+    let name = "benchmark"
+    let shortDescription = "Commands for benchmarking"
 
     let children: [Routable] = [UnGzip(), UnXz(), UnBz2(), InfoTar(), InfoZip(), Info7z(), CompDeflate(), CompBz2()]
 

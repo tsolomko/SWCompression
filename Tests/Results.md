@@ -1,17 +1,17 @@
 # Test Results
 
-In this document you can find the results of performance tests which were run on Macbook Pro, Late 2011.
-The main purpose of them is to track the progress from version to version.
+In this document you can find the results of benchmarking which were run on Macbook Pro, Late 2011.
+The main purpose of these results is to track the progress from version to version.
 
 __Note:__ Since version 4.1.0 of SWCompression internal functionality related to reading/writing bits and bytes
-was published as a separate framework, [BitByteData](https://github.com/tsolomko/BitByteData).
+is published as a separate framework, [BitByteData](https://github.com/tsolomko/BitByteData).
 It is worth mentioning that overall performance depends on the speed of reading and writing,
 and thus BitByteData's version (which is specified in a separate column in the tables below)
-becomes relevant to performance testing, since newer version can contain speed improvements.
+becomes relevant to benchmarking, since newer version can contain speed improvements.
 
 ## Tests description
 
-There are three different dataset for testing. When choosing them, I was trying to have something,
+There are three different datasets for testing. When choosing them I was trying to have something,
 that represents real life situations. For obvious reasons these test files aren't provided anywhere
 in the repository.
 
@@ -19,7 +19,7 @@ in the repository.
 - Test 2: Visual Studio Code 1.18.1 App for macOS.
 - Test 3: Documentation directory from Linux kernel 4.14.2 Source Code.
 
-All tests were run using swcomp's "perf-test" command. SWCompression (and swcomp) were compiled
+All tests were run using swcomp's "benchmark" command. SWCompression (and swcomp) were compiled
 using "Release" configuration.
 
 __Note:__ All results are averages over 6 iterations.

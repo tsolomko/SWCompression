@@ -11,16 +11,16 @@ import SwiftCLI
     import CoreFoundation
 #endif
 
-class CompDeflate: Command {
+class UnBz2: Command {
 
-    let name = "comp-deflate"
-    let shortDescription = "Performs performance testing for Deflate compression using specified files"
+    let name = "un-bz2"
+    let shortDescription = "Performs benchmarking of BZip2 unarchiving using specified files"
 
     let files = CollectedParameter()
 
     func execute() throws {
-        print("Deflate Compression Performance Testing")
-        print("==================================")
+        print("BZip2 Unarchive Benchmark")
+        print("=========================")
 
         for file in self.files.value {
             print("File: \(file)\n")
@@ -36,7 +36,7 @@ class CompDeflate: Command {
             for i in 1...6 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = Deflate.compress(data: fileData)
+                _ = try BZip2.decompress(data: fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f", timeElapsed))
                 totalTime += timeElapsed
@@ -48,7 +48,7 @@ class CompDeflate: Command {
                 }
             }
             print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
-            print("----------------------------------")
+            print("-----------------------------------")
         }
     }
 

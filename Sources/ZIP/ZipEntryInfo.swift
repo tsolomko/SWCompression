@@ -74,6 +74,24 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// Entry's compression method.
     public let compressionMethod: CompressionMethod
 
+    /**
+     ID of entry's owner.
+
+     Set from different sources in the following preference order, if possible:
+     1. Info-ZIP New Unix extra field.
+     2. Info-ZIP Unix extra field.
+     */
+    public let ownerID: Int?
+
+    /**
+     ID of the group of entry's owner.
+
+     Set from different sources in the following preference order, if possible:
+     1. Info-ZIP New Unix extra field.
+     2. Info-ZIP Unix extra field.
+     */
+    public let groupID: Int?
+
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
@@ -174,6 +192,12 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
         // Compression method.
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
+
+        // Owner's ID.
+        self.ownerID = localHeader.infoZipNewUid ?? localHeader.infoZipUid?.toInt()
+
+        // Owner's group ID.
+        self.groupID = localHeader.infoZipNewGid ?? localHeader.infoZipGid?.toInt()
     }
 
 }
