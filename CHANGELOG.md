@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1
+
+- Now accepts 7-Zip containers with minor format versions from 1 to 4 (previously, was only 4).
+
 ## 4.2.0
 
 - Minuimum required version of BitByteData is now 1.1.0.
