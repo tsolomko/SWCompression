@@ -226,7 +226,9 @@ public class SevenZipContainer: Container {
             else { throw SevenZipError.wrongSignature }
 
         // Check archive version.
-        guard bitReader.bytes(count: 2) == [0, 4] // 7zFormat.txt says it should be [0, 2] instead.
+        let majorVersion = bitReader.byte()
+        let minorVersion = bitReader.byte()
+        guard majorVersion == 0 && minorVersion > 0 && minorVersion <= 4
             else { throw SevenZipError.wrongFormatVersion }
 
         let startHeaderCRC = bitReader.uint32()

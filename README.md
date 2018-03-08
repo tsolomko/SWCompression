@@ -51,7 +51,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.0.0")
+                 from: "4.2.0")
     ],
     targets: [
         .target(
@@ -66,7 +66,7 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.0'` and `use_frameworks!` to your Podfile.
+Add `pod 'SWCompression', '~> 4.2'` and `use_frameworks!` to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -112,7 +112,7 @@ __Note:__ If you use Swift Package Manager or Carthage you always have everythin
 
 ### Carthage
 
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.0`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.2`.
 
 Then run `carthage update`.
 
