@@ -13,7 +13,7 @@ let package = Package(
         // .package(url: "https://github.com/jakeheis/SwiftCLI",
         //          from: "4.2.0"),
         .package(url: "https://github.com/tsolomko/BitByteData",
-                 from: "1.1.0"),
+                 from: "1.2.0-test"),
     ],
     targets: [
         // SWCOMP: Uncomment the lines below to build swcomp example program.
