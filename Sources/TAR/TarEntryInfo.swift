@@ -41,6 +41,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     // MARK: TAR specific
 
+    /// Entry's compression method. Always `.copy` for entries of TAR containers.
+    public let compressionMethod = CompressionMethod.copy
+
     /// ID of entry's owner.
     public let ownerID: Int?
 
