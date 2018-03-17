@@ -61,19 +61,19 @@ struct ZipCentralDirectoryEntry {
 
         self.crc32 = byteReader.uint32()
 
-        self.compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
-        self.uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.compSize = byteReader.uint64(fromBytes: 4)
+        self.uncompSize = byteReader.uint64(fromBytes: 4)
 
         let fileNameLength = byteReader.int(fromBytes: 2)
         let extraFieldLength = byteReader.int(fromBytes: 2)
         let fileCommentLength = byteReader.int(fromBytes: 2)
 
-        self.diskNumberStart = UInt32(truncatingIfNeeded: byteReader.uint16())
+        self.diskNumberStart = byteReader.uint32(fromBytes: 2)
 
         self.internalFileAttributes = byteReader.uint16()
         self.externalFileAttributes = byteReader.uint32()
 
-        self.localHeaderOffset = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.localHeaderOffset = byteReader.uint64(fromBytes: 4)
 
         guard let fileName = byteReader.getZipStringField(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }

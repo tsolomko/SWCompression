@@ -120,7 +120,7 @@ public class SevenZipContainer: Container {
             let fileSize = substreamInfo.unpackSizes[nonEmptyFileIndex]
 
             // Check, if we aren't about to read too much from a stream.
-            guard unpackedStreamData.offset + fileSize <= unpackedStreamData.data.endIndex
+            guard fileSize <= unpackedStreamData.bytesLeft
                 else { throw SevenZipError.internalStructureError }
             let fileData = Data(bytes: unpackedStreamData.bytes(count: fileSize))
 

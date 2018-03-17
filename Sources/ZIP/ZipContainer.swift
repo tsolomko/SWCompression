@@ -115,8 +115,8 @@ public class ZipContainer: Container {
                 compSize = byteReader.uint64()
                 uncompSize = byteReader.uint64()
             } else {
-                compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
-                uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+                compSize = byteReader.uint64(fromBytes: 4)
+                uncompSize = byteReader.uint64(fromBytes: 4)
             }
         }
 

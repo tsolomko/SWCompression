@@ -55,8 +55,8 @@ struct ZipLocalHeader {
 
         self.crc32 = byteReader.uint32()
 
-        self.compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
-        self.uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.compSize = byteReader.uint64(fromBytes: 4)
+        self.uncompSize = byteReader.uint64(fromBytes: 4)
 
         let fileNameLength = byteReader.int(fromBytes: 2)
         let extraFieldLength = byteReader.int(fromBytes: 2)

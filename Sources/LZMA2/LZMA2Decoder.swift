@@ -23,7 +23,7 @@ class LZMA2Decoder {
     func setDictionarySize(_ byte: UInt8) throws {
         guard byte & 0xC0 == 0
             else { throw LZMA2Error.wrongDictionarySize }
-        let bits = byte & 0x3F
+        let bits = (byte & 0x3F).toInt()
         guard bits < 40
             else { throw LZMA2Error.wrongDictionarySize }
 
@@ -31,8 +31,8 @@ class LZMA2Decoder {
         if bits == 40 {
             dictSize = UInt32.max
         } else {
-            dictSize = UInt32(2 | (bits.toInt() & 1))
-            dictSize <<= UInt32(bits.toInt() / 2 + 11)
+            dictSize = UInt32(truncatingIfNeeded: 2 | (bits & 1))
+            dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
         }
 
         self.decoder.dictionarySize = dictSize.toInt()
