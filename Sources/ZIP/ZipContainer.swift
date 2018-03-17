@@ -12,9 +12,9 @@ public class ZipContainer: Container {
     /**
      Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by ZIP container and, particularly,
-     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by ZIP container and, particularly, by the creator of a given ZIP
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: ZIP container's data.
 
@@ -115,9 +115,9 @@ public class ZipContainer: Container {
     /**
      Processes ZIP container and returns an array of `ZipEntryInfo` with information about entries in this container.
 
-     - Important: The order of entries is defined by ZIP container and, particularly,
-     by the creator of a given ZIP container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by ZIP container and, particularly, by the creator of a given ZIP
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: ZIP container's data.
 
