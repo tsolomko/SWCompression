@@ -12,9 +12,9 @@ public class TarContainer: Container {
     /**
      Processes TAR container and returns an array of `TarEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by TAR container and, particularly,
-     by the creator of a given TAR container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by TAR container and, particularly, by the creator of a given TAR
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: TAR container's data.
 
@@ -43,9 +43,9 @@ public class TarContainer: Container {
     /**
      Processes TAR container and returns an array of `TarEntryInfo` with information about entries in this container.
 
-     - Important: The order of entries is defined by TAR container and, particularly,
-     by the creator of a given TAR container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by TAR container and, particularly, by the creator of a given TAR
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: TAR container's data.
 

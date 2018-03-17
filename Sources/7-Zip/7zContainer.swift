@@ -14,9 +14,9 @@ public class SevenZipContainer: Container {
     /**
      Processes 7-Zip container and returns an array of `SevenZipEntry` with information and data for all entries.
 
-     - Important: The order of entries is defined by 7-Zip container and, particularly,
-     by the creator of a given 7-Zip container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by 7-Zip container and, particularly, by the creator of a given 7-Zip
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: 7-Zip container's data.
 
@@ -165,12 +165,12 @@ public class SevenZipContainer: Container {
     }
 
     /**
-     Processes 7-Zip container and returns an array of `SevenZipEntryInfo`
-     with information about entries in this container.
+     Processes 7-Zip container and returns an array of `SevenZipEntryInfo` with information about entries in this
+     container.
 
-     - Important: The order of entries is defined by 7-Zip container and, particularly,
-     by the creator of a given 7-Zip container. It is likely that directories will be encountered earlier
-     than files stored in those directories, but one SHOULD NOT rely on any particular order.
+     - Important: The order of entries is defined by 7-Zip container and, particularly, by the creator of a given 7-Zip
+     container. It is likely that directories will be encountered earlier than files stored in those directories, but no
+     particular order is guaranteed.
 
      - Parameter container: 7-Zip container's data.
 
