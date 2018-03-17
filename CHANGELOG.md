@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.2
+
+- Fixed skipping entries in `SevenZipContainer.open(container:)` in some rare cases.
+- Fixed crash in `SevenZipContainer.info(container:)` when either entry's size or CRC32 is not present in the container.
+- Updated some Container-related documentation.
+
 ## 4.2.1
 
 - Now accepts 7-Zip containers with minor format versions from 1 to 4 (previously, was only 4).
