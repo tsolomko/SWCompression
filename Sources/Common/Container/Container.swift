@@ -10,10 +10,10 @@ public protocol Container {
 
     associatedtype Entry: ContainerEntry
 
-    /// Retrieve all the entries with their data from the container.
+    /// Retrieve all container entries with their data.
     static func open(container: Data) throws -> [Entry]
 
-    /// Retrieve information abouth all the entries from the container (without their data).
+    /// Retrieve information about all container entries (without their data).
     static func info(container: Data) throws -> [Entry.Info]
 
 }
