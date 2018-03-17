@@ -58,8 +58,8 @@ struct ZipLocalHeader {
         self.compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
         self.uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
 
-        let fileNameLength = byteReader.uint16().toInt()
-        let extraFieldLength = byteReader.uint16().toInt()
+        let fileNameLength = byteReader.int(fromBytes: 2)
+        let extraFieldLength = byteReader.int(fromBytes: 2)
 
         guard let fileName = byteReader.getZipStringField(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
@@ -70,7 +70,7 @@ struct ZipLocalHeader {
         while byteReader.offset - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
             let headerID = byteReader.uint16()
-            let size = byteReader.uint16().toInt()
+            let size = byteReader.int(fromBytes: 2)
             switch headerID {
             case 0x0001: // Zip64
                 // Zip64 extra field is a special case, because it requires knowledge about local header fields,

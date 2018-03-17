@@ -166,7 +166,7 @@ public class ZipContainer: Container {
         // But first, we should check for "Archive extra data record" and skip it if present.
         byteReader.offset = endOfCD.cdOffset.toInt()
         if byteReader.uint32() == 0x08064b50 {
-            byteReader.offset += byteReader.uint32().toInt()
+            byteReader.offset += byteReader.int(fromBytes: 4)
         } else {
             byteReader.offset -= 4
         }

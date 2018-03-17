@@ -29,7 +29,7 @@ public class LZMA: DecompressionAlgorithm {
 
         try decoder.setProperties(byteReader.byte())
         decoder.resetStateAndDecoders()
-        decoder.dictionarySize = byteReader.uint32().toInt()
+        decoder.dictionarySize = byteReader.int(fromBytes: 4)
 
         let uncompSize = uncompressedSize ?? byteReader.uint64()
         if uncompSize == UInt64.max {

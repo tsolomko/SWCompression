@@ -84,8 +84,8 @@ struct InfoZipUnixExtraField: ZipExtraField {
         case .centralDirectory:
             return nil
         case .localHeader:
-            self.uid = byteReader.uint16().toInt()
-            self.gid = byteReader.uint16().toInt()
+            self.uid = byteReader.int(fromBytes: 2)
+            self.gid = byteReader.int(fromBytes: 2)
         }
     }
 
@@ -111,24 +111,14 @@ struct InfoZipNewUnixExtraField: ZipExtraField {
         if uidSize > 8 {
             byteReader.offset += uidSize
         } else {
-            var uid = 0
-            for i in 0..<uidSize {
-                let byte = byteReader.byte()
-                uid |= byte.toInt() << (8 * i)
-            }
-            self.uid = uid
+            self.uid = byteReader.int(fromBytes: uidSize)
         }
 
         let gidSize = byteReader.byte().toInt()
         if gidSize > 8 {
             byteReader.offset += gidSize
         } else {
-            var gid = 0
-            for i in 0..<gidSize {
-                let byte = byteReader.byte()
-                gid |= byte.toInt() << (8 * i)
-            }
-            self.gid = gid
+            self.gid = byteReader.int(fromBytes: gidSize)
         }
     }
 
