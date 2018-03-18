@@ -39,6 +39,10 @@ class SevenZipFolder {
     // This property is stored in SubstreamInfo.
     var numUnpackSubstreams = 1
 
+    lazy var orderedCompressionMethods: [CompressionMethod] = {
+        return self.orderedCoders().map { $0.compressionMethod }
+    }()
+
     init(_ bitReader: MsbBitReader) throws {
         numCoders = bitReader.szMbd()
         for _ in 0..<numCoders {
