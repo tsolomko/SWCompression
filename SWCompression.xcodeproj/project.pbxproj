@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0606CF8120641209002B6EE9 /* StandardExtraFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0606CF8020641209002B6EE9 /* StandardExtraFields.swift */; };
 		06092A1A1FA4CB0300DE9FD5 /* CompressionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */; };
 		06092A241FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06092A231FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift */; };
 		061C06211F0E89D900832F0C /* XZError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061C06201F0E89D900832F0C /* XZError.swift */; };
@@ -205,6 +206,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0606CF8020641209002B6EE9 /* StandardExtraFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardExtraFields.swift; sourceTree = "<group>"; };
 		06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionMethod.swift; sourceTree = "<group>"; };
 		06092A231FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompressionMethod+Zip.swift"; sourceTree = "<group>"; };
 		061C06201F0E89D900832F0C /* XZError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZError.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				061C06411F0E8AD500832F0C /* ZipEntry.swift */,
 				06BAC5931F8CFF28002443F4 /* ZipEntryInfo.swift */,
 				0642998A206017590044BA0C /* ZipExtraField.swift */,
+				0606CF8020641209002B6EE9 /* StandardExtraFields.swift */,
 				061C063C1F0E8AB700832F0C /* ZipError.swift */,
 				06393DF41F1A7F8E00A647A0 /* ZipString.swift */,
 				061C064C1F0E901C00832F0C /* ZipLocalHeader.swift */,
@@ -1047,6 +1050,7 @@
 				06A3933A1DE0709300182E12 /* ZlibArchive.swift in Sources */,
 				06E30F391F82D2DD00F80167 /* HuffmanLength+Comparable.swift in Sources */,
 				061C063D1F0E8AB700832F0C /* ZipError.swift in Sources */,
+				0606CF8120641209002B6EE9 /* StandardExtraFields.swift in Sources */,
 				0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */,
 				06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */,
 				06912BD21F5C8F3D0070BB60 /* Deflate+Lengths.swift in Sources */,
