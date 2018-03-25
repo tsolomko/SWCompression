@@ -111,10 +111,10 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.name = cdEntry.fileName
 
         // Set Modification Time.
-        if let mtimestamp = cdEntry.modificationTimestamp {
+        if let mtimestamp = cdEntry.extendedTimestampExtraField?.modificationTimestamp {
             // Extended Timestamp extra field.
             self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
-        } else if let mtime = cdEntry.ntfsMtime {
+        } else if let mtime = cdEntry.ntfsExtraField?.ntfsMtime {
             // NTFS extra field.
             self.modificationTime = Date(mtime)
         } else {
@@ -137,10 +137,10 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         }
 
         // Set Creation Time.
-        if let ctimestamp = localHeader.creationTimestamp {
+        if let ctimestamp = localHeader.extendedTimestampExtraField?.creationTimestamp {
             // Extended Timestamp extra field.
             self.creationTime = Date(timeIntervalSince1970: TimeInterval(ctimestamp))
-        } else if let ctime = cdEntry.ntfsCtime {
+        } else if let ctime = cdEntry.ntfsExtraField?.ntfsCtime {
             // NTFS extra field.
             self.creationTime = Date(ctime)
         } else {
@@ -148,10 +148,10 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         }
 
         // Set Creation Time.
-        if let atimestamp = localHeader.accessTimestamp {
+        if let atimestamp = localHeader.extendedTimestampExtraField?.accessTimestamp {
             // Extended Timestamp extra field.
             self.accessTime = Date(timeIntervalSince1970: TimeInterval(atimestamp))
-        } else if let atime = cdEntry.ntfsAtime {
+        } else if let atime = cdEntry.ntfsExtraField?.ntfsAtime {
             // NTFS extra field.
             self.accessTime = Date(atime)
         } else {
@@ -194,10 +194,12 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
 
         // Owner's ID.
-        self.ownerID = localHeader.infoZipNewUid ?? localHeader.infoZipUid?.toInt()
+        self.ownerID = localHeader.infoZipNewUnixExtraField?.infoZipNewUid ??
+            localHeader.infoZipUnixExtraField?.infoZipUid.toInt()
 
         // Owner's group ID.
-        self.groupID = localHeader.infoZipNewGid ?? localHeader.infoZipGid?.toInt()
+        self.groupID = localHeader.infoZipNewUnixExtraField?.infoZipNewGid ??
+            localHeader.infoZipUnixExtraField?.infoZipGid.toInt()
     }
 
 }

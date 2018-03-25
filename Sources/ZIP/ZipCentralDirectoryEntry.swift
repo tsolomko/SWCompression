@@ -29,18 +29,15 @@ struct ZipCentralDirectoryEntry {
     private(set) var localHeaderOffset: UInt64
 
     // 0x5455 extra field.
-    private(set) var modificationTimestamp: UInt32?
+    private(set) var extendedTimestampExtraField: ExtendedTimestampExtraField?
 
-    // 0x000a extra field.
-    private(set) var ntfsMtime: UInt64?
-    private(set) var ntfsAtime: UInt64?
-    private(set) var ntfsCtime: UInt64?
+    /// 0x000a extra field.
+    private(set) var ntfsExtraField: NtfsExtraField?
 
     // 0x7855 extra field doesn't have any information in Central Directory.
 
-    // 0x7875 extra field.
-    private(set) var infoZipNewUid: Int?
-    private(set) var infoZipNewGid: Int?
+    /// 0x7875 extra field.
+    private(set) var infoZipNewUnixExtraField: InfoZipNewUnixExtraField?
 
     let nextEntryOffset: Int
 
@@ -87,6 +84,7 @@ struct ZipCentralDirectoryEntry {
             let size = byteReader.uint16().toInt()
             switch headerID {
             case 0x0001: // Zip64
+                // Zip64 extra field is a special case, because it requires knowledge about central directory fields.
                 if self.uncompSize == 0xFFFFFFFF {
                     self.uncompSize = byteReader.uint64()
                 }
@@ -100,52 +98,14 @@ struct ZipCentralDirectoryEntry {
                     self.diskNumberStart = byteReader.uint32()
                 }
             case 0x5455: // Extended Timestamp
-                let flags = byteReader.byte()
-                guard flags & 0xF8 == 0
-                    else { break }
-                if flags & 0x01 != 0 {
-                    self.modificationTimestamp = byteReader.uint32()
-                }
+                self.extendedTimestampExtraField = ExtendedTimestampExtraField(byteReader, size,
+                                                                               location: .centralDirectory)
             case 0x000a: // NTFS Extra Fields
-                let ntfsExtraFieldsStartIndex = byteReader.offset
-                byteReader.offset += 4 // Skipping reserved bytes.
-                while byteReader.offset - ntfsExtraFieldsStartIndex < size {
-                    let tag = byteReader.uint16()
-                    byteReader.offset += 2 // Skipping size of attributes for this tag.
-                    if tag == 0x0001 {
-                        self.ntfsMtime = byteReader.uint64()
-                        self.ntfsAtime = byteReader.uint64()
-                        self.ntfsCtime = byteReader.uint64()
-                    }
-                }
+                self.ntfsExtraField = NtfsExtraField(byteReader, size, location: .centralDirectory)
             case 0x7855: // Info-ZIP Unix Extra Field
                 break // It doesn't contain any information in Central Directory.
             case 0x7875: // Info-ZIP New Unix Extra Field
-                guard byteReader.byte() == 1 // Version must be 1.
-                    else { break }
-                let uidSize = byteReader.byte().toInt()
-                if uidSize > 8 {
-                    byteReader.offset += uidSize
-                } else {
-                    var uid = 0
-                    for i in 0..<uidSize {
-                        let byte = byteReader.byte()
-                        uid |= byte.toInt() << (8 * i)
-                    }
-                    self.infoZipNewUid = uid
-                }
-
-                let gidSize = byteReader.byte().toInt()
-                if gidSize > 8 {
-                    byteReader.offset += gidSize
-                } else {
-                    var gid = 0
-                    for i in 0..<gidSize {
-                        let byte = byteReader.byte()
-                        gid |= byte.toInt() << (8 * i)
-                    }
-                    self.infoZipNewGid = gid
-                }
+                self.infoZipNewUnixExtraField = InfoZipNewUnixExtraField(byteReader, size, location: .centralDirectory)
             default:
                 byteReader.offset += size
             }
