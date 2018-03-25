@@ -114,9 +114,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let mtimestamp = cdEntry.modificationTimestamp {
             // Extended Timestamp extra field.
             self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
-        } else if let mtime = Date(cdEntry.ntfsMtime) {
+        } else if let mtime = cdEntry.ntfsMtime {
             // NTFS extra field.
-            self.modificationTime = mtime
+            self.modificationTime = Date(mtime)
         } else {
             // Native ZIP modification time.
             let dosDate = cdEntry.lastModFileDate.toInt()
@@ -140,9 +140,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let ctimestamp = localHeader.creationTimestamp {
             // Extended Timestamp extra field.
             self.creationTime = Date(timeIntervalSince1970: TimeInterval(ctimestamp))
-        } else if let ctime = Date(cdEntry.ntfsCtime) {
+        } else if let ctime = cdEntry.ntfsCtime {
             // NTFS extra field.
-            self.creationTime = ctime
+            self.creationTime = Date(ctime)
         } else {
             self.creationTime = nil
         }
@@ -151,9 +151,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         if let atimestamp = localHeader.accessTimestamp {
             // Extended Timestamp extra field.
             self.accessTime = Date(timeIntervalSince1970: TimeInterval(atimestamp))
-        } else if let atime = Date(cdEntry.ntfsAtime) {
+        } else if let atime = cdEntry.ntfsAtime {
             // NTFS extra field.
-            self.accessTime = atime
+            self.accessTime = Date(atime)
         } else {
             self.accessTime = nil
         }
