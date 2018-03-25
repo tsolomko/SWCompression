@@ -34,6 +34,8 @@ struct ZipLocalHeader {
     /// 0x7875 extra field.
     private(set) var infoZipNewUnixExtraField: InfoZipNewUnixExtraField?
 
+    let customExtraFields: [ZipExtraField]
+
     let dataOffset: Int
 
     init(_ byteReader: ByteReader) throws {
@@ -64,6 +66,7 @@ struct ZipLocalHeader {
         self.fileName = fileName
 
         let extraFieldStart = byteReader.offset
+        var customExtraFields = [ZipExtraField]()
         while byteReader.offset - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
             let headerID = byteReader.uint16()
@@ -85,9 +88,21 @@ struct ZipLocalHeader {
             case 0x7875: // Info-ZIP New Unix Extra Field
                 self.infoZipNewUnixExtraField = InfoZipNewUnixExtraField(byteReader, size, location: .localHeader)
             default:
-                byteReader.offset += size
+                let customFieldOffset = byteReader.offset
+                if let customExtraFieldType = ZipContainer.customExtraFields[headerID],
+                    customExtraFieldType.id == headerID,
+                    let customExtraField = customExtraFieldType.init(byteReader, size, location: .localHeader),
+                    customExtraField.id == headerID  {
+                    customExtraFields.append(customExtraField)
+                    guard byteReader.offset == customFieldOffset + size
+                        else { fatalError("Custom field in Local Header with ID=\(headerID) of" +
+                            "type=\(customExtraFieldType) failed to read exactly \(size) bytes.") }
+                } else {
+                    byteReader.offset = customFieldOffset + size
+                }
             }
         }
+        self.customExtraFields = customExtraFields
 
         self.dataOffset = byteReader.offset
     }

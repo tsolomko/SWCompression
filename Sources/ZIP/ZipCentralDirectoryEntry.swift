@@ -39,6 +39,8 @@ struct ZipCentralDirectoryEntry {
     /// 0x7875 extra field.
     private(set) var infoZipNewUnixExtraField: InfoZipNewUnixExtraField?
 
+    let customExtraFields: [ZipExtraField]
+
     let nextEntryOffset: Int
 
     init(_ byteReader: ByteReader) throws {
@@ -78,6 +80,7 @@ struct ZipCentralDirectoryEntry {
         self.fileName = fileName
 
         let extraFieldStart = byteReader.offset
+        var customExtraFields = [ZipExtraField]()
         while byteReader.offset - extraFieldStart < extraFieldLength {
             // There are a lot of possible extra fields.
             let headerID = byteReader.uint16()
@@ -107,9 +110,21 @@ struct ZipCentralDirectoryEntry {
             case 0x7875: // Info-ZIP New Unix Extra Field
                 self.infoZipNewUnixExtraField = InfoZipNewUnixExtraField(byteReader, size, location: .centralDirectory)
             default:
-                byteReader.offset += size
+                let customFieldOffset = byteReader.offset
+                if let customExtraFieldType = ZipContainer.customExtraFields[headerID],
+                    customExtraFieldType.id == headerID,
+                    let customExtraField = customExtraFieldType.init(byteReader, size, location: .centralDirectory),
+                    customExtraField.id == headerID {
+                    customExtraFields.append(customExtraField)
+                    guard byteReader.offset == customFieldOffset + size
+                        else { fatalError("Custom field in Central Directory with ID=\(headerID) of" +
+                            "type=\(customExtraFieldType) failed to read exactly \(size) bytes.") }
+                } else {
+                    byteReader.offset = customFieldOffset + size
+                }
             }
         }
+        self.customExtraFields = customExtraFields
 
         guard let fileComment = byteReader.getZipStringField(fileCommentLength, useUtf8)
             else { throw ZipError.wrongTextField }

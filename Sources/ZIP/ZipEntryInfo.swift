@@ -92,6 +92,8 @@ public struct ZipEntryInfo: ContainerEntryInfo {
      */
     public let groupID: Int?
 
+    public let customExtraFields: [ZipExtraField]
+
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
@@ -200,6 +202,11 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         // Owner's group ID.
         self.groupID = localHeader.infoZipNewUnixExtraField?.infoZipNewGid ??
             localHeader.infoZipUnixExtraField?.infoZipGid.toInt()
+
+        // Custom extra fields.
+        var customExtraFields = cdEntry.customExtraFields
+        customExtraFields.append(contentsOf: localHeader.customExtraFields)
+        self.customExtraFields = customExtraFields
     }
 
 }

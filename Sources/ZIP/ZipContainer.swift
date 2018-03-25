@@ -9,6 +9,8 @@ import BitByteData
 /// Provides functions for work with ZIP containers.
 public class ZipContainer: Container {
 
+    public static var customExtraFields = [UInt16: ZipExtraField.Type]()
+
     /**
      Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
 
