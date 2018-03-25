@@ -85,6 +85,8 @@
 		06CDFCA81F111D9700292758 /* DeflateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA71F111D9700292758 /* DeflateError.swift */; };
 		06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCAC1F111DBE00292758 /* LZMAError.swift */; };
 		06CDFCB21F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
+		06D42DA52067B46800C1A98B /* test_custom_extra_field.zip in Resources */ = {isa = PBXBuildFile; fileRef = 06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */; };
+		06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D42DA62067B71000C1A98B /* TestZipExtraField.swift */; };
 		06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */; };
 		06DDB1711F8190D400035BEF /* BZip2+BlockSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DDB1701F8190D400035BEF /* BZip2+BlockSize.swift */; };
 		06DE29B81FB7024C0098A761 /* ByteReader+ZipString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DE29B71FB7024C0098A761 /* ByteReader+ZipString.swift */; };
@@ -284,6 +286,8 @@
 		06CDFCA71F111D9700292758 /* DeflateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateError.swift; sourceTree = "<group>"; };
 		06CDFCAC1F111DBE00292758 /* LZMAError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAError.swift; sourceTree = "<group>"; };
 		06CDFCB11F111DEC00292758 /* LZMA2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2Error.swift; sourceTree = "<group>"; };
+		06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_custom_extra_field.zip; sourceTree = "<group>"; };
+		06D42DA62067B71000C1A98B /* TestZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestZipExtraField.swift; sourceTree = "<group>"; };
 		06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BZip2+Compress.swift"; sourceTree = "<group>"; };
 		06DDB1701F8190D400035BEF /* BZip2+BlockSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BZip2+BlockSize.swift"; sourceTree = "<group>"; };
 		06DE29B71FB7024C0098A761 /* ByteReader+ZipString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+ZipString.swift"; sourceTree = "<group>"; };
@@ -629,6 +633,7 @@
 				06F065A61FFB763300312A82 /* TarTests.swift */,
 				06F065A91FFB763300312A82 /* XzTests.swift */,
 				06F065A41FFB763300312A82 /* ZipTests.swift */,
+				06D42DA62067B71000C1A98B /* TestZipExtraField.swift */,
 				06F065A31FFB763300312A82 /* ZlibTests.swift */,
 			);
 			path = Tests;
@@ -723,6 +728,7 @@
 				06F065DB1FFB763300312A82 /* test_empty_cont.zip */,
 				06F065DC1FFB763300312A82 /* SWCompressionSourceCode.zip */,
 				06F065DD1FFB763300312A82 /* test_zip64.zip */,
+				06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */,
 			);
 			path = ZIP;
 			sourceTree = "<group>";
@@ -971,6 +977,7 @@
 				06F0665E1FFB763400312A82 /* test_empty_cont.7z in Resources */,
 				06F066731FFB763400312A82 /* test3.bz2 in Resources */,
 				06F066471FFB763400312A82 /* test_empty_cont.zip in Resources */,
+				06D42DA52067B46800C1A98B /* test_custom_extra_field.zip in Resources */,
 				06F0663E1FFB763400312A82 /* test6.xz in Resources */,
 				06F0666D1FFB763400312A82 /* test_win.7z in Resources */,
 				06F066571FFB763400312A82 /* test_empty_file.tar in Resources */,
@@ -1109,6 +1116,7 @@
 				06F066171FFB763300312A82 /* BZip2Tests.swift in Sources */,
 				06F066181FFB763300312A82 /* TarTests.swift in Sources */,
 				06F066191FFB763300312A82 /* GzipTests.swift in Sources */,
+				06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */,
 				06F0661D1FFB763300312A82 /* LzmaTests.swift in Sources */,
 				06F0661B1FFB763300312A82 /* XzTests.swift in Sources */,
 				06F0661E1FFB763300312A82 /* BZip2CompressionTests.swift in Sources */,

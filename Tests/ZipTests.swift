@@ -19,6 +19,41 @@ class ZipTests: XCTestCase {
         _ = try ZipContainer.open(container: testData)
     }
 
+    func testZipCustomExtraField() throws {
+        guard let testData = Constants.data(forTest: "test_custom_extra_field", withType: ZipTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        // First, we check that without enabling support for our custom extra field, ZipContainer doesn't recognize it.
+        var result = try ZipContainer.open(container: testData)
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].info.customExtraFields.count, 0)
+
+        // Enable support for custom extra field.
+        ZipContainer.customExtraFields[0x0646] = TestZipExtraField.self
+
+        result = try ZipContainer.open(container: testData)
+        XCTAssertEqual(result.count, 1)
+
+        let entry = result[0]
+        XCTAssertEqual(entry.info.customExtraFields.count, 2)
+
+        for customExtraField in entry.info.customExtraFields {
+            XCTAssertTrue(customExtraField is TestZipExtraField)
+            XCTAssertEqual(customExtraField.id, TestZipExtraField.id)
+            if customExtraField.size == 13 {
+                XCTAssertEqual(customExtraField.location, .centralDirectory)
+                XCTAssertEqual((customExtraField as? TestZipExtraField)?.helloString, "Hello, Extra!")
+            } else if customExtraField.size == 20 {
+                XCTAssertEqual(customExtraField.location, .localHeader)
+                XCTAssertEqual((customExtraField as? TestZipExtraField)?.helloString, "Hello, Local Header!")
+            } else {
+                XCTFail("Wrong size for custom extra field.")
+            }
+        }
+    }
+
     func testZip64() throws {
         guard let testData = Constants.data(forTest: "test_zip64", withType: ZipTests.testType) else {
             XCTFail("Unable to get test data.")
