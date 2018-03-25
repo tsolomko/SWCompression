@@ -57,9 +57,9 @@ public struct SevenZipEntryInfo: ContainerEntryInfo {
 
         self.name = file.name
 
-        self.accessTime = Date(file.aTime)
-        self.creationTime = Date(file.cTime)
-        self.modificationTime = Date(file.mTime)
+        self.accessTime = file.aTime
+        self.creationTime = file.cTime
+        self.modificationTime = file.mTime
 
         self.winAttributes = file.winAttributes
 
