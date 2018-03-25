@@ -12,9 +12,9 @@ struct ExtendedTimestampExtraField: ZipExtraField {
     let size: Int
     let location: ZipExtraFieldLocation
 
-    var accessTimestamp: UInt32?
-    var creationTimestamp: UInt32?
-    var modificationTimestamp: UInt32?
+    var atime: UInt32?
+    var ctime: UInt32?
+    var mtime: UInt32?
 
     init(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
@@ -23,18 +23,18 @@ struct ExtendedTimestampExtraField: ZipExtraField {
         case .centralDirectory:
             let flags = byteReader.byte()
             if flags & 0x01 != 0 {
-                self.modificationTimestamp = byteReader.uint32()
+                self.mtime = byteReader.uint32()
             }
         case .localHeader:
             let flags = byteReader.byte()
             if flags & 0x01 != 0 {
-                self.modificationTimestamp = byteReader.uint32()
+                self.mtime = byteReader.uint32()
             }
             if flags & 0x02 != 0 {
-                self.accessTimestamp = byteReader.uint32()
+                self.atime = byteReader.uint32()
             }
             if flags & 0x04 != 0 {
-                self.creationTimestamp = byteReader.uint32()
+                self.ctime = byteReader.uint32()
             }
         }
     }
@@ -48,9 +48,9 @@ struct NtfsExtraField: ZipExtraField {
     let size: Int
     let location: ZipExtraFieldLocation
 
-    let ntfsAtime: UInt64
-    let ntfsCtime: UInt64
-    let ntfsMtime: UInt64
+    let atime: UInt64
+    let ctime: UInt64
+    let mtime: UInt64
 
     init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
@@ -60,9 +60,9 @@ struct NtfsExtraField: ZipExtraField {
         byteReader.offset += 2 // Skip size of this attribute
         guard tag == 0x0001
             else { return nil }
-        self.ntfsMtime = byteReader.uint64()
-        self.ntfsAtime = byteReader.uint64()
-        self.ntfsCtime = byteReader.uint64()
+        self.mtime = byteReader.uint64()
+        self.atime = byteReader.uint64()
+        self.ctime = byteReader.uint64()
     }
 
 }
@@ -74,8 +74,8 @@ struct InfoZipUnixExtraField: ZipExtraField {
     let size: Int
     let location: ZipExtraFieldLocation
 
-    let infoZipUid: UInt16
-    let infoZipGid: UInt16
+    let uid: Int
+    let gid: Int
 
     init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
@@ -84,8 +84,8 @@ struct InfoZipUnixExtraField: ZipExtraField {
         case .centralDirectory:
             return nil
         case .localHeader:
-            self.infoZipUid = byteReader.uint16()
-            self.infoZipGid = byteReader.uint16()
+            self.uid = byteReader.uint16().toInt()
+            self.gid = byteReader.uint16().toInt()
         }
     }
 
@@ -98,8 +98,8 @@ struct InfoZipNewUnixExtraField: ZipExtraField {
     let size: Int
     let location: ZipExtraFieldLocation
 
-    var infoZipNewUid: Int?
-    var infoZipNewGid: Int?
+    var uid: Int?
+    var gid: Int?
 
     init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
@@ -116,7 +116,7 @@ struct InfoZipNewUnixExtraField: ZipExtraField {
                 let byte = byteReader.byte()
                 uid |= byte.toInt() << (8 * i)
             }
-            self.infoZipNewUid = uid
+            self.uid = uid
         }
 
         let gidSize = byteReader.byte().toInt()
@@ -128,7 +128,7 @@ struct InfoZipNewUnixExtraField: ZipExtraField {
                 let byte = byteReader.byte()
                 gid |= byte.toInt() << (8 * i)
             }
-            self.infoZipNewGid = gid
+            self.gid = gid
         }
     }
 
