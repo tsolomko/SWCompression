@@ -72,34 +72,30 @@ public class TarContainer: Container {
         while byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024) {
             let info = try TarEntryInfo(byteReader, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                         longName, longLinkName)
+            let dataStartIndex = info.blockStartIndex + 512
 
-            if info.isGlobalExtendedHeader {
-                let dataStartIndex = info.blockStartIndex + 512
-                let dataEndIndex = dataStartIndex + info.size!
-
-                lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
-            } else if info.isLocalExtendedHeader {
-                let dataStartIndex = info.blockStartIndex + 512
-                let dataEndIndex = dataStartIndex + info.size!
-
-                lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
-            } else if info.isLongLinkName {
-                let dataStartIndex = info.blockStartIndex + 512
-                byteReader.offset = dataStartIndex
-
-                longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
-                byteReader.offset = dataStartIndex + info.size!.roundTo512()
-            } else if info.isLongName {
-                let dataStartIndex = info.blockStartIndex + 512
-                byteReader.offset = dataStartIndex
-
-                longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
-                byteReader.offset = dataStartIndex + info.size!.roundTo512()
+            if let specialEntryType = info.specialEntryType {
+                switch specialEntryType {
+                case .globalExtendedHeader:
+                    let dataEndIndex = dataStartIndex + info.size!
+                    lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
+                    byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
+                case .localExtendedHeader:
+                    let dataEndIndex = dataStartIndex + info.size!
+                    lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
+                    byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
+                case .longLinkName:
+                    byteReader.offset = dataStartIndex
+                    longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                    byteReader.offset = dataStartIndex + info.size!.roundTo512()
+                case .longName:
+                    byteReader.offset = dataStartIndex
+                    longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                    byteReader.offset = dataStartIndex + info.size!.roundTo512()
+                }
             } else {
                 // Skip file data.
-                byteReader.offset = info.blockStartIndex + 512 + info.size!.roundTo512()
+                byteReader.offset = dataStartIndex + info.size!.roundTo512()
                 entries.append(info)
                 lastLocalExtendedHeader = nil
                 longName = nil
