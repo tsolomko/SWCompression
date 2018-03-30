@@ -93,10 +93,16 @@ struct ZipLocalHeader {
                     customExtraFieldType.id == headerID,
                     let customExtraField = customExtraFieldType.init(byteReader, size, location: .localHeader),
                     customExtraField.id == headerID  {
-                    customExtraFields.append(customExtraField)
+                    precondition(customExtraField.location == .localHeader,
+                                 "Custom field in Local Header with ID=\(headerID) of type=\(customExtraFieldType)"
+                                    + " changed location.")
+                    precondition(customExtraField.size == size,
+                                 "Custom field in Local Header with ID=\(headerID) of type=\(customExtraFieldType)"
+                                    + " changed size.")
                     guard byteReader.offset == customFieldOffset + size
                         else { fatalError("Custom field in Local Header with ID=\(headerID) of" +
                             "type=\(customExtraFieldType) failed to read exactly \(size) bytes.") }
+                    customExtraFields.append(customExtraField)
                 } else {
                     byteReader.offset = customFieldOffset + size
                 }

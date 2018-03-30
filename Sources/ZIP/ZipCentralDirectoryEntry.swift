@@ -117,10 +117,16 @@ struct ZipCentralDirectoryEntry {
                     customExtraFieldType.id == headerID,
                     let customExtraField = customExtraFieldType.init(byteReader, size, location: .centralDirectory),
                     customExtraField.id == headerID {
-                    customExtraFields.append(customExtraField)
+                    precondition(customExtraField.location == .centralDirectory,
+                                 "Custom field in Central Directory with ID=\(headerID) of type=\(customExtraFieldType)"
+                                    + " changed location.")
+                    precondition(customExtraField.size == size,
+                                 "Custom field in Central Directory with ID=\(headerID) of type=\(customExtraFieldType)"
+                                    + " changed size.")
                     guard byteReader.offset == customFieldOffset + size
                         else { fatalError("Custom field in Central Directory with ID=\(headerID) of" +
                             "type=\(customExtraFieldType) failed to read exactly \(size) bytes.") }
+                    customExtraFields.append(customExtraField)
                 } else {
                     byteReader.offset = customFieldOffset + size
                 }
