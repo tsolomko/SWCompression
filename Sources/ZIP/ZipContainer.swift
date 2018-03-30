@@ -9,6 +9,19 @@ import BitByteData
 /// Provides functions for work with ZIP containers.
 public class ZipContainer: Container {
 
+    /**
+     Contains user-defined extra fields. When either `ZipContainer.info(container:)` or `ZipContainer.open(container:)`
+     function encounters non-standard extra field, it uses this dictionary and tries to find a corresponding
+     user-defined extra field. If an approriate custom extra field is found and successfully processed, then the result
+     is stored in `ZipEntryInfo.customExtraFields`.
+
+     To enable support of custom extra field one must add a new entry to this dictionary. The value of this entry must
+     be a user-defined type which conforms to `ZipExtraField` protocol. The key must be equal to the ID of user-defined
+     extra field and type's `id` property.
+
+     - Warning: Modifying this dictionary while either `info(container:)` or `open(container:)` function is being
+     executed may cause undefined behavior.
+     */
     public static var customExtraFields = [UInt16: ZipExtraField.Type]()
 
     /**

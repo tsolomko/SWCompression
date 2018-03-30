@@ -92,6 +92,11 @@ public struct ZipEntryInfo: ContainerEntryInfo {
      */
     public let groupID: Int?
 
+    /**
+     Entry's custom extra fields from both Central Directory and Local Header.
+
+     - Note: No particular order of extra fields is guaranteed.
+     */
     public let customExtraFields: [ZipExtraField]
 
     let cdEntry: ZipCentralDirectoryEntry
