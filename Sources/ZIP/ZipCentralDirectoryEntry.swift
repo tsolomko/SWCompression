@@ -106,7 +106,9 @@ struct ZipCentralDirectoryEntry {
             case 0x000a: // NTFS Extra Fields
                 self.ntfsExtraField = NtfsExtraField(byteReader, size, location: .centralDirectory)
             case 0x7855: // Info-ZIP Unix Extra Field
-                break // It doesn't contain any information in Central Directory.
+                // If there is any data for Info-ZIP Unix extra field in central directory (`size != 0`), skip it.
+                // However, according to definition of this extra field it shouldn't have any data in CD.
+                byteReader.offset += size
             case 0x7875: // Info-ZIP New Unix Extra Field
                 self.infoZipNewUnixExtraField = InfoZipNewUnixExtraField(byteReader, size, location: .centralDirectory)
             default:
