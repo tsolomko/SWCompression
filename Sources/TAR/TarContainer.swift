@@ -9,6 +9,13 @@ import BitByteData
 /// Provides functions for work with TAR containers.
 public class TarContainer: Container {
 
+    public enum Format {
+        case prePosix
+        case ustar
+        case gnu
+        case pax
+    }
+
     /**
      Processes TAR container and returns an array of `TarEntry` with information and data for all entries.
 
