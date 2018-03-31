@@ -9,6 +9,13 @@ import BitByteData
 /// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {
 
+    enum SpecialEntryType: UInt8 {
+        case longName = 76
+        case longLinkName = 75
+        case globalExtendedHeader = 103
+        case localExtendedHeader = 120
+    }
+
     // MARK: ContainerEntryInfo
 
     /**
