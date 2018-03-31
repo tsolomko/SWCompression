@@ -8,9 +8,9 @@ import BitByteData
 
 class EncodingHuffmanTree {
 
-    private var bitWriter: BitWriter
+    private let bitWriter: BitWriter
 
-    private var codingIndices: [[Int]]
+    private let codingIndices: [[Int]]
 
     /// `lengths` don't have to be properly sorted, but there must not be any 0 code lengths.
     /// If `reverseCodes` is true, then bit order of tree codes will be reversed. Necessary for Deflate.
@@ -20,7 +20,7 @@ class EncodingHuffmanTree {
         // Sort `lengths` array to calculate canonical Huffman code.
         let sortedLengths = lengths.sorted()
 
-        self.codingIndices = Array(repeating: [-1, -1], count: sortedLengths.count)
+        var codingIndices = Array(repeating: [-1, -1], count: sortedLengths.count)
 
         // Calculates symbols for each length in 'sortedLengths' array and put them in the tree.
         var loopBits = -1
@@ -36,8 +36,9 @@ class EncodingHuffmanTree {
             }
             // Then we reverse bit order of the symbol, if necessary.
             let treeCode = reverseCodes ? symbol.reversed(bits: loopBits) : symbol
-            self.codingIndices[length.symbol] = [treeCode, bits]
+            codingIndices[length.symbol] = [treeCode, bits]
         }
+        self.codingIndices = codingIndices
     }
 
     func code(symbol: Int) {
