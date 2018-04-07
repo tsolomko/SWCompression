@@ -16,6 +16,28 @@ public class TarContainer: Container {
         case pax
     }
 
+    public static func formatOf(container data: Data) throws -> Format {
+        // TAR container should be at least 512 bytes long (when it contains only one header).
+        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
+
+        /// Object with input data which supports convenient work with bit shifts.
+        var infoProvider = TarEntryInfoProvider(data)
+
+        var specialMagicEncountered = false
+
+        while let info = try infoProvider.next() {
+            if info.specialEntryType == .globalExtendedHeader || info.specialEntryType == .localExtendedHeader {
+                return .pax
+            } else if info.specialEntryType == .longName || info.specialEntryType == .longLinkName {
+                return .gnu
+            } else if info.hasRecognizedMagic {
+                specialMagicEncountered = true
+            }
+        }
+
+        return specialMagicEncountered ? .ustar : .prePosix
+    }
+
     /**
      Processes TAR container and returns an array of `TarEntry` with information and data for all entries.
 
