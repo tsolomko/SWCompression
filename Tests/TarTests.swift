@@ -15,6 +15,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
         let result = try TarContainer.open(container: testData)
 
         XCTAssertEqual(result.count, 1)
@@ -29,6 +32,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
+
         let result = try TarContainer.open(container: testData)
 
         XCTAssertEqual(result.count, 5)
@@ -62,6 +68,19 @@ class TarTests: XCTestCase {
                 XCTFail("Unable to get test data.")
                 return
             }
+
+            if testName == "test_gnu" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+            } else if testName == "test_oldgnu" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+            } else if testName == "test_pax" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
+            } else if testName == "test_ustar" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+            } else if testName == "test_v7" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .prePosix)
+            }
+
             let result = try TarContainer.open(container: testData)
 
             XCTAssertEqual(result.count, 1)
@@ -80,6 +99,15 @@ class TarTests: XCTestCase {
                 XCTFail("Unable to get test data.")
                 return
             }
+
+            if testName == "long_test_gnu" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
+            } else if testName == "long_test_oldgnu" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
+            } else if testName == "long_test_pax" {
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
+            }
+
             let result = try TarContainer.open(container: testData)
 
             XCTAssertEqual(result.count, 6)
@@ -91,6 +119,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 2)
@@ -111,6 +142,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -125,6 +159,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -139,6 +176,9 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .prePosix)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.isEmpty, true)
@@ -149,6 +189,8 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
         _ = try TarContainer.info(container: testData)
         _ = try TarContainer.open(container: testData)
