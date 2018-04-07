@@ -59,48 +59,13 @@ public class TarContainer: Container {
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
 
         /// Object with input data which supports convenient work with bit shifts.
-        let byteReader = ByteReader(data: data)
-
+        var infoProvider = TarEntryInfoProvider(data)
         var entries = [TarEntryInfo]()
 
-        var lastGlobalExtendedHeader: TarExtendedHeader?
-        var lastLocalExtendedHeader: TarExtendedHeader?
-        var longLinkName: String?
-        var longName: String?
-
-        // Container ends with two zero-filled records.
-        while byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024) {
-            let info = try TarEntryInfo(byteReader, lastGlobalExtendedHeader, lastLocalExtendedHeader,
-                                        longName, longLinkName)
-            let dataStartIndex = info.blockStartIndex + 512
-
-            if let specialEntryType = info.specialEntryType {
-                switch specialEntryType {
-                case .globalExtendedHeader:
-                    let dataEndIndex = dataStartIndex + info.size!
-                    lastGlobalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                    byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
-                case .localExtendedHeader:
-                    let dataEndIndex = dataStartIndex + info.size!
-                    lastLocalExtendedHeader = try TarExtendedHeader(data[dataStartIndex..<dataEndIndex])
-                    byteReader.offset = dataEndIndex - info.size! + info.size!.roundTo512()
-                case .longLinkName:
-                    byteReader.offset = dataStartIndex
-                    longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
-                    byteReader.offset = dataStartIndex + info.size!.roundTo512()
-                case .longName:
-                    byteReader.offset = dataStartIndex
-                    longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
-                    byteReader.offset = dataStartIndex + info.size!.roundTo512()
-                }
-            } else {
-                // Skip file data.
-                byteReader.offset = dataStartIndex + info.size!.roundTo512()
-                entries.append(info)
-                lastLocalExtendedHeader = nil
-                longName = nil
-                longLinkName = nil
-            }
+        while let info = try infoProvider.next() {
+            guard info.specialEntryType == nil
+                else { continue }
+            entries.append(info)
         }
 
         return entries
