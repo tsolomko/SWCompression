@@ -13,13 +13,11 @@ extension ByteReader {
         var buffer = [UInt8]()
         while offset - startIndex < cutoff {
             let byte = self.byte()
-            if ends.contains(byte) {
-                offset -= 1
-                break
-            }
+            guard !ends.contains(byte)
+                else { break }
             buffer.append(byte)
         }
-        offset += cutoff - (offset - startIndex)
+        offset = startIndex + cutoff
         return buffer
     }
 

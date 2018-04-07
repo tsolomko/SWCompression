@@ -48,7 +48,7 @@ class GzipTests: XCTestCase {
 
         // Options for archiving.
         let mtimeDate = Date(timeIntervalSinceNow: 0.0)
-        let mtime = Double(Int(mtimeDate.timeIntervalSince1970))
+        let mtime = mtimeDate.timeIntervalSince1970.rounded(.towardZero)
 
         // Test GZip archiving.
         let archiveData = try GzipArchive.archive(data: answerData, comment: "some file comment",

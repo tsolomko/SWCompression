@@ -166,7 +166,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         }
 
         // Size
-        self.size = Int(cdEntry.uncompSize)
+        self.size = cdEntry.uncompSize.toInt()
 
         // External file attributes.
         self.externalFileAttributes = cdEntry.externalFileAttributes

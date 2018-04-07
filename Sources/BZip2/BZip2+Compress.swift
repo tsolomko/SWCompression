@@ -269,9 +269,9 @@ extension BZip2: CompressionAlgorithm {
             }
             if (byte == 0 && i == array.count - 1) || byte != 0 {
                 if lengthOfZerosRun > 0 {
-                    let digitsNumber = floor(log2(Double(lengthOfZerosRun) + 1))
+                    let digitsNumber = Int(floor(log2(Double(lengthOfZerosRun) + 1)))
                     var remainder = lengthOfZerosRun
-                    for _ in 0..<Int(digitsNumber) {
+                    for _ in 0..<digitsNumber {
                         let quotient = Int(ceil(Double(remainder) / 2) - 1)
                         let digit = remainder - quotient * 2
                         if digit == 1 {
