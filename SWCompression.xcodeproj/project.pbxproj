@@ -85,6 +85,7 @@
 		06CDFCA81F111D9700292758 /* DeflateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA71F111D9700292758 /* DeflateError.swift */; };
 		06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCAC1F111DBE00292758 /* LZMAError.swift */; };
 		06CDFCB21F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
+		06CFF6B22078C5A5003B8375 /* TarEntryInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */; };
 		06D42DA52067B46800C1A98B /* test_custom_extra_field.zip in Resources */ = {isa = PBXBuildFile; fileRef = 06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */; };
 		06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D42DA62067B71000C1A98B /* TestZipExtraField.swift */; };
 		06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */; };
@@ -286,6 +287,7 @@
 		06CDFCA71F111D9700292758 /* DeflateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateError.swift; sourceTree = "<group>"; };
 		06CDFCAC1F111DBE00292758 /* LZMAError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAError.swift; sourceTree = "<group>"; };
 		06CDFCB11F111DEC00292758 /* LZMA2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2Error.swift; sourceTree = "<group>"; };
+		06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarEntryInfoProvider.swift; sourceTree = "<group>"; };
 		06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_custom_extra_field.zip; sourceTree = "<group>"; };
 		06D42DA62067B71000C1A98B /* TestZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestZipExtraField.swift; sourceTree = "<group>"; };
 		06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BZip2+Compress.swift"; sourceTree = "<group>"; };
@@ -592,6 +594,7 @@
 				061C06561F0E90C800832F0C /* TarError.swift */,
 				0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */,
 				0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */,
+				06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */,
 			);
 			path = TAR;
 			sourceTree = "<group>";
@@ -1078,6 +1081,7 @@
 				0686A6451FA4C47300E89C9E /* FileSystemType+Zip.swift in Sources */,
 				06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */,
 				06393DF51F1A7F8E00A647A0 /* ZipString.swift in Sources */,
+				06CFF6B22078C5A5003B8375 /* TarEntryInfoProvider.swift in Sources */,
 				06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */,
 				065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
