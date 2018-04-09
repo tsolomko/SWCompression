@@ -33,6 +33,7 @@ class UnXz: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
+            _ = try XZArchive.unarchive(archive: fileData)
             for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()

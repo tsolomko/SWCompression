@@ -33,6 +33,7 @@ class InfoZip: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
+            _ = try ZipContainer.info(container: fileData)
             for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
