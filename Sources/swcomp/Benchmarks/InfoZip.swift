@@ -33,7 +33,7 @@ class InfoZip: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
-            for i in 1...6 {
+            for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try ZipContainer.info(container: fileData)
@@ -47,7 +47,7 @@ class InfoZip: Command {
                     minTime = timeElapsed
                 }
             }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
+            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
             print("-------------------------------------")
         }
     }
