@@ -8,9 +8,9 @@ import SwiftCLI
 import SWCompression
 
 /// This extension allows to use `BlockSize` as a `Key` option.
-extension BZip2.BlockSize: Keyable {
+extension BZip2.BlockSize: ConvertibleFromString {
 
-    public static func val(from: String) -> BZip2.BlockSize? {
+    public static func convert(from: String) -> BZip2.BlockSize? {
         guard let num = Int(from)
             else { return nil }
         return BZip2.BlockSize(rawValue: num)
