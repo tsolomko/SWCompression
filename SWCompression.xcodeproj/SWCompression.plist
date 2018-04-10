@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.2.2</string>
+	<string>4.3.0-test.1</string>
 	<key>CFBundleVersion</key>
-	<string>59</string>
+	<string>60</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2018 Timofey Solomko. All rights reserved.</string>
 </dict>

@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.3.0
+
+### Test 1
+
+- Updated to support Swift 4.1.
+- Minuimum required version of BitByteData is now 1.2.0-test.3.
+- Added APIs to enable support of custom ZIP Extra Fields.
+    - Added `ZipExtraField` protocol.
+    - Added `ZipExtraFieldLocation` enum.
+    - Added `ZipContainer.customExtraFields` property.
+    - Added `ZipEntryInfo.customExtraFields` property.
+- Added `TarEntryInfo.compressionMethod` property which is always equal to `.copy`.
+- Reverted "disable symbol stripping" change from 4.2.0 update, since underlying problem was fixed in Carthage.
+- Benchmarks changes:
+    - Iterations number increased from 6 to 10.
+    - There is now a zeroth iteration which is excluded from averages.
+
 ## 4.2.2
 
 - Fixed skipping entries in `SevenZipContainer.open(container:)` in some rare cases.
