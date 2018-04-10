@@ -8,7 +8,6 @@ import BitByteData
 
 // While it is tempting to make Provider conform to `IteratorProtocol` and `Sequence` protocols, it is in fact
 // impossible to do so, since `TarEntryInfo.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
-// TODO: Struct or class?
 struct TarEntryInfoProvider {
 
     private let byteReader: ByteReader
@@ -22,8 +21,8 @@ struct TarEntryInfoProvider {
     }
 
     mutating func next() throws -> TarEntryInfo? {
-        // TODO: Check, if bytes left is >= 1024.
-        guard byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024)
+        guard byteReader.bytesLeft >= 1024,
+            byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024)
             else { return nil }
 
         let info = try TarEntryInfo(byteReader, lastGlobalExtendedHeader, lastLocalExtendedHeader,

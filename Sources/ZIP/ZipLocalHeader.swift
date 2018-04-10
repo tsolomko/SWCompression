@@ -130,7 +130,6 @@ struct ZipLocalHeader {
         guard cdEntry.diskNumberStart == currentDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
 
-        // TODO: Maybe local header should "overwrite" Central Directory values?
         // Check if Local Header is consistent with Central Directory record.
         guard self.generalPurposeBitFlags == cdEntry.generalPurposeBitFlags &&
             self.compressionMethod == cdEntry.compressionMethod &&
