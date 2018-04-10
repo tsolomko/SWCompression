@@ -92,7 +92,7 @@ struct ZipLocalHeader {
                 if let customExtraFieldType = ZipContainer.customExtraFields[headerID],
                     customExtraFieldType.id == headerID,
                     let customExtraField = customExtraFieldType.init(byteReader, size, location: .localHeader),
-                    customExtraField.id == headerID  {
+                    customExtraField.id == headerID {
                     precondition(customExtraField.location == .localHeader,
                                  "Custom field in Local Header with ID=\(headerID) of type=\(customExtraFieldType)"
                                     + " changed location.")
