@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct HuffmanLength {
+struct HuffmanLength: Equatable {
 
     let symbol: Int
     let codeLength: Int

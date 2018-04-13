@@ -15,8 +15,4 @@ extension HuffmanLength: Comparable {
         }
     }
 
-    static func == (left: HuffmanLength, right: HuffmanLength) -> Bool {
-        return left.codeLength == right.codeLength && left.symbol == right.symbol
-    }
-
 }
