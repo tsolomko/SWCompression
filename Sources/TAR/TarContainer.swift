@@ -9,13 +9,31 @@ import BitByteData
 /// Provides functions for work with TAR containers.
 public class TarContainer: Container {
 
+    /**
+     Represents a "format" of TAR container: a minimal set of extensions to basic TAR format required to successfully
+     read particular container.
+     */
     public enum Format {
+        /// Pre POSIX format (aka "basic TAR format").
         case prePosix
+        /// "UStar" format introduced by POSIX IEEE P1003.1 standard.
         case ustar
+        /// "UStar"-like format with GNU extensions (e.g. special container entries for long file and link names).
         case gnu
+        /// "PAX" format introduced by POSIX.1-2001 standard, a set of extensions to "UStar" format.
         case pax
     }
 
+    /**
+     Processes TAR container and returns its "format": a minimal set of extensions to basic TAR format required to
+     successfully read this container.
+
+     - Parameter container: TAR container's data.
+
+     - Throws: `TarError`, which may indicate that either container is damaged or it might not be TAR container at all.
+
+     - SeeAlso: `TarContainer.Format`
+     */
     public static func formatOf(container data: Data) throws -> Format {
         // TAR container should be at least 512 bytes long (when it contains only one header).
         guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
