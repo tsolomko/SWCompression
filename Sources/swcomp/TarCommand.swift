@@ -18,12 +18,13 @@ class TarCommand: Command {
 
     let info = Flag("-i", "--info", description: "Print list of entries in container and their attributes")
     let extract = Key<String>("-e", "--extract", description: "Extract container into specified directory")
+    let format = Flag("-f", "--format", description: "Prints \"format\" of the container")
 
     let verbose = Flag("--verbose", description: "Print the list of extracted files and directories.")
 
     var optionGroups: [OptionGroup] {
         let compressions = OptionGroup(options: [gz, bz2, xz], restriction: .atMostOne)
-        let actions = OptionGroup(options: [info, extract], restriction: .exactlyOne)
+        let actions = OptionGroup(options: [info, extract, format], restriction: .exactlyOne)
         return [compressions, actions]
     }
 
@@ -52,6 +53,19 @@ class TarCommand: Command {
 
             let entries = try TarContainer.open(container: fileData)
             try swcomp.write(entries, outputPath, verbose.value)
+        } else if format.value {
+            let format = try TarContainer.formatOf(container: fileData)
+            switch format {
+            case .prePosix:
+                print("TAR format: pre-POSIX")
+            case .ustar:
+                print("TAR format: POSIX aka \"ustar\"")
+            case .gnu:
+                print("TAR format: POSIX with GNU extensions")
+            case .pax:
+                print("TAR format: PAX")
+            }
+            
         }
     }
 
