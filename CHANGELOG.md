@@ -2,6 +2,14 @@
 
 ## 4.3.0
 
+### Test 2
+
+- Added `TarContainer.Format` enum which represents various formats of TAR containers.
+- Added `TarContainer.formatOf(container:)` function which returns format for the container.
+- Added `-f`, `--format` option to `tar` command which prints format of TAR container.
+- Added documenation for `Container.Entry` and `ContainerEntry.Info` associated types.
+- [Test] Documentation pages for `ZipExtraField` and `ZipExtraFieldLocation` are now located in "Containers" category.
+
 ### Test 1
 
 - Updated to support Swift 4.1.
