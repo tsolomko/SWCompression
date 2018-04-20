@@ -8,6 +8,7 @@ import Foundation
 /// A type that represents a container with files, directories and/or other data.
 public protocol Container {
 
+    /// A type that represents an entry from this container.
     associatedtype Entry: ContainerEntry
 
     /// Retrieve all container entries with their data.

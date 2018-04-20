@@ -91,6 +91,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
     public let unknownExtendedHeaderRecords: [String: String]?
 
     let specialEntryType: SpecialEntryType?
+    let hasRecognizedMagic: Bool
 
     let blockStartIndex: Int
 
@@ -174,6 +175,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         let magic = byteReader.uint64()
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
+            self.hasRecognizedMagic = true
             let uname = try byteReader.nullEndedAsciiString(cutoff: 32)
             self.ownerUserName = (local?.uname ?? global?.uname) ?? uname
 
@@ -191,6 +193,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
                 }
             }
         } else {
+            self.hasRecognizedMagic = false
             ownerUserName = local?.uname ?? global?.uname
             ownerGroupName = local?.gname ?? global?.gname
             deviceMajorNumber = nil

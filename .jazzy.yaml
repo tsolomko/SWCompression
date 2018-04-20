@@ -35,6 +35,8 @@ custom_categories:
       - ZipContainer
       - ZipEntry
       - ZipEntryInfo
+      - ZipExtraField
+      - ZipExtraFieldLocation
     - name: Errors
       children:
       - BZip2Error
