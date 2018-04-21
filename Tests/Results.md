@@ -1,17 +1,22 @@
 # Test Results
 
-In this document you can find the results of benchmarking which were run on Macbook Pro, Late 2011.
-The main purpose of these results is to track the progress from version to version.
+In this document you can find the results of benchmarking which was performed on Macbook Pro, Late 2011. The main
+purpose of these results is to track progress from version to version.
 
-__Note:__ Since version 4.1.0 of SWCompression internal functionality related to reading/writing bits and bytes
+__Note:__ Since 4.1.0 version of SWCompression internal functionality related to reading/writing bits and bytes
 is published as a separate framework, [BitByteData](https://github.com/tsolomko/BitByteData).
-It is worth mentioning that overall performance depends on the speed of reading and writing,
-and thus BitByteData's version (which is specified in a separate column in the tables below)
-becomes relevant to benchmarking, since newer version can contain speed improvements.
+The overall performance heavily depends on the speed of reading and writing, and thus BitByteData's version, which is
+specified in a separate column in the tables below, becomes relevant to benchmarking, since newer versions can contain
+performance improvements.
+
+__Note:__ Since 4.3.0 version of SWCompression the first (zeroth, actually) iteration is excluded from averages
+calculation since this iteration has abnormally longer execution time than any of the following iterations. This
+exclusion led not only to (artificially) improved results, but also to the increased quality of the results by reducing
+calculated uncertainty.
 
 ## Tests description
 
-There are three different datasets for testing. When choosing them I was trying to have something,
+There are three different datasets for testing. When choosing them the intention was to have something
 that represents real life situations. For obvious reasons these test files aren't provided anywhere
 in the repository.
 
@@ -22,7 +27,7 @@ in the repository.
 All tests were run using swcomp's "benchmark" command. SWCompression (and swcomp) were compiled
 using "Release" configuration.
 
-__Note:__ All results are averages over 6 iterations.
+__Note:__ All results are averages over 10 iterations (6 iterations until 4.3.0 version).
 
 ## BZip2 Decompress
 
