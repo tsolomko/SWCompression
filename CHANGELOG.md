@@ -2,24 +2,19 @@
 
 ## 4.3.0
 
-### Test 2
-
-- Added `TarContainer.Format` enum which represents various formats of TAR containers.
-- Added `TarContainer.formatOf(container:)` function which returns format for the container.
-- Added `-f`, `--format` option to `tar` command which prints format of TAR container.
-- Added documenation for `Container.Entry` and `ContainerEntry.Info` associated types.
-- [Test] Documentation pages for `ZipExtraField` and `ZipExtraFieldLocation` are now located in "Containers" category.
-
-### Test 1
-
 - Updated to support Swift 4.1.
-- Minuimum required version of BitByteData is now 1.2.0-test.3.
-- Added APIs to enable support of custom ZIP Extra Fields.
+- Minuimum required version of BitByteData is now 1.2.0.
+- Added APIs which allow to use custom ZIP Extra Fields.
     - Added `ZipExtraField` protocol.
     - Added `ZipExtraFieldLocation` enum.
     - Added `ZipContainer.customExtraFields` property.
     - Added `ZipEntryInfo.customExtraFields` property.
+- Added APIs which allow to get information about TAR's format:
+    - Added `TarContainer.Format` enum which represents various formats of TAR containers.
+    - Added `TarContainer.formatOf(container:)` function which returns format of the container.
+    - Added `-f`, `--format` option to swcomp's `tar` command which prints format of TAR container.
 - Added `TarEntryInfo.compressionMethod` property which is always equal to `.copy`.
+- Added documenation for `Container.Entry` and `ContainerEntry.Info` associated types.
 - Reverted "disable symbol stripping" change from 4.2.0 update, since underlying problem was fixed in Carthage.
 - Benchmarks changes:
     - Iterations number increased from 6 to 10.
