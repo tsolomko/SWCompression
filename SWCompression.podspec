@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
 
   s.swift_version = "4.1"
 
-  s.dependency "BitByteData", "~> 1.2.0-test.3"
+  s.dependency "BitByteData", "~> 1.2.0"
 
   s.subspec "Deflate" do |sp|
     sp.source_files = "Sources/{Deflate/*,Common/*}.swift"
