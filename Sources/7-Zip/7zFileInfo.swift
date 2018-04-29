@@ -13,9 +13,9 @@ class SevenZipFileInfo {
         var isEmptyFile = false
         var isAntiFile = false
         var name: String = ""
-        var cTime: UInt64?
-        var mTime: UInt64?
-        var aTime: UInt64?
+        var cTime: Date?
+        var mTime: Date?
+        var aTime: Date?
         var winAttributes: UInt32?
     }
 
@@ -78,7 +78,7 @@ class SevenZipFileInfo {
                     else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles where timesDefined[i] == 1 {
-                    files[i].cTime = bitReader.uint64()
+                    files[i].cTime = Date(bitReader.uint64())
                 }
             case 0x13: // Access time
                 let timesDefined = bitReader.defBits(count: numFiles)
@@ -89,7 +89,7 @@ class SevenZipFileInfo {
                     else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles where timesDefined[i] == 1 {
-                    files[i].aTime = bitReader.uint64()
+                    files[i].aTime = Date(bitReader.uint64())
                 }
             case 0x14: // Modification time
                 let timesDefined = bitReader.defBits(count: numFiles)
@@ -100,7 +100,7 @@ class SevenZipFileInfo {
                     else { throw SevenZipError.externalNotSupported }
 
                 for i in 0..<numFiles where timesDefined[i] == 1 {
-                    files[i].mTime = bitReader.uint64()
+                    files[i].mTime = Date(bitReader.uint64())
                 }
             case 0x15: // WinAttributes
                 let attributesDefined = bitReader.defBits(count: numFiles)

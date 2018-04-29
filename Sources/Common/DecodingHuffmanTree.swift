@@ -8,9 +8,9 @@ import BitByteData
 
 class DecodingHuffmanTree {
 
-    private var bitReader: BitReader
+    private let bitReader: BitReader
 
-    private var tree: [Int]
+    private let tree: [Int]
     private let leafCount: Int
 
     /// `lengths` don't have to be properly sorted, but there must not be any 0 code lengths.
@@ -22,7 +22,7 @@ class DecodingHuffmanTree {
 
         // Calculate maximum amount of leaves possible in a tree.
         self.leafCount = 1 << (sortedLengths.last!.codeLength + 1)
-        self.tree = Array(repeating: -1, count: leafCount)
+        var tree = Array(repeating: -1, count: leafCount)
 
         // Calculates symbols for each length in 'sortedLengths' array and put them in the tree.
         var loopBits = -1
@@ -46,8 +46,9 @@ class DecodingHuffmanTree {
                 index = bit == 0 ? 2 * index + 1 : 2 * index + 2
                 treeCode >>= 1
             }
-            self.tree[index] = length.symbol
+            tree[index] = length.symbol
         }
+        self.tree = tree
     }
 
     func findNextSymbol() -> Int {

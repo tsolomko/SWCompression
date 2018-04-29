@@ -160,8 +160,8 @@ public class XZArchive: Archive {
                                       _ byteReader: ByteReader) throws {
         let footerCRC = byteReader.uint32()
         /// Indicates the size of Index field. Should match its real size.
-        let backwardSize = (byteReader.uint32().toInt() + 1) * 4
-        let streamFooterFlags = byteReader.uint16().toInt()
+        let backwardSize = (byteReader.int(fromBytes: 4) + 1) * 4
+        let streamFooterFlags = byteReader.int(fromBytes: 2)
 
         byteReader.offset -= 6
         guard CheckSums.crc32(byteReader.bytes(count: 6)) == footerCRC

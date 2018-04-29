@@ -33,7 +33,8 @@ class UnBz2: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
-            for i in 1...6 {
+            _ = try BZip2.decompress(data: fileData)
+            for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try BZip2.decompress(data: fileData)
@@ -47,7 +48,7 @@ class UnBz2: Command {
                     minTime = timeElapsed
                 }
             }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
+            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
             print("-----------------------------------")
         }
     }

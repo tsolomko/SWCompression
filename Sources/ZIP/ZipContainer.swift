@@ -10,6 +10,21 @@ import BitByteData
 public class ZipContainer: Container {
 
     /**
+     Contains user-defined extra fields. When either `ZipContainer.info(container:)` or `ZipContainer.open(container:)`
+     function encounters non-standard extra field, it uses this dictionary and tries to find a corresponding
+     user-defined extra field. If an approriate custom extra field is found and successfully processed, then the result
+     is stored in `ZipEntryInfo.customExtraFields`.
+
+     To enable support of custom extra field one must add a new entry to this dictionary. The value of this entry must
+     be a user-defined type which conforms to `ZipExtraField` protocol. The key must be equal to the ID of user-defined
+     extra field and type's `id` property.
+
+     - Warning: Modifying this dictionary while either `info(container:)` or `open(container:)` function is being
+     executed may cause undefined behavior.
+     */
+    public static var customExtraFields = [UInt16: ZipExtraField.Type]()
+
+    /**
      Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
 
      - Important: The order of entries is defined by ZIP container and, particularly, by the creator of a given ZIP
@@ -100,8 +115,8 @@ public class ZipContainer: Container {
                 compSize = byteReader.uint64()
                 uncompSize = byteReader.uint64()
             } else {
-                compSize = UInt64(truncatingIfNeeded: byteReader.uint32())
-                uncompSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+                compSize = byteReader.uint64(fromBytes: 4)
+                uncompSize = byteReader.uint64(fromBytes: 4)
             }
         }
 
@@ -151,7 +166,7 @@ public class ZipContainer: Container {
         // But first, we should check for "Archive extra data record" and skip it if present.
         byteReader.offset = endOfCD.cdOffset.toInt()
         if byteReader.uint32() == 0x08064b50 {
-            byteReader.offset += byteReader.uint32().toInt()
+            byteReader.offset += byteReader.int(fromBytes: 4)
         } else {
             byteReader.offset -= 4
         }

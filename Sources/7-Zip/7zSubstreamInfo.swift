@@ -80,9 +80,8 @@ class SevenZipSubstreamInfo {
             type = bitReader.byte()
         }
 
-        if type != 0x00 {
-            throw SevenZipError.internalStructureError
-        }
+        guard type == 0x00
+            else { throw SevenZipError.internalStructureError }
     }
 
 }

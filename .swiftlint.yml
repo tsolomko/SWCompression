@@ -1,6 +1,7 @@
 excluded:
   - .build/
   - Package.swift
+  - Carthage/
 disabled_rules:
   - cyclomatic_complexity
   - file_length

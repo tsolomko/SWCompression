@@ -83,7 +83,7 @@ public class GzipArchive: Archive {
         bitReader.align()
 
         let crc32 = bitReader.uint32()
-        let isize = UInt64(truncatingIfNeeded: bitReader.uint32())
+        let isize = bitReader.uint64(fromBytes: 4)
         guard UInt64(truncatingIfNeeded: memberData.count) % (UInt64(truncatingIfNeeded: 1) << 32) == isize
             else { throw GzipError.wrongISize }
 

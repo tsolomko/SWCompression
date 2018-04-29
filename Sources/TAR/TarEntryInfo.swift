@@ -9,6 +9,13 @@ import BitByteData
 /// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {
 
+    enum SpecialEntryType: UInt8 {
+        case longName = 76
+        case longLinkName = 75
+        case globalExtendedHeader = 103
+        case localExtendedHeader = 120
+    }
+
     // MARK: ContainerEntryInfo
 
     /**
@@ -40,6 +47,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
     public let permissions: Permissions?
 
     // MARK: TAR specific
+
+    /// Entry's compression method. Always `.copy` for entries of TAR containers.
+    public let compressionMethod = CompressionMethod.copy
 
     /// ID of entry's owner.
     public let ownerID: Int?
@@ -80,10 +90,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// All unknown records from global and local PAX extended headers. `nil`, if there were no headers.
     public let unknownExtendedHeaderRecords: [String: String]?
 
-    let isGlobalExtendedHeader: Bool
-    let isLocalExtendedHeader: Bool
-    let isLongLinkName: Bool
-    let isLongName: Bool
+    let specialEntryType: SpecialEntryType?
+    let hasRecognizedMagic: Bool
 
     let blockStartIndex: Int
 
@@ -153,10 +161,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // File type
         let fileTypeIndicator = byteReader.byte()
-        self.isGlobalExtendedHeader = fileTypeIndicator == 103 // "g"
-        self.isLocalExtendedHeader = fileTypeIndicator == 120 // "x"
-        self.isLongLinkName = fileTypeIndicator == 75 // "K"
-        self.isLongName = fileTypeIndicator == 76 // "L"
+        self.specialEntryType = SpecialEntryType(rawValue: fileTypeIndicator)
         self.type = ContainerEntryType(fileTypeIndicator)
 
         // Linked file name
@@ -166,10 +171,11 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // They differ in `magic` field value and how other fields are padded (either SPACEs or NULLs).
         // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
         // Here we deal with magic. First one is "old-GNU", second is "ustar", third is for compatiblity with strange
-        //  implementations of "ustar", which used SPACEs instead of NULLs.
+        // implementations of "ustar", which use SPACEs instead of NULLs.
         let magic = byteReader.uint64()
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
+            self.hasRecognizedMagic = true
             let uname = try byteReader.nullEndedAsciiString(cutoff: 32)
             self.ownerUserName = (local?.uname ?? global?.uname) ?? uname
 
@@ -187,6 +193,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
                 }
             }
         } else {
+            self.hasRecognizedMagic = false
             ownerUserName = local?.uname ?? global?.uname
             ownerGroupName = local?.gname ?? global?.gname
             deviceMajorNumber = nil

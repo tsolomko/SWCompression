@@ -33,7 +33,8 @@ class Info7z: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
-            for i in 1...6 {
+            _ = try SevenZipContainer.info(container: fileData)
+            for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try SevenZipContainer.info(container: fileData)
@@ -47,7 +48,7 @@ class Info7z: Command {
                     minTime = timeElapsed
                 }
             }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
+            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
             print("---------------------------------------")
         }
     }

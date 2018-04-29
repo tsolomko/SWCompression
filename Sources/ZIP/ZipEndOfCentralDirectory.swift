@@ -21,26 +21,26 @@ struct ZipEndOfCentralDirectory {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
-        self.currentDiskNumber = UInt32(truncatingIfNeeded: byteReader.uint16())
-        self.cdDiskNumber = UInt32(truncatingIfNeeded: byteReader.uint16())
+        self.currentDiskNumber = byteReader.uint32(fromBytes: 2)
+        self.cdDiskNumber = byteReader.uint32(fromBytes: 2)
         guard self.currentDiskNumber == self.cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Number of CD entries on the current disk.
-        var cdEntriesCurrentDisk = UInt64(truncatingIfNeeded: byteReader.uint16())
+        var cdEntriesCurrentDisk = byteReader.uint64(fromBytes: 2)
         /// Total number of CD entries.
-        self.cdEntries = UInt64(truncatingIfNeeded: byteReader.uint16())
+        self.cdEntries = byteReader.uint64(fromBytes: 2)
         guard cdEntries == cdEntriesCurrentDisk
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Size of Central Directory.
-        self.cdSize = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.cdSize = byteReader.uint64(fromBytes: 4)
         /// Offset to the start of Central Directory.
-        self.cdOffset = UInt64(truncatingIfNeeded: byteReader.uint32())
+        self.cdOffset = byteReader.uint64(fromBytes: 4)
 
         // There is also a .ZIP file comment, but we don't need it.
         // Here's how it can be processed:
-        // let zipCommentLength = byteReader.uint16().toInt()
+        // let zipCommentLength = byteReader.int(fromBytes: 2)
         // let zipComment = String(data: Data(bytes: byteReader.bytes(count: zipCommentLength)),
         //                         encoding: .utf8)
 
@@ -65,13 +65,13 @@ struct ZipEndOfCentralDirectory {
             guard self.currentDiskNumber == zip64CDStartDisk
                 else { throw ZipError.multiVolumesNotSupported }
 
-            let zip64CDEndOffset = byteReader.uint64()
+            let zip64CDEndOffset = byteReader.int(fromBytes: 8)
             let totalDisks = byteReader.uint32()
             guard totalDisks == 1
                 else { throw ZipError.multiVolumesNotSupported }
 
             // Now we need to move to Zip64 End of CD.
-            byteReader.offset = zip64CDEndOffset.toInt()
+            byteReader.offset = zip64CDEndOffset
 
             // Check signature.
             guard byteReader.uint32() == 0x06064b50

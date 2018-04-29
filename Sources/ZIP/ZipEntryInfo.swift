@@ -92,6 +92,13 @@ public struct ZipEntryInfo: ContainerEntryInfo {
      */
     public let groupID: Int?
 
+    /**
+     Entry's custom extra fields from both Central Directory and Local Header.
+
+     - Note: No particular order of extra fields is guaranteed.
+     */
+    public let customExtraFields: [ZipExtraField]
+
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
@@ -111,12 +118,12 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.name = cdEntry.fileName
 
         // Set Modification Time.
-        if let mtimestamp = cdEntry.modificationTimestamp {
+        if let mtime = cdEntry.extendedTimestampExtraField?.mtime {
             // Extended Timestamp extra field.
-            self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtimestamp))
-        } else if let mtime = Date(cdEntry.ntfsMtime) {
+            self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+        } else if let mtime = cdEntry.ntfsExtraField?.mtime {
             // NTFS extra field.
-            self.modificationTime = mtime
+            self.modificationTime = Date(mtime)
         } else {
             // Native ZIP modification time.
             let dosDate = cdEntry.lastModFileDate.toInt()
@@ -137,29 +144,29 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         }
 
         // Set Creation Time.
-        if let ctimestamp = localHeader.creationTimestamp {
+        if let ctime = localHeader.extendedTimestampExtraField?.ctime {
             // Extended Timestamp extra field.
-            self.creationTime = Date(timeIntervalSince1970: TimeInterval(ctimestamp))
-        } else if let ctime = Date(cdEntry.ntfsCtime) {
+            self.creationTime = Date(timeIntervalSince1970: TimeInterval(ctime))
+        } else if let ctime = cdEntry.ntfsExtraField?.ctime {
             // NTFS extra field.
-            self.creationTime = ctime
+            self.creationTime = Date(ctime)
         } else {
             self.creationTime = nil
         }
 
         // Set Creation Time.
-        if let atimestamp = localHeader.accessTimestamp {
+        if let atime = localHeader.extendedTimestampExtraField?.atime {
             // Extended Timestamp extra field.
-            self.accessTime = Date(timeIntervalSince1970: TimeInterval(atimestamp))
-        } else if let atime = Date(cdEntry.ntfsAtime) {
+            self.accessTime = Date(timeIntervalSince1970: TimeInterval(atime))
+        } else if let atime = cdEntry.ntfsExtraField?.atime {
             // NTFS extra field.
-            self.accessTime = atime
+            self.accessTime = Date(atime)
         } else {
             self.accessTime = nil
         }
 
         // Size
-        self.size = Int(cdEntry.uncompSize)
+        self.size = cdEntry.uncompSize.toInt()
 
         // External file attributes.
         self.externalFileAttributes = cdEntry.externalFileAttributes
@@ -194,10 +201,15 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
 
         // Owner's ID.
-        self.ownerID = localHeader.infoZipNewUid ?? localHeader.infoZipUid?.toInt()
+        self.ownerID = localHeader.infoZipNewUnixExtraField?.uid ?? localHeader.infoZipUnixExtraField?.uid
 
         // Owner's group ID.
-        self.groupID = localHeader.infoZipNewGid ?? localHeader.infoZipGid?.toInt()
+        self.groupID = localHeader.infoZipNewUnixExtraField?.gid ?? localHeader.infoZipUnixExtraField?.gid
+
+        // Custom extra fields.
+        var customExtraFields = cdEntry.customExtraFields
+        customExtraFields.append(contentsOf: localHeader.customExtraFields)
+        self.customExtraFields = customExtraFields
     }
 
 }

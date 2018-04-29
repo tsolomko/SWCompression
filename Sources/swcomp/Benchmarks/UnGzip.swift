@@ -33,7 +33,8 @@ class UnGzip: Command {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
-            for i in 1...6 {
+            _ = try GzipArchive.unarchive(archive: fileData)
+            for i in 1...10 {
                 print("Iteration \(i): ", terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try GzipArchive.unarchive(archive: fileData)
@@ -47,7 +48,7 @@ class UnGzip: Command {
                     minTime = timeElapsed
                 }
             }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 6, (maxTime - minTime) / 2))
+            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
             print("----------------------------------")
         }
     }
