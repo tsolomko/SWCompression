@@ -41,7 +41,7 @@ extension BenchmarkCommand {
 
             _ = try benchmarkFunction(fileData)
             for i in 1...10 {
-                print("Iteration \(i): ", terminator: "")
+                print(String(format: "Iteration %02u: ", i), terminator: "")
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try benchmarkFunction(fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
