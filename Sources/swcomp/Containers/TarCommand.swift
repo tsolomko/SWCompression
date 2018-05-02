@@ -65,7 +65,7 @@ class TarCommand: Command {
             case .pax:
                 print("TAR format: PAX")
             }
-            
+
         }
     }
 
