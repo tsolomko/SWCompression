@@ -52,6 +52,9 @@ class ZipTests: XCTestCase {
                 XCTFail("Wrong size for custom extra field.")
             }
         }
+
+        // Disable support for the custom extra field, so it doesn't interfere with other tests.
+        ZipContainer.customExtraFields.removeValue(forKey: 0x0646)
     }
 
     func testZip64() throws {
