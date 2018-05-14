@@ -6,7 +6,7 @@
 import Foundation
 
 /// Used to decode symbols that need several bits for storing.
-class LZMABitTreeDecoder {
+final class LZMABitTreeDecoder {
 
     var probs: [Int]
     let numBits: Int

@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-class LZMARangeDecoder {
+final class LZMARangeDecoder {
 
     private var byteReader: ByteReader
 

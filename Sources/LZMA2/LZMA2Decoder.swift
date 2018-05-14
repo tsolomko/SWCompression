@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-class LZMA2Decoder {
+final class LZMA2Decoder {
 
     private let byteReader: ByteReader
     private let decoder: LZMADecoder
