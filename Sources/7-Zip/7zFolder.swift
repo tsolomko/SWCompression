@@ -52,7 +52,8 @@ class SevenZipFolder {
             totalInputStreams += coder.numInStreams
         }
 
-        guard totalOutputStreams != 0 else { throw SevenZipError.internalStructureError }
+        guard totalOutputStreams != 0
+            else { throw SevenZipError.internalStructureError }
 
         numBindPairs = totalOutputStreams - 1
         if numBindPairs > 0 {
@@ -61,7 +62,8 @@ class SevenZipFolder {
             }
         }
 
-        guard totalInputStreams >= numBindPairs else { throw SevenZipError.internalStructureError }
+        guard totalInputStreams >= numBindPairs
+            else { throw SevenZipError.internalStructureError }
 
         numPackedStreams = totalInputStreams - numBindPairs
         if numPackedStreams == 1 {
@@ -171,9 +173,8 @@ class SevenZipFolder {
                 decodedData = Data(bytes: decoder.out)
             case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
-                guard let properties = coder.properties
-                    else { throw LZMAError.wrongProperties }
-                guard properties.count == 5
+                guard let properties = coder.properties,
+                    properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
                 let byteReader = ByteReader(data: decodedData)
