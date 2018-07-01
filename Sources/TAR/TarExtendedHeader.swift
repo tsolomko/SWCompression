@@ -7,7 +7,7 @@ import Foundation
 
 struct TarExtendedHeader {
 
-    let unknownRecords: [String: String]
+    var unknownRecords = [String: String]()
 
     var atime: Double?
     var ctime: Double?
@@ -26,6 +26,8 @@ struct TarExtendedHeader {
 
     var charset: String?
     var comment: String?
+
+    init() {}
 
     init(_ data: Data) throws {
         // Split header data into entries with "\n" (0x0A) character as a separator.
