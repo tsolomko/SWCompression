@@ -85,4 +85,84 @@ struct TarExtendedHeader {
         self.unknownRecords = unknownRecords
     }
 
+    func generateContainerData() throws -> Data {
+        var headerString = ""
+        if let atime = self.atime {
+            headerString += try TarExtendedHeader.generateHeaderString("atime", String(atime))
+        }
+
+        if let ctime = self.ctime {
+            headerString += try TarExtendedHeader.generateHeaderString("ctime", String(ctime))
+        }
+
+        if let mtime = self.mtime {
+            headerString += try TarExtendedHeader.generateHeaderString("mtime", String(mtime))
+        }
+
+        if let size = self.size {
+            headerString += try TarExtendedHeader.generateHeaderString("size", String(size))
+        }
+
+        if let uid = self.uid {
+            headerString += try TarExtendedHeader.generateHeaderString("uid", String(uid))
+        }
+
+        if let gid = self.gid {
+            headerString += try TarExtendedHeader.generateHeaderString("gid", String(gid))
+        }
+
+        if let uname = self.uname {
+            headerString += try TarExtendedHeader.generateHeaderString("uname", uname)
+        }
+
+        if let gname = self.gname {
+            headerString += try TarExtendedHeader.generateHeaderString("gname", gname)
+        }
+
+        if let path = self.path {
+            headerString += try TarExtendedHeader.generateHeaderString("path", path)
+        }
+
+        if let linkpath = self.linkpath {
+            headerString += try TarExtendedHeader.generateHeaderString("linkpath", linkpath)
+        }
+
+        if let charset = self.charset {
+            headerString += try TarExtendedHeader.generateHeaderString("charset", charset)
+        }
+
+        if let comment = self.comment {
+            headerString += try TarExtendedHeader.generateHeaderString("comment", comment)
+        }
+
+        for (key, value) in self.unknownRecords {
+            headerString += try TarExtendedHeader.generateHeaderString(key, value)
+        }
+
+        return headerString.data(using: .utf8)!
+    }
+
+    private static func generateHeaderString(_ fieldName: String, _ valueString: String) throws -> String {
+        guard let valueCount = valueString.data(using: .utf8)?.count
+            else { throw TarCreateError.utf8NonEncodable }
+        return TarExtendedHeader.calculateCountString(fieldName, valueCount) + " \(fieldName)=\(valueString)\n"
+    }
+
+    private static func calculateCountString(_ fieldName: String, _ valueCount: Int) -> String {
+        let fixedCount = 3 + fieldName.count + valueCount // 3 = Space + "=" + "\n"
+        var countStr = String(fixedCount)
+        // Workaround for cases when number of figures in count increases when the count itself is included.
+        while true {
+            let totalCount = fixedCount + countStr.count
+            if String(totalCount).count > countStr.count {
+                countStr = String(totalCount)
+                continue
+            } else {
+                countStr = String(totalCount)
+                break
+            }
+        }
+        return countStr
+    }
+
 }
