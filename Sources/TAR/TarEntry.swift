@@ -17,4 +17,14 @@ public struct TarEntry: ContainerEntry {
         self.data = data
     }
 
+    func generateContainerData() throws -> Data {
+        var out = try self.info.generateContainerData()
+        guard let data = self.data
+            else { return out }
+        out.append(data)
+        let paddingSize = data.count.roundTo512() - data.count
+        out.append(Data(count: paddingSize))
+        return out
+    }
+
 }
