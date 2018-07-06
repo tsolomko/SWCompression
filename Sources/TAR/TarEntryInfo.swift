@@ -98,6 +98,15 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let blockStartIndex: Int
 
+    public init(name: String, type: ContainerEntryType) {
+        self.name = name
+        self.type = type
+        self.linkName = ""
+        // These properties are only used when entry is loaded from the container.
+        self.format = .pax
+        self.blockStartIndex = 0
+    }
+
     init(_ byteReader: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         self.blockStartIndex = byteReader.offset
