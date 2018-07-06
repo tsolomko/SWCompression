@@ -31,23 +31,23 @@ public struct TarEntryInfo: ContainerEntryInfo {
      3. GNU format type "L" (LongName) entry.
      4. Default TAR header.
      */
-    public let name: String
+    public var name: String
 
     /// Entry's data size.
-    public let size: Int?
+    public internal(set) var size: Int?
 
     public let type: ContainerEntryType
 
     /// Entry's last access time (only available for PAX format; `nil` otherwise).
-    public let accessTime: Date?
+    public var accessTime: Date?
 
     /// Entry's creation time (only available for PAX format; `nil` otherwise).
-    public let creationTime: Date?
+    public var creationTime: Date?
 
     /// Entry's last modification time.
-    public let modificationTime: Date?
+    public var modificationTime: Date?
 
-    public let permissions: Permissions?
+    public var permissions: Permissions?
 
     // MARK: TAR specific
 
@@ -55,28 +55,28 @@ public struct TarEntryInfo: ContainerEntryInfo {
     public let compressionMethod = CompressionMethod.copy
 
     /// ID of entry's owner.
-    public let ownerID: Int?
+    public var ownerID: Int?
 
     /// ID of the group of entry's owner.
-    public let groupID: Int?
+    public var groupID: Int?
 
     /// User name of entry's owner.
-    public let ownerUserName: String?
+    public var ownerUserName: String?
 
     /// Name of the group of entry's owner.
-    public let ownerGroupName: String?
+    public var ownerGroupName: String?
 
     /// Device major number (used when entry is either block or character special file).
-    public let deviceMajorNumber: Int?
+    public var deviceMajorNumber: Int?
 
     /// Device minor number (used when entry is either block or character special file).
-    public let deviceMinorNumber: Int?
+    public var deviceMinorNumber: Int?
 
     /// Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
-    public let charset: String?
+    public var charset: String?
 
     /// Entry's comment (only available for PAX format; `nil` otherwise).
-    public let comment: String?
+    public var comment: String?
 
     /**
      Path to a linked file for symbolic link entry.
@@ -88,12 +88,12 @@ public struct TarEntryInfo: ContainerEntryInfo {
      3. GNU format type "K" (LongLink) entry.
      4. Default TAR header.
      */
-    public let linkName: String
+    public var linkName: String
 
     /// All unknown records from global and local PAX extended headers. `nil`, if there were no headers.
-    public let unknownExtendedHeaderRecords: [String: String]?
+    public var unknownExtendedHeaderRecords: [String: String]?
 
-    let specialEntryType: SpecialEntryType?
+    var specialEntryType: SpecialEntryType?
     let format: TarContainer.Format
 
     let blockStartIndex: Int
@@ -134,8 +134,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
             self.modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else if let mtime = mtime {
             self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
-        } else {
-            self.modificationTime = nil
         }
 
         // Checksum
@@ -205,8 +203,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
         } else {
             self.ownerUserName = local?.uname ?? global?.uname
             self.ownerGroupName = local?.gname ?? global?.gname
-            self.deviceMajorNumber = nil
-            self.deviceMinorNumber = nil
         }
 
         if local != nil || global != nil {
@@ -228,16 +224,12 @@ public struct TarEntryInfo: ContainerEntryInfo {
             self.accessTime = Date(timeIntervalSince1970: atime)
         } else if let gnuAtime = gnuAtime {
             self.accessTime = Date(timeIntervalSince1970: TimeInterval(gnuAtime))
-        } else {
-            self.accessTime = nil
         }
 
         if let ctime = local?.ctime ?? global?.ctime {
             self.creationTime = Date(timeIntervalSince1970: ctime)
         } else if let gnuCtime = gnuCtime {
             self.creationTime = Date(timeIntervalSince1970: TimeInterval(gnuCtime))
-        } else {
-            self.creationTime = nil
         }
 
         self.charset = local?.charset ?? global?.charset
