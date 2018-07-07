@@ -30,4 +30,29 @@ extension ContainerEntryType {
         }
     }
 
+    var fileTypeIndicator: UInt8 {
+        switch self {
+        case .regular:
+            return 48
+        case .hardLink:
+            return 49
+        case .symbolicLink:
+            return 50
+        case .characterSpecial:
+            return 51
+        case .blockSpecial:
+            return 52
+        case .directory:
+            return 53
+        case .fifo:
+            return 54
+        case .contiguous:
+            return 55
+        case .socket:
+            return 0
+        case .unknown:
+            return 0
+        }
+    }
+
 }
