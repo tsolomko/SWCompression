@@ -254,6 +254,49 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
     }
 
+    func generateContainerData() throws -> Data {
+        // It is not possible to encode non-english characters with ASCII (expectedly), so we are using UTF-8.
+        // While this contradicts format specification, in case of ustar and basic TAR format our other options in
+        // situation when it is not possible to encode with ASCII are:
+        // - crash with fatalError, etc.
+        // - throw an error.
+        // - ignore the problem, and just write NULLs.
+        // The last option is, obviously, is not ideal. Overall, it seems like using UTF-8 instead of ASCII is the most
+        // viable option.
+
+        var out = Data()
+
+        try out.append(tarString: self.name, maxLength: 100)
+
+        out.append(tarInt: self.permissions?.rawValue.toInt(), maxLength: 8)
+        out.append(tarInt: self.ownerID, maxLength: 8)
+        out.append(tarInt: self.groupID, maxLength: 8)
+        out.append(tarInt: self.size, maxLength: 12)
+
+        if let mtime = self.modificationTime?.timeIntervalSince1970 {
+            out.append(tarInt: Int(mtime), maxLength: 12)
+        } else {
+            out.append(tarInt: nil, maxLength: 12)
+        }
+
+        // Checksum is calculated based on the complete header with spaces instead of checksum.
+        out.append(contentsOf: Array(repeating: 0x20, count: 8))
+
+        let fileTypeIndicator = self.specialEntryType?.rawValue ?? self.type.fileTypeIndicator
+        out.append(fileTypeIndicator)
+
+        try out.append(tarString: self.linkName, maxLength: 100)
+
+        // Checksum calculation.
+        // First, we pad header data to 512 bytes.
+        out.append(Data(count: 512 - out.count))
+        let checksum = out.reduce(0 as Int) { $0 + $1.toInt() }
+        let checksumString = String(format: "%06o", checksum).appending("\0 ")
+        out.replaceSubrange(148..<156, with: checksumString.data(using: .ascii)!)
+
+        return out
+    }
+
 }
 
 fileprivate extension Data {
