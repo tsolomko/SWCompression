@@ -97,49 +97,49 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     init(_ byteReader: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
-        blockStartIndex = byteReader.offset
+        self.blockStartIndex = byteReader.offset
         var linkName: String
         var name: String
 
         // File name
         name = try byteReader.nullEndedAsciiString(cutoff: 100)
 
-        // File mode
-        guard let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8)
-            else { throw TarError.wrongField }
-        // Sometimes file mode also contains unix type, so we need to filter it out.
-        permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
+        // Notes for all the properties processing below:
+        // 1. There might be a corresponding field in either global or local extended PAX header.
+        // 2. We still need to read general TAR fields so we can't eliminate auxiliary local let-variables.
+        // 3. `tarInt` returning `nil` corresponds to either field being unused and filled with NULLs or non-UTF-8
+        //    string describing number which means that either this field or container in general is corrupted.
+        //    Corruption of the container is should be detected by checksum comparison, so we decided to ignore them
+        //    here; the alternative, which was used in previous versions, is to throw an error.
 
-        // Owner's user ID
-        guard let ownerAccountID = byteReader.tarInt(maxLength: 8)
-            else { throw TarError.wrongField }
-        // There might be a PAX extended header with "uid" attribute.
-        ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
-
-        // Group's user ID
-        guard let groupAccountID = byteReader.tarInt(maxLength: 8)
-            else { throw TarError.wrongField }
-        // There might be a PAX extended header with "gid" attribute.
-        groupID = (local?.gid ?? global?.gid) ?? groupAccountID
-
-        // File size
-        guard let fileSize = byteReader.tarInt(maxLength: 12, radix: 8)
-            else { throw TarError.wrongField }
-        // There might be a PAX extended header with "size" attribute.
-        size = (local?.size ?? global?.size) ?? fileSize
-
-        // Modification time
-        guard let mtime = byteReader.tarInt(maxLength: 12, radix: 8)
-            else { throw TarError.wrongField }
-        if let paxMtime = local?.mtime ?? global?.mtime {
-            modificationTime = Date(timeIntervalSince1970: paxMtime)
+        if let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8) {
+            // Sometimes file mode also contains unix type, so we need to filter it out.
+            self.permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
         } else {
-            modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+            self.permissions = nil
+        }
+
+        let ownerAccountID = byteReader.tarInt(maxLength: 8)
+        self.ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
+
+        let groupAccountID = byteReader.tarInt(maxLength: 8)
+        self.groupID = (local?.gid ?? global?.gid) ?? groupAccountID
+
+        let fileSize = byteReader.tarInt(maxLength: 12, radix: 8)
+        self.size = (local?.size ?? global?.size) ?? fileSize
+
+        let mtime = byteReader.tarInt(maxLength: 12, radix: 8)
+        if let paxMtime = local?.mtime ?? global?.mtime {
+            self.modificationTime = Date(timeIntervalSince1970: paxMtime)
+        } else if let mtime = mtime {
+            self.modificationTime = Date(timeIntervalSince1970: TimeInterval(mtime))
+        } else {
+            self.modificationTime = nil
         }
 
         // Checksum
         guard let checksum = byteReader.tarInt(maxLength: 8, radix: 8)
-            else { throw TarError.wrongField }
+            else { throw TarError.wrongHeaderChecksum }
 
         let currentIndex = byteReader.offset
         byteReader.offset = blockStartIndex
@@ -150,7 +150,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         byteReader.offset = currentIndex
 
         // Some implementations treat bytes as signed integers, but some don't.
-        // So we check both cases, coincedence in one of them will pass the checksum test.
+        // So we check both cases, equality in one of them will pass the checksum test.
         let unsignedOurChecksumArray = headerDataForChecksum.map { UInt(truncatingIfNeeded: $0) }
         let signedOurChecksumArray = headerDataForChecksum.map { $0.toInt() }
 
