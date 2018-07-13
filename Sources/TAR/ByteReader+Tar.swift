@@ -22,7 +22,7 @@ extension ByteReader {
     }
 
     func nullEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.buffer(cutoff, endingWith: 0), encoding: .ascii) {
+        if let string = String(bytes: self.buffer(cutoff, endingWith: 0), encoding: .utf8) {
             return string
         } else {
             throw TarError.wrongField
@@ -30,7 +30,7 @@ extension ByteReader {
     }
 
     func nullSpaceEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.self.buffer(cutoff, endingWith: 0, 0x20), encoding: .ascii) {
+        if let string = String(bytes: self.self.buffer(cutoff, endingWith: 0, 0x20), encoding: .utf8) {
             return string
         } else {
             throw TarError.wrongField
