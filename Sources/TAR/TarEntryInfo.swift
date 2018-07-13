@@ -151,12 +151,12 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // Some implementations treat bytes as signed integers, but some don't.
         // So we check both cases, coincedence in one of them will pass the checksum test.
-        let unsignedOurChecksumArray = headerDataForChecksum.map { UInt($0) }
-        let signedOurChecksumArray = headerDataForChecksum.map { Int($0) }
+        let unsignedOurChecksumArray = headerDataForChecksum.map { UInt(truncatingIfNeeded: $0) }
+        let signedOurChecksumArray = headerDataForChecksum.map { $0.toInt() }
 
         let unsignedOurChecksum = unsignedOurChecksumArray.reduce(0) { $0 + $1 }
         let signedOurChecksum = signedOurChecksumArray.reduce(0) { $0 + $1 }
-        guard unsignedOurChecksum == UInt(checksum) || signedOurChecksum == checksum
+        guard unsignedOurChecksum == UInt(truncatingIfNeeded: checksum) || signedOurChecksum == checksum
             else { throw TarError.wrongHeaderChecksum }
 
         // File type
