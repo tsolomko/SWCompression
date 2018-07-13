@@ -143,19 +143,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         let currentIndex = byteReader.offset
         byteReader.offset = blockStartIndex
-        var headerDataForChecksum = byteReader.bytes(count: 512)
-        for i in 148..<156 {
-            headerDataForChecksum[i] = 0x20
-        }
+        var headerBytesForChecksum = byteReader.bytes(count: 512)
+        headerBytesForChecksum.replaceSubrange(148..<156, with: Array(repeating: 0x20, count: 8))
         byteReader.offset = currentIndex
 
         // Some implementations treat bytes as signed integers, but some don't.
         // So we check both cases, equality in one of them will pass the checksum test.
-        let unsignedOurChecksumArray = headerDataForChecksum.map { UInt(truncatingIfNeeded: $0) }
-        let signedOurChecksumArray = headerDataForChecksum.map { $0.toInt() }
-
-        let unsignedOurChecksum = unsignedOurChecksumArray.reduce(0) { $0 + $1 }
-        let signedOurChecksum = signedOurChecksumArray.reduce(0) { $0 + $1 }
+        let unsignedOurChecksum = headerBytesForChecksum.reduce(0 as UInt) { $0 + UInt(truncatingIfNeeded: $1) }
+        let signedOurChecksum = headerBytesForChecksum.reduce(0 as Int) { $0 + $1.toInt() }
         guard unsignedOurChecksum == UInt(truncatingIfNeeded: checksum) || signedOurChecksum == checksum
             else { throw TarError.wrongHeaderChecksum }
 
