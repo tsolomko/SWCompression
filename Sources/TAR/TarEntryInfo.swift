@@ -105,31 +105,31 @@ public struct TarEntryInfo: ContainerEntryInfo {
         name = try byteReader.nullEndedAsciiString(cutoff: 100)
 
         // File mode
-        guard let posixAttributes = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8), radix: 8)
+        guard let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8)
             else { throw TarError.wrongField }
         // Sometimes file mode also contains unix type, so we need to filter it out.
         permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
 
         // Owner's user ID
-        guard let ownerAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let ownerAccountID = byteReader.tarInt(maxLength: 8)
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "uid" attribute.
         ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
 
         // Group's user ID
-        guard let groupAccountID = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
+        guard let groupAccountID = byteReader.tarInt(maxLength: 8)
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "gid" attribute.
         groupID = (local?.gid ?? global?.gid) ?? groupAccountID
 
         // File size
-        guard let fileSize = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
+        guard let fileSize = byteReader.tarInt(maxLength: 12, radix: 8)
             else { throw TarError.wrongField }
         // There might be a PAX extended header with "size" attribute.
         size = (local?.size ?? global?.size) ?? fileSize
 
         // Modification time
-        guard let mtime = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 12), radix: 8)
+        guard let mtime = byteReader.tarInt(maxLength: 12, radix: 8)
             else { throw TarError.wrongField }
         if let paxMtime = local?.mtime ?? global?.mtime {
             modificationTime = Date(timeIntervalSince1970: paxMtime)
@@ -138,7 +138,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Checksum
-        guard let checksum = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8), radix: 8)
+        guard let checksum = byteReader.tarInt(maxLength: 8, radix: 8)
             else { throw TarError.wrongField }
 
         let currentIndex = byteReader.offset
@@ -182,8 +182,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
             let gname = try byteReader.nullEndedAsciiString(cutoff: 32)
             self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
-            deviceMajorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
-            deviceMinorNumber = Int(try byteReader.nullSpaceEndedAsciiString(cutoff: 8))
+            deviceMajorNumber = byteReader.tarInt(maxLength: 8)
+            deviceMinorNumber = byteReader.tarInt(maxLength: 8)
             let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
             if prefix != "" {
                 if prefix.last == "/" {
