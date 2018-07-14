@@ -8,19 +8,6 @@ import BitByteData
 
 extension ByteReader {
 
-    private func buffer(_ cutoff: Int, endingWith ends: UInt8...) -> [UInt8] {
-        let startIndex = offset
-        var buffer = [UInt8]()
-        while offset - startIndex < cutoff {
-            let byte = self.byte()
-            guard !ends.contains(byte)
-                else { break }
-            buffer.append(byte)
-        }
-        offset = startIndex + cutoff
-        return buffer
-    }
-
     /**
      Reads a `String` field from TAR container. The end of the field is defined by either:
      1. NULL character (thus CString in the name of the function).
@@ -54,7 +41,17 @@ extension ByteReader {
      Integers can also be encoded as non-decimal based number. This is controlled by `radix` parameter.
      */
     func tarInt(maxLength: Int, radix: Int = 10) -> Int? {
-        guard let string = String(bytes: self.buffer(maxLength, endingWith: 0, 0x20), encoding: .utf8)
+        var buffer = [UInt8]()
+        buffer.reserveCapacity(maxLength)
+        let startOffset = self.offset
+        for _ in 0..<maxLength {
+            let byte = self.byte()
+            guard byte != 0 && byte != 0x20
+                else { break }
+            buffer.append(byte)
+        }
+        self.offset = startOffset + maxLength
+        guard let string = String(bytes: buffer, encoding: .utf8)
             else { return nil }
         return Int(string, radix: radix)
     }
