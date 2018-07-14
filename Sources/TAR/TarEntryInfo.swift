@@ -98,19 +98,17 @@ public struct TarEntryInfo: ContainerEntryInfo {
     init(_ byteReader: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         self.blockStartIndex = byteReader.offset
-        var linkName: String
-        var name: String
 
         // File name
-        name = try byteReader.nullEndedAsciiString(cutoff: 100)
+        var name = byteReader.tarCString(maxLength: 100)
 
-        // Notes for all the properties processing below:
+        // General notes for all the properties processing below:
         // 1. There might be a corresponding field in either global or local extended PAX header.
         // 2. We still need to read general TAR fields so we can't eliminate auxiliary local let-variables.
         // 3. `tarInt` returning `nil` corresponds to either field being unused and filled with NULLs or non-UTF-8
         //    string describing number which means that either this field or container in general is corrupted.
-        //    Corruption of the container is should be detected by checksum comparison, so we decided to ignore them
-        //    here; the alternative, which was used in previous versions, is to throw an error.
+        //    Corruption of the container should be detected by checksum comparison, so we decided to ignore them here;
+        //    the alternative, which was used in previous versions, is to throw an error.
 
         if let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8) {
             // Sometimes file mode also contains unix type, so we need to filter it out.
@@ -160,7 +158,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.type = ContainerEntryType(fileTypeIndicator)
 
         // Linked file name
-        linkName = try byteReader.nullEndedAsciiString(cutoff: 100)
+        let linkName = byteReader.tarCString(maxLength: 100)
 
         // There are two POSIX-like formats: pre-POSIX used by GNU tools (aka "old-GNU") and POSIX (aka "ustar").
         // They differ in `magic` field value and how other fields are padded (either SPACEs or NULLs).
@@ -171,15 +169,15 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
             self.hasRecognizedMagic = true
-            let uname = try byteReader.nullEndedAsciiString(cutoff: 32)
+            let uname = byteReader.tarCString(maxLength: 32)
             self.ownerUserName = (local?.uname ?? global?.uname) ?? uname
 
-            let gname = try byteReader.nullEndedAsciiString(cutoff: 32)
+            let gname = byteReader.tarCString(maxLength: 32)
             self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
             deviceMajorNumber = byteReader.tarInt(maxLength: 8)
             deviceMinorNumber = byteReader.tarInt(maxLength: 8)
-            let prefix = try byteReader.nullEndedAsciiString(cutoff: 155)
+            let prefix = byteReader.tarCString(maxLength: 155)
             if prefix != "" {
                 if prefix.last == "/" {
                     name = prefix + name

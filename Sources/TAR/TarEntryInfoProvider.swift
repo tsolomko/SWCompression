@@ -39,10 +39,10 @@ struct TarEntryInfoProvider {
                 lastLocalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
             case .longLinkName:
                 byteReader.offset = dataStartIndex
-                longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                longLinkName = byteReader.tarCString(maxLength: info.size!)
             case .longName:
                 byteReader.offset = dataStartIndex
-                longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                longName = byteReader.tarCString(maxLength: info.size!)
             }
             byteReader.offset = dataStartIndex + info.size!.roundTo512()
         } else {

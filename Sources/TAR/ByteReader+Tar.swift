@@ -21,12 +21,26 @@ extension ByteReader {
         return buffer
     }
 
-    func nullEndedAsciiString(cutoff: Int) throws -> String {
-        if let string = String(bytes: self.buffer(cutoff, endingWith: 0), encoding: .utf8) {
-            return string
-        } else {
-            throw TarError.wrongField
+    /**
+     Reads a `String` field from TAR container. The end of the field is defined by either:
+     1. NULL character (thus CString in the name of the function).
+     2. Reaching specified maximum length.
+
+     Strings are encoded in TAR using ASCII encoding. We are treating them as UTF-8 encoded instead since UTF-8 is
+     backwards compatible with ASCII.
+
+     We use `String(cString:)` initalizer because TAR's NULL-ending ASCII fields are basically CStrings (especially,
+     since we are treating them as UTF-8 strings). As a bonus, this initializer is not failable: it replaces unparsable
+     as UTF-8 sequences of bytes with UTF-8 Replacement Character, so we don't need to throw any error.
+     */
+    func tarCString(maxLength: Int) -> String {
+        var buffer = self.bytes(count: maxLength)
+        guard !buffer.isEmpty
+            else { return "" }
+        if buffer.last! != 0 {
+            buffer.append(0)
         }
+        return buffer.withUnsafeBufferPointer { String(cString: $0.baseAddress!) }
     }
 
     /**
