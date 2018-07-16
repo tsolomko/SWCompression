@@ -196,4 +196,46 @@ class TarTests: XCTestCase {
         _ = try TarContainer.open(container: testData)
     }
 
+    func testUnicodeUstar() throws {
+        guard let testData = Constants.data(forTest: "test_unicode_ustar", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "текстовый файл.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+
+        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
+    func testUnicodePax() throws {
+        guard let testData = Constants.data(forTest: "test_unicode_pax", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "текстовый файл.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+
+        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
 }

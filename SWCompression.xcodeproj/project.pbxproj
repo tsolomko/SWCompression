@@ -41,6 +41,8 @@
 		0642998B206017590044BA0C /* ZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642998A206017590044BA0C /* ZipExtraField.swift */; };
 		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
 		064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */ = {isa = PBXBuildFile; fileRef = 064D01A820FD071300CAE058 /* текстовый файл.answer */; };
+		064D01AC20FD077D00CAE058 /* test_unicode_ustar.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */; };
+		064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */; };
 		064F72241F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
 		064F72291F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
@@ -246,6 +248,8 @@
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		064512861F82CE63006490BA /* 7zCoder+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "7zCoder+Equatable.swift"; sourceTree = "<group>"; };
 		064D01A820FD071300CAE058 /* текстовый файл.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "текстовый файл.answer"; sourceTree = "<group>"; };
+		064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_ustar.tar; sourceTree = "<group>"; };
+		064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_pax.tar; sourceTree = "<group>"; };
 		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
@@ -748,6 +752,8 @@
 				06F065EE1FFB763300312A82 /* test_empty_file.tar */,
 				06F065EF1FFB763300312A82 /* full_test.tar */,
 				06F065F01FFB763300312A82 /* test_win.tar */,
+				064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */,
+				064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */,
 			);
 			path = TAR;
 			sourceTree = "<group>";
@@ -939,6 +945,7 @@
 				06F066671FFB763400312A82 /* test2.7z in Resources */,
 				06F0661F1FFB763300312A82 /* test3.answer in Resources */,
 				06F066281FFB763400312A82 /* test5.gz in Resources */,
+				064D01AC20FD077D00CAE058 /* test_unicode_ustar.tar in Resources */,
 				06F066361FFB763400312A82 /* test4.xz in Resources */,
 				06F066411FFB763400312A82 /* test_empty_dir.zip in Resources */,
 				06F066521FFB763400312A82 /* long_test_gnu.tar in Resources */,
@@ -978,6 +985,7 @@
 				06F066351FFB763400312A82 /* test5.xz in Resources */,
 				06F066631FFB763400312A82 /* test_complicated_coding_scheme.7z in Resources */,
 				06F066641FFB763400312A82 /* test_anti_file.7z in Resources */,
+				064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */,
 				06F0665E1FFB763400312A82 /* test_empty_cont.7z in Resources */,
 				06F066731FFB763400312A82 /* test3.bz2 in Resources */,
 				06F066471FFB763400312A82 /* test_empty_cont.zip in Resources */,
