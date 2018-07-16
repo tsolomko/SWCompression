@@ -28,24 +28,27 @@ struct TarExtendedHeader {
     var comment: String?
 
     init?(_ data: Data) throws {
-        guard let headerString = String(data: data, encoding: .utf8)
-            else { return nil }
+        // Split header data into entries with "\n" (0x0A) character as a separator.
+        let entriesData = data.split(separator: 0x0A)
 
-        var entries = [String: String]()
+        var unknownRecords = [String: String]()
 
-        let headerEntries = headerString.components(separatedBy: "\n")
-        for headerEntry in headerEntries {
-            guard !headerEntry.isEmpty
-                else { continue }
-            let headerEntrySplit = headerEntry.split(separator: " ", maxSplits: 1,
-                                                     omittingEmptySubsequences: false)
-            guard Int(headerEntrySplit[0]) == headerEntry.count + 1
+        for entryData in entriesData where !entryData.isEmpty {
+            let entryDataSplit = entryData.split(separator: 0x20, maxSplits: 1, omittingEmptySubsequences: false)
+
+            guard entryDataSplit.count == 2,
+                let lengthString = String(data: entryDataSplit[0], encoding: .utf8),
+                Int(lengthString) == entryData.count + 1
                 else { throw TarError.wrongPaxHeaderEntry }
-            let keywordValue = headerEntrySplit[1]
-            let keywordValueSplit = keywordValue.split(separator: "=", maxSplits: 1,
-                                                       omittingEmptySubsequences: false)
-            let key = String(keywordValueSplit[0])
-            let value = String(keywordValueSplit[1])
+
+            // Split header entry into key-value pair with "=" (0x3D) character as a separator.
+            let keyValueDataPair = entryDataSplit[1].split(separator: 0x3D, maxSplits: 1,
+                                                            omittingEmptySubsequences: false)
+
+            guard keyValueDataPair.count == 2,
+                let key = String(data: keyValueDataPair[0], encoding: .utf8),
+                let value = String(data: keyValueDataPair[1], encoding: .utf8)
+                else { throw TarError.wrongPaxHeaderEntry}
 
             switch key {
             case "uid":
@@ -73,11 +76,11 @@ struct TarExtendedHeader {
             case "comment":
                 self.comment = value
             default:
-                entries[key] = value
+                unknownRecords[key] = value
             }
         }
 
-        self.unknownRecords = entries
+        self.unknownRecords = unknownRecords
     }
 
 }
