@@ -40,6 +40,7 @@
 		063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */; };
 		0642998B206017590044BA0C /* ZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642998A206017590044BA0C /* ZipExtraField.swift */; };
 		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
+		064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */ = {isa = PBXBuildFile; fileRef = 064D01A820FD071300CAE058 /* текстовый файл.answer */; };
 		064F72241F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
 		064F72291F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
@@ -244,6 +245,7 @@
 		0642998A206017590044BA0C /* ZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipExtraField.swift; sourceTree = "<group>"; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		064512861F82CE63006490BA /* 7zCoder+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "7zCoder+Equatable.swift"; sourceTree = "<group>"; };
+		064D01A820FD071300CAE058 /* текстовый файл.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "текстовый файл.answer"; sourceTree = "<group>"; };
 		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
@@ -658,6 +660,7 @@
 		06F065AE1FFB763300312A82 /* Answers */ = {
 			isa = PBXGroup;
 			children = (
+				064D01A820FD071300CAE058 /* текстовый файл.answer */,
 				06F065B01FFB763300312A82 /* test1.answer */,
 				06F065B41FFB763300312A82 /* test2.answer */,
 				06F065AF1FFB763300312A82 /* test3.answer */,
@@ -963,6 +966,7 @@
 				06F066391FFB763400312A82 /* test8.xz in Resources */,
 				06F0662F1FFB763400312A82 /* test9.gz in Resources */,
 				06F066751FFB763400312A82 /* test1.bz2 in Resources */,
+				064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */,
 				06F0662D1FFB763400312A82 /* test6.gz in Resources */,
 				06F0664D1FFB763400312A82 /* test_ustar.tar in Resources */,
 				06F0665A1FFB763400312A82 /* test11.lzma in Resources */,

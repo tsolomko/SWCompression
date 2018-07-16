@@ -91,7 +91,13 @@ class ZipTests: XCTestCase {
         XCTAssertTrue(entries[0].info.isTextFile)
         XCTAssertEqual(entries[0].info.ownerID, 501)
         XCTAssertEqual(entries[0].info.groupID, 20)
-        XCTAssertNotNil(entries[0].data)
+
+        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testZipLZMA() throws {
