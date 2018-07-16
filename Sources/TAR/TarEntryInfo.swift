@@ -117,10 +117,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
             self.permissions = nil
         }
 
-        let ownerAccountID = byteReader.tarInt(maxLength: 8)
+        let ownerAccountID = byteReader.tarInt(maxLength: 8, radix: 8)
         self.ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
 
-        let groupAccountID = byteReader.tarInt(maxLength: 8)
+        let groupAccountID = byteReader.tarInt(maxLength: 8, radix: 8)
         self.groupID = (local?.gid ?? global?.gid) ?? groupAccountID
 
         let fileSize = byteReader.tarInt(maxLength: 12, radix: 8)
