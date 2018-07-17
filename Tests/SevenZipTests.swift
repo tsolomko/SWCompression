@@ -307,6 +307,36 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].data, answerData)
     }
 
+    func testUnicode() throws {
+        guard let testData = Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "текстовый файл.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xA139BCEE)
+
+        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
     func testWinContainer() throws {
         guard let testData = Constants.data(forTest: "test_win", withType: SevenZipTests.testType) else {
             XCTFail("Unable to get test data.")
