@@ -18,13 +18,19 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
-        let result = try TarContainer.open(container: testData)
+        let entries = try TarContainer.open(container: testData)
 
-        XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result[0].info.name, "test5.answer")
-        XCTAssertEqual(result[0].info.size, 0)
-        XCTAssertEqual(result[0].info.type, .regular)
-        XCTAssertEqual(result[0].data, Data())
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test5.answer")
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertNil(entries[0].info.comment)
+        XCTAssertEqual(entries[0].data, Data())
     }
 
     func testPax() throws {
@@ -35,11 +41,11 @@ class TarTests: XCTestCase {
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
 
-        let result = try TarContainer.open(container: testData)
+        let entries = try TarContainer.open(container: testData)
 
-        XCTAssertEqual(result.count, 5)
+        XCTAssertEqual(entries.count, 5)
 
-        for entry in result {
+        for entry in entries {
             let name = entry.info.name.components(separatedBy: ".")[0]
             guard let answerData = Constants.data(forAnswer: name) else {
                 XCTFail("Unable to get answer data.")
@@ -48,8 +54,14 @@ class TarTests: XCTestCase {
 
             XCTAssertEqual(entry.data, answerData)
             XCTAssertEqual(entry.info.type, .regular)
-            XCTAssertNotNil(entry.info.ownerUserName)
-            XCTAssertNotNil(entry.info.ownerGroupName)
+            XCTAssertEqual(entry.info.ownerUserName, "tsolomko")
+            XCTAssertEqual(entry.info.ownerGroupName, "tsolomko")
+            XCTAssertEqual(entry.info.ownerID, 1001)
+            XCTAssertEqual(entry.info.groupID, 1001)
+            XCTAssertEqual(entry.info.permissions, Permissions(rawValue: 436))
+            XCTAssertNil(entry.info.comment)
+            // Checking times' values is a bit difficult since they are extremely precise.
+            XCTAssertNotNil(entry.info.modificationTime)
             XCTAssertNotNil(entry.info.accessTime)
             XCTAssertNotNil(entry.info.creationTime)
         }
@@ -81,13 +93,13 @@ class TarTests: XCTestCase {
                 XCTAssertEqual(try TarContainer.formatOf(container: testData), .prePosix)
             }
 
-            let result = try TarContainer.open(container: testData)
+            let entries = try TarContainer.open(container: testData)
 
-            XCTAssertEqual(result.count, 1)
-            XCTAssertEqual(result[0].info.name, "test1.answer")
-            XCTAssertEqual(result[0].info.size, 14)
-            XCTAssertEqual(result[0].info.type, .regular)
-            XCTAssertEqual(result[0].data, answerData)
+            XCTAssertEqual(entries.count, 1)
+            XCTAssertEqual(entries[0].info.name, "test1.answer")
+            XCTAssertEqual(entries[0].info.size, 14)
+            XCTAssertEqual(entries[0].info.type, .regular)
+            XCTAssertEqual(entries[0].data, answerData)
         }
     }
 
@@ -108,9 +120,9 @@ class TarTests: XCTestCase {
                 XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
             }
 
-            let result = try TarContainer.open(container: testData)
+            let entries = try TarContainer.open(container: testData)
 
-            XCTAssertEqual(result.count, 6)
+            XCTAssertEqual(entries.count, 6)
         }
     }
 
@@ -129,11 +141,24 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "dir/")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.ownerUserName, "")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "")
+        XCTAssertEqual(entries[0].info.ownerID, 0)
+        XCTAssertEqual(entries[0].info.groupID, 0)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 511))
+        XCTAssertNil(entries[0].info.comment)
         XCTAssertEqual(entries[0].data, nil)
+
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
         XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, 15)
+        XCTAssertEqual(entries[1].info.ownerUserName, "")
+        XCTAssertEqual(entries[1].info.ownerGroupName, "")
+        XCTAssertEqual(entries[1].info.ownerID, 0)
+        XCTAssertEqual(entries[1].info.groupID, 0)
+        XCTAssertEqual(entries[1].info.permissions, Permissions(rawValue: 511))
+        XCTAssertNil(entries[1].info.comment)
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
 
@@ -151,6 +176,12 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "empty_file")
         XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertNil(entries[0].info.comment)
         XCTAssertEqual(entries[0].data, Data())
     }
 
@@ -168,6 +199,12 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "empty_dir/")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
+        XCTAssertNil(entries[0].info.comment)
         XCTAssertEqual(entries[0].data, nil)
     }
 
@@ -201,6 +238,7 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -208,6 +246,10 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.ownerID, 501)
         XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertNil(entries[0].info.comment)
 
         guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
             XCTFail("Unable to get answer data.")
@@ -222,6 +264,7 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -229,6 +272,10 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.ownerID, 501)
         XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertNil(entries[0].info.comment)
 
         guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
             XCTFail("Unable to get answer data.")
