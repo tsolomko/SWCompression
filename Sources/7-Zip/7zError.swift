@@ -14,15 +14,9 @@ public enum SevenZipError: Error {
     case wrongSignature
     /// Unsupported version of container's format.
     case wrongFormatVersion
-    /**
-     CRC either of one of the files from the container
-     or one of the container's strucutures is incorrect.
-     */
+    /// CRC either of one of the files from the container or one of the container's strucutures is incorrect.
     case wrongCRC
-    /**
-     Size either of one of the files from the container
-     or one of the container's strucutures is incorrect.
-     */
+    /// Size either of one of the files from the container or one of the container's strucutures is incorrect.
     case wrongSize
     /// Files have StartPos property. This feature isn't supported.
     case startPosNotSupported
@@ -36,9 +30,6 @@ public enum SevenZipError: Error {
     case compressionNotSupported
     /// Entry or container's header is encrypted. This feature isn't supported.
     case encryptionNotSupported
-    /**
-     Unknown/incorrect internal 7-Zip structure was encountered or
-     no internal structure was found where it must be.
-     */
+    /// Unknown/incorrect internal 7-Zip structure was encountered or a required internal structure is missing.
     case internalStructureError
 }
