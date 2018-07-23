@@ -91,6 +91,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
     public let unknownExtendedHeaderRecords: [String: String]?
 
     let specialEntryType: SpecialEntryType?
+    let format: TarContainer.Format
     let hasRecognizedMagic: Bool
 
     let blockStartIndex: Int
@@ -206,6 +207,16 @@ public struct TarEntryInfo: ContainerEntryInfo {
             self.ownerGroupName = local?.gname ?? global?.gname
             self.deviceMajorNumber = nil
             self.deviceMinorNumber = nil
+        }
+
+        if local != nil || global != nil {
+            self.format = .pax
+        } else if magic == 0x00_20_20_72_61_74_73_75 || longName != nil || longLinkName != nil {
+            self.format = .gnu
+        } else if magic == 0x3030007261747375 || magic == 0x3030207261747375 {
+            self.format = .ustar
+        } else {
+            self.format = .prePosix
         }
 
         // Set `name` and `linkName` to values from PAX or GNU format if possible.
