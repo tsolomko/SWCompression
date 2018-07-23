@@ -266,4 +266,28 @@ fileprivate extension Data {
         return out
     }
 
+    mutating func append(tarInt value: Int?, maxLength: Int) {
+        guard var value = value else {
+            // No value; fill field with NULLs.
+            self.append(Data(count: maxLength))
+            return
+        }
+
+        let maxOctalValue = (1 << (maxLength * 3)) - 1
+        guard value > maxOctalValue else {
+            // Normal octal encoding.
+            self.append(String(value, radix: 8).data(using: .utf8)!.zeroPad(maxLength))
+            return
+        }
+
+        // Base-256 encoding.
+        var buffer = Array(repeating: 0 as UInt8, count: maxLength)
+        for i in stride(from: maxLength - 1, to: 0, by: -1) {
+            buffer[i] = UInt8(truncatingIfNeeded: value & 0xFF)
+            value >>= 8
+        }
+        buffer[0] |= 0x80 // Highest bit indicates base-256 encoding.
+        self.append(Data(bytes: buffer))
+    }
+
 }
