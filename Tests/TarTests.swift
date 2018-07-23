@@ -149,7 +149,6 @@ class TarTests: XCTestCase {
         XCTAssertNil(entries[0].info.comment)
         XCTAssertEqual(entries[0].data, nil)
 
-
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
         XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, 15)
@@ -309,6 +308,29 @@ class TarTests: XCTestCase {
             XCTAssertNotNil(entry.info.accessTime)
             XCTAssertNotNil(entry.info.creationTime)
         }
+    }
+
+    func testBigNumField() throws {
+        // This file is truncated because of its size (8.6 GB): it doesn't contain any actual file data.
+        guard let testData = Constants.data(forTest: "test_big_num_field", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
+
+        let entries = try TarContainer.info(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].name, "rands")
+        XCTAssertEqual(entries[0].type, .regular)
+        XCTAssertEqual(entries[0].size, 8600000000)
+        XCTAssertEqual(entries[0].ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].ownerID, 501)
+        XCTAssertEqual(entries[0].groupID, 20)
+        XCTAssertEqual(entries[0].permissions, Permissions(rawValue: 420))
+        XCTAssertNil(entries[0].comment)
     }
 
 }
