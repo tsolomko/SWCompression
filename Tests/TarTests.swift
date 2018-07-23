@@ -333,4 +333,28 @@ class TarTests: XCTestCase {
         XCTAssertNil(entries[0].comment)
     }
 
+    func testNegativeMtime() throws {
+        guard let testData = Constants.data(forTest: "test_negative_mtime", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
+
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "file")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, 27)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.modificationTime, Date(timeIntervalSince1970: -313006414))
+        XCTAssertNil(entries[0].info.comment)
+        XCTAssertEqual(entries[0].data, "File with negative mtime.\n\n".data(using: .utf8))
+    }
+
 }
