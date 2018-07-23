@@ -239,6 +239,8 @@ class TarTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -265,6 +267,8 @@ class TarTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
+
         let entries = try TarContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -290,6 +294,8 @@ class TarTests: XCTestCase {
             XCTFail("Unable to get test data.")
             return
         }
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
 
         let entries = try TarContainer.open(container: testData)
 
