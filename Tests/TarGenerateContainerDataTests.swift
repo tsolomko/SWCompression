@@ -62,4 +62,46 @@ class TarGenerateContainerDataTests: XCTestCase {
         XCTAssertEqual(newInfo.format, .ustar)
     }
 
+    func testLongNameEntryInfo() throws {
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 15)) // To test "prefix" field of ustar format.
+        info.name.append("readme.txt")
+
+        let infoData = try info.generateContainerData()
+        XCTAssertEqual(infoData.count, 512)
+
+        let newInfo = try TarEntryInfo(ByteReader(data: infoData), nil, nil, nil, nil)
+        // This name should fit into ustar format using "prefix" field
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testVeryLongNameEntryInfo() throws {
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 25)) // To test "prefix" field of ustar format.
+        info.name.append("readme.txt")
+
+        let infoData = try info.generateContainerData()
+        XCTAssertEqual(infoData.count, 512)
+
+        let newInfo = try TarEntryInfo(ByteReader(data: infoData), nil, nil, nil, nil)
+        // Names longer than 255 symbols cannot be fully saved using ustar format and are truncated.
+        XCTAssertEqual(newInfo.name, String(info.name.prefix(255)))
+    }
+
+    func testLongDirectoryNameEntryInfo() throws {
+        // Tests what happens to the filename's trailing slash when "prefix" field is used.
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 15)) // To test "prefix" field of ustar format.
+
+        let infoData = try info.generateContainerData()
+        XCTAssertEqual(infoData.count, 512)
+
+        let newInfo = try TarEntryInfo(ByteReader(data: infoData), nil, nil, nil, nil)
+        // This name should fit into ustar format using "prefix" field
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
 }
