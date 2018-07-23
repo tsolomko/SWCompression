@@ -111,7 +111,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         //    the alternative, which was used in previous versions, is to throw an error.
 
         if let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8) {
-            // Sometimes file mode also contains unix type, so we need to filter it out.
+            // Sometimes file mode field also contains unix type, so we need to filter it out.
             self.permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
         } else {
             self.permissions = nil
@@ -160,12 +160,16 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // Linked file name
         let linkName = byteReader.tarCString(maxLength: 100)
 
-        // There are two POSIX-like formats: pre-POSIX used by GNU tools (aka "old-GNU") and POSIX (aka "ustar").
-        // They differ in `magic` field value and how other fields are padded (either SPACEs or NULLs).
-        // Padding is taken care of in Data extension functions in "ByteReader+Tar.swift" file.
-        // Here we deal with magic. First one is "old-GNU", second is "ustar", third is for compatiblity with strange
-        // implementations of "ustar", which use SPACEs instead of NULLs.
+        // There are two different formats utilizing this section of TAR header: GNU format and POSIX (aka "ustar";
+        // also PAX containers can also be considered POSIX). They differ in the value of magic field as well as what
+        // comes after deviceMinorNumber field. While "ustar" format may contain prefix for file name, GNU format
+        // uses this place for storing atime/ctime and fields related to sparse-files. In practice, these fields are
+        // rarely used by GNU tar and only present if "incremental backups" options were used. Thus, GNU format TAR
+        // container can often be incorrectly considered as having prefix field containing only NULLs.
         let magic = byteReader.uint64()
+
+        var gnuAtime: Int?
+        var gnuCtime: Int?
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
             self.hasRecognizedMagic = true
@@ -175,22 +179,33 @@ public struct TarEntryInfo: ContainerEntryInfo {
             let gname = byteReader.tarCString(maxLength: 32)
             self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
-            deviceMajorNumber = byteReader.tarInt(maxLength: 8)
-            deviceMinorNumber = byteReader.tarInt(maxLength: 8)
-            let prefix = byteReader.tarCString(maxLength: 155)
-            if prefix != "" {
-                if prefix.last == "/" {
-                    name = prefix + name
-                } else {
-                    name = prefix + "/" + name
+            self.deviceMajorNumber = byteReader.tarInt(maxLength: 8)
+            self.deviceMinorNumber = byteReader.tarInt(maxLength: 8)
+
+            if magic == 0x00_20_20_72_61_74_73_75 { // GNU format.
+                // GNU format mostly is identical to POSIX format and in the common situations can be considered as
+                // having prefix containing only NULLs. However, in the case of incremental backups produced by GNU tar
+                // this part of the TAR header is used for storing a lot of different properties. For now, we are only
+                // reading atime and ctime.
+
+                gnuAtime = byteReader.tarInt(maxLength: 12, radix: 8)
+                gnuCtime = byteReader.tarInt(maxLength: 12, radix: 8)
+            } else {
+                let prefix = byteReader.tarCString(maxLength: 155)
+                if prefix != "" {
+                    if prefix.last == "/" {
+                        name = prefix + name
+                    } else {
+                        name = prefix + "/" + name
+                    }
                 }
             }
         } else {
             self.hasRecognizedMagic = false
-            ownerUserName = local?.uname ?? global?.uname
-            ownerGroupName = local?.gname ?? global?.gname
-            deviceMajorNumber = nil
-            deviceMinorNumber = nil
+            self.ownerUserName = local?.uname ?? global?.uname
+            self.ownerGroupName = local?.gname ?? global?.gname
+            self.deviceMajorNumber = nil
+            self.deviceMinorNumber = nil
         }
 
         // Set `name` and `linkName` to values from PAX or GNU format if possible.
@@ -199,27 +214,31 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         // Set additional properties from PAX extended headers.
         if let atime = local?.atime ?? global?.atime {
-            accessTime = Date(timeIntervalSince1970: atime)
+            self.accessTime = Date(timeIntervalSince1970: atime)
+        } else if let gnuAtime = gnuAtime {
+            self.accessTime = Date(timeIntervalSince1970: TimeInterval(gnuAtime))
         } else {
-            accessTime = nil
+            self.accessTime = nil
         }
 
         if let ctime = local?.ctime ?? global?.ctime {
-            creationTime = Date(timeIntervalSince1970: ctime)
+            self.creationTime = Date(timeIntervalSince1970: ctime)
+        } else if let gnuCtime = gnuCtime {
+            self.creationTime = Date(timeIntervalSince1970: TimeInterval(gnuCtime))
         } else {
-            creationTime = nil
+            self.creationTime = nil
         }
 
-        charset = local?.charset ?? global?.charset
-        comment = local?.comment ?? global?.comment
+        self.charset = local?.charset ?? global?.charset
+        self.comment = local?.comment ?? global?.comment
         if let localUnknownRecords = local?.unknownRecords {
             if let globalUnknownRecords = global?.unknownRecords {
-                unknownExtendedHeaderRecords = globalUnknownRecords.merging(localUnknownRecords) { $1 }
+                self.unknownExtendedHeaderRecords = globalUnknownRecords.merging(localUnknownRecords) { $1 }
             } else {
-                unknownExtendedHeaderRecords = localUnknownRecords
+                self.unknownExtendedHeaderRecords = localUnknownRecords
             }
         } else {
-            unknownExtendedHeaderRecords = global?.unknownRecords
+            self.unknownExtendedHeaderRecords = global?.unknownRecords
         }
     }
 
