@@ -65,6 +65,15 @@ public class TarContainer: Container {
         return ustarEncountered ? .ustar : .prePosix
     }
 
+    public static func create(from entries: [TarEntry]) throws -> Data {
+        var out = Data()
+        for entry in entries {
+            try out.append(entry.generateContainerData())
+        }
+        out.append(Data(count: 1024))
+        return out
+    }
+
     /**
      Processes TAR container and returns an array of `TarEntry` with information and data for all entries.
 
