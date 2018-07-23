@@ -287,6 +287,50 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         try out.append(tarString: self.linkName, maxLength: 100)
 
+        out.append(contentsOf: [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30]) // "ustar\000"
+        // In theory, user/group name is not guaranteed to have only ASCII characters, so the same disclaimer as for
+        // file name field applies here.
+        try out.append(tarString: self.ownerUserName, maxLength: 32)
+        try out.append(tarString: self.ownerGroupName, maxLength: 32)
+        out.append(tarInt: self.deviceMajorNumber, maxLength: 8)
+        out.append(tarInt: self.deviceMinorNumber, maxLength: 8)
+
+        guard let nameData = self.name.data(using: .utf8)
+            else { throw TarCreateError.utf8NonEncodable }
+
+        if nameData.count > 100 {
+            var maxPrefixLength = nameData.count
+            if maxPrefixLength > 156 {
+                // We can set actual maximum possible length of prefix equal to 156 and not 155, because it may
+                // include trailing slash which will be removed during splitting.
+                maxPrefixLength = 156
+            } else if nameData[maxPrefixLength - 1] == 0x2F {
+                // Skip trailing slash.
+                maxPrefixLength -= 1
+            }
+
+            // Looking for the last slash in the potential prefix. -1 if not found.
+            // It determines the end of the actual prefix and the beginning of the updated name field.
+            let lastPrefixSlashIndex = nameData.prefix(upTo: maxPrefixLength)
+                .range(of: Data(bytes: [0x2f]), options: .backwards)?.lowerBound ?? -1
+            let updatedNameLength = nameData.count - lastPrefixSlashIndex - 1
+            let prefixLength = lastPrefixSlashIndex
+
+            if lastPrefixSlashIndex <= 0 || updatedNameLength > 100 || updatedNameLength == 0 || prefixLength > 155 {
+                // Unsplittable name.
+                out.append(Data(count: 155))
+            } else {
+                // Add prefix data to output.
+                out.append(nameData.prefix(upTo: lastPrefixSlashIndex))
+                // Update name field data in output.
+                var newNameData = nameData.suffix(from: lastPrefixSlashIndex + 1)
+                newNameData.append(Data(count: 100 - newNameData.count))
+                out.replaceSubrange(0..<100, with: newNameData)
+            }
+        } else {
+            out.append(Data(count: 155)) // Empty prefix
+        }
+
         // Checksum calculation.
         // First, we pad header data to 512 bytes.
         out.append(Data(count: 512 - out.count))
