@@ -82,9 +82,9 @@ class TarTests: XCTestCase {
             }
 
             if testName == "test_gnu" {
-                XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
             } else if testName == "test_oldgnu" {
-                XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+                XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
             } else if testName == "test_pax" {
                 XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
             } else if testName == "test_ustar" {

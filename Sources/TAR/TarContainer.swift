@@ -41,19 +41,28 @@ public class TarContainer: Container {
         /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
 
-        var specialMagicEncountered = false
+        var ustarEncountered = false
 
         while let info = try infoProvider.next() {
             if info.specialEntryType == .globalExtendedHeader || info.specialEntryType == .localExtendedHeader {
                 return .pax
             } else if info.specialEntryType == .longName || info.specialEntryType == .longLinkName {
                 return .gnu
-            } else if info.hasRecognizedMagic {
-                specialMagicEncountered = true
+            } else {
+                switch info.format {
+                case .pax:
+                    return .pax
+                case .gnu:
+                    return .gnu
+                case .ustar:
+                    ustarEncountered = true
+                case .prePosix:
+                    break
+                }
             }
         }
 
-        return specialMagicEncountered ? .ustar : .prePosix
+        return ustarEncountered ? .ustar : .prePosix
     }
 
     /**
