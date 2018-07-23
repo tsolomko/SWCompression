@@ -41,8 +41,37 @@ extension ByteReader {
      Integers can also be encoded as non-decimal based number. This is controlled by `radix` parameter.
      */
     func tarInt(maxLength: Int, radix: Int = 10) -> Int? {
+        guard maxLength > 0
+            else { return nil }
+
         var buffer = [UInt8]()
         buffer.reserveCapacity(maxLength)
+
+        let firstByte = self.byte()
+        self.offset -= 1
+
+        if firstByte & 0x80 != 0 { // Base-256 encoding; used for big numeric fields.
+            buffer = self.bytes(count: maxLength)
+            /// Inversion mask for handling negative numbers.
+            let invMask = buffer[0] & 0x40 != 0 ? 0xFF : 0x00
+            var result = 0
+            for i in 0..<buffer.count {
+                var byte = buffer[i].toInt() ^ invMask
+                if i == 0 {
+                    byte &= 0x7F // Ignoring bit, which indicates base-256 encoding.
+                }
+                if result >> (Int.bitWidth - 8) > 0 {
+                    return nil // Integer overflow
+                }
+                result = (result << 8) | byte
+            }
+            if result >> (Int.bitWidth - 1) > 0 {
+                return nil // Integer overflow
+            }
+            return invMask == 0xFF ? ~result : result
+        }
+
+        // Normal, octal encoding.
         let startOffset = self.offset
         for _ in 0..<maxLength {
             let byte = self.byte()
