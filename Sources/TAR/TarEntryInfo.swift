@@ -290,4 +290,16 @@ fileprivate extension Data {
         self.append(Data(bytes: buffer))
     }
 
+    mutating func append(tarString string: String?, maxLength: Int) throws {
+        guard let string = string else {
+            // No value; fill field with NULLs.
+            self.append(Data(count: maxLength))
+            return
+        }
+
+        guard let stringData = string.data(using: .utf8)?.zeroPad(maxLength)
+            else { throw TarCreateError.utf8NonEncodable }
+        self.append(stringData)
+    }
+
 }
