@@ -285,4 +285,24 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].data, answerData)
     }
 
+    func testGnuIncrementalFormat() throws {
+        guard let testData = Constants.data(forTest: "test_gnu_inc_format", withType: TarTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 3)
+
+        for entry in entries {
+            XCTAssertEqual(entry.info.ownerID, 501)
+            XCTAssertEqual(entry.info.groupID, 20)
+            XCTAssertEqual(entry.info.ownerUserName, "timofeysolomko")
+            XCTAssertEqual(entry.info.ownerGroupName, "staff")
+            XCTAssertNotNil(entry.info.accessTime)
+            XCTAssertNotNil(entry.info.creationTime)
+        }
+    }
+
 }
