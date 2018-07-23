@@ -92,7 +92,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let specialEntryType: SpecialEntryType?
     let format: TarContainer.Format
-    let hasRecognizedMagic: Bool
 
     let blockStartIndex: Int
 
@@ -173,7 +172,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
         var gnuCtime: Int?
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
-            self.hasRecognizedMagic = true
             let uname = byteReader.tarCString(maxLength: 32)
             self.ownerUserName = (local?.uname ?? global?.uname) ?? uname
 
@@ -202,7 +200,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
                 }
             }
         } else {
-            self.hasRecognizedMagic = false
             self.ownerUserName = local?.uname ?? global?.uname
             self.ownerGroupName = local?.gname ?? global?.gname
             self.deviceMajorNumber = nil
