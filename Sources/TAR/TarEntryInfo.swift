@@ -110,23 +110,23 @@ public struct TarEntryInfo: ContainerEntryInfo {
         //    Corruption of the container should be detected by checksum comparison, so we decided to ignore them here;
         //    the alternative, which was used in previous versions, is to throw an error.
 
-        if let posixAttributes = byteReader.tarInt(maxLength: 8, radix: 8) {
+        if let posixAttributes = byteReader.tarInt(maxLength: 8) {
             // Sometimes file mode field also contains unix type, so we need to filter it out.
             self.permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixAttributes) & 0xFFF)
         } else {
             self.permissions = nil
         }
 
-        let ownerAccountID = byteReader.tarInt(maxLength: 8, radix: 8)
+        let ownerAccountID = byteReader.tarInt(maxLength: 8)
         self.ownerID = (local?.uid ?? global?.uid) ?? ownerAccountID
 
-        let groupAccountID = byteReader.tarInt(maxLength: 8, radix: 8)
+        let groupAccountID = byteReader.tarInt(maxLength: 8)
         self.groupID = (local?.gid ?? global?.gid) ?? groupAccountID
 
-        let fileSize = byteReader.tarInt(maxLength: 12, radix: 8)
+        let fileSize = byteReader.tarInt(maxLength: 12)
         self.size = (local?.size ?? global?.size) ?? fileSize
 
-        let mtime = byteReader.tarInt(maxLength: 12, radix: 8)
+        let mtime = byteReader.tarInt(maxLength: 12)
         if let paxMtime = local?.mtime ?? global?.mtime {
             self.modificationTime = Date(timeIntervalSince1970: paxMtime)
         } else if let mtime = mtime {
@@ -136,7 +136,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // Checksum
-        guard let checksum = byteReader.tarInt(maxLength: 8, radix: 8)
+        guard let checksum = byteReader.tarInt(maxLength: 8)
             else { throw TarError.wrongHeaderChecksum }
 
         let currentIndex = byteReader.offset
@@ -178,8 +178,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
             let gname = byteReader.tarCString(maxLength: 32)
             self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
-            self.deviceMajorNumber = byteReader.tarInt(maxLength: 8, radix: 8)
-            self.deviceMinorNumber = byteReader.tarInt(maxLength: 8, radix: 8)
+            self.deviceMajorNumber = byteReader.tarInt(maxLength: 8)
+            self.deviceMinorNumber = byteReader.tarInt(maxLength: 8)
 
             if magic == 0x00_20_20_72_61_74_73_75 { // GNU format.
                 // GNU format mostly is identical to POSIX format and in the common situations can be considered as
@@ -187,8 +187,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
                 // this part of the TAR header is used for storing a lot of different properties. For now, we are only
                 // reading atime and ctime.
 
-                gnuAtime = byteReader.tarInt(maxLength: 12, radix: 8)
-                gnuCtime = byteReader.tarInt(maxLength: 12, radix: 8)
+                gnuAtime = byteReader.tarInt(maxLength: 12)
+                gnuCtime = byteReader.tarInt(maxLength: 12)
             } else {
                 let prefix = byteReader.tarCString(maxLength: 155)
                 if prefix != "" {

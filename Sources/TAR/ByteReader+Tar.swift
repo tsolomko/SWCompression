@@ -40,7 +40,7 @@ extension ByteReader {
 
      Integers can also be encoded as non-decimal based number. This is controlled by `radix` parameter.
      */
-    func tarInt(maxLength: Int, radix: Int = 10) -> Int? {
+    func tarInt(maxLength: Int) -> Int? {
         guard maxLength > 0
             else { return nil }
 
@@ -82,7 +82,7 @@ extension ByteReader {
         self.offset = startOffset + maxLength
         guard let string = String(bytes: buffer, encoding: .utf8)
             else { return nil }
-        return Int(string, radix: radix)
+        return Int(string, radix: 8)
     }
 
 }
