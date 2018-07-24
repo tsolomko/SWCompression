@@ -178,8 +178,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
             let gname = byteReader.tarCString(maxLength: 32)
             self.ownerGroupName = (local?.gname ?? global?.gname) ?? gname
 
-            self.deviceMajorNumber = byteReader.tarInt(maxLength: 8)
-            self.deviceMinorNumber = byteReader.tarInt(maxLength: 8)
+            self.deviceMajorNumber = byteReader.tarInt(maxLength: 8, radix: 8)
+            self.deviceMinorNumber = byteReader.tarInt(maxLength: 8, radix: 8)
 
             if magic == 0x00_20_20_72_61_74_73_75 { // GNU format.
                 // GNU format mostly is identical to POSIX format and in the common situations can be considered as
