@@ -14,6 +14,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
         case longLinkName = 75
         case globalExtendedHeader = 103
         case localExtendedHeader = 120
+        // Sun were the first to use extended headers. Their headers are mostly compatible with PAX ones, but differ in
+        // the typeflag used ("X" instead of "x").
+        case sunExtendedHeader = 88
     }
 
     // MARK: ContainerEntryInfo

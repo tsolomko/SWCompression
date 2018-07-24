@@ -34,6 +34,8 @@ struct TarEntryInfoProvider {
             case .globalExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
                 lastGlobalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
+            case .sunExtendedHeader:
+                fallthrough
             case .localExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
                 lastLocalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
