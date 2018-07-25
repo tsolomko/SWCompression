@@ -58,7 +58,7 @@ extension ByteReader {
             for i in 0..<buffer.count {
                 var byte = buffer[i].toInt() ^ invMask
                 if i == 0 {
-                    byte &= 0x7F // Ignoring bit, which indicates base-256 encoding.
+                    byte &= 0x7F // Ignoring bit which indicates base-256 encoding.
                 }
                 if result >> (Int.bitWidth - 8) > 0 {
                     return nil // Integer overflow
@@ -73,7 +73,17 @@ extension ByteReader {
 
         // Normal, octal encoding.
         let startOffset = self.offset
-        for _ in 0..<maxLength {
+
+        // Skip leading NULLs and whitespaces (used by some implementations).
+        var byte: UInt8
+        var actualStartIndex = 0
+        repeat {
+            byte = self.byte()
+            actualStartIndex += 1
+        } while (byte == 0 || byte == 0x20) && (actualStartIndex < maxLength)
+        self.offset -= 1
+
+        for _ in actualStartIndex..<maxLength {
             let byte = self.byte()
             guard byte != 0 && byte != 0x20
                 else { break }
