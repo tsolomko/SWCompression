@@ -67,7 +67,23 @@ public class TarContainer: Container {
 
     public static func create(from entries: [TarEntry]) throws -> Data {
         var out = Data()
+        var extHeadersCount = 0
         for entry in entries {
+            let extHeader = TarExtendedHeader(entry.info)
+            let extHeaderData = try extHeader.generateContainerData()
+            if !extHeaderData.isEmpty {
+                var extHeaderInfo = TarEntryInfo(name: "SWC_PaxHeader_\(extHeadersCount)", type: .unknown)
+                extHeaderInfo.specialEntryType = .localExtendedHeader
+                extHeaderInfo.permissions = Permissions(rawValue: 420)
+                extHeaderInfo.ownerID = entry.info.ownerID
+                extHeaderInfo.groupID = entry.info.groupID
+                extHeaderInfo.modificationTime = Date()
+
+                let extHeaderEntry = TarEntry(info: extHeaderInfo, data: extHeaderData)
+                try out.append(extHeaderEntry.generateContainerData())
+
+                extHeadersCount += 1
+            }
             try out.append(entry.generateContainerData())
         }
         out.append(Data(count: 1024))
