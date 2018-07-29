@@ -10,10 +10,15 @@ public struct TarEntry: ContainerEntry {
 
     public var info: TarEntryInfo
 
-    public var data: Data?
+    public var data: Data? {
+        didSet {
+            self.info.size = self.data?.count
+        }
+    }
 
     public init(info: TarEntryInfo, data: Data?) {
         self.info = info
+        self.info.size = data?.count
         self.data = data
     }
 
