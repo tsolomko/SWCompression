@@ -93,12 +93,12 @@ public class TarContainer: Container {
 
         for entryInfo in infos {
             if entryInfo.type == .directory {
-                entries.append(TarEntry(entryInfo, nil))
+                entries.append(TarEntry(info: entryInfo, data: nil))
             } else {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
                 let entryData = data[dataStartIndex..<dataEndIndex]
-                entries.append(TarEntry(entryInfo, entryData))
+                entries.append(TarEntry(info: entryInfo, data: entryData))
             }
         }
 

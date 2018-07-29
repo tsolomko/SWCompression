@@ -12,8 +12,8 @@ public struct TarEntry: ContainerEntry {
 
     public let data: Data?
 
-    init(_ entryInfo: TarEntryInfo, _ data: Data?) {
-        self.info = entryInfo
+    public init(info: TarEntryInfo, data: Data?) {
+        self.info = info
         self.data = data
     }
 
