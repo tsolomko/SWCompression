@@ -85,6 +85,43 @@ struct TarExtendedHeader {
         self.unknownRecords = unknownRecords
     }
 
+    init(_ info: TarEntryInfo) {
+        let maxOctalLengthEight = (1 << 24) - 1
+        let maxOctalLengthTwelve = (1 << 36) - 1
+
+        if let uid = info.ownerID, uid > maxOctalLengthEight {
+            self.uid = uid
+        }
+        if let gid = info.groupID, gid > maxOctalLengthEight {
+            self.gid = gid
+        }
+        if let uname = info.ownerUserName, uname.data(using: .ascii) == nil {
+            self.uname = uname
+        }
+        if let gname = info.ownerGroupName, gname.data(using: .ascii) == nil {
+            self.gname = gname
+        }
+        if let size = info.size, size > maxOctalLengthTwelve {
+            self.size = size
+        }
+        if let mtime = info.modificationTime?.timeIntervalSince1970,
+            (mtime < 0 || mtime > Double(maxOctalLengthTwelve)) {
+            self.mtime = mtime
+        }
+        if info.name.data(using: .ascii) == nil {
+            self.path = info.name
+        }
+        if info.linkName.data(using: .ascii) == nil {
+            self.linkpath = info.linkName
+        }
+
+        self.atime = info.accessTime?.timeIntervalSince1970
+        self.ctime = info.creationTime?.timeIntervalSince1970
+        self.charset = info.charset
+        self.comment = info.comment
+        self.unknownRecords = info.unknownExtendedHeaderRecords ?? [:]
+    }
+
     func generateContainerData() throws -> Data {
         var headerString = ""
         if let atime = self.atime {
