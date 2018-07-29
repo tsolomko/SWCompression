@@ -8,9 +8,9 @@ import Foundation
 /// Represents an entry from the TAR container.
 public struct TarEntry: ContainerEntry {
 
-    public let info: TarEntryInfo
+    public var info: TarEntryInfo
 
-    public let data: Data?
+    public var data: Data?
 
     public init(info: TarEntryInfo, data: Data?) {
         self.info = info
