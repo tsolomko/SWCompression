@@ -85,6 +85,7 @@
 		06A960651F1E7DF60078E6D1 /* 7zCoderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A960641F1E7DF60078E6D1 /* 7zCoderInfo.swift */; };
 		06A9606A1F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */; };
 		06ADB2D91EBCEFA60053A188 /* TarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ADB2D81EBCEFA60053A188 /* TarContainer.swift */; };
+		06B15D9D210E17FC00AF2EA1 /* TarCreateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B15D9C210E17FC00AF2EA1 /* TarCreateTests.swift */; };
 		06B689581F278815007C9316 /* 7zProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B689571F278815007C9316 /* 7zProperty.swift */; };
 		06BAC5941F8CFF28002443F4 /* ZipEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BAC5931F8CFF28002443F4 /* ZipEntryInfo.swift */; };
 		06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
@@ -295,6 +296,7 @@
 		06A960641F1E7DF60078E6D1 /* 7zCoderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zCoderInfo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		06A960691F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zSubstreamInfo.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		06ADB2D81EBCEFA60053A188 /* TarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarContainer.swift; sourceTree = "<group>"; };
+		06B15D9C210E17FC00AF2EA1 /* TarCreateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarCreateTests.swift; sourceTree = "<group>"; };
 		06B689571F278815007C9316 /* 7zProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zProperty.swift; sourceTree = "<group>"; };
 		06BAC5931F8CFF28002443F4 /* ZipEntryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipEntryInfo.swift; sourceTree = "<group>"; };
 		06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2.swift; sourceTree = "<group>"; };
@@ -653,6 +655,7 @@
 				06F065AA1FFB763300312A82 /* SevenZipTests.swift */,
 				069401AA20EFDD000044B696 /* TarGenerateContainerDataTests.swift */,
 				066C309A20E9379F000F320C /* TarExtendedHeaderTests.swift */,
+				06B15D9C210E17FC00AF2EA1 /* TarCreateTests.swift */,
 				06F065A61FFB763300312A82 /* TarTests.swift */,
 				06F065A91FFB763300312A82 /* XzTests.swift */,
 				06F065A41FFB763300312A82 /* ZipTests.swift */,
@@ -1153,6 +1156,7 @@
 				06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */,
 				06F066171FFB763300312A82 /* BZip2Tests.swift in Sources */,
 				06F066181FFB763300312A82 /* TarTests.swift in Sources */,
+				06B15D9D210E17FC00AF2EA1 /* TarCreateTests.swift in Sources */,
 				06F066191FFB763300312A82 /* GzipTests.swift in Sources */,
 				069401AB20EFDD000044B696 /* TarGenerateContainerDataTests.swift in Sources */,
 				06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */,
