@@ -8,7 +8,7 @@ import SWCompression
 
 class TarCreateTests: XCTestCase {
 
-    func test() throws {
+    func test1() throws {
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.ownerUserName = "timofeysolomko"
         info.ownerGroupName = "staff"
@@ -37,6 +37,83 @@ class TarCreateTests: XCTestCase {
         XCTAssertEqual(newEntries[0].info.permissions, Permissions(rawValue: 420))
         XCTAssertEqual(newEntries[0].info.comment, "comment")
         XCTAssertEqual(newEntries[0].data, data)
+    }
+
+    func test2() throws {
+        var info = TarEntryInfo(name: "symbolic-link", type: .symbolicLink)
+        info.accessTime = Date(timeIntervalSince1970: 1)
+        info.creationTime = Date(timeIntervalSince1970: 2)
+        info.modificationTime = Date(timeIntervalSince1970: 0)
+        info.permissions = Permissions(rawValue: 420)
+        info.permissions?.insert(.executeOwner)
+        info.ownerID = 250
+        info.groupID = 250
+        info.ownerUserName = "testUserName"
+        info.ownerGroupName = "testGroupName"
+        info.deviceMajorNumber = 1
+        info.deviceMinorNumber = 2
+        info.charset = "UTF-8"
+        info.comment = "some comment..."
+        info.linkName = "file"
+        info.unknownExtendedHeaderRecords = ["SWCompression/Tests/TAR": "value"]
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, "symbolic-link")
+        XCTAssertEqual(newInfo.type, .symbolicLink)
+        XCTAssertEqual(newInfo.permissions?.rawValue, 484)
+        XCTAssertEqual(newInfo.ownerID, 250)
+        XCTAssertEqual(newInfo.groupID, 250)
+        XCTAssertEqual(newInfo.size, 0)
+        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 0)
+        XCTAssertEqual(newInfo.linkName, "file")
+        XCTAssertEqual(newInfo.ownerUserName, "testUserName")
+        XCTAssertEqual(newInfo.ownerGroupName, "testGroupName")
+        XCTAssertEqual(newInfo.deviceMajorNumber, 1)
+        XCTAssertEqual(newInfo.deviceMinorNumber, 2)
+        XCTAssertEqual(newInfo.accessTime?.timeIntervalSince1970, 1)
+        XCTAssertEqual(newInfo.creationTime?.timeIntervalSince1970, 2)
+        XCTAssertEqual(newInfo.charset, "UTF-8")
+        XCTAssertEqual(newInfo.comment, "some comment...")
+        XCTAssertEqual(newInfo.unknownExtendedHeaderRecords, ["SWCompression/Tests/TAR": "value"])
+    }
+
+    func testLongName() throws {
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 15))
+        info.name.append("readme.txt")
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        // This name should fit into ustar format using "prefix" field
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testVeryLongName() throws {
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 25))
+        info.name.append("readme.txt")
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testLongDirectoryName() throws {
+        // Tests what happens to the filename's trailing slash when "prefix" field is used.
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "readme/", count: 15))
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, info.name)
     }
 
 }
