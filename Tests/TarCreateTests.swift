@@ -40,6 +40,11 @@ class TarCreateTests: XCTestCase {
     }
 
     func test2() throws {
+        let dict = [
+            "SWCompression/Tests/TAR": "value",
+            "key": "valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue22"
+        ]
+
         var info = TarEntryInfo(name: "symbolic-link", type: .symbolicLink)
         info.accessTime = Date(timeIntervalSince1970: 1)
         info.creationTime = Date(timeIntervalSince1970: 2)
@@ -55,7 +60,7 @@ class TarCreateTests: XCTestCase {
         info.charset = "UTF-8"
         info.comment = "some comment..."
         info.linkName = "file"
-        info.unknownExtendedHeaderRecords = ["SWCompression/Tests/TAR": "value"]
+        info.unknownExtendedHeaderRecords = dict
 
         let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
         let newInfo = try TarContainer.open(container: containerData)[0].info
@@ -76,7 +81,7 @@ class TarCreateTests: XCTestCase {
         XCTAssertEqual(newInfo.creationTime?.timeIntervalSince1970, 2)
         XCTAssertEqual(newInfo.charset, "UTF-8")
         XCTAssertEqual(newInfo.comment, "some comment...")
-        XCTAssertEqual(newInfo.unknownExtendedHeaderRecords, ["SWCompression/Tests/TAR": "value"])
+        XCTAssertEqual(newInfo.unknownExtendedHeaderRecords, dict)
     }
 
     func testLongName() throws {
@@ -114,6 +119,41 @@ class TarCreateTests: XCTestCase {
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testUnicode() throws {
+        let date = Date(timeIntervalSince1970: 1300000)
+        var info = TarEntryInfo(name: "ссылка", type: .symbolicLink)
+        info.accessTime = date
+        info.creationTime = date
+        info.modificationTime = date
+        info.permissions = Permissions(rawValue: 420)
+        info.ownerID = 501
+        info.groupID = 20
+        info.ownerUserName = "timofeysolomko"
+        info.ownerGroupName = "staff"
+        info.deviceMajorNumber = 1
+        info.deviceMinorNumber = 2
+        info.comment = "комментарий"
+        info.linkName = "путь/к/файлу"
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, "ссылка")
+        XCTAssertEqual(newInfo.type, .symbolicLink)
+        XCTAssertEqual(newInfo.permissions?.rawValue, 420)
+        XCTAssertEqual(newInfo.ownerID, 501)
+        XCTAssertEqual(newInfo.groupID, 20)
+        XCTAssertEqual(newInfo.size, 0)
+        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 1300000)
+        XCTAssertEqual(newInfo.linkName, "путь/к/файлу")
+        XCTAssertEqual(newInfo.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(newInfo.ownerGroupName, "staff")
+        XCTAssertEqual(newInfo.accessTime?.timeIntervalSince1970, 1300000)
+        XCTAssertEqual(newInfo.creationTime?.timeIntervalSince1970, 1300000)
+        XCTAssertEqual(newInfo.comment, "комментарий")
     }
 
 }
