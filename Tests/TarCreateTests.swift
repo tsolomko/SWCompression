@@ -184,4 +184,28 @@ class TarCreateTests: XCTestCase {
         XCTAssertNil(newInfo.comment)
     }
 
+    func testNegativeMtime() throws {
+        let date = Date(timeIntervalSince1970: -1300000)
+        var info = TarEntryInfo(name: "file.txt", type: .regular)
+        info.modificationTime = date
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, "file.txt")
+        XCTAssertEqual(newInfo.type, .regular)
+        XCTAssertEqual(newInfo.size, 0)
+        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, -1300000)
+        XCTAssertEqual(newInfo.linkName, "")
+        XCTAssertEqual(newInfo.ownerUserName, "")
+        XCTAssertEqual(newInfo.ownerGroupName, "")
+        XCTAssertNil(newInfo.permissions)
+        XCTAssertNil(newInfo.ownerID)
+        XCTAssertNil(newInfo.groupID)
+        XCTAssertNil(newInfo.accessTime)
+        XCTAssertNil(newInfo.creationTime)
+        XCTAssertNil(newInfo.comment)
+    }
+
 }
