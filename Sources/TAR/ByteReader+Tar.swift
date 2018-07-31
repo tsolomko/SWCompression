@@ -22,9 +22,7 @@ extension ByteReader {
      */
     func tarCString(maxLength: Int) -> String {
         var buffer = self.bytes(count: maxLength)
-        guard !buffer.isEmpty
-            else { return "" }
-        if buffer.last! != 0 {
+        if buffer.last != 0 {
             buffer.append(0)
         }
         return buffer.withUnsafeBufferPointer { String(cString: $0.baseAddress!) }

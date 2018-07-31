@@ -361,7 +361,7 @@ fileprivate extension Data {
         }
 
         let maxOctalValue = (1 << (maxLength * 3)) - 1
-        guard value > maxOctalValue else {
+        guard value > maxOctalValue || value < 0 else {
             // Normal octal encoding.
             self.append(String(value, radix: 8).data(using: .utf8)!.zeroPad(maxLength))
             return
