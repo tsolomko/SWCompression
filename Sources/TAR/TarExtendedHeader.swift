@@ -108,10 +108,12 @@ struct TarExtendedHeader {
             (mtime < 0 || mtime > Double(maxOctalLengthTwelve)) {
             self.mtime = mtime
         }
-        if info.name.data(using: .ascii) == nil {
+        let asciiNameData = info.name.data(using: .ascii)
+        if asciiNameData == nil || asciiNameData!.count > 100 {
             self.path = info.name
         }
-        if info.linkName.data(using: .ascii) == nil {
+        let asciiLinkNameData = info.name.data(using: .ascii)
+        if asciiLinkNameData == nil || asciiLinkNameData!.count > 100 {
             self.linkpath = info.linkName
         }
 
