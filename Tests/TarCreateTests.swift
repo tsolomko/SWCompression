@@ -156,4 +156,32 @@ class TarCreateTests: XCTestCase {
         XCTAssertEqual(newInfo.comment, "комментарий")
     }
 
+    func testUstar() throws {
+        // This set of settings should result in the container which uses only ustar TAR format features.
+        let date = Date(timeIntervalSince1970: 1300000)
+        var info = TarEntryInfo(name: "file.txt", type: .regular)
+        info.permissions = Permissions(rawValue: 420)
+        info.ownerID = 501
+        info.groupID = 20
+        info.modificationTime = date
+
+        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .ustar)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, "file.txt")
+        XCTAssertEqual(newInfo.type, .regular)
+        XCTAssertEqual(newInfo.permissions?.rawValue, 420)
+        XCTAssertEqual(newInfo.ownerID, 501)
+        XCTAssertEqual(newInfo.groupID, 20)
+        XCTAssertEqual(newInfo.size, 0)
+        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 1300000)
+        XCTAssertEqual(newInfo.linkName, "")
+        XCTAssertEqual(newInfo.ownerUserName, "")
+        XCTAssertEqual(newInfo.ownerGroupName, "")
+        XCTAssertNil(newInfo.accessTime)
+        XCTAssertNil(newInfo.creationTime)
+        XCTAssertNil(newInfo.comment)
+    }
+
 }
