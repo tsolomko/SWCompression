@@ -87,14 +87,18 @@ class TarCommand: Command {
             guard fileManager.fileExists(atPath: inputPath) else {
                 print("ERROR: Specified path doesn't exist.")
                 exit(1)
-            }   
-            let entries = try self.createEntries(inputPath)
+            }
+            if verbose.value {
+                print("Creating new container at \"\(self.archive.value)\" from \"\(inputPath)\"")
+                print("d = directory, f = file, l = symbolic link")
+            }
+            let entries = try self.createEntries(inputPath, verbose.value)
             let containerData = try TarContainer.create(from: entries)
             try containerData.write(to: URL(fileURLWithPath: self.archive.value))
         }
     }
 
-    private func createEntries(_ inputPath: String) throws -> [TarEntry] {
+    private func createEntries(_ inputPath: String, _ verbose: Bool) throws -> [TarEntry] {
         let inputURL = URL(fileURLWithPath: inputPath)
         let fileManager = FileManager.default
             
@@ -144,6 +148,25 @@ class TarCommand: Command {
             entryData = try Data(contentsOf: URL(fileURLWithPath: inputPath))
         }
 
+        if verbose {
+            var log = ""
+            switch entryType {
+            case .regular:
+                log += "f: "
+            case .directory:
+                log += "d: "
+            case .symbolicLink:
+                log += "l:"
+            default:
+                log += "u: "
+            }
+            log += name
+            if entryType == .symbolicLink {
+                log += " -> " + info.linkName
+            }
+            print(log)
+        }
+
         let entry = TarEntry(info: info, data: entryData)
         
         var entries = [TarEntry]()
@@ -151,7 +174,8 @@ class TarCommand: Command {
 
         if entryType == .directory {
             for subPath in try fileManager.contentsOfDirectory(atPath: inputPath) {
-                entries.append(contentsOf: try self.createEntries(inputURL.appendingPathComponent(subPath).relativePath)) 
+                entries.append(contentsOf: try self.createEntries(inputURL.appendingPathComponent(subPath).relativePath,
+                                                                  verbose)) 
             }
         }
 
