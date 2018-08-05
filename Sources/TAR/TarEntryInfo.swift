@@ -135,7 +135,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
         let groupAccountID = byteReader.tarInt(maxLength: 8)
         self.groupID = (local?.gid ?? global?.gid) ?? groupAccountID
 
-        let fileSize = byteReader.tarInt(maxLength: 12)
+        guard let fileSize = byteReader.tarInt(maxLength: 12)
+            else { throw TarError.wrongField }
         self.size = (local?.size ?? global?.size) ?? fileSize
 
         let mtime = byteReader.tarInt(maxLength: 12)
