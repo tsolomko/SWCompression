@@ -11,11 +11,7 @@ func isValidOutputDirectory(_ outputPath: String, create: Bool) throws -> Bool {
     var isDir: ObjCBool = false
 
     if fileManager.fileExists(atPath: outputPath, isDirectory: &isDir) {
-        #if os(Linux) // On linux ObjCBool is an alias for Bool.
-            return isDir
-        #else
-            return isDir.boolValue
-        #endif
+        return isDir.boolValue
     } else if create {
         try fileManager.createDirectory(atPath: outputPath, withIntermediateDirectories: true)
     }
