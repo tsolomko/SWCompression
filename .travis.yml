@@ -24,7 +24,7 @@ jobs:
       - Utils/ci-script-linux.sh
     - stage: deploy
       if: tag IS present
-      language: objective-c
+      language: generic
       os: osx
       osx_image: xcode9.4
       env:
