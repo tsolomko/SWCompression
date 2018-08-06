@@ -312,10 +312,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
             // Looking for the last slash in the potential prefix. -1 if not found.
             // It determines the end of the actual prefix and the beginning of the updated name field.
-            #if os(Linux)
             // TODO: This is a workaround for runtime crash when executing `Data.prefix(upTo:).range(of:options:)`
             // on Linux with Swift 4.1. It seems like it is fixed in 4.2 and master snapshots, so we probably will be
-            // able to remove this once Swift 4.2/5.0 releases.
+            // able to remove it once Swift 4.2/5.0 releases.
+            #if os(Linux) && !swift(>=4.2)
                 var lastPrefixSlashIndex = -1
                 for i in stride(from: maxPrefixLength - 1, through: 0, by: -1) {
                     if nameData[i] == 0x2f {
