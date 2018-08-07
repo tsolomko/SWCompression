@@ -32,7 +32,7 @@ All features are listed in the tables below.
 |       | ZIP | TAR | 7-Zip |
 | ----- | --- | --- | ----- |
 | Read  | ✅  | ✅   | ✅    |
-| Write | TBD | TBD | TBD   |
+| Write | TBD | ✅   | TBD   |
 
 Also, SWCompression is _written with Swift only._
 
