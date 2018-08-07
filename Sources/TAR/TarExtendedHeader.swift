@@ -27,8 +27,6 @@ struct TarExtendedHeader {
     var charset: String?
     var comment: String?
 
-    init() {}
-
     init(_ data: Data) throws {
         // Split header data into entries with "\n" (0x0A) character as a separator.
         let entriesData = data.split(separator: 0x0A)
