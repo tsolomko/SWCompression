@@ -22,6 +22,13 @@ public struct TarEntry: ContainerEntry {
         }
     }
 
+    /**
+     Initializes the entry with its info and data. The stored `info.size` will also be updated to be equal to
+     `data.count`. If `data` is `nil` then `info.size` will be set to zero.
+
+     - Parameter info: Information about entry.
+     - Parameter data: Entry's data; `nil` if entry is a directory or data isn't available.
+     */
     public init(info: TarEntryInfo, data: Data?) {
         self.info = info
         self.info.size = data?.count ?? 0

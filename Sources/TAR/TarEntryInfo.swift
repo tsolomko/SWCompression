@@ -182,6 +182,14 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let blockStartIndex: Int
 
+    /**
+     Initializes the entry's info with its name and type.
+
+     - Note: Entry's type cannot be modified after initialization.
+
+     - Parameter name: Entry's name.
+     - Parameter type: Entry's type.
+     */
     public init(name: String, type: ContainerEntryType) {
         self.name = name
         self.type = type
