@@ -10,6 +10,12 @@ public struct TarEntry: ContainerEntry {
 
     public var info: TarEntryInfo
 
+    /**
+     Entry's data (`nil` if entry is a directory or data isn't available).
+
+     - Note: Accessing setter of this property causes `info.size` to be updated as well so it remains equal to
+     `data.count`. If `data` is set to be `nil` then `info.size` is set to zero.
+     */
     public var data: Data? {
         didSet {
             self.info.size = self.data?.count ?? 0
