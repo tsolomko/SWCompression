@@ -45,6 +45,7 @@ custom_categories:
       - LZMAError
       - LZMA2Error
       - SevenZipError
+      - TarCreateError
       - TarError
       - XZError
       - ZipError
