@@ -30,21 +30,49 @@ public struct TarEntryInfo: ContainerEntryInfo {
      2. Global PAX extended header "path" property.
      3. GNU format type "L" (LongName) entry.
      4. Default TAR header.
+
+     - Note: When new TAR container is created, if `name` cannot be encoded with ASCII or its ASCII byte-representation
+     is longer than 100 bytes then a PAX extended header will be created to represent this value correctly.
+     - Note: When creating new TAR container, `name` is always encoded with UTF-8 in basic TAR header.
      */
     public var name: String
 
-    /// Entry's data size.
+    /**
+     Entry's data size.
+
+     - Note: This property cannot be directly modified. Instead it is updated automatically to be equal to its parent
+     `entry.data.count`.
+     - Note: When new TAR container is created, if `size` is bigger than 8589934591 then a PAX extended header will be
+     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
+     header.
+    */
     public internal(set) var size: Int?
 
     public let type: ContainerEntryType
 
-    /// Entry's last access time (only available for PAX format; `nil` otherwise).
+    /**
+     Entry's last access time (only available for PAX format; `nil` otherwise).
+
+     - Note: When new TAR container is created, if `accessTime` is not `nil` then a PAX extended header will be created
+     to store this property.
+     */
     public var accessTime: Date?
 
-    /// Entry's creation time (only available for PAX format; `nil` otherwise).
+    /**
+     Entry's creation time (only available for PAX format; `nil` otherwise).
+
+     - Note: When new TAR container is created, if `creationTime` is not `nil` then a PAX extended header will be
+     created to store this property.
+     */
     public var creationTime: Date?
 
-    /// Entry's last modification time.
+    /**
+     Entry's last modification time.
+
+     - Note: When new TAR container is created, if `modificationTime` is bigger than 8589934591 then a PAX extended
+     header will be created to represent this value correctly. Also, base-256 encoding will be used to encode this value
+     in basic TAR header.
+     */
     public var modificationTime: Date?
 
     public var permissions: Permissions?
@@ -54,28 +82,74 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /// Entry's compression method. Always `.copy` for entries of TAR containers.
     public let compressionMethod = CompressionMethod.copy
 
-    /// ID of entry's owner.
+    /**
+     ID of entry's owner.
+
+     - Note: When new TAR container is created, if `ownerID` is bigger than 2097151 then a PAX extended header will be
+     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
+     header.
+     */
     public var ownerID: Int?
 
-    /// ID of the group of entry's owner.
+    /**
+     ID of the group of entry's owner.
+
+     - Note: When new TAR container is created, if `groupID` is bigger than 2097151 then a PAX extended header will be
+     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
+     header.
+     */
     public var groupID: Int?
 
-    /// User name of entry's owner.
+    /**
+     User name of entry's owner.
+
+     - Note: When new TAR container is created, if `ownerUserName` cannot be encoded with ASCII or its ASCII
+     byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
+     correctly.
+     - Note: When creating new TAR container,`ownerUserName` is always encoded with UTF-8 in ustar header.
+     */
     public var ownerUserName: String?
 
-    /// Name of the group of entry's owner.
+    /**
+     Name of the group of entry's owner.
+
+     - Note: When new TAR container is created, if `ownerGroupName` cannot be encoded with ASCII or its ASCII
+     byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
+     correctly.
+     - Note: When creating new TAR container, `ownerGroupName` is always encoded with UTF-8 in ustar header.
+     */
     public var ownerGroupName: String?
 
-    /// Device major number (used when entry is either block or character special file).
+    /**
+     Device major number (used when entry is either block or character special file).
+
+     - Note: When new TAR container is created, if `deviceMajorNumber` is bigger than 2097151 then base-256 encoding
+     will be used to encode this value in ustar header.
+     */
     public var deviceMajorNumber: Int?
 
-    /// Device minor number (used when entry is either block or character special file).
+    /**
+     Device minor number (used when entry is either block or character special file).
+
+     - Note: When new TAR container is created, if `deviceMajorNumber` is bigger than 2097151 then base-256 encoding
+     will be used to encode this value in ustar header.
+     */
     public var deviceMinorNumber: Int?
 
-    /// Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
+    /**
+     Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
+
+     - Note: When new TAR container is created, if `charset` is not `nil` then a PAX extended header will be created to
+     store this property.
+     */
     public var charset: String?
 
-    /// Entry's comment (only available for PAX format; `nil` otherwise).
+    /**
+     Entry's comment (only available for PAX format; `nil` otherwise).
+
+     - Note: When new TAR container is created, if `comment` is not `nil` then a PAX extended header will be created to
+     store this property.
+     */
     public var comment: String?
 
     /**
@@ -87,10 +161,20 @@ public struct TarEntryInfo: ContainerEntryInfo {
      2. Global PAX extended header "linkpath" property.
      3. GNU format type "K" (LongLink) entry.
      4. Default TAR header.
+
+     - Note: When new TAR container is created, if `linkName` cannot be encoded with ASCII or its ASCII
+     byte-representation is longer than 100 bytes then a PAX extended header will be created to represent this value
+     correctly.
+     - Note: When creating new TAR container, `linkName` is always encoded with UTF-8 in basic TAR header.
      */
     public var linkName: String
 
-    /// All unknown records from global and local PAX extended headers. `nil`, if there were no headers.
+    /**
+     All custom (unknown) records from global and local PAX extended headers. `nil`, if there were no headers.
+
+     - Note: When new TAR container is created, if `unknownExtendedHeaderRecords` is not `nil` then a *local* PAX
+     extended header will be created to store this property.
+     */
     public var unknownExtendedHeaderRecords: [String: String]?
 
     var specialEntryType: SpecialEntryType?
