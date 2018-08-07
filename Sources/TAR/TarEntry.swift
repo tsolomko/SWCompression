@@ -12,13 +12,13 @@ public struct TarEntry: ContainerEntry {
 
     public var data: Data? {
         didSet {
-            self.info.size = self.data?.count
+            self.info.size = self.data?.count ?? 0
         }
     }
 
     public init(info: TarEntryInfo, data: Data?) {
         self.info = info
-        self.info.size = data?.count
+        self.info.size = data?.count ?? 0
         self.data = data
     }
 
