@@ -12,7 +12,7 @@ SWCompression &mdash; is a framework with a collection of functions for:
 
 1. Decompression (and sometimes compression) using different algorithms.
 2. Reading (and sometimes writing) archives of different formats.
-3. Reading containers such as ZIP, TAR and 7-Zip.
+3. Reading (and sometimes writing) containers such as ZIP, TAR and 7-Zip.
 
 It also works both on Apple platforms and __Linux__.
 
@@ -224,9 +224,21 @@ it can also be compiled on __Linux__.
 
 ## Future plans
 
+See [5.0 Update](https://github.com/tsolomko/SWCompression/projects/2) Project for the list of planned API changes and
+new features.
+
 - Performance...
 - Better Deflate compression.
 - Something else...
+
+## Support Financially
+
+If you would like to support this project or me financially you can do so via PayPal using
+[this link](https://paypal.me/tsolomko).
+
+## License
+
+[MIT licensed](https://github.com/tsolomko/SWCompression/blob/develop/LICENSE)
 
 ## References
 
