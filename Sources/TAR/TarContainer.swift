@@ -126,7 +126,7 @@ public class TarContainer: Container {
             } else {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
-                let entryData = data[dataStartIndex..<dataEndIndex]
+                let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
                 entries.append(TarEntry(info: entryInfo, data: entryData))
             }
         }
