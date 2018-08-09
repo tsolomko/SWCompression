@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-class LZMA2Decoder {
+final class LZMA2Decoder {
 
     private let byteReader: ByteReader
     private let decoder: LZMADecoder
@@ -35,7 +35,7 @@ class LZMA2Decoder {
             dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
         }
 
-        self.decoder.dictionarySize = dictSize.toInt()
+        self.decoder.dictSize = dictSize.toInt()
     }
 
     /// Main LZMA2 decoder function.

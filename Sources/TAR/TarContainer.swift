@@ -41,19 +41,64 @@ public class TarContainer: Container {
         /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
 
-        var specialMagicEncountered = false
+        var ustarEncountered = false
 
         while let info = try infoProvider.next() {
             if info.specialEntryType == .globalExtendedHeader || info.specialEntryType == .localExtendedHeader {
                 return .pax
             } else if info.specialEntryType == .longName || info.specialEntryType == .longLinkName {
                 return .gnu
-            } else if info.hasRecognizedMagic {
-                specialMagicEncountered = true
+            } else {
+                switch info.format {
+                case .pax:
+                    return .pax
+                case .gnu:
+                    return .gnu
+                case .ustar:
+                    ustarEncountered = true
+                case .prePosix:
+                    break
+                }
             }
         }
 
-        return specialMagicEncountered ? .ustar : .prePosix
+        return ustarEncountered ? .ustar : .prePosix
+    }
+
+    /**
+     Creates a new TAR container with `entries` as its content and generates container's `Data`.
+
+     - Parameter entries: TAR entries to store in the container.
+
+     - Throws: `TarCreateError.utf8NonEncodable` which indicates that one of the `TarEntryInfo`'s string properties
+     (such as `name`) cannot be encoded with UTF-8 encoding.
+
+     - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
+     format used during container creation.
+     */
+    public static func create(from entries: [TarEntry]) throws -> Data {
+        var out = Data()
+        var extHeadersCount = 0
+        for entry in entries {
+            let extHeader = TarExtendedHeader(entry.info)
+            let extHeaderData = try extHeader.generateContainerData()
+            if !extHeaderData.isEmpty {
+                var extHeaderInfo = TarEntryInfo(name: "SWC_PaxHeader_\(extHeadersCount)", type: .unknown)
+                extHeaderInfo.specialEntryType = .localExtendedHeader
+                extHeaderInfo.permissions = Permissions(rawValue: 420)
+                extHeaderInfo.ownerID = entry.info.ownerID
+                extHeaderInfo.groupID = entry.info.groupID
+                extHeaderInfo.modificationTime = Date()
+
+                let extHeaderEntry = TarEntry(info: extHeaderInfo, data: extHeaderData)
+                try out.append(extHeaderEntry.generateContainerData())
+
+                extHeadersCount += 1
+            }
+            try out.append(entry.generateContainerData())
+        }
+        out.append(Data(count: 1024))
+        return out
     }
 
     /**
@@ -75,12 +120,14 @@ public class TarContainer: Container {
 
         for entryInfo in infos {
             if entryInfo.type == .directory {
-                entries.append(TarEntry(entryInfo, nil))
+                var entry = TarEntry(info: entryInfo, data: nil)
+                entry.info.size = 0
+                entries.append(entry)
             } else {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
-                let entryData = data[dataStartIndex..<dataEndIndex]
-                entries.append(TarEntry(entryInfo, entryData))
+                let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
+                entries.append(TarEntry(info: entryInfo, data: entryData))
             }
         }
 

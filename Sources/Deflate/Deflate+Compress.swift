@@ -35,9 +35,7 @@ extension Deflate: CompressionAlgorithm {
         // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
         if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
             // If according to our calculations static huffman will not make output smaller than input,
-            // we fallback to creating uncompressed block.
-            // In this case dynamic Huffman encoding can be efficient.
-            // TODO: Implement dynamic Huffman code!
+            // we fallback to creating uncompressed block. In this case dynamic Huffman encoding can be efficient.
             return Deflate.createUncompressedBlock(data)
         } else {
             return Deflate.encodeHuffmanBlock(bldCodes.codes)
@@ -202,7 +200,6 @@ extension Deflate: CompressionAlgorithm {
                 stats[byte.toInt()] += 1
                 inputIndex += 1
             }
-            // TODO: Add limitation for dictionary size.
         }
 
         // For last two bytes there certainly will be no match.

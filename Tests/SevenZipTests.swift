@@ -25,8 +25,19 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xB4E89E84)
+
         XCTAssertEqual(entries[0].data, answerData)
     }
 
@@ -46,8 +57,19 @@ class SevenZipTests: XCTestCase {
         }
 
         XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, answer1Data.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xB4E89E84)
+
         XCTAssertEqual(entries[0].data, answer1Data)
 
         guard let answer4Data = Constants.data(forAnswer: "test4") else {
@@ -56,8 +78,19 @@ class SevenZipTests: XCTestCase {
         }
 
         XCTAssertEqual(entries[1].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[1].info.type, .directory)
+        XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, answer4Data.count)
+        XCTAssertEqual(entries[1].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[1].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[1].info.modificationTime)
+        XCTAssertNil(entries[1].info.accessTime)
+        XCTAssertNil(entries[1].info.creationTime)
+        XCTAssertEqual(entries[1].info.hasStream, true)
+        XCTAssertEqual(entries[1].info.isEmpty, false)
+        XCTAssertEqual(entries[1].info.isAnti, false)
+        XCTAssertEqual(entries[1].info.crc, 0xAEF524A3)
+
         XCTAssertEqual(entries[1].data, answer4Data)
     }
 
@@ -85,6 +118,8 @@ class SevenZipTests: XCTestCase {
         for entry in entries {
             if entry.info.name == "test_create/test4.answer" {
                 XCTAssertEqual(entry.info.isAnti, true)
+            } else {
+                XCTAssertEqual(entry.info.isAnti, false)
             }
         }
     }
@@ -185,14 +220,25 @@ class SevenZipTests: XCTestCase {
 
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
-
         guard let answerData = Constants.data(forAnswer: "test4") else {
             XCTFail("Unable to get answer data.")
             return
         }
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
 
         XCTAssertEqual(entries[0].data, answerData)
     }
@@ -206,14 +252,25 @@ class SevenZipTests: XCTestCase {
 
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
-
         guard let answerData = Constants.data(forAnswer: "test4") else {
             XCTFail("Unable to get answer data.")
             return
         }
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
 
         XCTAssertEqual(entries[0].data, answerData)
     }
@@ -227,11 +284,52 @@ class SevenZipTests: XCTestCase {
 
         let entries = try SevenZipContainer.open(container: testData)
 
+        guard let answerData = Constants.data(forAnswer: "test4") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
+    func testUnicode() throws {
+        guard let testData = Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        let entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "текстовый файл.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xA139BCEE)
+
+        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
             XCTFail("Unable to get answer data.")
             return
         }
@@ -252,11 +350,33 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "dir")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, nil)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 0))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x10))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, false)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertNil(entries[0].info.crc)
+
         XCTAssertEqual(entries[0].data, nil)
 
         XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertNotEqual(entries[1].info.type, .directory)
+        XCTAssertEqual(entries[1].info.type, .regular)
         XCTAssertEqual(entries[1].info.size, 15)
+        XCTAssertEqual(entries[1].info.permissions, Permissions(rawValue: 0))
+        XCTAssertEqual(entries[1].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[1].info.modificationTime)
+        XCTAssertNil(entries[1].info.accessTime)
+        XCTAssertNil(entries[1].info.creationTime)
+        XCTAssertEqual(entries[1].info.hasStream, true)
+        XCTAssertEqual(entries[1].info.isEmpty, false)
+        XCTAssertEqual(entries[1].info.isAnti, false)
+        XCTAssertEqual(entries[1].info.crc, 0x1273FBD3)
+
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
     }
 
@@ -270,8 +390,19 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertNotEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.type, .regular)
         XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, false)
+        XCTAssertEqual(entries[0].info.isEmpty, true)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertNil(entries[0].info.crc)
+
         XCTAssertEqual(entries[0].data, Data())
     }
 
@@ -287,6 +418,17 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.name, "empty_dir")
         XCTAssertEqual(entries[0].info.type, .directory)
         XCTAssertEqual(entries[0].info.size, nil)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x10))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, false)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertNil(entries[0].info.crc)
+
         XCTAssertEqual(entries[0].data, nil)
     }
 

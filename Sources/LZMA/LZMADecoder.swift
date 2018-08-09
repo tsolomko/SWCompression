@@ -6,14 +6,14 @@
 import Foundation
 import BitByteData
 
-class LZMADecoder {
+final class LZMADecoder {
 
     private let byteReader: ByteReader
 
-    var dictionarySize = 0 {
+    var dictSize = 0 {
         didSet {
-            if dictionarySize < 1 << 12 {
-                dictionarySize = 1 << 12
+            if dictSize < 1 << 12 {
+                dictSize = 1 << 12
             }
         }
     }
@@ -287,7 +287,7 @@ class LZMADecoder {
                 if uncompressedSize == 0 {
                     throw LZMAError.exceededUncompressedSize
                 }
-                if rep0 >= dictionarySize || (rep0 > dictEnd && dictEnd < dictionarySize) {
+                if rep0 >= dictSize || (rep0 > dictEnd && dictEnd < dictSize) {
                     throw LZMAError.notEnoughToRepeat
                 }
             }
@@ -309,13 +309,13 @@ class LZMADecoder {
     func put(_ byte: UInt8) {
         out.append(byte)
         dictEnd += 1
-        if dictEnd - dictStart == dictionarySize {
+        if dictEnd - dictStart == dictSize {
             dictStart += 1
         }
     }
 
     private func byte(at distance: Int) -> UInt8 {
-        return out[distance <= dictEnd ? dictEnd - distance : dictionarySize - distance + dictEnd]
+        return out[distance <= dictEnd ? dictEnd - distance : dictSize - distance + dictEnd]
     }
 
 }

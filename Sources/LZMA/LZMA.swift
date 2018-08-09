@@ -24,19 +24,15 @@ public class LZMA: DecompressionAlgorithm {
         return try decompress(byteReader)
     }
 
-    static func decompress(_ byteReader: ByteReader, uncompressedSize: UInt64? = nil) throws -> Data {
+    static func decompress(_ byteReader: ByteReader, _ uncompSize: UInt64? = nil) throws -> Data {
         let decoder = LZMADecoder(byteReader)
 
         try decoder.setProperties(byteReader.byte())
         decoder.resetStateAndDecoders()
-        decoder.dictionarySize = byteReader.int(fromBytes: 4)
+        decoder.dictSize = byteReader.int(fromBytes: 4)
 
-        let uncompSize = uncompressedSize ?? byteReader.uint64()
-        if uncompSize == UInt64.max {
-            decoder.uncompressedSize = -1
-        } else {
-            decoder.uncompressedSize = uncompSize.toInt()
-        }
+        let uncompSize = uncompSize ?? byteReader.uint64()
+        decoder.uncompressedSize = uncompSize.toInt()
 
         try decoder.decode()
         return Data(bytes: decoder.out)

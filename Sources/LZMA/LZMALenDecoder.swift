@@ -5,7 +5,7 @@
 
 import Foundation
 
-class LZMALenDecoder {
+final class LZMALenDecoder {
 
     private var choice: Int = LZMAConstants.probInitValue
     private var choice2: Int = LZMAConstants.probInitValue

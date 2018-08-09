@@ -6,7 +6,7 @@ jobs:
     - stage: test
       language: objective-c
       os: osx
-      osx_image: xcode9.3
+      osx_image: xcode9.4
       before_install:
       - brew update
       install:
@@ -24,9 +24,9 @@ jobs:
       - Utils/ci-script-linux.sh
     - stage: deploy
       if: tag IS present
-      language: objective-c
+      language: generic
       os: osx
-      osx_image: xcode9.3
+      osx_image: xcode9.4
       env:
         secure: iavIkrus2Xd3b086nz2srMGl52yqzLuCdhyEAhMODVqkzqMQ17s10y1TNb+vkepd0HgxI9j57d5X7tfChjWuWDwE2hZKjr/Kx2DfiUr1AKQD6ymuGrq/0Vv6yL9dfPU8goFArcrsBcyVKczLtTuLCKL498ZqokkQc/3kGvzW74lv+z410MfHS9/tvToO/yXJckL6qJ2XBAiElfOO0rEkllTeCo6N3bjcHZ2o7PE0K+CHYxwNKj0TmPmuNWZ3U4fzoWzkk01re1C1l5cpSb20g+2aGyi0yYX+PomX7fIIqNq9vmmyoeNdr35yqoQv/0zFeFnps83NKmZLAjSUhiUdhlbuBLBE+w8544LOaZnMDlFmpDjgyaVnRrOh0NrBB1FwU48aGfX5ljRQmk/07FTEUjvwvGGoOpz8lrLZi148FMHEospL3Sf7d8K+Q9WdtLTGk7HCnbOVcxS6oB/SWF/Cj6n5wu+EI1floBaZEsNPR40Gd4eM/Ik/E3lDrZThGDCWQsao981wm7IfEDBR1nuMME8gpZINFANNS1+5miFaGdTnDTp4Yd5MGEFZm+K8x+TG1891NwNH1ZmKXlypJXiUzvSjbh2ViNJGekdQj9q2gj2ZFlCfHJ05adwJ4w9qRuF00HpAOD6At6EnsjDXFJeTZS5dj8fi2YsU9or8KfTFoNY=
       before_install:

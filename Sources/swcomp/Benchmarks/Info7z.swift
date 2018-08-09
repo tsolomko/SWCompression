@@ -7,50 +7,14 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-#if os(Linux)
-    import CoreFoundation
-#endif
-
-class Info7z: Command {
+class Info7z: BenchmarkCommand {
 
     let name = "info-7z"
     let shortDescription = "Performs benchmarking of 7-Zip info function using specified files"
 
     let files = CollectedParameter()
 
-    func execute() throws {
-        print("7-Zip info function Benchmark")
-        print("=============================")
-
-        for file in self.files.value {
-            print("File: \(file)\n")
-
-            let inputURL = URL(fileURLWithPath: file)
-            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-
-            var totalTime: Double = 0
-
-            var maxTime = Double(Int.min)
-            var minTime = Double(Int.max)
-
-            _ = try SevenZipContainer.info(container: fileData)
-            for i in 1...10 {
-                print("Iteration \(i): ", terminator: "")
-                let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try SevenZipContainer.info(container: fileData)
-                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                print(String(format: "%.3f", timeElapsed))
-                totalTime += timeElapsed
-                if timeElapsed > maxTime {
-                    maxTime = timeElapsed
-                }
-                if timeElapsed < minTime {
-                    minTime = timeElapsed
-                }
-            }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
-            print("---------------------------------------")
-        }
-    }
+    let benchmarkName = "7-Zip info function"
+    let benchmarkFunction: (Data) throws -> Any = SevenZipContainer.info
 
 }

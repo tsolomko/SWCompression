@@ -34,15 +34,17 @@ struct TarEntryInfoProvider {
             case .globalExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
                 lastGlobalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
+            case .sunExtendedHeader:
+                fallthrough
             case .localExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
                 lastLocalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
             case .longLinkName:
                 byteReader.offset = dataStartIndex
-                longLinkName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                longLinkName = byteReader.tarCString(maxLength: info.size!)
             case .longName:
                 byteReader.offset = dataStartIndex
-                longName = try byteReader.nullEndedAsciiString(cutoff: info.size!)
+                longName = byteReader.tarCString(maxLength: info.size!)
             }
             byteReader.offset = dataStartIndex + info.size!.roundTo512()
         } else {
