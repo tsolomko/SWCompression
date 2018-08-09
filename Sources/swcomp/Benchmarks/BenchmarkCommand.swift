@@ -41,7 +41,9 @@ extension BenchmarkCommand {
 
             // Zeroth (excluded) iteration.
             print("Iteration 00 (excluded): ", terminator: "")
-            fflush(__stdoutp)
+            #if !os(Linux)
+                fflush(__stdoutp)
+            #endif
             let startTime = CFAbsoluteTimeGetCurrent()
             _ = try benchmarkFunction(fileData)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
@@ -49,7 +51,9 @@ extension BenchmarkCommand {
 
             for i in 1...10 {
                 print(String(format: "Iteration %02u: ", i), terminator: "")
-                fflush(__stdoutp)
+                #if !os(Linux)
+                    fflush(__stdoutp)
+                #endif
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try benchmarkFunction(fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime

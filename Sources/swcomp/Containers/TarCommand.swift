@@ -74,7 +74,7 @@ class TarCommand: Command {
             }
         } else if let inputPath = self.create.value {
             let fileManager = FileManager.default
-            
+
             guard !fileManager.fileExists(atPath: self.archive.value) else {
                 print("ERROR: Output path already exists.")
                 exit(1)
@@ -83,7 +83,7 @@ class TarCommand: Command {
             if gz.value || bz2.value || xz.value {
                 print("Warning: compression options are unsupported and ignored when creating new container.")
             }
-            
+
             guard fileManager.fileExists(atPath: inputPath) else {
                 print("ERROR: Specified path doesn't exist.")
                 exit(1)
@@ -101,9 +101,9 @@ class TarCommand: Command {
     private func createEntries(_ inputPath: String, _ verbose: Bool) throws -> [TarEntry] {
         let inputURL = URL(fileURLWithPath: inputPath)
         let fileManager = FileManager.default
-            
+
         let fileAttributes = try fileManager.attributesOfItem(atPath: inputPath)
-        
+
         let name = inputURL.relativePath
 
         let entryType: ContainerEntryType
@@ -168,14 +168,14 @@ class TarCommand: Command {
         }
 
         let entry = TarEntry(info: info, data: entryData)
-        
+
         var entries = [TarEntry]()
         entries.append(entry)
 
         if entryType == .directory {
             for subPath in try fileManager.contentsOfDirectory(atPath: inputPath) {
                 entries.append(contentsOf: try self.createEntries(inputURL.appendingPathComponent(subPath).relativePath,
-                                                                  verbose)) 
+                                                                  verbose))
             }
         }
 

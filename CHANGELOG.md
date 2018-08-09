@@ -1,5 +1,38 @@
 # Changelog
 
+## 4.4.0
+
+- Added APIs which allow creation of new TAR containers:
+    - Added `TarContainer.create(from:)` function.
+    - Added `TarCreateError` error type with a single case `utf8NonEncodable`.
+- `TarEntry.info` and `TarEntry.data` are now `var`-properties (instead of `let`).
+- Accessing setter of `TarEntry.data` now automatically updates corresponding `TarEntry.info.size` with `data.count`
+  value (or 0 if `data` is `nil`).
+- Added `TarEntry.init(info:data:)` initializer.
+- Most public properties of `TarEntry` are now `var`-properties (instead of `let`). Exceptions: `size` and `type`.
+- Added `TarEntryInfo.init(name:type:)` initializer.
+- Improved compatibility with other TAR implementations:
+    - All string fields of TAR headers are now treated as UTF-8 strings.
+    - Non-well-formed integer fields of TAR headers no longer cause `TarError.wrongField` to be thrown and instead
+      result in `nil` values of corresponding properties of `TarEntryInfo` (exception: `size` field).
+    - Base-256 encoding of numeric fields is now supported.
+    - Leading NULLs and whitespaces in numeric fields are now correctly skipped.
+    - Sun Extended Headers are now processed as local PAX extended headers instead of being considered entries with
+      `.unknown` type.
+    - GNU TAR format features for incremental backups are now partially supported (access and creation time).
+- `TarContainer.formatOf` now correctly returns `TarFormat.gnu` when GNU format "magic" field is encountered.
+- A new (copy) `Data` object is now created for `TarEntry.data` property instead of using a slice of input data.
+- Fixed incorrect file name of TAR entries from containers with GNU TAR format-specific features being used.
+- Fixed `TarError.wrongPaxHeaderEntry` error being thrown when header with multi-byte UTF-8 characters is encountered.
+- Fixed incorrect values of `TarEntryInfo.ownerID`, `groupID`, `deviceMajorNumber` and `deviceMinorNumber` properties.
+- Slightly improved performance of LZMA/LZMA2 operations by making internal classes declared as `final`.
+- swcomp changes:
+    - Added `-c`, `--create` option to `tar` command which creates a new TAR container.
+    - Output of bencmark commands is now properly flushed on non-Linux platforms.
+    - Results for omitted iterations of benchmark commands are now also printed.
+    - Iteration number in benchmark commands is now printed with leading zeros.
+    - Fixed compilation error on Linux platforms due to `ObjCBool` no longer being an alias for `Bool`.
+
 ## 4.3.0
 
 - Updated to support Swift 4.1.

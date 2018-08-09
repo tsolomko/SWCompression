@@ -14,7 +14,11 @@ public protocol ContainerEntry {
     /// Provides access to information about the entry.
     var info: Info { get }
 
-    /// Entry's data (`nil` if entry is a directory or data isn't available).
+    /**
+     Entry's data (`nil` if entry is a directory or data isn't available).
+
+     - Note: It is assumed that the compression provided by the container is yet to be applied to data.
+     */
     var data: Data? { get }
 
 }

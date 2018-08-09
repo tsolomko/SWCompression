@@ -188,7 +188,8 @@ public class SevenZipContainer: Container {
             if !file.isEmptyStream, let substreamInfo = header.mainStreams?.substreamInfo {
                 let size = nonEmptyFileIndex < substreamInfo.unpackSizes.count ?
                     substreamInfo.unpackSizes[nonEmptyFileIndex] : nil
-                let crc = nonEmptyFileIndex < substreamInfo.digests.count ? substreamInfo.digests[nonEmptyFileIndex] : nil
+                let crc = nonEmptyFileIndex < substreamInfo.digests.count ?
+                    substreamInfo.digests[nonEmptyFileIndex] : nil
                 entries.append(SevenZipEntryInfo(file, size, crc))
                 nonEmptyFileIndex += 1
             } else {

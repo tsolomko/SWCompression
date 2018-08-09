@@ -65,6 +65,17 @@ public class TarContainer: Container {
         return ustarEncountered ? .ustar : .prePosix
     }
 
+    /**
+     Creates a new TAR container with `entries` as its content and generates container's `Data`.
+
+     - Parameter entries: TAR entries to store in the container.
+
+     - Throws: `TarCreateError.utf8NonEncodable` which indicates that one of the `TarEntryInfo`'s string properties
+     (such as `name`) cannot be encoded with UTF-8 encoding.
+
+     - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
+     format used during container creation.
+     */
     public static func create(from entries: [TarEntry]) throws -> Data {
         var out = Data()
         var extHeadersCount = 0
@@ -115,7 +126,7 @@ public class TarContainer: Container {
             } else {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
-                let entryData = data[dataStartIndex..<dataEndIndex]
+                let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
                 entries.append(TarEntry(info: entryInfo, data: entryData))
             }
         }

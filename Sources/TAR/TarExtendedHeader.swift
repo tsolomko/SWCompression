@@ -27,8 +27,6 @@ struct TarExtendedHeader {
     var charset: String?
     var comment: String?
 
-    init() {}
-
     init(_ data: Data) throws {
         // Split header data into entries with "\n" (0x0A) character as a separator.
         let entriesData = data.split(separator: 0x0A)
@@ -95,11 +93,17 @@ struct TarExtendedHeader {
         if let gid = info.groupID, gid > maxOctalLengthEight {
             self.gid = gid
         }
-        if let uname = info.ownerUserName, uname.data(using: .ascii) == nil {
-            self.uname = uname
+        if let uname = info.ownerUserName {
+            let asciiUnameData = uname.data(using: .ascii)
+            if asciiUnameData == nil || asciiUnameData!.count > 32 {
+                self.uname = uname
+            }
         }
-        if let gname = info.ownerGroupName, gname.data(using: .ascii) == nil {
-            self.gname = gname
+        if let gname = info.ownerGroupName {
+            let asciiGnameData = gname.data(using: .ascii)
+            if asciiGnameData == nil || asciiGnameData!.count > 32 {
+                self.gname = gname
+            }
         }
         if let size = info.size, size > maxOctalLengthTwelve {
             self.size = size
