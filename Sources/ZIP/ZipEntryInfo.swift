@@ -191,25 +191,12 @@ public struct ZipEntryInfo: ContainerEntryInfo {
             self.type = .regular
         }
 
-        // File comment.
         self.comment = cdEntry.fileComment
-
-        // Is text file?
         self.isTextFile = cdEntry.internalFileAttributes & 0x1 != 0
-
-        // File system type of machine where this container was created.
         self.fileSystemType = FileSystemType(cdEntry.versionMadeBy)
-
-        // Compression method.
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
-
-        // Owner's ID.
         self.ownerID = localHeader.infoZipNewUnixExtraField?.uid ?? localHeader.infoZipUnixExtraField?.uid
-
-        // Owner's group ID.
         self.groupID = localHeader.infoZipNewUnixExtraField?.gid ?? localHeader.infoZipUnixExtraField?.gid
-
-        // CRC32
         self.crc = cdEntry.crc32
 
         // Custom extra fields.
