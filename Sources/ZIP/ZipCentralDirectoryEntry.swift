@@ -75,7 +75,7 @@ struct ZipCentralDirectoryEntry {
 
         self.localHeaderOffset = byteReader.uint64(fromBytes: 4)
 
-        guard let fileName = byteReader.getZipStringField(fileNameLength, useUtf8)
+        guard let fileName = byteReader.zipString(fileNameLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileName = fileName
 
@@ -134,7 +134,7 @@ struct ZipCentralDirectoryEntry {
         }
         self.customExtraFields = customExtraFields
 
-        guard let fileComment = byteReader.getZipStringField(fileCommentLength, useUtf8)
+        guard let fileComment = byteReader.zipString(fileCommentLength, useUtf8)
             else { throw ZipError.wrongTextField }
         self.fileComment = fileComment
 

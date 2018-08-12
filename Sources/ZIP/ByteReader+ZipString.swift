@@ -12,7 +12,7 @@ import BitByteData
 
 extension ByteReader {
 
-    func getZipStringField(_ length: Int, _ useUtf8: Bool) -> String? {
+    func zipString(_ length: Int, _ useUtf8: Bool) -> String? {
         guard length > 0
             else { return "" }
         let stringData = self.data[self.offset..<self.offset + length]
