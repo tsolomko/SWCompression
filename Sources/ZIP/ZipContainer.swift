@@ -11,7 +11,7 @@ public class ZipContainer: Container {
 
     /**
      Contains user-defined extra fields. When either `ZipContainer.info(container:)` or `ZipContainer.open(container:)`
-     function encounters non-standard extra field, it uses this dictionary and tries to find a corresponding
+     function encounters extra field without built-in support, it uses this dictionary and tries to find a corresponding
      user-defined extra field. If an approriate custom extra field is found and successfully processed, then the result
      is stored in `ZipEntryInfo.customExtraFields`.
 
