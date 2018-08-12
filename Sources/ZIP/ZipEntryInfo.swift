@@ -99,6 +99,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
      */
     public let customExtraFields: [ZipExtraField]
 
+    /// CRC32 of entry's data.
+    public let crc: UInt32
+
     let cdEntry: ZipCentralDirectoryEntry
     let localHeader: ZipLocalHeader
 
@@ -205,6 +208,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
 
         // Owner's group ID.
         self.groupID = localHeader.infoZipNewUnixExtraField?.gid ?? localHeader.infoZipUnixExtraField?.gid
+
+        // CRC32
+        self.crc = cdEntry.crc32
 
         // Custom extra fields.
         var customExtraFields = cdEntry.customExtraFields
