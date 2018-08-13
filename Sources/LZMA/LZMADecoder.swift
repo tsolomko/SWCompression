@@ -10,14 +10,6 @@ final class LZMADecoder {
 
     private let byteReader: ByteReader
 
-    var dictSize = 0 {
-        didSet {
-            if dictSize < 1 << 12 {
-                dictSize = 1 << 12
-            }
-        }
-    }
-    
     var properties: LZMAProperties
 
     var uncompressedSize = -1
@@ -29,9 +21,21 @@ final class LZMADecoder {
     private var dictStart = 0
     private var dictEnd = 0
 
-    private var lc = 0
-    private var lp = 0
-    private var pb = 0
+    private var dictSize: Int {
+        return self.properties.dictionarySize
+    }
+
+    private var lc: Int {
+        return self.properties.lc
+    }
+
+    private var lp: Int {
+        return self.properties.lp
+    }
+
+    private var pb: Int {
+        return self.properties.pb
+    }
 
     private var rangeDecoder = LZMARangeDecoder()
     private var posSlotDecoder  = [LZMABitTreeDecoder]()
@@ -82,11 +86,11 @@ final class LZMADecoder {
             else { throw LZMAError.wrongProperties }
         let intByte = byte.toInt()
         /// The number of literal context bits
-        self.lc = intByte % 9
+        self.properties.lc = intByte % 9
         /// The number of pos bits
-        self.pb = (intByte / 9) / 5
+        self.properties.pb = (intByte / 9) / 5
         /// The number of literal pos bits
-        self.lp = (intByte / 9) % 5
+        self.properties.lp = (intByte / 9) % 5
 
         self.resetStateAndDecoders()
     }

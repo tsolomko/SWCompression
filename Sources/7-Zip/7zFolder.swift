@@ -186,7 +186,7 @@ class SevenZipFolder {
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
-                decoder.dictSize = dictionarySize
+                decoder.properties.dictionarySize = dictionarySize
 
                 decoder.uncompressedSize = unpackSize
 
