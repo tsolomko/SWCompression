@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0602C8DF212184FA00B69EF5 /* LZMAProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0602C8DE212184FA00B69EF5 /* LZMAProperties.swift */; };
 		0606CF8120641209002B6EE9 /* BuiltinExtraFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0606CF8020641209002B6EE9 /* BuiltinExtraFields.swift */; };
 		06092A1A1FA4CB0300DE9FD5 /* CompressionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */; };
 		06092A241FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06092A231FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift */; };
@@ -216,6 +217,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0602C8DE212184FA00B69EF5 /* LZMAProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMAProperties.swift; sourceTree = "<group>"; };
 		0606CF8020641209002B6EE9 /* BuiltinExtraFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltinExtraFields.swift; sourceTree = "<group>"; };
 		06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionMethod.swift; sourceTree = "<group>"; };
 		06092A231FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompressionMethod+Zip.swift"; sourceTree = "<group>"; };
@@ -489,6 +491,7 @@
 			children = (
 				069AC20C1E02DB1D0041AC13 /* LZMA.swift */,
 				06CDFCAC1F111DBE00292758 /* LZMAError.swift */,
+				0602C8DE212184FA00B69EF5 /* LZMAProperties.swift */,
 				06A1727D1FA5C0D90048A89C /* LZMADecoder.swift */,
 				06A172871FA5DC460048A89C /* LZMAConstants.swift */,
 				069D0FF91E0D6CE900D8AA87 /* LZMALenDecoder.swift */,
@@ -1104,6 +1107,7 @@
 				06092A241FA4CC3D00DE9FD5 /* CompressionMethod+Zip.swift in Sources */,
 				06A960651F1E7DF60078E6D1 /* 7zCoderInfo.swift in Sources */,
 				06ADB2D91EBCEFA60053A188 /* TarContainer.swift in Sources */,
+				0602C8DF212184FA00B69EF5 /* LZMAProperties.swift in Sources */,
 				0620F4C81F8E24BF001C9B7A /* DecompressionAlgorithm.swift in Sources */,
 				0686A6451FA4C47300E89C9E /* FileSystemType+Zip.swift in Sources */,
 				06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */,
