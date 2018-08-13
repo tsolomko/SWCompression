@@ -181,7 +181,6 @@ class SevenZipFolder {
                 let decoder = LZMADecoder(byteReader)
 
                 try decoder.setProperties(properties[0])
-                decoder.resetStateAndDecoders()
 
                 var dictionarySize = 0
                 for i in 1..<4 {

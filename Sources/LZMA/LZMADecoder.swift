@@ -71,9 +71,8 @@ final class LZMADecoder {
     }
 
     /**
-     Sets `lc`, `pb` and `lp` properties of LZMA decoder based on the `byte`.
-
-     - Important: `resetStateAndDecoders` should always be called afterwards.
+     Sets `lc`, `pb` and `lp` properties of LZMA decoder based on the `byte` and resets decoder's state and
+     sub-decoders.
      */
     func setProperties(_ byte: UInt8) throws {
         guard byte < 9 * 5 * 5
@@ -85,12 +84,12 @@ final class LZMADecoder {
         self.pb = (intByte / 9) / 5
         /// The number of literal pos bits
         self.lp = (intByte / 9) % 5
+
+        self.resetStateAndDecoders()
     }
 
     /**
      Resets state properties and various sub-decoders of LZMA decoder.
-
-     - Important: Should always be called after changing any of `lc`, `pb` or `lp` properties.
      */
     func resetStateAndDecoders() {
         self.state = 0

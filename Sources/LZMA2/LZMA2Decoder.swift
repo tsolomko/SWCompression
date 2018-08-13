@@ -74,10 +74,8 @@ final class LZMA2Decoder {
             self.decoder.resetStateAndDecoders()
         case 2:
             try self.decoder.setProperties(byteReader.byte())
-            self.decoder.resetStateAndDecoders()
         case 3:
             try self.decoder.setProperties(byteReader.byte())
-            self.decoder.resetStateAndDecoders()
             self.decoder.resetDictionary()
         default:
             throw LZMA2Error.wrongReset
