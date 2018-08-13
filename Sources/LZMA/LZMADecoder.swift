@@ -78,20 +78,11 @@ final class LZMADecoder {
     }
 
     /**
-     Sets `lc`, `pb` and `lp` properties of LZMA decoder based on the `byte` and resets decoder's state and
-     sub-decoders.
+     Sets `lc`, `pb` and `lp` properties of LZMA decoder with a single `byte` using standard LZMA properties encoding
+     scheme and resets decoder's state and sub-decoders.
      */
     func setProperties(_ byte: UInt8) throws {
-        guard byte < 9 * 5 * 5
-            else { throw LZMAError.wrongProperties }
-        let intByte = byte.toInt()
-        /// The number of literal context bits
-        self.properties.lc = intByte % 9
-        /// The number of pos bits
-        self.properties.pb = (intByte / 9) / 5
-        /// The number of literal pos bits
-        self.properties.lp = (intByte / 9) % 5
-
+        try self.properties.updateProperties(lzmaByte: byte)
         self.resetStateAndDecoders()
     }
 
