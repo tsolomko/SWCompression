@@ -17,6 +17,8 @@ final class LZMADecoder {
             }
         }
     }
+    
+    var properties: LZMAProperties
 
     var uncompressedSize = -1
 
@@ -68,6 +70,7 @@ final class LZMADecoder {
 
     init(_ byteReader: ByteReader) {
         self.byteReader = byteReader
+        self.properties = LZMAProperties(lc: 0, lp: 0, pb: 0, dictionarySize: 0)
     }
 
     /**
