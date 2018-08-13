@@ -46,4 +46,22 @@ public struct LZMAProperties {
         self.lp = (intByte / 9) % 5
     }
 
+    mutating func updateDictionarySize(lzma2Byte: UInt8) throws {
+        guard lzma2Byte & 0xC0 == 0
+            else { throw LZMA2Error.wrongDictionarySize }
+        let bits = (lzma2Byte & 0x3F).toInt()
+        guard bits < 40
+            else { throw LZMA2Error.wrongDictionarySize }
+
+        var dictSize: UInt32
+        if bits == 40 {
+            dictSize = UInt32.max
+        } else {
+            dictSize = UInt32(truncatingIfNeeded: 2 | (bits & 1))
+            dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
+        }
+
+        self.dictionarySize = dictSize.toInt()
+    }
+
 }
