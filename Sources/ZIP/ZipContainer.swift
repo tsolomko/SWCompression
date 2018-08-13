@@ -57,17 +57,13 @@ public class ZipContainer: Container {
     }
 
     private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> (data: Data, crcError: Bool) {
-        let hasDataDescriptor = info.localHeader.generalPurposeBitFlags & 0x08 != 0
-
-        // If file has data descriptor, then some values in local header are absent.
-        // So we need to use values from CD entry.
-        var uncompSize = hasDataDescriptor ? info.cdEntry.uncompSize : info.localHeader.uncompSize
-        var compSize = hasDataDescriptor ? info.cdEntry.compSize : info.localHeader.compSize
-        var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
+        var uncompSize = info.uncompSize
+        var compSize = info.compSize
+        var crc32 = info.crc
 
         let fileData: Data
         let byteReader = ByteReader(data: data)
-        byteReader.offset = info.localHeader.dataOffset
+        byteReader.offset = info.dataOffset
         switch info.compressionMethod {
         case .copy:
             fileData = Data(bytes: byteReader.bytes(count: uncompSize.toInt()))
@@ -100,9 +96,9 @@ public class ZipContainer: Container {
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = byteReader.offset - info.localHeader.dataOffset
+        let realCompSize = byteReader.offset - info.dataOffset
 
-        if hasDataDescriptor {
+        if info.hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
             let ddSignature = byteReader.uint32()
@@ -111,7 +107,7 @@ public class ZipContainer: Container {
             }
             // Now, let's update with values from data descriptor.
             crc32 = byteReader.uint32()
-            if info.localHeader.zip64FieldsArePresent {
+            if info.zip64FieldsArePresent {
                 compSize = byteReader.uint64()
                 uncompSize = byteReader.uint64()
             } else {
@@ -175,7 +171,7 @@ public class ZipContainer: Container {
             let info = try ZipEntryInfo(byteReader, endOfCD.currentDiskNumber)
             entries.append(info)
             // Move to the next Central Directory entry.
-            byteReader.offset = info.cdEntry.nextEntryOffset
+            byteReader.offset = info.nextCdEntryOffset
         }
 
         return entries

@@ -102,20 +102,22 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// CRC32 of entry's data.
     public let crc: UInt32
 
-    let cdEntry: ZipCentralDirectoryEntry
-    let localHeader: ZipLocalHeader
+    let hasDataDescriptor: Bool
+    let zip64FieldsArePresent: Bool
+    let nextCdEntryOffset: Int
+    let dataOffset: Int
+    let compSize: UInt64
+    let uncompSize: UInt64
 
     init(_ byteReader: ByteReader, _ currentDiskNumber: UInt32) throws {
-        // Load and save Central Directory entry.
+        // Read Central Directory entry.
         let cdEntry = try ZipCentralDirectoryEntry(byteReader)
-        self.cdEntry = cdEntry
 
         // Move to the location of Local Header.
         byteReader.offset = cdEntry.localHeaderOffset.toInt()
-        // Load and save Local Header.
+        // Read Local Header.
         let localHeader = try ZipLocalHeader(byteReader)
         try localHeader.validate(with: cdEntry, currentDiskNumber)
-        self.localHeader = localHeader
 
         // If file has data descriptor, then some properties are only present in CD entry.
         self.hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
@@ -172,7 +174,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         }
 
         // Size
-        self.size = cdEntry.uncompSize.toInt()
+        self.size = (hasDataDescriptor ? cdEntry.uncompSize : localHeader.uncompSize).toInt()
 
         // External file attributes.
         self.externalFileAttributes = cdEntry.externalFileAttributes
@@ -206,6 +208,13 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         var customExtraFields = cdEntry.customExtraFields
         customExtraFields.append(contentsOf: localHeader.customExtraFields)
         self.customExtraFields = customExtraFields
+
+        // Save some properties from CD entry and Local Header.
+        self.zip64FieldsArePresent = localHeader.zip64FieldsArePresent
+        self.nextCdEntryOffset = cdEntry.nextEntryOffset
+        self.dataOffset = localHeader.dataOffset
+        self.compSize = hasDataDescriptor ? cdEntry.compSize : localHeader.compSize
+        self.uncompSize = hasDataDescriptor ? cdEntry.uncompSize : localHeader.uncompSize
     }
 
 }
