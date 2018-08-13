@@ -96,6 +96,13 @@ class ZipTests: XCTestCase {
             XCTAssertNotNil(entry.info.modificationTime)
             XCTAssertNotNil(entry.info.accessTime)
             XCTAssertNil(entry.info.creationTime)
+            if entry.info.name == "test_dir/dir_with_file/test_file" {
+                XCTAssertEqual(entry.info.size, 14)
+                XCTAssertEqual(entry.info.crc, 0xB4E89E84)
+            } else if entry.info.name == "test_dir/random_file" {
+                XCTAssertEqual(entry.info.size, 10250)
+                XCTAssertEqual(entry.info.crc, 0xD888DA2E)
+            }
         }
     }
 
