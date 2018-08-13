@@ -21,21 +21,7 @@ final class LZMA2Decoder {
     }
 
     func setDictionarySize(_ byte: UInt8) throws {
-        guard byte & 0xC0 == 0
-            else { throw LZMA2Error.wrongDictionarySize }
-        let bits = (byte & 0x3F).toInt()
-        guard bits < 40
-            else { throw LZMA2Error.wrongDictionarySize }
-
-        var dictSize: UInt32
-        if bits == 40 {
-            dictSize = UInt32.max
-        } else {
-            dictSize = UInt32(truncatingIfNeeded: 2 | (bits & 1))
-            dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
-        }
-
-        self.decoder.properties.dictionarySize = dictSize.toInt()
+        try self.decoder.properties.updateDictionarySize(lzma2Byte: byte)
     }
 
     /// Main LZMA2 decoder function.
