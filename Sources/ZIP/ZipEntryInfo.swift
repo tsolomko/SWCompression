@@ -117,6 +117,9 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         try localHeader.validate(with: cdEntry, currentDiskNumber)
         self.localHeader = localHeader
 
+        // If file has data descriptor, then some properties are only present in CD entry.
+        self.hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
+
         // Name.
         self.name = cdEntry.fileName
 
@@ -197,7 +200,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         self.compressionMethod = CompressionMethod(localHeader.compressionMethod)
         self.ownerID = localHeader.infoZipNewUnixExtraField?.uid ?? localHeader.infoZipUnixExtraField?.uid
         self.groupID = localHeader.infoZipNewUnixExtraField?.gid ?? localHeader.infoZipUnixExtraField?.gid
-        self.crc = cdEntry.crc32
+        self.crc = hasDataDescriptor ? cdEntry.crc32 : localHeader.crc32
 
         // Custom extra fields.
         var customExtraFields = cdEntry.customExtraFields
