@@ -41,8 +41,10 @@ struct XZBlock {
                 else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
             if filterID == 0x21 {
-                // First, we need to skip byte with the size of filter's properties
-                _ = try byteReader.multiByteDecode()
+                // First, we need to check if size of LZMA2 filter's properties is equal to 1 as expected.
+                let propertiesSize = try byteReader.multiByteDecode()
+                guard propertiesSize == 1
+                    else { throw LZMA2Error.wrongDictionarySize }
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = byteReader.byte()
                 let closure = { (dwp: ByteReader) -> Data in
