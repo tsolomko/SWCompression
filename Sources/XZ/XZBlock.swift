@@ -66,11 +66,8 @@ struct XZBlock {
             else { throw XZError.wrongInfoCRC }
         byteReader.offset += 4
 
-        var out = byteReader
         let compressedDataStart = byteReader.offset
-        for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
-            out = ByteReader(data: try filters[filterIndex.toInt()](out))
-        }
+        let out = try filters.reversed().reduce(byteReader) { try ByteReader(data: $1($0)) }
 
         guard compressedSize < 0 || compressedSize == byteReader.offset - compressedDataStart,
             uncompressedSize < 0 || uncompressedSize == out.data.count
