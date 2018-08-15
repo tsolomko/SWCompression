@@ -12,6 +12,9 @@ public class LZMA2: DecompressionAlgorithm {
     /**
      Decompresses `data` using LZMA2 algortihm.
 
+     - Note: It is assumed that the first byte of `data` is a dictionary size encoded with standard encoding scheme of
+     LZMA2 format.
+
      - Parameter data: Data compressed with LZMA2.
 
      - Throws: `LZMAError` or `LZMA2Error` if unexpected byte (bit) sequence was encountered in `data`.
