@@ -15,10 +15,25 @@ final class LZMA2Decoder {
         return self.decoder.out
     }
 
-    init(_ byteReader: ByteReader, _ propertiesByte: UInt8) throws {
+    init(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws {
         self.byteReader = byteReader
         self.decoder = LZMADecoder(byteReader)
-        try self.decoder.properties.updateDictionarySize(lzma2Byte: propertiesByte)
+
+        guard dictSizeByte & 0xC0 == 0
+            else { throw LZMA2Error.wrongDictionarySize }
+        let bits = (dictSizeByte & 0x3F).toInt()
+        guard bits < 40
+            else { throw LZMA2Error.wrongDictionarySize }
+
+        var dictSize: UInt32
+        if bits == 40 {
+            dictSize = UInt32.max
+        } else {
+            dictSize = UInt32(truncatingIfNeeded: 2 | (bits & 1))
+            dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
+        }
+
+        self.decoder.properties.dictionarySize = dictSize.toInt()
     }
 
     /// Main LZMA2 decoder function.
