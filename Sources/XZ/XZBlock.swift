@@ -45,15 +45,9 @@ struct XZBlock {
                 let propertiesSize = try byteReader.multiByteDecode()
                 guard propertiesSize == 1
                     else { throw LZMA2Error.wrongDictionarySize }
-                /// In case of LZMA2 filters property is a dicitonary size.
+                /// Filter property for LZMA2 is a dictionary size.
                 let filterPropeties = byteReader.byte()
-                let closure = { (dwp: ByteReader) -> Data in
-                    let decoder = try LZMA2Decoder(byteReader, filterPropeties)
-
-                    try decoder.decode()
-                    return Data(bytes: decoder.out)
-                }
-                filters.append(closure)
+                filters.append { try Data(bytes: LZMA2.decompress($0, filterPropeties)) }
             } else {
                 throw XZError.wrongFilterID
             }
