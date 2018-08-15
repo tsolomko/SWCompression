@@ -106,7 +106,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
      - Note: When new TAR container is created, if `ownerUserName` cannot be encoded with ASCII or its ASCII
      byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
      correctly.
-     - Note: When creating new TAR container,`ownerUserName` is always encoded with UTF-8 in ustar header.
+     - Note: When creating new TAR container, `ownerUserName` is always encoded with UTF-8 in ustar header.
      */
     public var ownerUserName: String?
 
