@@ -48,8 +48,7 @@ struct XZBlock {
                 /// In case of LZMA2 filters property is a dicitonary size.
                 let filterPropeties = byteReader.byte()
                 let closure = { (dwp: ByteReader) -> Data in
-                    let decoder = LZMA2Decoder(byteReader)
-                    try decoder.setDictionarySize(filterPropeties)
+                    let decoder = try LZMA2Decoder(byteReader, filterPropeties)
 
                     try decoder.decode()
                     return Data(bytes: decoder.out)

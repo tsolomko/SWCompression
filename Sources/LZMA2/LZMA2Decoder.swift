@@ -15,13 +15,10 @@ final class LZMA2Decoder {
         return self.decoder.out
     }
 
-    init(_ byteReader: ByteReader) {
+    init(_ byteReader: ByteReader, _ propertiesByte: UInt8) throws {
         self.byteReader = byteReader
         self.decoder = LZMADecoder(byteReader)
-    }
-
-    func setDictionarySize(_ byte: UInt8) throws {
-        try self.decoder.properties.updateDictionarySize(lzma2Byte: byte)
+        try self.decoder.properties.updateDictionarySize(lzma2Byte: propertiesByte)
     }
 
     /// Main LZMA2 decoder function.
