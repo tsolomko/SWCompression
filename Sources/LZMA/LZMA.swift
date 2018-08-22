@@ -24,17 +24,25 @@ public class LZMA: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         let byteReader = ByteReader(data: data)
-        return try decompress(byteReader)
+        let properties = try LZMAProperties(lzmaByte: byteReader.byte(), byteReader.int(fromBytes: 4))
+        let uncompSize = byteReader.int(fromBytes: 8)
+        return try decompress(byteReader, properties, uncompSize)
     }
 
-    static func decompress(_ byteReader: ByteReader, _ uncompSize: UInt64? = nil) throws -> Data {
+    public static func decompress(data: Data,
+                                  properties: LZMAProperties,
+                                  uncompressedSize: Int? = nil) throws -> Data {
+        let byteReader = ByteReader(data: data)
+        return try decompress(byteReader, properties, uncompressedSize)
+    }
+
+    static func decompress(_ byteReader: ByteReader,
+                           _ properties: LZMAProperties,
+                           _ uncompSize: Int?) throws -> Data {
         let decoder = LZMADecoder(byteReader)
-
-        try decoder.setProperties(byteReader.byte())
-        decoder.properties.dictionarySize = byteReader.int(fromBytes: 4)
-
-        let uncompSize = uncompSize ?? byteReader.uint64()
-        decoder.uncompressedSize = uncompSize.toInt()
+        decoder.properties = properties
+        decoder.resetStateAndDecoders()
+        decoder.uncompressedSize = uncompSize ?? -1
 
         try decoder.decode()
         return Data(bytes: decoder.out)
