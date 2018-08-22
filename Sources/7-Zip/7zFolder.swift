@@ -171,21 +171,15 @@ class SevenZipFolder {
                     properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
-                let byteReader = ByteReader(data: decodedData)
-                let decoder = LZMADecoder(byteReader)
-
-                try decoder.setProperties(properties[0])
-
+                var lzmaProperties = try LZMAProperties(lzmaByte: properties[0])
                 var dictionarySize = 0
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
-                decoder.properties.dictionarySize = dictionarySize
-
-                decoder.uncompressedSize = unpackSize
-
-                try decoder.decode()
-                decodedData = Data(bytes: decoder.out)
+                lzmaProperties.dictionarySize = dictionarySize
+                decodedData = try LZMA.decompress(data: decodedData,
+                                                  properties: lzmaProperties,
+                                                  uncompressedSize: unpackSize)
             default:
                 if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
