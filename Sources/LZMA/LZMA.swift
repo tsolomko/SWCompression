@@ -12,6 +12,9 @@ public class LZMA: DecompressionAlgorithm {
     /**
      Decompresses `data` using LZMA algortihm.
 
+     - Note: It is assumed that the first nine bytes of `data` represent standard LZMA properties (so called "lc", "lp"
+     and "pb"), dictionary size, and uncompressed size all encoded with standard encoding scheme of LZMA format.
+
      - Parameter data: Data compressed with LZMA.
 
      - Throws: `LZMAError` if unexpected byte (bit) sequence was encountered in `data`.
