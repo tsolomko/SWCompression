@@ -71,9 +71,9 @@ final class LZMA2Decoder {
         case 1:
             self.decoder.resetStateAndDecoders()
         case 2:
-            try self.decoder.setProperties(byteReader.byte())
+            try self.updateProperties()
         case 3:
-            try self.decoder.setProperties(byteReader.byte())
+            try self.updateProperties()
             self.decoder.resetDictionary()
         default:
             throw LZMA2Error.wrongReset
@@ -92,6 +92,15 @@ final class LZMA2Decoder {
         for _ in 0..<dataSize {
             self.decoder.put(self.byteReader.byte())
         }
+    }
+
+    /**
+     Sets `lc`, `pb` and `lp` properties of LZMA decoder with a single `byte` using standard LZMA properties encoding
+     scheme and resets decoder's state and sub-decoders.
+     */
+    private func updateProperties() throws {
+        try self.decoder.properties.updateProperties(lzmaByte: byteReader.byte())
+        self.decoder.resetStateAndDecoders()
     }
 
 }
