@@ -77,15 +77,6 @@ final class LZMADecoder {
     }
 
     /**
-     Sets `lc`, `pb` and `lp` properties of LZMA decoder with a single `byte` using standard LZMA properties encoding
-     scheme and resets decoder's state and sub-decoders.
-     */
-    func setProperties(_ byte: UInt8) throws {
-        try self.properties.updateProperties(lzmaByte: byte)
-        self.resetStateAndDecoders()
-    }
-
-    /**
      Resets state properties and various sub-decoders of LZMA decoder.
      */
     func resetStateAndDecoders() {
