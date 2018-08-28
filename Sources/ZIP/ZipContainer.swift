@@ -89,10 +89,7 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 byteReader.offset += 4 // Skipping LZMA SDK version and size of properties.
-                fileData = try LZMA.decompress(byteReader,
-                                               LZMAProperties(lzmaByte: byteReader.byte(),
-                                                              byteReader.int(fromBytes: 4)),
-                                               uncompSize.toInt())
+                fileData = try LZMA.decompress(byteReader, LZMAProperties(byteReader), uncompSize.toInt())
             #else
                 throw ZipError.compressionNotSupported
             #endif

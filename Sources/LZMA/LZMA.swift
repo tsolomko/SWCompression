@@ -24,7 +24,7 @@ public class LZMA: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         let byteReader = ByteReader(data: data)
-        let properties = try LZMAProperties(lzmaByte: byteReader.byte(), byteReader.int(fromBytes: 4))
+        let properties = try LZMAProperties(byteReader)
         let uncompSize = byteReader.int(fromBytes: 8)
         return try decompress(byteReader, properties, uncompSize)
     }

@@ -3,6 +3,8 @@
 //
 // See LICENSE for license information
 
+import BitByteData
+
 public struct LZMAProperties {
 
     public var lc: Int
@@ -41,6 +43,10 @@ public struct LZMAProperties {
         self.lp = (intByte / 9) % 5
 
         self.dictionarySize = dictSize
+    }
+
+    init(_ byteReader: ByteReader) throws {
+        try self.init(lzmaByte: byteReader.byte(), byteReader.int(fromBytes: 4))
     }
 
 }
