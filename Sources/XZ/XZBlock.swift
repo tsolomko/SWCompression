@@ -47,7 +47,7 @@ struct XZBlock {
                     else { throw LZMA2Error.wrongDictionarySize }
                 /// Filter property for LZMA2 is a dictionary size.
                 let filterPropeties = byteReader.byte()
-                filters.append { try Data(bytes: LZMA2.decompress($0, filterPropeties)) }
+                filters.append { try LZMA2.decompress($0, filterPropeties) }
             } else {
                 throw XZError.wrongFilterID
             }

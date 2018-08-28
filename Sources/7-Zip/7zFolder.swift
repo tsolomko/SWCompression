@@ -164,7 +164,7 @@ class SevenZipFolder {
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
 
-                decodedData = try Data(bytes: LZMA2.decompress(ByteReader(data: decodedData), properties[0]))
+                decodedData = try LZMA2.decompress(ByteReader(data: decodedData), properties[0])
             case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties,
