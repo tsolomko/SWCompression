@@ -99,7 +99,8 @@ final class LZMA2Decoder {
      scheme and resets decoder's state and sub-decoders.
      */
     private func updateProperties() throws {
-        try self.decoder.properties.updateProperties(lzmaByte: byteReader.byte())
+        self.decoder.properties = try LZMAProperties(lzmaByte: byteReader.byte(),
+                                                     self.decoder.properties.dictionarySize)
         self.decoder.resetStateAndDecoders()
     }
 

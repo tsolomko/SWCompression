@@ -30,12 +30,7 @@ public struct LZMAProperties {
         self.dictionarySize = 0
     }
 
-    init(lzmaByte: UInt8) throws {
-        self.init()
-        try self.updateProperties(lzmaByte: lzmaByte)
-    }
-
-    mutating func updateProperties(lzmaByte: UInt8) throws {
+    init(lzmaByte: UInt8, _ dictSize: Int) throws {
         guard lzmaByte < 9 * 5 * 5
             else { throw LZMAError.wrongProperties }
 
@@ -44,6 +39,8 @@ public struct LZMAProperties {
         self.lc = intByte % 9
         self.pb = (intByte / 9) / 5
         self.lp = (intByte / 9) % 5
+
+        self.dictionarySize = dictSize
     }
 
 }

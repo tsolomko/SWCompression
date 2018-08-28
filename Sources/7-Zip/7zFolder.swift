@@ -171,12 +171,11 @@ class SevenZipFolder {
                     properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
-                var lzmaProperties = try LZMAProperties(lzmaByte: properties[0])
                 var dictionarySize = 0
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
-                lzmaProperties.dictionarySize = dictionarySize
+                let lzmaProperties = try LZMAProperties(lzmaByte: properties[0], dictionarySize)
                 decodedData = try LZMA.decompress(data: decodedData,
                                                   properties: lzmaProperties,
                                                   uncompressedSize: unpackSize)
