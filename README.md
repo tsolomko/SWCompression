@@ -81,17 +81,15 @@ Available subspecs:
 
 #### "Optional Dependencies"
 
-Both ZIP and 7-Zip containers have a single compression method which is most likely to be used,
-for compression of data inside them. This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
-Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
-and SWCompression/LZMA subspec is a dependency for SWCompression/SevenZip.
+For both ZIP and 7-Zip there is a most commonly used compression method. This is Deflate for ZIP and LZMA/LZMA2 for
+7-Zip. Thus, SWCompression/ZIP subspec has SWCompression/Deflate subspec as a dependency and SWCompression/LZMA subspec
+is a dependency for SWCompression/SevenZip.
 
-But both of these formats support other compression methods, and some of them are implemented in SWCompression.
+But both of these formats support other compression methods as well, and some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
 
-"Optional dependency" in this context means
-that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
-only if a corresponding subspec is expicitly specified in your Podfile and installed.
+"Optional dependency" in this context means that SWCompression/ZIP or SWCompression/7-Zip will support particular
+compression methods only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
 List of "optional dependecies":
 
@@ -102,8 +100,8 @@ List of "optional dependecies":
     - SWCompression/BZip2
     - SWCompression/Deflate
 
-__Note:__ If you use Swift Package Manager or Carthage you always have everything
-(ZIP and 7-Zip are built with Deflate, BZip2 and LZMA/LZMA2 support).
+__Note:__ If you use Swift Package Manager or Carthage you always have everything (ZIP and 7-Zip are built with Deflate,
+BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
@@ -114,8 +112,7 @@ Then run `carthage update`.
 Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder
 into the "Embedded Binaries" section on your targets' "General" tab in Xcode.
 
-SWCompression depends on [BitByteData](https://github.com/tsolomko/BitByteData) framework,
-so Carthage will also download this dependency,
+SWCompression uses [BitByteData](https://github.com/tsolomko/BitByteData) framework, so Carthage will also download it,
 and you should drag and drop `BitByteData.framework` file into the "Embedded Binaries" as well.
 
 ## Usage
