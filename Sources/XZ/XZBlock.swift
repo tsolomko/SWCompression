@@ -40,7 +40,8 @@ struct XZBlock {
             guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
-            if filterID == 0x21 {
+            switch filterID {
+            case 0x21:
                 // First, we need to check if size of LZMA2 filter's properties is equal to 1 as expected.
                 let propertiesSize = try byteReader.multiByteDecode()
                 guard propertiesSize == 1
@@ -48,7 +49,14 @@ struct XZBlock {
                 /// Filter property for LZMA2 is a dictionary size.
                 let filterPropeties = byteReader.byte()
                 filters.append { try LZMA2.decompress($0, filterPropeties) }
-            } else {
+            case 0x03:
+                // First, we need to check if size of Delta filter's properties is equal to 1 as expected.
+                let propertiesSize = try byteReader.multiByteDecode()
+                guard propertiesSize == 1
+                    else { throw XZError.wrongField }
+                let distance = (byteReader.byte() &+ 1).toInt()
+                filters.append { DeltaFilter.decode($0, distance) }
+            default:
                 throw XZError.wrongFilterID
             }
         }
