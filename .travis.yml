@@ -4,7 +4,7 @@ git:
 jobs:
   include:
     - stage: test
-      language: objective-c
+      language: swift
       os: osx
       osx_image: xcode9.4
       before_install:
