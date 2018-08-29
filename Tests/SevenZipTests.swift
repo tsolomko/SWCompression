@@ -443,4 +443,35 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries.isEmpty, true)
     }
 
+    func testDeltaFilter() throws {
+        guard let testData = Constants.data(forTest: "test_delta_filter", withType: SevenZipTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        let entries = try SevenZipContainer.open(container: testData)
+
+        guard let answerData = Constants.data(forAnswer: "test4") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
 }
