@@ -27,6 +27,8 @@ in the repository.
 All tests were run using swcomp's "benchmark" command. SWCompression (and swcomp) were compiled
 using "Release" configuration.
 
+__Note:__ External commands used to create compressed files were run using their default sets of options.
+
 __Note:__ All results are averages over 10 iterations (6 iterations until 4.3.0 version).
 
 ## BZip2 Decompress
