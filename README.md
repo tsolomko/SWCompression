@@ -24,15 +24,10 @@ All features are listed in the tables below.
 | Decompression | ✅      | ✅     | ✅         |
 | Compression   | ✅      | ✅     | TBD        |
 
-|       | Zlib | GZip | XZ  |
-| ----- | ---- | ---- | --- |
-| Read  | ✅   | ✅    | ✅  |
-| Write | ✅   | ✅    | TBD |
-
-|       | ZIP | TAR | 7-Zip |
-| ----- | --- | --- | ----- |
-| Read  | ✅  | ✅   | ✅    |
-| Write | TBD | ✅   | TBD   |
+|       | Zlib | GZip | XZ  | ZIP | TAR | 7-Zip |
+| ----- | ---- | ---- | --- | --- | --- | ----- |
+| Read  | ✅   | ✅    | ✅  | ✅  | ✅   | ✅    |
+| Write | ✅   | ✅    | TBD | TBD | ✅   | TBD   |
 
 Also, SWCompression is _written with Swift only._
 
