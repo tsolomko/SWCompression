@@ -180,7 +180,13 @@ class SevenZipFolder {
                                                   properties: lzmaProperties,
                                                   uncompressedSize: unpackSize)
             default:
-                if coder.isEncryptionMethod {
+                if coder.id == [0x03] {
+                    guard let properties = coder.properties,
+                        properties.count == 1
+                        else { throw SevenZipError.internalStructureError }
+
+                    decodedData = DeltaFilter.decode(ByteReader(data: decodedData), (properties[0] &+ 1).toInt())
+                } else if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {
                     throw SevenZipError.compressionNotSupported
