@@ -50,6 +50,7 @@
 		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
 		065146231FA8E20C007F83F4 /* XZBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065146221FA8E20C007F83F4 /* XZBlock.swift */; };
 		06516B76213938B000C9823B /* Sha256.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06516B75213938B000C9823B /* Sha256.swift */; };
+		06516B782139505800C9823B /* Sha256Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06516B772139505800C9823B /* Sha256Tests.swift */; };
 		0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
 		0656B8261F8A960700111605 /* TarEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B8251F8A960700111605 /* TarEntryInfo.swift */; };
 		0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */; };
@@ -267,6 +268,7 @@
 		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
 		065146221FA8E20C007F83F4 /* XZBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZBlock.swift; sourceTree = "<group>"; };
 		06516B75213938B000C9823B /* Sha256.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sha256.swift; sourceTree = "<group>"; };
+		06516B772139505800C9823B /* Sha256Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sha256Tests.swift; sourceTree = "<group>"; };
 		0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerEntryType+Tar.swift"; sourceTree = "<group>"; };
 		0656B8251F8A960700111605 /* TarEntryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarEntryInfo.swift; sourceTree = "<group>"; };
 		0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+Tar.swift"; sourceTree = "<group>"; };
@@ -665,6 +667,7 @@
 				06F065A41FFB763300312A82 /* ZipTests.swift */,
 				06D42DA62067B71000C1A98B /* TestZipExtraField.swift */,
 				06F065A31FFB763300312A82 /* ZlibTests.swift */,
+				06516B772139505800C9823B /* Sha256Tests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1166,6 +1169,7 @@
 				06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */,
 				06F066171FFB763300312A82 /* BZip2Tests.swift in Sources */,
 				06F066181FFB763300312A82 /* TarTests.swift in Sources */,
+				06516B782139505800C9823B /* Sha256Tests.swift in Sources */,
 				06B15D9D210E17FC00AF2EA1 /* TarCreateTests.swift in Sources */,
 				06F066191FFB763300312A82 /* GzipTests.swift in Sources */,
 				06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */,
