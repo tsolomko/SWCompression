@@ -66,6 +66,7 @@
 		06912BD21F5C8F3D0070BB60 /* Deflate+Lengths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06912BD11F5C8F3D0070BB60 /* Deflate+Lengths.swift */; };
 		0694A74D1F7C0DF00023BC99 /* BurrowsWheeler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0694A74C1F7C0DF00023BC99 /* BurrowsWheeler.swift */; };
 		06955E491F65C761004D5D79 /* BZip2+Lengths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06955E481F65C761004D5D79 /* BZip2+Lengths.swift */; };
+		069864CA21403CE700755D9B /* test_sha256.xz in Resources */ = {isa = PBXBuildFile; fileRef = 069864C921403CE700755D9B /* test_sha256.xz */; };
 		0698B10921048FB800A7C551 /* TarCreateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0698B10821048FB800A7C551 /* TarCreateError.swift */; };
 		0698B10B2104E11200A7C551 /* test_gnu_inc_format.tar in Resources */ = {isa = PBXBuildFile; fileRef = 0698B10A2104E11200A7C551 /* test_gnu_inc_format.tar */; };
 		0698B10D2106136500A7C551 /* test_big_num_field.tar in Resources */ = {isa = PBXBuildFile; fileRef = 0698B10C2106136500A7C551 /* test_big_num_field.tar */; };
@@ -284,6 +285,7 @@
 		06912BD11F5C8F3D0070BB60 /* Deflate+Lengths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Deflate+Lengths.swift"; sourceTree = "<group>"; };
 		0694A74C1F7C0DF00023BC99 /* BurrowsWheeler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurrowsWheeler.swift; sourceTree = "<group>"; };
 		06955E481F65C761004D5D79 /* BZip2+Lengths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BZip2+Lengths.swift"; sourceTree = "<group>"; };
+		069864C921403CE700755D9B /* test_sha256.xz */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_sha256.xz; sourceTree = "<group>"; };
 		0698B10821048FB800A7C551 /* TarCreateError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarCreateError.swift; sourceTree = "<group>"; };
 		0698B10A2104E11200A7C551 /* test_gnu_inc_format.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_gnu_inc_format.tar; sourceTree = "<group>"; };
 		0698B10C2106136500A7C551 /* test_big_num_field.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_big_num_field.tar; sourceTree = "<group>"; };
@@ -746,6 +748,7 @@
 				06F065CD1FFB763300312A82 /* test_multi.xz */,
 				06F065CA1FFB763300312A82 /* test_multi_pad.xz */,
 				062D591321248757003543BD /* test_delta_filter.xz */,
+				069864C921403CE700755D9B /* test_sha256.xz */,
 			);
 			path = XZ;
 			sourceTree = "<group>";
@@ -1019,6 +1022,7 @@
 				06F066331FFB763400312A82 /* random_file.zlib in Resources */,
 				0698B10F2106344200A7C551 /* test_negative_mtime.tar in Resources */,
 				06F066561FFB763400312A82 /* SWCompressionSourceCode.tar in Resources */,
+				069864CA21403CE700755D9B /* test_sha256.xz in Resources */,
 				06F0663D1FFB763400312A82 /* test2.xz in Resources */,
 				06F066351FFB763400312A82 /* test5.xz in Resources */,
 				06F066631FFB763400312A82 /* test_complicated_coding_scheme.7z in Resources */,

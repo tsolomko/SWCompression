@@ -130,4 +130,20 @@ class XZTests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 
+    func testSha256Check() throws {
+        guard let testData = Constants.data(forTest: "test_sha256", withType: XZTests.testType) else {
+            XCTFail("Unable to get test data.")
+            return
+        }
+
+        let decompressedData = try XZArchive.unarchive(archive: testData)
+
+        guard let answerData = Constants.data(forAnswer: "test4") else {
+            XCTFail("Unable to get answer data.")
+            return
+        }
+
+        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+    }
+
 }
