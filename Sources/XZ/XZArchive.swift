@@ -107,7 +107,9 @@ public class XZArchive: Archive {
                     guard CheckSums.crc64(block.data) == check
                         else { return (out, true) }
                 case .sha256:
-                    throw XZError.checkTypeSHA256
+                    let check = byteReader.bytes(count: 32)
+                    guard Sha256.hash(data: block.data) == check
+                        else { return (out, true) }
                 }
                 blockInfos.append((block.unpaddedSize, block.uncompressedSize))
             }
