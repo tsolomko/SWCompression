@@ -11,17 +11,10 @@ class XZTests: XCTestCase {
     private static let testType: String = "xz"
 
     func perform(test testName: String) throws {
-        guard let testData = Constants.data(forTest: testName, withType: XZTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: testName, withType: XZTests.testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
-        guard let answerData = Constants.data(forAnswer: testName) else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: testName)
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 
@@ -64,21 +57,14 @@ class XZTests: XCTestCase {
 
     func testMultiStreamNoPadding() throws {
         // Doesn't contain any padding.
-        guard let testData = Constants.data(forTest: "test_multi", withType: XZTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
 
         let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
-            guard let currentAnswerData = Constants.data(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer data.")
-                return
-            }
-
+            let currentAnswerData = try Constants.data(forAnswer: "test\(i)")
             answerData.append(currentAnswerData)
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
@@ -92,20 +78,14 @@ class XZTests: XCTestCase {
         // Third - 8 bytes.
         // At the end - 4 bytes.
 
-        guard let testData = Constants.data(forTest: "test_multi_pad", withType: XZTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_multi_pad", withType: XZTests.testType)
 
         let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
 
         var answerData = Data()
         for i in 1...4 {
-            guard let currentAnswerData = Constants.data(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer data.")
-                return
-            }
+            let currentAnswerData = try Constants.data(forAnswer: "test\(i)")
 
             answerData.append(currentAnswerData)
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
@@ -115,34 +95,18 @@ class XZTests: XCTestCase {
     }
 
     func testDeltaFilter() throws {
-        guard let testData = Constants.data(forTest: "test_delta_filter", withType: XZTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_delta_filter", withType: XZTests.testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "test4")
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 
     func testSha256Check() throws {
-        guard let testData = Constants.data(forTest: "test_sha256", withType: XZTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_sha256", withType: XZTests.testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "test4")
         XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
     }
 

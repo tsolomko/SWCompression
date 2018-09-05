@@ -11,10 +11,7 @@ class BZip2CompressionTests: XCTestCase {
     private static let testType: String = "bz2"
 
     func answerTest(_ testName: String) throws {
-        guard let answerData = Constants.data(forAnswer: testName) else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: testName)
 
         let compressedData = BZip2.compress(data: answerData)
 

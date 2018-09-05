@@ -19,28 +19,22 @@ class Constants {
      - test9: file with size of 10KB containing random bytes from /dev/urandom.
     */
 
-    static func data(forTest name: String, withType ext: String) -> Data? {
-        if let url = Constants.url(forTest: name, withType: ext) {
-            return try? Data(contentsOf: url, options: .mappedIfSafe)
-        } else {
-            return nil
-        }
+    static func data(forTest name: String, withType ext: String) throws -> Data {
+        let url = Constants.url(forTest: name, withType: ext)
+        return try Data(contentsOf: url, options: .mappedIfSafe)
     }
 
-    private static func url(forTest name: String, withType ext: String) -> URL? {
-        return testBundle.url(forResource: name, withExtension: ext)
+    private static func url(forTest name: String, withType ext: String) -> URL {
+        return testBundle.url(forResource: name, withExtension: ext)!
     }
 
-    static func data(forAnswer name: String) -> Data? {
-        if let url = Constants.url(forAnswer: name) {
-            return try? Data(contentsOf: url, options: .mappedIfSafe)
-        } else {
-            return nil
-        }
+    static func data(forAnswer name: String) throws -> Data {
+        let url = Constants.url(forAnswer: name)
+        return try Data(contentsOf: url, options: .mappedIfSafe)
     }
 
-    private static func url(forAnswer name: String) -> URL? {
-        return testBundle.url(forResource: name, withExtension: "answer")
+    private static func url(forAnswer name: String) -> URL {
+        return testBundle.url(forResource: name, withExtension: "answer")!
     }
 
     private static let testBundle: Bundle = Bundle(for: Constants.self)
