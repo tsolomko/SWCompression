@@ -15,7 +15,7 @@ class LzmaTests: XCTestCase {
         let decompressedData = try LZMA.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: "test8")
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testLzma8() throws {

@@ -16,9 +16,9 @@ class ZlibTests: XCTestCase {
         let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
         let testZlibHeader = try ZlibHeader(archive: testData)
 
-        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate, "Incorrect compression method.")
-        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm, "Incorrect compression level.")
-        XCTAssertEqual(testZlibHeader.windowSize, 32768, "Incorrect window size.")
+        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate)
+        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm)
+        XCTAssertEqual(testZlibHeader.windowSize, 32768)
     }
 
     func testZlibFull() throws {
@@ -26,7 +26,7 @@ class ZlibTests: XCTestCase {
         let decompressedData = try ZlibArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test9")
-        XCTAssertEqual(decompressedData, answerData, "Unarchiving was incorrect")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testCreateZlib() throws {
@@ -34,7 +34,7 @@ class ZlibTests: XCTestCase {
         let archiveData = ZlibArchive.archive(data: testData)
         let reextractedData = try ZlibArchive.unarchive(archive: archiveData)
 
-        XCTAssertEqual(testData, reextractedData, "Re-extracted data is not equal to initial data.")
+        XCTAssertEqual(testData, reextractedData)
     }
 
 }

@@ -27,10 +27,7 @@ class BZip2CompressionTests: XCTestCase {
     }
 
     func stringTest(_ string: String) throws {
-        guard let answerData = string.data(using: .utf8) else {
-            XCTFail("Unable to convert String to Data.")
-            return
-        }
+        let answerData = string.data(using: .utf8)!
 
         let compressedData = BZip2.compress(data: answerData)
 

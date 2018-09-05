@@ -15,7 +15,7 @@ class XZTests: XCTestCase {
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testXz1() throws {
@@ -99,7 +99,7 @@ class XZTests: XCTestCase {
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testSha256Check() throws {
@@ -107,7 +107,7 @@ class XZTests: XCTestCase {
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
 }

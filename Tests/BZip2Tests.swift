@@ -15,7 +15,7 @@ class BZip2Tests: XCTestCase {
         let decompressedData = try BZip2.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func test1BZip2() throws {
