@@ -8,7 +8,7 @@ import Foundation
 infix operator >>>
 
 @inline(__always)
-fileprivate func >>> (num: UInt32, count: Int) -> UInt32 {
+private func >>> (num: UInt32, count: Int) -> UInt32 {
     // This implementation assumes without checking that `count` is in the 1...31 range.
     return (num >> UInt32(truncatingIfNeeded: count)) | (num << UInt32(truncatingIfNeeded: 32 - count))
 }

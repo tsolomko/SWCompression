@@ -107,4 +107,3 @@ fileprivate extension Data {
     }
 
 }
-
