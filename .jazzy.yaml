@@ -16,6 +16,7 @@ custom_categories:
       - BZip2
       - Deflate
       - LZMA
+      - LZMAProperties
       - LZMA2
     - name: Archives
       children:
