@@ -11,7 +11,7 @@ public class ZipContainer: Container {
 
     /**
      Contains user-defined extra fields. When either `ZipContainer.info(container:)` or `ZipContainer.open(container:)`
-     function encounters non-standard extra field, it uses this dictionary and tries to find a corresponding
+     function encounters extra field without built-in support, it uses this dictionary and tries to find a corresponding
      user-defined extra field. If an approriate custom extra field is found and successfully processed, then the result
      is stored in `ZipEntryInfo.customExtraFields`.
 
@@ -57,17 +57,13 @@ public class ZipContainer: Container {
     }
 
     private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> (data: Data, crcError: Bool) {
-        let hasDataDescriptor = info.localHeader.generalPurposeBitFlags & 0x08 != 0
-
-        // If file has data descriptor, then some values in local header are absent.
-        // So we need to use values from CD entry.
-        var uncompSize = hasDataDescriptor ? info.cdEntry.uncompSize : info.localHeader.uncompSize
-        var compSize = hasDataDescriptor ? info.cdEntry.compSize : info.localHeader.compSize
-        var crc32 = hasDataDescriptor ? info.cdEntry.crc32 : info.localHeader.crc32
+        var uncompSize = info.uncompSize
+        var compSize = info.compSize
+        var crc32 = info.crc
 
         let fileData: Data
         let byteReader = ByteReader(data: data)
-        byteReader.offset = info.localHeader.dataOffset
+        byteReader.offset = info.dataOffset
         switch info.compressionMethod {
         case .copy:
             fileData = Data(bytes: byteReader.bytes(count: uncompSize.toInt()))
@@ -93,16 +89,16 @@ public class ZipContainer: Container {
         case .lzma:
             #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
                 byteReader.offset += 4 // Skipping LZMA SDK version and size of properties.
-                fileData = try LZMA.decompress(byteReader, uncompSize)
+                fileData = try LZMA.decompress(byteReader, LZMAProperties(byteReader), uncompSize.toInt())
             #else
                 throw ZipError.compressionNotSupported
             #endif
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = byteReader.offset - info.localHeader.dataOffset
+        let realCompSize = byteReader.offset - info.dataOffset
 
-        if hasDataDescriptor {
+        if info.hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
             let ddSignature = byteReader.uint32()
@@ -111,7 +107,7 @@ public class ZipContainer: Container {
             }
             // Now, let's update with values from data descriptor.
             crc32 = byteReader.uint32()
-            if info.localHeader.zip64FieldsArePresent {
+            if info.zip64FieldsArePresent {
                 compSize = byteReader.uint64()
                 uncompSize = byteReader.uint64()
             } else {
@@ -175,7 +171,7 @@ public class ZipContainer: Container {
             let info = try ZipEntryInfo(byteReader, endOfCD.currentDiskNumber)
             entries.append(info)
             // Move to the next Central Directory entry.
-            byteReader.offset = info.cdEntry.nextEntryOffset
+            byteReader.offset = info.nextCdEntryOffset
         }
 
         return entries

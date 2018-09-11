@@ -164,37 +164,29 @@ class SevenZipFolder {
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
 
-                let byteReader = ByteReader(data: decodedData)
-
-                let decoder = LZMA2Decoder(byteReader)
-                try decoder.setDictionarySize(properties[0])
-
-                try decoder.decode()
-                decodedData = Data(bytes: decoder.out)
+                decodedData = try LZMA2.decompress(ByteReader(data: decodedData), properties[0])
             case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties,
                     properties.count == 5
                     else { throw LZMAError.wrongProperties }
 
-                let byteReader = ByteReader(data: decodedData)
-                let decoder = LZMADecoder(byteReader)
-
-                try decoder.setProperties(properties[0])
-                decoder.resetStateAndDecoders()
-
                 var dictionarySize = 0
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
-                decoder.dictSize = dictionarySize
-
-                decoder.uncompressedSize = unpackSize
-
-                try decoder.decode()
-                decodedData = Data(bytes: decoder.out)
+                let lzmaProperties = try LZMAProperties(lzmaByte: properties[0], dictionarySize)
+                decodedData = try LZMA.decompress(data: decodedData,
+                                                  properties: lzmaProperties,
+                                                  uncompressedSize: unpackSize)
             default:
-                if coder.isEncryptionMethod {
+                if coder.id == [0x03] {
+                    guard let properties = coder.properties,
+                        properties.count == 1
+                        else { throw SevenZipError.internalStructureError }
+
+                    decodedData = DeltaFilter.decode(ByteReader(data: decodedData), (properties[0] &+ 1).toInt())
+                } else if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {
                     throw SevenZipError.compressionNotSupported

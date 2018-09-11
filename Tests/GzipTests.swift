@@ -11,40 +11,26 @@ class GzipTests: XCTestCase {
     private static let testType: String = "gz"
 
     func header(test testName: String, mtime: Int) throws {
-        guard let testData = Constants.data(forTest: testName, withType: GzipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
         let testGzipHeader = try GzipHeader(archive: testData)
 
-        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
-        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)),
-                       "Incorrect mtime.")
-        XCTAssertEqual(testGzipHeader.osType, .unix, "Incorrect OS type.")
-        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
-        XCTAssertEqual(testGzipHeader.comment, nil, "Incorrect comment.")
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate)
+        XCTAssertEqual(testGzipHeader.modificationTime, Date(timeIntervalSince1970: TimeInterval(mtime)))
+        XCTAssertEqual(testGzipHeader.osType, .unix)
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer")
+        XCTAssertEqual(testGzipHeader.comment, nil)
     }
 
     func unarchive(test testName: String) throws {
-        guard let testData = Constants.data(forTest: testName, withType: GzipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
         let decompressedData = try? GzipArchive.unarchive(archive: testData)
 
-        guard let answerData = Constants.data(forAnswer: testName) else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        let answerData = try Constants.data(forAnswer: testName)
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func archive(test testName: String) throws {
-        guard let answerData = Constants.data(forAnswer: testName) else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: testName)
 
         // Options for archiving.
         let mtimeDate = Date(timeIntervalSinceNow: 0.0)
@@ -61,17 +47,17 @@ class GzipTests: XCTestCase {
         // Test output GZip header.
         let testGzipHeader = try GzipHeader(archive: archiveData)
 
-        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate, "Incorrect compression method.")
-        XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, mtime, "Incorrect mtime.")
-        XCTAssertEqual(testGzipHeader.osType, .macintosh, "Incorrect OS type.")
-        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer", "Incorrect original file name.")
-        XCTAssertEqual(testGzipHeader.comment, "some file comment", "Incorrect comment.")
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate)
+        XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, mtime)
+        XCTAssertEqual(testGzipHeader.osType, .macintosh)
+        XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer")
+        XCTAssertEqual(testGzipHeader.comment, "some file comment")
         XCTAssertTrue(testGzipHeader.isTextFile)
 
         // Test output GZip archive content.
         let decompressedData = try GzipArchive.unarchive(archive: archiveData)
 
-        XCTAssertEqual(decompressedData, answerData, "Decompression was incorrect.")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testGzip1() throws {
@@ -124,10 +110,7 @@ class GzipTests: XCTestCase {
     }
 
     func testMultiUnarchive() throws {
-        guard let testData = Constants.data(forTest: "test_multi", withType: GzipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_multi", withType: GzipTests.testType)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 4)
@@ -137,20 +120,13 @@ class GzipTests: XCTestCase {
             XCTAssertEqual(header.fileName, "test\(i).answer")
             let data = members[i - 1].data
 
-            guard let answerData = Constants.data(forAnswer: "test\(i)") else {
-                XCTFail("Unable to get answer data.")
-                return
-            }
-
+            let answerData = try Constants.data(forAnswer: "test\(i)")
             XCTAssertEqual(data, answerData)
         }
     }
 
     func testMultiUnarchiveRedundant() throws {
-        guard let testData = Constants.data(forTest: "test1", withType: GzipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test1", withType: GzipTests.testType)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         XCTAssertEqual(members.count, 1)
@@ -159,11 +135,7 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(header.fileName, "test1.answer")
         let data = members[0].data
 
-        guard let answerData = Constants.data(forAnswer: "test1") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "test1")
         XCTAssertEqual(data, answerData)
     }
 

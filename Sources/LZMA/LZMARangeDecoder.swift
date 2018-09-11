@@ -10,9 +10,9 @@ final class LZMARangeDecoder {
 
     private var byteReader: ByteReader
 
-    private var range: UInt32 = 0xFFFFFFFF
-    private var code: UInt32 = 0
-    private(set) var isCorrupted: Bool = false
+    private var range = 0xFFFFFFFF as UInt32
+    private var code = 0 as UInt32
+    private(set) var isCorrupted = false
 
     var isFinishedOK: Bool {
         return self.code == 0
@@ -32,9 +32,6 @@ final class LZMARangeDecoder {
 
     init() {
         self.byteReader = ByteReader(data: Data())
-        self.range = 0xFFFFFFFF
-        self.code = 0
-        self.isCorrupted = false
     }
 
     /// `range` property cannot be smaller than `(1 << 24)`. This function keeps it bigger.

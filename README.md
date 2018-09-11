@@ -24,15 +24,10 @@ All features are listed in the tables below.
 | Decompression | ✅      | ✅     | ✅         |
 | Compression   | ✅      | ✅     | TBD        |
 
-|       | Zlib | GZip | XZ  |
-| ----- | ---- | ---- | --- |
-| Read  | ✅   | ✅    | ✅  |
-| Write | ✅   | ✅    | TBD |
-
-|       | ZIP | TAR | 7-Zip |
-| ----- | --- | --- | ----- |
-| Read  | ✅  | ✅   | ✅    |
-| Write | TBD | ✅   | TBD   |
+|       | Zlib | GZip | XZ  | ZIP | TAR | 7-Zip |
+| ----- | ---- | ---- | --- | --- | --- | ----- |
+| Read  | ✅   | ✅    | ✅  | ✅  | ✅   | ✅    |
+| Write | ✅   | ✅    | TBD | TBD | ✅   | TBD   |
 
 Also, SWCompression is _written with Swift only._
 
@@ -51,7 +46,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.3.0")
+                 from: "4.5.0")
     ],
     targets: [
         .target(
@@ -66,7 +61,7 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.3'` and `use_frameworks!` to your Podfile.
+Add `pod 'SWCompression', '~> 4.5'` and `use_frameworks!` to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -86,17 +81,15 @@ Available subspecs:
 
 #### "Optional Dependencies"
 
-Both ZIP and 7-Zip containers have a single compression method which is most likely to be used,
-for compression of data inside them. This is Deflate for ZIP and LZMA/LZMA2 for 7-Zip.
-Thus, SWCompression/ZIP subspec have SWCompression/Deflate subspec as a dependency
-and SWCompression/LZMA subspec is a dependency for SWCompression/SevenZip.
+For both ZIP and 7-Zip there is a most commonly used compression method. This is Deflate for ZIP and LZMA/LZMA2 for
+7-Zip. Thus, SWCompression/ZIP subspec has SWCompression/Deflate subspec as a dependency and SWCompression/LZMA subspec
+is a dependency for SWCompression/SevenZip.
 
-But both of these formats support other compression methods, and some of them are implemented in SWCompression.
+But both of these formats support other compression methods as well, and some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
 
-"Optional dependency" in this context means
-that SWCompression/ZIP or SWCompression/7-Zip will support particular compression methods
-only if a corresponding subspec is expicitly specified in your Podfile and installed.
+"Optional dependency" in this context means that SWCompression/ZIP or SWCompression/7-Zip will support particular
+compression methods only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
 List of "optional dependecies":
 
@@ -107,20 +100,19 @@ List of "optional dependecies":
     - SWCompression/BZip2
     - SWCompression/Deflate
 
-__Note:__ If you use Swift Package Manager or Carthage you always have everything
-(ZIP and 7-Zip are built with Deflate, BZip2 and LZMA/LZMA2 support).
+__Note:__ If you use Swift Package Manager or Carthage you always have everything (ZIP and 7-Zip are built with Deflate,
+BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.3`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.5`.
 
 Then run `carthage update`.
 
 Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder
 into the "Embedded Binaries" section on your targets' "General" tab in Xcode.
 
-SWCompression depends on [BitByteData](https://github.com/tsolomko/BitByteData) framework,
-so Carthage will also download this dependency,
+SWCompression uses [BitByteData](https://github.com/tsolomko/BitByteData) framework, so Carthage will also download it,
 and you should drag and drop `BitByteData.framework` file into the "Embedded Binaries" as well.
 
 ## Usage
@@ -202,7 +194,7 @@ since Swift Package Manager have some problems with Git LFS-enabled repositories
 __Note:__ You can also use "Utils/prepare-workspace-macos.sh" script from the repository,
 which not only downloads test files but also downloads dependencies.
 
-## Performace
+## Performance
 
 Usage of whole module optimizations is recommended for best performance.
 These optimizations are enabled by default for Release configurations.
@@ -211,16 +203,16 @@ These optimizations are enabled by default for Release configurations.
 
 ## Why?
 
-First of all, existing solutions for work with compression, archives and containers have some problems.
-They might not support some particular compression algorithms or archive formats and they all have different APIs,
-which sometimes can be slightly "unfriendly" to users.
-This project attempts to provide missing (and sometimes existing) functionality through unified API,
+First of all, existing solutions for work with compression, archives and containers have certain disadvantages.
+They might not support a particular compression algorithm or archive format and they all have different APIs,
+which sometimes can be slightly confusing for users.
+This project attempts to provide missing (and sometimes existing) functionality through unified API
 which is easy to use and remember.
 
 Secondly, it may be important to have a compression framework written completely in Swift,
 without relying on either system libraries or solutions implemented in different languages.
 Additionaly, since SWCompression is written fully in Swift without Objective-C,
-it can also be compiled on __Linux__.
+it can also be used on __Linux__.
 
 ## Future plans
 
@@ -238,7 +230,7 @@ If you would like to support this project or me financially you can do so via Pa
 
 ## License
 
-[MIT licensed](https://github.com/tsolomko/SWCompression/blob/develop/LICENSE)
+[MIT licensed](LICENSE)
 
 ## References
 
@@ -255,6 +247,7 @@ If you would like to support this project or me financially you can do so via Pa
 - [Wikipedia article about TAR](https://en.wikipedia.org/wiki/Tar_(computing))
 - [Pax specification](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
 - [Basic TAR specification](https://www.gnu.org/software/tar/manual/html_node/Standard.html)
+- [star man pages](https://www.systutorials.com/docs/linux/man/5-star/)
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 - [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
 - [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)

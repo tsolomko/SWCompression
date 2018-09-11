@@ -13,41 +13,28 @@ class ZlibTests: XCTestCase {
     func testZlib() throws {
         let testName = "test"
 
-        guard let testData = Constants.data(forTest: testName, withType: ZlibTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
         let testZlibHeader = try ZlibHeader(archive: testData)
 
-        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate, "Incorrect compression method.")
-        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm, "Incorrect compression level.")
-        XCTAssertEqual(testZlibHeader.windowSize, 32768, "Incorrect window size.")
+        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate)
+        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm)
+        XCTAssertEqual(testZlibHeader.windowSize, 32768)
     }
 
     func testZlibFull() throws {
-        guard let testData = Constants.data(forTest: "random_file", withType: ZlibTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
         let decompressedData = try ZlibArchive.unarchive(archive: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test9") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
-        XCTAssertEqual(decompressedData, answerData, "Unarchiving was incorrect")
+        let answerData = try Constants.data(forAnswer: "test9")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
     func testCreateZlib() throws {
-        guard let testData = Constants.data(forAnswer: "test9") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let testData = try Constants.data(forAnswer: "test9")
         let archiveData = ZlibArchive.archive(data: testData)
         let reextractedData = try ZlibArchive.unarchive(archive: archiveData)
 
-        XCTAssertEqual(testData, reextractedData, "Re-extracted data is not equal to initial data.")
+        XCTAssertEqual(testData, reextractedData)
     }
 
 }

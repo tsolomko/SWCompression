@@ -21,7 +21,11 @@ public enum XZError: Error {
     case wrongInfoCRC
     /// Filter used in archive is unsupported.
     case wrongFilterID
-    /// Archive uses SHA-256 checksum which is unsupported.
+    /**
+     Archive uses SHA-256 checksum which is unsupported.
+
+     - Note: This error is never thrown and will be removed in the next major update.
+     */
     case checkTypeSHA256
     /**
      Either size of decompressed data isn't equal to the one specified in archive or

@@ -15,27 +15,20 @@ final class LZMA2Decoder {
         return self.decoder.out
     }
 
-    init(_ byteReader: ByteReader) {
+    init(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws {
         self.byteReader = byteReader
         self.decoder = LZMADecoder(byteReader)
-    }
 
-    func setDictionarySize(_ byte: UInt8) throws {
-        guard byte & 0xC0 == 0
+        guard dictSizeByte & 0xC0 == 0
             else { throw LZMA2Error.wrongDictionarySize }
-        let bits = (byte & 0x3F).toInt()
+        let bits = (dictSizeByte & 0x3F).toInt()
         guard bits < 40
             else { throw LZMA2Error.wrongDictionarySize }
 
-        var dictSize: UInt32 = 0
-        if bits == 40 {
-            dictSize = UInt32.max
-        } else {
-            dictSize = UInt32(truncatingIfNeeded: 2 | (bits & 1))
-            dictSize <<= UInt32(truncatingIfNeeded: bits / 2 + 11)
-        }
+        let dictSize = bits == 40 ? UInt32.max :
+            (UInt32(truncatingIfNeeded: 2 | (bits & 1)) << UInt32(truncatingIfNeeded: bits / 2 + 11))
 
-        self.decoder.dictSize = dictSize.toInt()
+        self.decoder.properties.dictionarySize = dictSize.toInt()
     }
 
     /// Main LZMA2 decoder function.
@@ -73,11 +66,9 @@ final class LZMA2Decoder {
         case 1:
             self.decoder.resetStateAndDecoders()
         case 2:
-            try self.decoder.setProperties(byteReader.byte())
-            self.decoder.resetStateAndDecoders()
+            try self.updateProperties()
         case 3:
-            try self.decoder.setProperties(byteReader.byte())
-            self.decoder.resetStateAndDecoders()
+            try self.updateProperties()
             self.decoder.resetDictionary()
         default:
             throw LZMA2Error.wrongReset
@@ -96,6 +87,16 @@ final class LZMA2Decoder {
         for _ in 0..<dataSize {
             self.decoder.put(self.byteReader.byte())
         }
+    }
+
+    /**
+     Sets `lc`, `pb` and `lp` properties of LZMA decoder with a single `byte` using standard LZMA properties encoding
+     scheme and resets decoder's state and sub-decoders.
+     */
+    private func updateProperties() throws {
+        self.decoder.properties = try LZMAProperties(lzmaByte: byteReader.byte(),
+                                                     self.decoder.properties.dictionarySize)
+        self.decoder.resetStateAndDecoders()
     }
 
 }

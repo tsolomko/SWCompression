@@ -12,6 +12,9 @@ public class LZMA2: DecompressionAlgorithm {
     /**
      Decompresses `data` using LZMA2 algortihm.
 
+     - Note: It is assumed that the first byte of `data` is a dictionary size encoded with standard encoding scheme of
+     LZMA2 format.
+
      - Parameter data: Data compressed with LZMA2.
 
      - Throws: `LZMAError` or `LZMA2Error` if unexpected byte (bit) sequence was encountered in `data`.
@@ -21,14 +24,13 @@ public class LZMA2: DecompressionAlgorithm {
      */
     public static func decompress(data: Data) throws -> Data {
         let byteReader = ByteReader(data: data)
-        return Data(bytes: try decompress(byteReader))
+        return try decompress(byteReader, byteReader.byte())
     }
 
-    static func decompress(_ byteReader: ByteReader) throws -> [UInt8] {
-        let decoder = LZMA2Decoder(byteReader)
-        try decoder.setDictionarySize(byteReader.byte())
+    static func decompress(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws -> Data {
+        let decoder = try LZMA2Decoder(byteReader, dictSizeByte)
         try decoder.decode()
-        return decoder.out
+        return Data(bytes: decoder.out)
     }
 
 }

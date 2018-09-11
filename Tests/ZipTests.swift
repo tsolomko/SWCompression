@@ -11,19 +11,13 @@ class ZipTests: XCTestCase {
     private static let testType: String = "zip"
 
     func testBigContainer() throws {
-        guard let testData = Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType)
 
         _ = try ZipContainer.open(container: testData)
     }
 
     func testZipCustomExtraField() throws {
-        guard let testData = Constants.data(forTest: "test_custom_extra_field", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_custom_extra_field", withType: ZipTests.testType)
 
         // First, we check that without enabling support for our custom extra field, ZipContainer doesn't recognize it.
         var entries = try ZipContainer.open(container: testData)
@@ -58,10 +52,7 @@ class ZipTests: XCTestCase {
     }
 
     func testZip64() throws {
-        guard let testData = Constants.data(forTest: "test_zip64", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_zip64", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 6)
@@ -79,10 +70,7 @@ class ZipTests: XCTestCase {
     }
 
     func testDataDescriptor() throws {
-        guard let testData = Constants.data(forTest: "test_data_descriptor", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_data_descriptor", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 6)
@@ -96,14 +84,18 @@ class ZipTests: XCTestCase {
             XCTAssertNotNil(entry.info.modificationTime)
             XCTAssertNotNil(entry.info.accessTime)
             XCTAssertNil(entry.info.creationTime)
+            if entry.info.name == "test_dir/dir_with_file/test_file" {
+                XCTAssertEqual(entry.info.size, 14)
+                XCTAssertEqual(entry.info.crc, 0xB4E89E84)
+            } else if entry.info.name == "test_dir/random_file" {
+                XCTAssertEqual(entry.info.size, 10250)
+                XCTAssertEqual(entry.info.crc, 0xD888DA2E)
+            }
         }
     }
 
     func testUnicode() throws {
-        guard let testData = Constants.data(forTest: "test_unicode", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_unicode", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -122,19 +114,12 @@ class ZipTests: XCTestCase {
         XCTAssertNotNil(entries[0].info.accessTime)
         XCTAssertNil(entries[0].info.creationTime)
 
-        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "текстовый файл")
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testZipLZMA() throws {
-        guard let testData = Constants.data(forTest: "test_zip_lzma", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_zip_lzma", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -153,19 +138,12 @@ class ZipTests: XCTestCase {
         XCTAssertNotNil(entries[0].info.accessTime)
         XCTAssertNotNil(entries[0].info.creationTime)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "test4")
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testZipBZip2() throws {
-        guard let testData = Constants.data(forTest: "test_zip_bzip2", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_zip_bzip2", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -184,19 +162,12 @@ class ZipTests: XCTestCase {
         XCTAssertNotNil(entries[0].info.accessTime)
         XCTAssertNotNil(entries[0].info.creationTime)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "test4")
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testWinContainer() throws {
-        guard let testData = Constants.data(forTest: "test_win", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_win", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 2)
@@ -239,10 +210,7 @@ class ZipTests: XCTestCase {
     }
 
     func testEmptyFile() throws {
-        guard let testData = Constants.data(forTest: "test_empty_file", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_file", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -266,10 +234,7 @@ class ZipTests: XCTestCase {
     }
 
     func testEmptyDirectory() throws {
-        guard let testData = Constants.data(forTest: "test_empty_dir", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -293,10 +258,7 @@ class ZipTests: XCTestCase {
     }
 
     func testEmptyContainer() throws {
-        guard let testData = Constants.data(forTest: "test_empty_cont", withType: ZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: ZipTests.testType)
         let entries = try ZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.isEmpty, true)

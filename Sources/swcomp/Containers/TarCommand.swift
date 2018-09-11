@@ -22,7 +22,7 @@ class TarCommand: Command {
     let create = Key<String>("-c", "--create",
                              description: "Create a new container containing specified file/directory (recursively)")
 
-    let verbose = Flag("--verbose", description: "Print the list of extracted files and directories.")
+    let verbose = Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
 
     var optionGroups: [OptionGroup] {
         let compressions = OptionGroup(options: [gz, bz2, xz], restriction: .atMostOne)

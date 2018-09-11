@@ -10,13 +10,7 @@ final class LZMADecoder {
 
     private let byteReader: ByteReader
 
-    var dictSize = 0 {
-        didSet {
-            if dictSize < 1 << 12 {
-                dictSize = 1 << 12
-            }
-        }
-    }
+    var properties = LZMAProperties()
 
     var uncompressedSize = -1
 
@@ -27,9 +21,21 @@ final class LZMADecoder {
     private var dictStart = 0
     private var dictEnd = 0
 
-    private var lc: UInt8 = 0
-    private var lp: UInt8 = 0
-    private var pb: UInt8 = 0
+    private var dictSize: Int {
+        return self.properties.dictionarySize
+    }
+
+    private var lc: Int {
+        return self.properties.lc
+    }
+
+    private var lp: Int {
+        return self.properties.lp
+    }
+
+    private var pb: Int {
+        return self.properties.pb
+    }
 
     private var rangeDecoder = LZMARangeDecoder()
     private var posSlotDecoder  = [LZMABitTreeDecoder]()
@@ -71,25 +77,7 @@ final class LZMADecoder {
     }
 
     /**
-     Sets `lc`, `pb` and `lp` properties of LZMA decoder based on the `byte`.
-
-     - Important: `resetStateAndDecoders` should always be called afterwards.
-     */
-    func setProperties(_ byte: UInt8) throws {
-        guard byte < 9 * 5 * 5
-            else { throw LZMAError.wrongProperties }
-        /// The number of literal context bits
-        self.lc = byte % 9
-        /// The number of pos bits
-        self.pb = (byte / 9) / 5
-        /// The number of literal pos bits
-        self.lp = (byte / 9) % 5
-    }
-
-    /**
      Resets state properties and various sub-decoders of LZMA decoder.
-
-     - Important: Should always be called after changing any of `lc`, `pb` or `lp` properties.
      */
     func resetStateAndDecoders() {
         self.state = 0
@@ -100,9 +88,8 @@ final class LZMADecoder {
         self.rep3 = 0
 
         self.probabilities = Array(repeating: LZMAConstants.probInitValue, count: 2 * 192 + 4 * 12)
-        self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue,
-                                                   count: 0x300),
-                                  count: 1 << (lc + lp).toInt())
+        self.literalProbs = Array(repeating: Array(repeating: LZMAConstants.probInitValue, count: 0x300),
+                                  count: 1 << (lc + lp))
 
         self.posSlotDecoder = []
         for _ in 0..<LZMAConstants.numLenToPosStates {
@@ -135,7 +122,7 @@ final class LZMADecoder {
                 }
             }
 
-            let posState = out.count & ((1 << pb.toInt()) - 1)
+            let posState = out.count & ((1 << pb) - 1)
             if rangeDecoder.decode(bitWithProb:
                 &probabilities[(state << LZMAConstants.numPosBitsMax) + posState]) == 0 {
                 if uncompressedSize == 0 {
@@ -144,7 +131,7 @@ final class LZMADecoder {
 
                 // DECODE LITERAL:
                 /// Previous literal (zero, if there was none).
-                let prevByte = dictEnd == 0 ? 0 : self.byte(at: 1)
+                let prevByte = dictEnd == 0 ? 0 : self.byte(at: 1).toInt()
                 /// Decoded symbol. Initial value is 1.
                 var symbol = 1
                 /**
@@ -153,7 +140,7 @@ final class LZMADecoder {
                  If there were none, i.e. it is the first literal, then this part is skipped.
                  - `lp` low bits from current position in output.
                  */
-                let litState = ((out.count & ((1 << lp.toInt()) - 1)) << lc.toInt()) + (prevByte >> (8 - lc)).toInt()
+                let litState = ((out.count & ((1 << lp) - 1)) << lc) + (prevByte >> (8 - lc))
                 // If state is greater than 7 we need to do additional decoding with 'matchByte'.
                 if state >= 7 {
                     /**

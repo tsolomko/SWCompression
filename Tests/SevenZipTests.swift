@@ -11,17 +11,10 @@ class SevenZipTests: XCTestCase {
     private static let testType: String = "7z"
 
     func test1() throws {
-        guard let testData = Constants.data(forTest: "test1", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test1") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "test1")
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test1.answer")
@@ -42,19 +35,12 @@ class SevenZipTests: XCTestCase {
     }
 
     func test2() throws {
-        guard let testData = Constants.data(forTest: "test2", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test2", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 2)
 
-        guard let answer1Data = Constants.data(forAnswer: "test1") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answer1Data = try Constants.data(forAnswer: "test1")
 
         XCTAssertEqual(entries[0].info.name, "test1.answer")
         XCTAssertEqual(entries[0].info.type, .regular)
@@ -72,10 +58,7 @@ class SevenZipTests: XCTestCase {
 
         XCTAssertEqual(entries[0].data, answer1Data)
 
-        guard let answer4Data = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answer4Data = try Constants.data(forAnswer: "test4")
 
         XCTAssertEqual(entries[1].info.name, "test4.answer")
         XCTAssertEqual(entries[1].info.type, .regular)
@@ -95,20 +78,14 @@ class SevenZipTests: XCTestCase {
     }
 
     func test3() throws {
-        guard let testData = Constants.data(forTest: "test3", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test3", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         _ = try SevenZipContainer.open(container: testData)
     }
 
     func testAntiFile() throws {
-        guard let testData = Constants.data(forTest: "test_anti_file", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_anti_file", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -126,10 +103,7 @@ class SevenZipTests: XCTestCase {
 
     func testMultiBlocks() throws {
         // Container was created with "solid" options set to "off" (-ms=off).
-        guard let testData = Constants.data(forTest: "test_multi_blocks", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_multi_blocks", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -139,10 +113,7 @@ class SevenZipTests: XCTestCase {
 
     func testAllTimestamps() throws {
         // Container was created with "-mtc=on" and "-mta=on" options.
-        guard let testData = Constants.data(forTest: "test_all_timestamps", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_all_timestamps", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -159,12 +130,7 @@ class SevenZipTests: XCTestCase {
 
     func testComplicatedCodingScheme() throws {
         // Container was created with these options: "-mf=BCJ -m0=Copy -m1=Deflate -m2=Delta -m3=LZMA -m4=LZMA2"
-        guard let testData = Constants.data(forTest: "test_complicated_coding_scheme",
-                                            withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_complicated_coding_scheme", withType: SevenZipTests.testType)
         // In these test case the most important thing is that information about entries must be read correctly.
         _ = try SevenZipContainer.info(container: testData)
 
@@ -177,10 +143,7 @@ class SevenZipTests: XCTestCase {
 
     func testEncryptedHeader() throws {
         // Container was created with "-mhe=on".
-        guard let testData = Constants.data(forTest: "test_encrypted_header", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_encrypted_header", withType: SevenZipTests.testType)
 
         XCTAssertThrowsError(try SevenZipContainer.info(container: testData)) { error in
             XCTAssertEqual(error as? SevenZipError, SevenZipError.encryptionNotSupported)
@@ -192,20 +155,14 @@ class SevenZipTests: XCTestCase {
     func testSingleThread() throws {
         // Container was created with disabled multithreading options.
         // We check this just in case.
-        guard let testData = Constants.data(forTest: "test_single_thread", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_single_thread", withType: SevenZipTests.testType)
 
         XCTAssertEqual(try SevenZipContainer.info(container: testData).count, 6)
         XCTAssertEqual(try SevenZipContainer.open(container: testData).count, 6)
     }
 
     func testBigContainer() throws {
-        guard let testData = Constants.data(forTest: "SWCompressionSourceCode", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         _ = try SevenZipContainer.open(container: testData)
@@ -213,17 +170,10 @@ class SevenZipTests: XCTestCase {
 
     func test7zBZip2() throws {
         // File in container compressed with BZip2.
-        guard let testData = Constants.data(forTest: "test_7z_bzip2", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_7z_bzip2", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "test4")
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
@@ -245,17 +195,10 @@ class SevenZipTests: XCTestCase {
 
     func test7zDeflate() throws {
         // File in container compressed with Deflate.
-        guard let testData = Constants.data(forTest: "test_7z_deflate", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_7z_deflate", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "test4")
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
@@ -277,17 +220,10 @@ class SevenZipTests: XCTestCase {
 
     func test7zCopy() throws {
         // File in container is explicitly uncompressed.
-        guard let testData = Constants.data(forTest: "test_7z_copy", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_7z_copy", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        guard let answerData = Constants.data(forAnswer: "test4") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "test4")
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test4.answer")
@@ -308,11 +244,7 @@ class SevenZipTests: XCTestCase {
     }
 
     func testUnicode() throws {
-        guard let testData = Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -329,20 +261,12 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.isAnti, false)
         XCTAssertEqual(entries[0].info.crc, 0xA139BCEE)
 
-        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
-
+        let answerData = try Constants.data(forAnswer: "текстовый файл")
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testWinContainer() throws {
-        guard let testData = Constants.data(forTest: "test_win", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_win", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 2)
@@ -381,11 +305,7 @@ class SevenZipTests: XCTestCase {
     }
 
     func testEmptyFile() throws {
-        guard let testData = Constants.data(forTest: "test_empty_file", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_empty_file", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -407,11 +327,7 @@ class SevenZipTests: XCTestCase {
     }
 
     func testEmptyDirectory() throws {
-        guard let testData = Constants.data(forTest: "test_empty_dir", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.count, 1)
@@ -433,14 +349,34 @@ class SevenZipTests: XCTestCase {
     }
 
     func testEmptyContainer() throws {
-        guard let testData = Constants.data(forTest: "test_empty_cont", withType: SevenZipTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
-
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         XCTAssertEqual(entries.isEmpty, true)
+    }
+
+    func testDeltaFilter() throws {
+        let testData = try Constants.data(forTest: "test_delta_filter", withType: SevenZipTests.testType)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        let answerData = try Constants.data(forAnswer: "test4")
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+
+        XCTAssertEqual(entries[0].data, answerData)
     }
 
 }

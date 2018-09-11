@@ -40,20 +40,23 @@ struct XZBlock {
             guard UInt64(filterID) < 0x4000000000000000
                 else { throw XZError.wrongFilterID }
             // Only LZMA2 filter is supported.
-            if filterID == 0x21 {
-                // First, we need to skip byte with the size of filter's properties
-                _ = try byteReader.multiByteDecode()
-                /// In case of LZMA2 filters property is a dicitonary size.
+            switch filterID {
+            case 0x21:
+                // First, we need to check if size of LZMA2 filter's properties is equal to 1 as expected.
+                let propertiesSize = try byteReader.multiByteDecode()
+                guard propertiesSize == 1
+                    else { throw LZMA2Error.wrongDictionarySize }
+                /// Filter property for LZMA2 is a dictionary size.
                 let filterPropeties = byteReader.byte()
-                let closure = { (dwp: ByteReader) -> Data in
-                    let decoder = LZMA2Decoder(byteReader)
-                    try decoder.setDictionarySize(filterPropeties)
-
-                    try decoder.decode()
-                    return Data(bytes: decoder.out)
-                }
-                filters.append(closure)
-            } else {
+                filters.append { try LZMA2.decompress($0, filterPropeties) }
+            case 0x03:
+                // First, we need to check if size of Delta filter's properties is equal to 1 as expected.
+                let propertiesSize = try byteReader.multiByteDecode()
+                guard propertiesSize == 1
+                    else { throw XZError.wrongField }
+                let distance = (byteReader.byte() &+ 1).toInt()
+                filters.append { DeltaFilter.decode($0, distance) }
+            default:
                 throw XZError.wrongFilterID
             }
         }
@@ -71,11 +74,8 @@ struct XZBlock {
             else { throw XZError.wrongInfoCRC }
         byteReader.offset += 4
 
-        var out = byteReader
         let compressedDataStart = byteReader.offset
-        for filterIndex in stride(from: filtersCount - 1, through: 0, by: -1) {
-            out = ByteReader(data: try filters[filterIndex.toInt()](out))
-        }
+        let out = try filters.reversed().reduce(byteReader) { try ByteReader(data: $1($0)) }
 
         guard compressedSize < 0 || compressedSize == byteReader.offset - compressedDataStart,
             uncompressedSize < 0 || uncompressedSize == out.data.count

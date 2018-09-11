@@ -11,10 +11,7 @@ class TarTests: XCTestCase {
     private static let testType: String = "tar"
 
     func test() throws {
-        guard let testData = Constants.data(forTest: "test", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -34,10 +31,7 @@ class TarTests: XCTestCase {
     }
 
     func testPax() throws {
-        guard let testData = Constants.data(forTest: "full_test", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "full_test", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
 
@@ -47,10 +41,7 @@ class TarTests: XCTestCase {
 
         for entry in entries {
             let name = entry.info.name.components(separatedBy: ".")[0]
-            guard let answerData = Constants.data(forAnswer: name) else {
-                XCTFail("Unable to get answer data.")
-                return
-            }
+            let answerData = try Constants.data(forAnswer: name)
 
             XCTAssertEqual(entry.data, answerData)
             XCTAssertEqual(entry.info.type, .regular)
@@ -70,16 +61,10 @@ class TarTests: XCTestCase {
     func testFormats() throws {
         let formatTestNames = ["test_gnu", "test_oldgnu", "test_pax", "test_ustar", "test_v7"]
 
-        guard let answerData = Constants.data(forAnswer: "test1") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "test1")
 
         for testName in formatTestNames {
-            guard let testData = Constants.data(forTest: testName, withType: TarTests.testType) else {
-                XCTFail("Unable to get test data.")
-                return
-            }
+            let testData = try Constants.data(forTest: testName, withType: TarTests.testType)
 
             if testName == "test_gnu" {
                 XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
@@ -107,10 +92,7 @@ class TarTests: XCTestCase {
         let formatTestNames = ["long_test_gnu", "long_test_oldgnu", "long_test_pax"]
 
         for testName in formatTestNames {
-            guard let testData = Constants.data(forTest: testName, withType: TarTests.testType) else {
-                XCTFail("Unable to get test data.")
-                return
-            }
+            let testData = try Constants.data(forTest: testName, withType: TarTests.testType)
 
             if testName == "long_test_gnu" {
                 XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
@@ -127,10 +109,7 @@ class TarTests: XCTestCase {
     }
 
     func testWinContainer() throws {
-        guard let testData = Constants.data(forTest: "test_win", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_win", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -162,10 +141,7 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyFile() throws {
-        guard let testData = Constants.data(forTest: "test_empty_file", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_file", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -185,10 +161,7 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyDirectory() throws {
-        guard let testData = Constants.data(forTest: "test_empty_dir", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -208,10 +181,7 @@ class TarTests: XCTestCase {
     }
 
     func testEmptyContainer() throws {
-        guard let testData = Constants.data(forTest: "test_empty_cont", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .prePosix)
 
@@ -221,10 +191,7 @@ class TarTests: XCTestCase {
     }
 
     func testBigContainer() throws {
-        guard let testData = Constants.data(forTest: "SWCompressionSourceCode", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -233,10 +200,7 @@ class TarTests: XCTestCase {
     }
 
     func testUnicodeUstar() throws {
-        guard let testData = Constants.data(forTest: "test_unicode_ustar", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_unicode_ustar", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
 
@@ -252,19 +216,13 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
         XCTAssertNil(entries[0].info.comment)
 
-        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "текстовый файл")
 
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testUnicodePax() throws {
-        guard let testData = Constants.data(forTest: "test_unicode_pax", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_unicode_pax", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
 
@@ -280,19 +238,13 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
         XCTAssertNil(entries[0].info.comment)
 
-        guard let answerData = Constants.data(forAnswer: "текстовый файл") else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: "текстовый файл")
 
         XCTAssertEqual(entries[0].data, answerData)
     }
 
     func testGnuIncrementalFormat() throws {
-        guard let testData = Constants.data(forTest: "test_gnu_inc_format", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_gnu_inc_format", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
 
@@ -312,10 +264,7 @@ class TarTests: XCTestCase {
 
     func testBigNumField() throws {
         // This file is truncated because of its size (8.6 GB): it doesn't contain any actual file data.
-        guard let testData = Constants.data(forTest: "test_big_num_field", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_big_num_field", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
 
@@ -334,10 +283,7 @@ class TarTests: XCTestCase {
     }
 
     func testNegativeMtime() throws {
-        guard let testData = Constants.data(forTest: "test_negative_mtime", withType: TarTests.testType) else {
-            XCTFail("Unable to get test data.")
-            return
-        }
+        let testData = try Constants.data(forTest: "test_negative_mtime", withType: TarTests.testType)
 
         XCTAssertEqual(try TarContainer.formatOf(container: testData), .gnu)
 

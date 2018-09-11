@@ -9,10 +9,7 @@ import SWCompression
 class DeflateCompressionTests: XCTestCase {
 
     func answerTest(_ testName: String) throws {
-        guard let answerData = Constants.data(forAnswer: testName) else {
-            XCTFail("Unable to get answer data.")
-            return
-        }
+        let answerData = try Constants.data(forAnswer: testName)
 
         let compressedData = Deflate.compress(data: answerData)
 
