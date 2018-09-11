@@ -17,7 +17,12 @@ public struct LZMAProperties {
     /// Number of bits to include in "position state".
     public var pb: Int
 
-    /// Size of the dictionary.
+    /**
+     Size of the dictionary.
+
+     - Note: Dictionary size cannot be less than 4096. In case of attempt to set it to the value less than 4096 it will
+     be automatically set to 4096 instead.
+     */
     public var dictionarySize: Int {
         didSet {
             if dictionarySize < 1 << 12 {
