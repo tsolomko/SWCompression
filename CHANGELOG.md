@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.5.0
+
+- Added APIs which allow to specify LZMA properties for decompression:
+    - Added `LZMAProperties` struct with simple memberwise initializer.
+    - Added `LZMA.decompress(data:properties:uncompressedSize:)` function with `uncompressedSize` argument being optional.
+- Added support Delta "filter" in both XZ archives and 7-Zip containers.
+- Added support for SHA-256 check type in XZ archives.
+- Added `ZipEntryInfo.crc` property.
+- Fixed incorrect result of `XZArchive.unarchive` and `XZArchive.splitUnarchive` functions when more than one "filter"
+  was used.
+- Reduced in-memory size of `ZipEntryInfo` instances.
+- Clarified documentation for `LZMA.decompress(data:)` to explain expectation about `data` argument.
+- swcomp changes:
+    - `zip -i` command now also prints CRC32 for all entries.
+    - `-v` is now accepted as an alias for `--verbose` option.
+
 ## 4.4.0
 
 - Added APIs which allow creation of new TAR containers:
