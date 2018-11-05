@@ -10,7 +10,7 @@ import SwiftCLI
 class CompDeflate: BenchmarkCommand {
 
     let name = "comp-deflate"
-    let shortDescription = "Performs benchmarking of Deflate compression using specified files"
+    let shortDescription = "Deflate compression"
 
     let files = CollectedParameter()
 

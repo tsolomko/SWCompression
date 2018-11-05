@@ -10,7 +10,7 @@ import SwiftCLI
 class UnGzip: BenchmarkCommand {
 
     let name = "un-gzip"
-    let shortDescription = "Performs benchmarking of GZip unarchiving using specified files"
+    let shortDescription = "GZip unarchiving"
 
     let files = CollectedParameter()
 

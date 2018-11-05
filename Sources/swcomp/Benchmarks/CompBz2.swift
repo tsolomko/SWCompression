@@ -10,7 +10,7 @@ import SwiftCLI
 class CompBz2: BenchmarkCommand {
 
     let name = "comp-bz2"
-    let shortDescription = "Performs benchmarking of BZip2 compression using specified files"
+    let shortDescription = "BZip2 compression"
 
     let files = CollectedParameter()
 

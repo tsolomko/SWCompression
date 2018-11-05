@@ -10,7 +10,7 @@ import SwiftCLI
 class Info7z: BenchmarkCommand {
 
     let name = "info-7z"
-    let shortDescription = "Performs benchmarking of 7-Zip info function using specified files"
+    let shortDescription = "7-Zip info function"
 
     let files = CollectedParameter()
 
