@@ -916,10 +916,11 @@
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
 						CreatedOnToolsVersion = 8.0;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1010;
 					};
 					06F065941FFB761600312A82 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -1332,7 +1333,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1360,7 +1361,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -1378,7 +1379,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1396,7 +1397,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
