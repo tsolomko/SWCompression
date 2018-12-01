@@ -23,7 +23,7 @@ class GzipTests: XCTestCase {
 
     func unarchive(test testName: String) throws {
         let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
-        let decompressedData = try? GzipArchive.unarchive(archive: testData)
+        let decompressedData = try GzipArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
         XCTAssertEqual(decompressedData, answerData)
