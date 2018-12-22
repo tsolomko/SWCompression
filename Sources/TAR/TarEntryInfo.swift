@@ -451,7 +451,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
 fileprivate extension Data {
 
-    /// This works (hopefully) in the same way as `String.padding(toLength: length, withPad: "\0", startingAt: 0)`.
+    /// This should work in the same way as `String.padding(toLength: length, withPad: "\0", startingAt: 0)`.
     @inline(__always)
     private func zeroPad(_ length: Int) -> Data {
         var out = length < self.count ? self.prefix(upTo: length) : self

@@ -66,7 +66,7 @@ public class TarContainer: Container {
     }
 
     /**
-     Creates a new TAR container with `entries` as its content and generates container's `Data`.
+     Creates a new TAR container with `entries` as its content and generates its `Data`.
 
      - Parameter entries: TAR entries to store in the container.
 
