@@ -39,15 +39,15 @@ public class ZipContainer: Container {
      - Returns: Array of `ZipEntry`.
      */
     public static func open(container data: Data) throws -> [ZipEntry] {
-        let infos = try info(container: data)
+        let helpers = try infoWithHelper(data)
         var entries = [ZipEntry]()
 
-        for entryInfo in infos {
-            if entryInfo.type == .directory {
-                entries.append(ZipEntry(entryInfo, nil))
+        for helper in helpers {
+            if helper.entryInfo.type == .directory {
+                entries.append(ZipEntry(helper.entryInfo, nil))
             } else {
-                let entryDataResult = try ZipContainer.getEntryData(from: data, using: entryInfo)
-                entries.append(ZipEntry(entryInfo, entryDataResult.data))
+                let entryDataResult = try ZipContainer.getEntryData(data, helper)
+                entries.append(ZipEntry(helper.entryInfo, entryDataResult.data))
                 guard !entryDataResult.crcError
                     else { throw ZipError.wrongCRC(entries) }
             }
@@ -56,15 +56,15 @@ public class ZipContainer: Container {
         return entries
     }
 
-    private static func getEntryData(from data: Data, using info: ZipEntryInfo) throws -> (data: Data, crcError: Bool) {
-        var uncompSize = info.uncompSize
-        var compSize = info.compSize
-        var crc32 = info.crc
+    private static func getEntryData(_ data: Data, _ helper: ZipEntryInfoHelper) throws -> (data: Data, crcError: Bool) {
+        var uncompSize = helper.uncompSize
+        var compSize = helper.compSize
+        var crc32 = helper.entryInfo.crc
 
         let fileData: Data
         let byteReader = ByteReader(data: data)
-        byteReader.offset = info.dataOffset
-        switch info.compressionMethod {
+        byteReader.offset = helper.dataOffset
+        switch helper.entryInfo.compressionMethod {
         case .copy:
             fileData = Data(bytes: byteReader.bytes(count: uncompSize.toInt()))
         case .deflate:
@@ -96,9 +96,9 @@ public class ZipContainer: Container {
         default:
             throw ZipError.compressionNotSupported
         }
-        let realCompSize = byteReader.offset - info.dataOffset
+        let realCompSize = byteReader.offset - helper.dataOffset
 
-        if info.hasDataDescriptor {
+        if helper.hasDataDescriptor {
             // Now we need to parse data descriptor itself.
             // First, it might or might not have signature.
             let ddSignature = byteReader.uint32()
@@ -107,7 +107,7 @@ public class ZipContainer: Container {
             }
             // Now, let's update with values from data descriptor.
             crc32 = byteReader.uint32()
-            if info.zip64FieldsArePresent {
+            if helper.zip64FieldsArePresent {
                 compSize = byteReader.uint64()
                 uncompSize = byteReader.uint64()
             } else {
@@ -137,8 +137,12 @@ public class ZipContainer: Container {
      - Returns: Array of `ZipEntryInfo`.
      */
     public static func info(container data: Data) throws -> [ZipEntryInfo] {
+        return try infoWithHelper(data).map { $0.entryInfo }
+    }
+
+    private static func infoWithHelper(_ data: Data) throws -> [ZipEntryInfoHelper] {
         let byteReader = ByteReader(data: data)
-        var entries = [ZipEntryInfo]()
+        var entries = [ZipEntryInfoHelper]()
 
         // First, we are looking for End of Central Directory record, specifically, for its signature.
         byteReader.offset = byteReader.size - 22 // 22 is a minimum amount which could take end of CD record.
@@ -168,10 +172,10 @@ public class ZipContainer: Container {
         }
 
         for _ in 0..<cdEntries {
-            let info = try ZipEntryInfo(byteReader, endOfCD.currentDiskNumber)
-            entries.append(info)
+            let entry = try ZipEntryInfoHelper(byteReader, endOfCD.currentDiskNumber)
+            entries.append(entry)
             // Move to the next Central Directory entry.
-            byteReader.offset = info.nextCdEntryOffset
+            byteReader.offset = entry.nextCdEntryOffset
         }
 
         return entries
