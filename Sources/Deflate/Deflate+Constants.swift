@@ -9,8 +9,8 @@ extension Deflate {
 
     struct Constants {
         // Bootstraps for Static Huffman trees (first element in tuple is code, second is number of bits).
-        static let staticHuffmanBootstrap = Deflate.lengths(from: [(0, 8), (144, 9), (256, 7), (280, 8), (288, -1)])
-        static let staticHuffmanDistancesBootstrap = Deflate.lengths(from: [(0, 5), (32, -1)])
+        static let staticHuffmanBootstrap = CodeLength.lengths(from: [(0, 8), (144, 9), (256, 7), (280, 8), (288, -1)])
+        static let staticHuffmanDistancesBootstrap = CodeLength.lengths(from: [(0, 5), (32, -1)])
 
         static let codeLengthOrders: [Int] =
             [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
