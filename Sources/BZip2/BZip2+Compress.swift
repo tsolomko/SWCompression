@@ -13,8 +13,8 @@ extension BZip2: CompressionAlgorithm {
 
      - Parameter data: Data to compress.
 
-     - Note: Input data will be split into blocks of size 100 KB.
-     Use `BZip2.compress(data:blockSize:)` function to specify size of a block.
+     - Note: Input data will be split into blocks of size 100 KB. Use `BZip2.compress(data:blockSize:)` function to
+     specify the size of a block.
      */
     public static func compress(data: Data) -> Data {
         return compress(data: data, blockSize: .one)
