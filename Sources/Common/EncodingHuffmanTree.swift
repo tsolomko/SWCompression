@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-class EncodingHuffmanTree {
+final class EncodingHuffmanTree {
 
     private let bitWriter: BitWriter
 
