@@ -14,7 +14,7 @@ final class EncodingHuffmanTree {
 
     /// `lengths` don't have to be properly sorted, but there must not be any 0 code lengths.
     /// If `reverseCodes` is true, then bit order of tree codes will be reversed. Necessary for Deflate.
-    init(lengths: [HuffmanLength], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
+    init(lengths: [CodeLength], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
         self.bitWriter = bitWriter
 
         // Sort `lengths` array to calculate canonical Huffman code.

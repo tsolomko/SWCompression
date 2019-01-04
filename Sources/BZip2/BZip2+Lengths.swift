@@ -12,12 +12,12 @@ extension BZip2 {
      Based on "procedure for generating the lists which specify a Huffman code table" (annexes C and K)
      from Recommendation T.81 of ITU (aka JPEG specfications).
      */
-    static func lengths(from stats: [Int]) -> [HuffmanLength] {
+    static func lengths(from stats: [Int]) -> [CodeLength] {
         // Handle redundant cases.
         if stats.count == 0 {
             return []
         } else if stats.count == 1 {
-            return [HuffmanLength(symbol: 0, codeLength: 1)]
+            return [CodeLength(symbol: 0, codeLength: 1)]
         }
 
         // Calculate code lengths based on stats.
@@ -104,13 +104,13 @@ extension BZip2 {
         }
     }
 
-    private static func generateSizeTable(from bits: [Int]) -> [HuffmanLength] {
+    private static func generateSizeTable(from bits: [Int]) -> [CodeLength] {
         var symbol = 0
-        var lengths = [HuffmanLength]()
+        var lengths = [CodeLength]()
         for i in 1...min(20, bits.count - 1) {
             var j = 1
             while j <= bits[i] {
-                lengths.append(HuffmanLength(symbol: symbol, codeLength: i))
+                lengths.append(CodeLength(symbol: symbol, codeLength: i))
                 symbol += 1
                 j += 1
             }

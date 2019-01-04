@@ -14,7 +14,7 @@ final class DecodingHuffmanTree {
     private let leafCount: Int
 
     /// `lengths` don't have to be properly sorted, but there must not be any 0 code lengths.
-    init(lengths: [HuffmanLength], _ bitReader: BitReader) {
+    init(lengths: [CodeLength], _ bitReader: BitReader) {
         self.bitReader = bitReader
 
         // Sort `lengths` array to calculate canonical Huffman code.

@@ -5,16 +5,16 @@
 
 import Foundation
 
-struct HuffmanLength: Equatable {
+struct CodeLength: Equatable {
 
     let symbol: Int
     let codeLength: Int
 
 }
 
-extension HuffmanLength: Comparable {
+extension CodeLength: Comparable {
 
-    static func < (left: HuffmanLength, right: HuffmanLength) -> Bool {
+    static func < (left: CodeLength, right: CodeLength) -> Bool {
         if left.codeLength == right.codeLength {
             return left.symbol < right.symbol
         } else {

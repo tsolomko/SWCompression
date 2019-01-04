@@ -109,7 +109,7 @@
 		06DE29B81FB7024C0098A761 /* ByteReader+Zip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DE29B71FB7024C0098A761 /* ByteReader+Zip.swift */; };
 		06E2346C1E068E9600F18798 /* XZArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E2346B1E068E9600F18798 /* XZArchive.swift */; };
 		06E234821E06A6C200F18798 /* CheckSums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E234811E06A6C200F18798 /* CheckSums.swift */; };
-		06E6A6391F5C0FBB00D04856 /* HuffmanLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */; };
+		06E6A6391F5C0FBB00D04856 /* CodeLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E6A6381F5C0FBB00D04856 /* CodeLength.swift */; };
 		06F0659A1FFB761600312A82 /* SWCompression.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06BE1AC81DB410F100EE0F59 /* SWCompression.framework */; };
 		06F066131FFB763300312A82 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F065A11FFB763300312A82 /* Constants.swift */; };
 		06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */; };
@@ -326,7 +326,7 @@
 		06DE29B71FB7024C0098A761 /* ByteReader+Zip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+Zip.swift"; sourceTree = "<group>"; };
 		06E2346B1E068E9600F18798 /* XZArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XZArchive.swift; sourceTree = "<group>"; };
 		06E234811E06A6C200F18798 /* CheckSums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckSums.swift; path = Sources/Common/CheckSums.swift; sourceTree = SOURCE_ROOT; };
-		06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HuffmanLength.swift; path = Sources/Common/HuffmanLength.swift; sourceTree = SOURCE_ROOT; };
+		06E6A6381F5C0FBB00D04856 /* CodeLength.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CodeLength.swift; path = Sources/Common/CodeLength.swift; sourceTree = SOURCE_ROOT; };
 		06F065951FFB761600312A82 /* TestSWCompression.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestSWCompression.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06F065A11FFB763300312A82 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateCompressionTests.swift; sourceTree = "<group>"; };
@@ -468,7 +468,7 @@
 				063DF1061DE1F07800F38082 /* Extensions.swift */,
 				06092A191FA4CB0300DE9FD5 /* CompressionMethod.swift */,
 				0686A63A1FA4C07D00E89C9E /* FileSystemType.swift */,
-				06E6A6381F5C0FBB00D04856 /* HuffmanLength.swift */,
+				06E6A6381F5C0FBB00D04856 /* CodeLength.swift */,
 				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
 				06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */,
 			);
@@ -1158,7 +1158,7 @@
 				061C065C1F0E90E600832F0C /* TarEntry.swift in Sources */,
 				064F72291F1E638A00017297 /* 7zError.swift in Sources */,
 				06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */,
-				06E6A6391F5C0FBB00D04856 /* HuffmanLength.swift in Sources */,
+				06E6A6391F5C0FBB00D04856 /* CodeLength.swift in Sources */,
 				0642998B206017590044BA0C /* ZipExtraField.swift in Sources */,
 				0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */,
 				06B689581F278815007C9316 /* 7zProperty.swift in Sources */,
