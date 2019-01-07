@@ -41,6 +41,21 @@ final class EncodingHuffmanTree {
         self.codingIndices = codingIndices
     }
 
+    init(codes: [Code], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
+        self.bitWriter = bitWriter
+
+        var codingIndices = Array(repeating: [-1, -1], count: codes.count)
+
+        for code in codes {
+            // Codes have already been reversed.
+            // TODO: This assumption may be only correct for Huffman codes.
+            let treeCode = reverseCodes ? code.code : code.code.reversed(bits: code.bits)
+            codingIndices[code.symbol] = [treeCode, code.bits]
+        }
+        self.codingIndices = codingIndices
+
+    }
+
     func code(symbol: Int) {
         guard symbol < self.codingIndices.count
             else { fatalError("Symbol is not found.") }
