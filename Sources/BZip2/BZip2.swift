@@ -140,7 +140,8 @@ public class BZip2: DecompressionAlgorithm {
                         lengths.append(CodeLength(symbol: i, codeLength: length))
                     }
                 }
-                let table = DecodingHuffmanTree(lengths: lengths, bitReader)
+                let codes = Code.huffmanCodes(from: lengths)
+                let table = DecodingHuffmanTree(codes: codes.codes, maxBits: codes.maxBits, bitReader)
                 tables.append(table)
             }
 
