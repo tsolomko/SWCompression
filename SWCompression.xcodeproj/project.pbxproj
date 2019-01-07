@@ -102,6 +102,7 @@
 		06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCAC1F111DBE00292758 /* LZMAError.swift */; };
 		06CDFCB21F111DEC00292758 /* LZMA2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCB11F111DEC00292758 /* LZMA2Error.swift */; };
 		06CFF6B22078C5A5003B8375 /* TarEntryInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */; };
+		06D3802E21E36190008B50C6 /* Code.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D3802D21E36190008B50C6 /* Code.swift */; };
 		06D42DA52067B46800C1A98B /* test_custom_extra_field.zip in Resources */ = {isa = PBXBuildFile; fileRef = 06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */; };
 		06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D42DA62067B71000C1A98B /* TestZipExtraField.swift */; };
 		06D95AC11F4C54E0006B46AC /* BZip2+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */; };
@@ -319,6 +320,7 @@
 		06CDFCAC1F111DBE00292758 /* LZMAError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMAError.swift; sourceTree = "<group>"; };
 		06CDFCB11F111DEC00292758 /* LZMA2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2Error.swift; sourceTree = "<group>"; };
 		06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarEntryInfoProvider.swift; sourceTree = "<group>"; };
+		06D3802D21E36190008B50C6 /* Code.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Code.swift; sourceTree = "<group>"; };
 		06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_custom_extra_field.zip; sourceTree = "<group>"; };
 		06D42DA62067B71000C1A98B /* TestZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestZipExtraField.swift; sourceTree = "<group>"; };
 		06D95AC01F4C54E0006B46AC /* BZip2+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BZip2+Compress.swift"; sourceTree = "<group>"; };
@@ -656,6 +658,7 @@
 		06D3802C21E35EAA008B50C6 /* CodingTree */ = {
 			isa = PBXGroup;
 			children = (
+				06D3802D21E36190008B50C6 /* Code.swift */,
 				06E6A6381F5C0FBB00D04856 /* CodeLength.swift */,
 				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
 				06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */,
@@ -1146,6 +1149,7 @@
 				0620F4C81F8E24BF001C9B7A /* DecompressionAlgorithm.swift in Sources */,
 				0686A6451FA4C47300E89C9E /* FileSystemType+Zip.swift in Sources */,
 				06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */,
+				06D3802E21E36190008B50C6 /* Code.swift in Sources */,
 				06CFF6B22078C5A5003B8375 /* TarEntryInfoProvider.swift in Sources */,
 				06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */,
 				065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
