@@ -121,10 +121,11 @@ extension BZip2: CompressionAlgorithm {
                     selectors.append(minimumSelector)
                 } else {
                     // Otherwise, let's create a new table and check if it gives us better results.
-                    // First, we calculate code lengths for our current stats.
+                    // First, we calculate code lengths and codes for our current stats.
                     let lengths = BZip2.lengths(from: stats)
-                    // Then, using these code lengths, we create a new Huffman tree.
-                    let table = EncodingHuffmanTree(lengths: lengths, bitWriter)
+                    let codes = Code.huffmanCodes(from: lengths)
+                    // Then, using these codes, we create a new Huffman tree.
+                    let table = EncodingHuffmanTree(codes: codes.codes, bitWriter)
                     if table.bitSize(for: stats) < minimumSize {
                         tables.append(table)
                         tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
