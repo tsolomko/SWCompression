@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-final class DecodingHuffmanTree {
+final class DecodingTree {
 
     private let bitReader: BitReader
 

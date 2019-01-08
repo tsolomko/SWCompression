@@ -89,7 +89,7 @@ extension BZip2: CompressionAlgorithm {
         // These are separate stages because all information about trees is stored at the beginning of the block,
         //  and it is hard to modify it later.
         var processed = 50
-        var tables = [EncodingHuffmanTree]()
+        var tables = [EncodingTree]()
         var tablesLengths = [[Int]]()
         var selectors = [Int]()
 
@@ -125,7 +125,7 @@ extension BZip2: CompressionAlgorithm {
                     let lengths = BZip2.lengths(from: stats)
                     let codes = Code.huffmanCodes(from: lengths)
                     // Then, using these codes, we create a new Huffman tree.
-                    let table = EncodingHuffmanTree(codes: codes.codes, bitWriter)
+                    let table = EncodingTree(codes: codes.codes, bitWriter)
                     if table.bitSize(for: stats) < minimumSize {
                         tables.append(table)
                         tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
@@ -207,7 +207,7 @@ extension BZip2: CompressionAlgorithm {
         // Contents.
         var encoded = 0
         var selectorPointer = 0
-        var t: EncodingHuffmanTree?
+        var t: EncodingTree?
         for symbol in out {
             encoded -= 1
             if encoded <= 0 {

@@ -56,17 +56,17 @@ public class Deflate: DecompressionAlgorithm {
                 // There are two alphabets in use and each one needs a Huffman tree.
 
                 /// Huffman tree for literal and length symbols/codes.
-                var mainLiterals: DecodingHuffmanTree
+                var mainLiterals: DecodingTree
                 /// Huffman tree for backward distance symbols/codes.
-                var mainDistances: DecodingHuffmanTree
+                var mainDistances: DecodingTree
 
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
                     // Initialize trees from bootstraps.
-                    mainLiterals = DecodingHuffmanTree(codes: Constants.staticHuffmanBootstrap.codes,
-                                                       maxBits: Constants.staticHuffmanBootstrap.maxBits, bitReader)
-                    mainDistances = DecodingHuffmanTree(codes: Constants.staticHuffmanDistancesBootstrap.codes,
-                                                       maxBits: Constants.staticHuffmanDistancesBootstrap.maxBits, bitReader)
+                    mainLiterals = DecodingTree(codes: Constants.staticHuffmanBootstrap.codes,
+                                                maxBits: Constants.staticHuffmanBootstrap.maxBits, bitReader)
+                    mainDistances = DecodingTree(codes: Constants.staticHuffmanDistancesBootstrap.codes,
+                                                 maxBits: Constants.staticHuffmanDistancesBootstrap.maxBits, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
@@ -84,8 +84,8 @@ public class Deflate: DecompressionAlgorithm {
                     }
                     let dynamicCodes = Code.huffmanCodes(from: Deflate.lengths(from: orderedCodeLengths))
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodeTree = DecodingHuffmanTree(codes: dynamicCodes.codes, maxBits: dynamicCodes.maxBits,
-                                                              bitReader)
+                    let dynamicCodeTree = DecodingTree(codes: dynamicCodes.codes, maxBits: dynamicCodes.maxBits,
+                                                       bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
                     var codeLengths: [Int] = []
@@ -127,12 +127,10 @@ public class Deflate: DecompressionAlgorithm {
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.
                     let literalCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths[0..<literals])))
-                    mainLiterals = DecodingHuffmanTree(codes: literalCodes.codes, maxBits: literalCodes.maxBits,
-                                                       bitReader)
+                    mainLiterals = DecodingTree(codes: literalCodes.codes, maxBits: literalCodes.maxBits, bitReader)
                     let distanceCodes = Code.huffmanCodes(from: Deflate.lengths(from:
                         Array(codeLengths[literals..<codeLengths.count])))
-                    mainDistances = DecodingHuffmanTree(codes: distanceCodes.codes, maxBits: distanceCodes.maxBits,
-                                                        bitReader)
+                    mainDistances = DecodingTree(codes: distanceCodes.codes, maxBits: distanceCodes.maxBits, bitReader)
                 }
 
                 // Main loop of data decompression.

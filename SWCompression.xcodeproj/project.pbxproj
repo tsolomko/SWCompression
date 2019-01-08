@@ -39,7 +39,7 @@
 		0631CB061F81109E00A2E0AB /* Deflate+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0631CB051F81109E00A2E0AB /* Deflate+Constants.swift */; };
 		0634D9831F5207C30002B675 /* SuffixArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0634D9821F5207C30002B675 /* SuffixArray.swift */; };
 		063DF10D1DE1F07800F38082 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1061DE1F07800F38082 /* Extensions.swift */; };
-		063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */; };
+		063DF1131DE1F07800F38082 /* DecodingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingTree.swift */; };
 		0642998B206017590044BA0C /* ZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642998A206017590044BA0C /* ZipExtraField.swift */; };
 		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
 		064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */ = {isa = PBXBuildFile; fileRef = 064D01A820FD071300CAE058 /* текстовый файл.answer */; };
@@ -211,7 +211,7 @@
 		06F066761FFB763400312A82 /* test9.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06F066101FFB763300312A82 /* test9.bz2 */; };
 		06F066771FFB763400312A82 /* test8.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06F066111FFB763300312A82 /* test8.bz2 */; };
 		06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F276DE1F2BAB4900E67335 /* 7zEntry.swift */; };
-		06FEAD921F54B9CD00AD016E /* EncodingHuffmanTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */; };
+		06FEAD921F54B9CD00AD016E /* EncodingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FEAD911F54B9CD00AD016E /* EncodingTree.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -259,7 +259,7 @@
 		063364E21DC52979007E313F /* GzipArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GzipArchive.swift; sourceTree = "<group>"; };
 		0634D9821F5207C30002B675 /* SuffixArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuffixArray.swift; sourceTree = "<group>"; };
 		063DF1061DE1F07800F38082 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Common/Extensions.swift; sourceTree = SOURCE_ROOT; };
-		063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DecodingHuffmanTree.swift; path = Sources/Common/CodingTree/DecodingHuffmanTree.swift; sourceTree = SOURCE_ROOT; };
+		063DF1081DE1F07800F38082 /* DecodingTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DecodingTree.swift; path = Sources/Common/CodingTree/DecodingTree.swift; sourceTree = SOURCE_ROOT; };
 		0642998A206017590044BA0C /* ZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipExtraField.swift; sourceTree = "<group>"; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		064512861F82CE63006490BA /* 7zCoder+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "7zCoder+Equatable.swift"; sourceTree = "<group>"; };
@@ -429,7 +429,7 @@
 		06F066101FFB763300312A82 /* test9.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.bz2; sourceTree = "<group>"; };
 		06F066111FFB763300312A82 /* test8.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.bz2; sourceTree = "<group>"; };
 		06F276DE1F2BAB4900E67335 /* 7zEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntry.swift; sourceTree = "<group>"; };
-		06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingHuffmanTree.swift; path = Sources/Common/CodingTree/EncodingHuffmanTree.swift; sourceTree = SOURCE_ROOT; };
+		06FEAD911F54B9CD00AD016E /* EncodingTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingTree.swift; path = Sources/Common/CodingTree/EncodingTree.swift; sourceTree = SOURCE_ROOT; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -660,8 +660,8 @@
 			children = (
 				06D3802D21E36190008B50C6 /* Code.swift */,
 				06E6A6381F5C0FBB00D04856 /* CodeLength.swift */,
-				063DF1081DE1F07800F38082 /* DecodingHuffmanTree.swift */,
-				06FEAD911F54B9CD00AD016E /* EncodingHuffmanTree.swift */,
+				063DF1081DE1F07800F38082 /* DecodingTree.swift */,
+				06FEAD911F54B9CD00AD016E /* EncodingTree.swift */,
 			);
 			path = CodingTree;
 			sourceTree = "<group>";
@@ -1097,7 +1097,7 @@
 				0620F4991F8E21F8001C9B7A /* DosAttributes.swift in Sources */,
 				0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */,
 				06595E0E1F1E8252006501C2 /* 7zFolder.swift in Sources */,
-				063DF1131DE1F07800F38082 /* DecodingHuffmanTree.swift in Sources */,
+				063DF1131DE1F07800F38082 /* DecodingTree.swift in Sources */,
 				06A1727E1FA5C0D90048A89C /* LZMADecoder.swift in Sources */,
 				06595E131F1E90C2006501C2 /* 7zCoder.swift in Sources */,
 				0620F4B81F8E248C001C9B7A /* ContainerEntryInfo.swift in Sources */,
@@ -1107,7 +1107,7 @@
 				0656B8261F8A960700111605 /* TarEntryInfo.swift in Sources */,
 				061C06481F0E8FF500832F0C /* ZipCentralDirectoryEntry.swift in Sources */,
 				067518361E2A86F700D16354 /* ZipContainer.swift in Sources */,
-				06FEAD921F54B9CD00AD016E /* EncodingHuffmanTree.swift in Sources */,
+				06FEAD921F54B9CD00AD016E /* EncodingTree.swift in Sources */,
 				068D070221368242002A6C3B /* DeltaFilter.swift in Sources */,
 				06A9605B1F1E7D990078E6D1 /* 7zHeader.swift in Sources */,
 				064F72241F1E5D4400017297 /* 7zContainer.swift in Sources */,
