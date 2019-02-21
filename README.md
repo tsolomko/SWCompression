@@ -130,7 +130,7 @@ However, it is unlikely that you will encounter deflated data outside of any arc
 So, in case of GZip archive you should use:
 
 ```swift
-let decompressedData = try? GzipArchive.unarchive(archiveData: data)
+let decompressedData = try? GzipArchive.unarchive(archive: data)
 ```
 
 ### Handling Errors
