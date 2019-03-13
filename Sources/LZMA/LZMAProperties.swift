@@ -8,22 +8,22 @@ import BitByteData
 /// Properties of LZMA. This API is intended to be used by advanced users.
 public struct LZMAProperties {
 
-    /// Number of bits used for the literal encoding context.
-    public var lc: Int
+    /// Number of bits used for the literal encoding context. Default value is 3.
+    public var lc: Int = 3
 
-    /// Number of bits to include in "literal position state".
-    public var lp: Int
+    /// Number of bits to include in "literal position state". Default value is 0.
+    public var lp: Int = 0
 
-    /// Number of bits to include in "position state".
-    public var pb: Int
+    /// Number of bits to include in "position state". Default value is 2.
+    public var pb: Int = 2
 
     /**
-     Size of the dictionary.
+     Size of the dictionary. Default value is 1 << 24.
 
      - Note: Dictionary size cannot be less than 4096. In case of attempt to set it to the value less than 4096 it will
      be automatically set to 4096 instead.
      */
-    public var dictionarySize: Int {
+    public var dictionarySize: Int = 1 << 24 {
         didSet {
             if dictionarySize < 1 << 12 {
                 dictionarySize = 1 << 12
