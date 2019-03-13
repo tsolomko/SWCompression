@@ -43,12 +43,7 @@ public struct LZMAProperties {
         self.dictionarySize = dictionarySize
     }
 
-    init() {
-        self.lc = 0
-        self.lp = 0
-        self.pb = 0
-        self.dictionarySize = 0
-    }
+    public init() { }
 
     init(lzmaByte: UInt8, _ dictSize: Int) throws {
         guard lzmaByte < 9 * 5 * 5
