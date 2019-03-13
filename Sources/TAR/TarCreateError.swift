@@ -1,10 +1,10 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 /**
- Represents an error, which happened during creation of a new TAR container.
+ Represents an error which happened during the creation of a new TAR container.
 
  - Note: This error type is going to be merged with `TarError` in the next major update.
  */

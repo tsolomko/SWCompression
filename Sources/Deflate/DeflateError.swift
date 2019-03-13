@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during Deflate compression or decompression.
+ Represents an error which happened during Deflate compression or decompression.
  It may indicate that either the data is damaged or it might not be compressed with Deflate at all.
  */
 public enum DeflateError: Error {

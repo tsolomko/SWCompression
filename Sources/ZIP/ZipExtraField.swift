@@ -1,11 +1,11 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import BitByteData
 
-/// A type that represents an extra field from ZIP container.
+/// A type that represents an extra field from a ZIP container.
 public protocol ZipExtraField {
 
     /**

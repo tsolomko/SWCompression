@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -10,7 +10,7 @@ import SwiftCLI
 class CompDeflate: BenchmarkCommand {
 
     let name = "comp-deflate"
-    let shortDescription = "Performs benchmarking of Deflate compression using specified files"
+    let shortDescription = "Deflate compression"
 
     let files = CollectedParameter()
 

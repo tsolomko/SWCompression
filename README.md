@@ -1,6 +1,6 @@
 # SWCompression
 
-[![Swift 4.1](https://img.shields.io/badge/Swift-4.1-blue.svg)](https://developer.apple.com/swift/)
+[![Swift 4.2](https://img.shields.io/badge/Swift-4.2-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://travis-ci.org/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.org/tsolomko/SWCompression)
 
@@ -130,7 +130,7 @@ However, it is unlikely that you will encounter deflated data outside of any arc
 So, in case of GZip archive you should use:
 
 ```swift
-let decompressedData = try? GzipArchive.unarchive(archiveData: data)
+let decompressedData = try? GzipArchive.unarchive(archive: data)
 ```
 
 ### Handling Errors

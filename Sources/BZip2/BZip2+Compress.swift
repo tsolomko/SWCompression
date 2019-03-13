@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -13,8 +13,8 @@ extension BZip2: CompressionAlgorithm {
 
      - Parameter data: Data to compress.
 
-     - Note: Input data will be split into blocks of size 100 KB.
-     Use `BZip2.compress(data:blockSize:)` function to specify size of a block.
+     - Note: Input data will be split into blocks of size 100 KB. Use `BZip2.compress(data:blockSize:)` function to
+     specify the size of a block.
      */
     public static func compress(data: Data) -> Data {
         return compress(data: data, blockSize: .one)
@@ -89,7 +89,7 @@ extension BZip2: CompressionAlgorithm {
         // These are separate stages because all information about trees is stored at the beginning of the block,
         //  and it is hard to modify it later.
         var processed = 50
-        var tables = [EncodingHuffmanTree]()
+        var tables = [EncodingTree]()
         var tablesLengths = [[Int]]()
         var selectors = [Int]()
 
@@ -121,10 +121,11 @@ extension BZip2: CompressionAlgorithm {
                     selectors.append(minimumSelector)
                 } else {
                     // Otherwise, let's create a new table and check if it gives us better results.
-                    // First, we calculate code lengths for our current stats.
+                    // First, we calculate code lengths and codes for our current stats.
                     let lengths = BZip2.lengths(from: stats)
-                    // Then, using these code lengths, we create a new Huffman tree.
-                    let table = EncodingHuffmanTree(lengths: lengths, bitWriter)
+                    let codes = Code.huffmanCodes(from: lengths)
+                    // Then, using these codes, we create a new Huffman tree.
+                    let table = EncodingTree(codes: codes.codes, bitWriter)
                     if table.bitSize(for: stats) < minimumSize {
                         tables.append(table)
                         tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
@@ -206,7 +207,7 @@ extension BZip2: CompressionAlgorithm {
         // Contents.
         var encoded = 0
         var selectorPointer = 0
-        var t: EncodingHuffmanTree?
+        var t: EncodingTree?
         for symbol in out {
             encoded -= 1
             if encoded <= 0 {

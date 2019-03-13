@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.5.1
+
+- Minimum required version of BitByteData is now 1.4.0.
+- Updated to support Swift 4.2.
+- Added default values to the properties of `LZMAProperties` struct.
+- Added `init()` to `LZMAProperties` struct.
+- Improved the detection of Swift versions less than 4.2 in the workaround for the crash in `Data.prefix(upTo:)`.
+- Documentation updates:
+    - Fixed an outdated example in README (PR #4 by @brianantonelli).
+    - Fixed grammar issues related to the usage of articles, during/while, and others.
+- swcomp changes:
+    - Minimum required version of SwiftCLI is now 5.2.0.
+    - Improved the layout of output of benchmark commands.
+
 ## 4.5.0
 
 - Added APIs which allow to specify LZMA properties for decompression:

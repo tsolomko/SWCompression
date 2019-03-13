@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -10,7 +10,7 @@ import SwiftCLI
 class UnBz2: BenchmarkCommand {
 
     let name = "un-bz2"
-    let shortDescription = "Performs benchmarking of BZip2 unarchiving using specified files"
+    let shortDescription = "BZip2 unarchiving"
 
     let files = CollectedParameter()
 

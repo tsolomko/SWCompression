@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "4.5.0"
+  s.version      = "4.5.1"
   s.summary      = "A framework with functions for working with compression, archives and containers."
   
   s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."
@@ -20,9 +20,9 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.watchos.deployment_target = "2.0"
 
-  s.swift_version = "4.1"
+  s.swift_version = "4.2"
 
-  s.dependency "BitByteData", "~> 1.2.0"
+  s.dependency "BitByteData", "~> 1.4.0"
 
   s.subspec "Deflate" do |sp|
     sp.source_files = "Sources/{Deflate/*,Common/*}.swift"

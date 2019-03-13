@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -102,27 +102,8 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// CRC32 of entry's data.
     public let crc: UInt32
 
-    let hasDataDescriptor: Bool
-    let zip64FieldsArePresent: Bool
-    let nextCdEntryOffset: Int
-    let dataOffset: Int
-    let compSize: UInt64
-    let uncompSize: UInt64
-
-    init(_ byteReader: ByteReader, _ currentDiskNumber: UInt32) throws {
-        // Read Central Directory entry.
-        let cdEntry = try ZipCentralDirectoryEntry(byteReader)
-
-        // Move to the location of Local Header.
-        byteReader.offset = cdEntry.localHeaderOffset.toInt()
-        // Read Local Header.
-        let localHeader = try ZipLocalHeader(byteReader)
-        try localHeader.validate(with: cdEntry, currentDiskNumber)
-
-        // If file has data descriptor, then some properties are only present in CD entry.
-        self.hasDataDescriptor = localHeader.generalPurposeBitFlags & 0x08 != 0
-
-        // Name.
+    init(_ byteReader: ByteReader, _ cdEntry: ZipCentralDirectoryEntry, _ localHeader: ZipLocalHeader,
+         _ hasDataDescriptor: Bool) {
         self.name = cdEntry.fileName
 
         // Set Modification Time.
@@ -173,10 +154,8 @@ public struct ZipEntryInfo: ContainerEntryInfo {
             self.accessTime = nil
         }
 
-        // Size
         self.size = (hasDataDescriptor ? cdEntry.uncompSize : localHeader.uncompSize).toInt()
 
-        // External file attributes.
         self.externalFileAttributes = cdEntry.externalFileAttributes
         self.permissions = Permissions(rawValue: (0x0FFF0000 & cdEntry.externalFileAttributes) >> 16)
         self.dosAttributes = DosAttributes(rawValue: 0xFF & cdEntry.externalFileAttributes)
@@ -208,13 +187,6 @@ public struct ZipEntryInfo: ContainerEntryInfo {
         var customExtraFields = cdEntry.customExtraFields
         customExtraFields.append(contentsOf: localHeader.customExtraFields)
         self.customExtraFields = customExtraFields
-
-        // Save some properties from CD entry and Local Header.
-        self.zip64FieldsArePresent = localHeader.zip64FieldsArePresent
-        self.nextCdEntryOffset = cdEntry.nextEntryOffset
-        self.dataOffset = localHeader.dataOffset
-        self.compSize = hasDataDescriptor ? cdEntry.compSize : localHeader.compSize
-        self.uncompSize = hasDataDescriptor ? cdEntry.uncompSize : localHeader.uncompSize
     }
 
 }

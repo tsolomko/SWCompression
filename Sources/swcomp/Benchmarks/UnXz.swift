@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -10,7 +10,7 @@ import SwiftCLI
 class UnXz: BenchmarkCommand {
 
     let name = "un-xz"
-    let shortDescription = "Performs benchmarking of XZ unarchiving using specified files"
+    let shortDescription = "XZ unarchiving"
 
     let files = CollectedParameter()
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -6,8 +6,8 @@
 import Foundation
 
 /**
- Represents type of the file system on which an archive or container was created.
- File system determines meaning of file attributes.
+ Represents the type of the file system on which an archive or container was created. File system determines the meaning
+ of file attributes.
  */
 public enum FileSystemType {
     /// FAT filesystem.

@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -24,12 +24,12 @@ protocol BenchmarkCommand: Command {
 extension BenchmarkCommand {
 
     func execute() throws {
-        let title = "\(benchmarkName) Benchmark"
-        print(title)
+        let title = "\(benchmarkName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
+        print(title)
 
         for file in self.files.value {
-            print("File: \(file)\n")
+            print("File: \(file)")
 
             let inputURL = URL(fileURLWithPath: file)
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
@@ -39,25 +39,27 @@ extension BenchmarkCommand {
             var maxTime = Double(Int.min)
             var minTime = Double(Int.max)
 
-            // Zeroth (excluded) iteration.
-            print("Iteration 00 (excluded): ", terminator: "")
+            print("Iterations: ", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
+            // Zeroth (excluded) iteration.
             let startTime = CFAbsoluteTimeGetCurrent()
             _ = try benchmarkFunction(fileData)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            print(String(format: "%.3f", timeElapsed))
-
-            for i in 1...10 {
-                print(String(format: "Iteration %02u: ", i), terminator: "")
-                #if !os(Linux)
-                    fflush(__stdoutp)
-                #endif
+            print(String(format: "(%.3f) ", timeElapsed), terminator: "")
+            #if !os(Linux)
+                fflush(__stdoutp)
+            #endif
+            
+            for _ in 1...10 {
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try benchmarkFunction(fileData)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                print(String(format: "%.3f", timeElapsed))
+                print(String(format: "%.3f ", timeElapsed), terminator: "")
+                #if !os(Linux)
+                    fflush(__stdoutp)
+                #endif
                 totalTime += timeElapsed
                 if timeElapsed > maxTime {
                     maxTime = timeElapsed
@@ -66,8 +68,7 @@ extension BenchmarkCommand {
                     minTime = timeElapsed
                 }
             }
-            print(String(format: "\nAverage time: %.3f \u{B1} %.3f", totalTime / 10, (maxTime - minTime) / 2))
-            print("---------------------------------------")
+            print(String(format: "\nAverage: %.3f \u{B1} %.3f\n", totalTime / 10, (maxTime - minTime) / 2))
         }
     }
 

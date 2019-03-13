@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -9,7 +9,7 @@ import BitByteData
 /// Provides unarchive and archive functions for GZip archives.
 public class GzipArchive: Archive {
 
-    /// Represents a member of multi-member of GZip archive.
+    /// Represents the member of a multi-member GZip archive.
     public struct Member {
 
         /// GZip header of a member.

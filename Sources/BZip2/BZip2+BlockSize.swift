@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Timofey Solomko
+// Copyright (c) 2019 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -7,9 +7,7 @@ import Foundation
 
 public extension BZip2 {
 
-    /**
-     Represents size of blocks in which data is split during BZip2 compression.
-     */
+    /// Represents the size of the blocks in which data is split during BZip2 compression.
     public enum BlockSize: Int {
         /// 100 KB.
         case one = 1
