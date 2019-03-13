@@ -10,8 +10,8 @@ import BitByteData
 public class TarContainer: Container {
 
     /**
-     Represents a "format" of TAR container: a minimal set of extensions to basic TAR format required to successfully
-     read particular container.
+     Represents the "format" of a TAR container: a minimal set of extensions to basic TAR format required to
+     successfully read a particular container.
      */
     public enum Format {
         /// Pre POSIX format (aka "basic TAR format").

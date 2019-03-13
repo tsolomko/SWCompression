@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-/// Represents a Zlib archive's header.
+/// Represents the header of a Zlib archive.
 public struct ZlibHeader {
 
     /// Levels of compression which can be used to create Zlib archive.

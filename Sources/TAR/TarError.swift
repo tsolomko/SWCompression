@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during processing TAR container.
+ Represents an error which happened while processing a TAR container.
  It may indicate that either container is damaged or it might not be TAR container at all.
  */
 public enum TarError: Error {

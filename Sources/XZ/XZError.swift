@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during unarchiving XZ archive.
+ Represents an error which happened while unarchiving an XZ archive.
  It may indicate that either archive is damaged or it might not be XZ archive at all.
  */
 public enum XZError: Error {
@@ -43,6 +43,6 @@ public enum XZError: Error {
     case wrongCheck([Data])
     /// Padding (null-bytes appended to an archive's structure) is incorrect.
     case wrongPadding
-    /// Either null byte encountered or exceeded maximum amount bytes during reading multi byte number.
+    /// Either null byte encountered or exceeded maximum amount bytes while reading multi byte number.
     case multiByteIntegerError
 }

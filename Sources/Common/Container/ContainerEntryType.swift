@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Represents type of a container entry.
+/// Represents the type of a container entry.
 public enum ContainerEntryType {
     /// Block special file.
     case blockSpecial

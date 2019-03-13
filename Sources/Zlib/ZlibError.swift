@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during processing Zlib archive.
+ Represents an error which happened while processing a Zlib archive.
  It may indicate that either archive is damaged or it might not be Zlib archive at all.
  */
 public enum ZlibError: Error {

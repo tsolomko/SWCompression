@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during BZip2 decompression.
+ Represents an error which happened during BZip2 decompression.
  It may indicate that either data is damaged or it might not be compressed with BZip2 at all.
  */
 public enum BZip2Error: Error {

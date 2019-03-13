@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during processing GZip archive.
+ Represents an error which happened while processing a GZip archive.
  It may indicate that either archive is damaged or it might not be GZip archive at all.
  */
 public enum GzipError: Error {

@@ -7,7 +7,7 @@ import Foundation
 import BitByteData
 
 /**
- The purpose of this struct is to accompany `ZipEntryInfo` instances during processing of a `ZipContainer` and to store
+ The purpose of this struct is to accompany `ZipEntryInfo` instances while processing a `ZipContainer` and to store
  information which is necessary for reading entry's data later.
  */
 struct ZipEntryInfoHelper {

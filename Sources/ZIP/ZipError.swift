@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during processing ZIP container.
+ Represents an error which happened while processing a ZIP container.
  It may indicate that either container is damaged or it might not be ZIP container at all.
  */
 public enum ZipError: Error {

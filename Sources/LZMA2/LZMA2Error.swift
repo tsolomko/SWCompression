@@ -6,7 +6,7 @@
 import Foundation
 
 /**
- Represents an error, which happened during LZMA2 decompression.
+ Represents an error which happened during LZMA2 decompression.
  It may indicate that either data is damaged or it might not be compressed with LZMA2 at all.
  */
 public enum LZMA2Error: Error {

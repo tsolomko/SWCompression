@@ -5,7 +5,7 @@
 
 import BitByteData
 
-/// A type that represents an extra field from ZIP container.
+/// A type that represents an extra field from a ZIP container.
 public protocol ZipExtraField {
 
     /**

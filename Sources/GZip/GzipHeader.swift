@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-/// Represents a GZip archive's header.
+/// Represents the header of a GZip archive.
 public struct GzipHeader {
 
     struct Flags: OptionSet {
@@ -27,9 +27,8 @@ public struct GzipHeader {
     public let compressionMethod: CompressionMethod
 
     /**
-     The most recent modification time of the original file.
-     If corresponding archive's field is set to 0, which means that no time was specified,
-     then this property is `nil`.
+     The most recent modification time of the original file. If corresponding archive's field is set to 0, which means
+     that no time was specified, then this property is `nil`.
      */
     public let modificationTime: Date?
 
