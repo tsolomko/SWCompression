@@ -1265,6 +1265,7 @@
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -1319,6 +1320,7 @@
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -1349,7 +1351,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1377,7 +1378,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -1395,7 +1395,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1413,7 +1412,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

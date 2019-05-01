@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 import PackageDescription
 
 let package = Package(
@@ -28,5 +28,5 @@ let package = Package(
             path: "Sources",
             sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
     ],
-    swiftLanguageVersions: [4]
+    swiftLanguageVersions: [.v5]
 )
