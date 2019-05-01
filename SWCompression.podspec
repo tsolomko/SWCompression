@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.dependency "BitByteData", "~> 1.4.0"
 
   s.subspec "Deflate" do |sp|
-    sp.source_files = "Sources/{Deflate/*,Common/*}.swift"
+    sp.source_files = "Sources/{Deflate/*,Common/*,Common/CodingTree/*}.swift"
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_DEFLATE" }
   end
 
@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec "BZip2" do |sp|
-    sp.source_files = "Sources/{BZip2/*,Common/*}.swift"
+    sp.source_files = "Sources/{BZip2/*,Common/*,Common/CodingTree/*}.swift"
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_BZ2" }
   end
 
