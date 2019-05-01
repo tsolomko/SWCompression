@@ -164,7 +164,7 @@ class SevenZipFolder {
                     properties.count == 1
                     else { throw LZMA2Error.wrongDictionarySize }
 
-                decodedData = try LZMA2.decompress(ByteReader(data: decodedData), properties[0])
+                decodedData = try LZMA2.decompress(LittleEndianByteReader(data: decodedData), properties[0])
             case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties,
@@ -185,7 +185,7 @@ class SevenZipFolder {
                         properties.count == 1
                         else { throw SevenZipError.internalStructureError }
 
-                    decodedData = DeltaFilter.decode(ByteReader(data: decodedData), (properties[0] &+ 1).toInt())
+                    decodedData = DeltaFilter.decode(LittleEndianByteReader(data: decodedData), (properties[0] &+ 1).toInt())
                 } else if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {

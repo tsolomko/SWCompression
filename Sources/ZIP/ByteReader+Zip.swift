@@ -10,7 +10,7 @@ import BitByteData
     import CoreFoundation
 #endif
 
-extension ByteReader {
+extension LittleEndianByteReader {
 
     func zipString(_ length: Int, _ useUtf8: Bool) -> String? {
         guard length > 0

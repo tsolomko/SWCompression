@@ -17,7 +17,7 @@ struct ZipEndOfCentralDirectory {
     private(set) var cdSize: UInt64
     private(set) var cdOffset: UInt64
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 

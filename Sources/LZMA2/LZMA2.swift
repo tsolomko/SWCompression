@@ -23,11 +23,11 @@ public class LZMA2: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(data: Data) throws -> Data {
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         return try decompress(byteReader, byteReader.byte())
     }
 
-    static func decompress(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws -> Data {
+    static func decompress(_ byteReader: LittleEndianByteReader, _ dictSizeByte: UInt8) throws -> Data {
         let decoder = try LZMA2Decoder(byteReader, dictSizeByte)
         try decoder.decode()
         return Data(decoder.out)

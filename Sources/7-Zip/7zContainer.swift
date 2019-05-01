@@ -49,10 +49,10 @@ public class SevenZipContainer: Container {
         /// Combined calculated CRC of entire folder == all files in folder.
         var folderCRC = CheckSums.crc32(Data())
 
-        /// `ByteReader` object with unpacked stream's data.
-        var unpackedStreamData = ByteReader(data: Data())
+        /// `LittleEndianByteReader` object with unpacked stream's data.
+        var unpackedStreamData = LittleEndianByteReader(data: Data())
 
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
 
         for file in files {
             if file.isEmptyStream {
@@ -108,7 +108,7 @@ public class SevenZipContainer: Container {
 
                 // One stream can contain data for several files, so we need to decode the stream first, then split
                 // it into files.
-                unpackedStreamData = ByteReader(data: try folder.unpack(data: streamData))
+                unpackedStreamData = LittleEndianByteReader(data: try folder.unpack(data: streamData))
             }
 
             // `SevenZipSubstreamInfo` object must contain information about file's size and may also contain

@@ -31,7 +31,7 @@ struct XZStreamHeader {
     let checkType: CheckType
     let flagsCRC: UInt32
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         // Check magic number.
         guard byteReader.bytes(count: 6) == [0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]
             else { throw XZError.wrongMagic }

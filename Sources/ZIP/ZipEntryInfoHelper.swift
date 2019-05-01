@@ -21,7 +21,7 @@ struct ZipEntryInfoHelper {
     let compSize: UInt64
     let uncompSize: UInt64
 
-    init(_ byteReader: ByteReader, _ currentDiskNumber: UInt32) throws {
+    init(_ byteReader: LittleEndianByteReader, _ currentDiskNumber: UInt32) throws {
         // Read Central Directory entry.
         let cdEntry = try ZipCentralDirectoryEntry(byteReader)
 

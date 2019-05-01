@@ -16,7 +16,7 @@ struct ExtendedTimestampExtraField: ZipExtraField {
     var ctime: UInt32?
     var mtime: UInt32?
 
-    init(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+    init(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
         switch location {
@@ -52,7 +52,7 @@ struct NtfsExtraField: ZipExtraField {
     let ctime: UInt64
     let mtime: UInt64
 
-    init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+    init?(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
         byteReader.offset += 4 // Skip reserved bytes
@@ -77,7 +77,7 @@ struct InfoZipUnixExtraField: ZipExtraField {
     let uid: Int
     let gid: Int
 
-    init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+    init?(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
         switch location {
@@ -101,7 +101,7 @@ struct InfoZipNewUnixExtraField: ZipExtraField {
     var uid: Int?
     var gid: Int?
 
-    init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+    init?(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
         guard byteReader.byte() == 1 // Version must be 1

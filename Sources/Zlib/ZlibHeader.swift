@@ -40,11 +40,11 @@ public struct ZlibHeader {
      - Throws: `ZlibError`. It may indicate that either archive is damaged or it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         try self.init(byteReader)
     }
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         // compressionMethod and compressionInfo combined are needed later for integrity check.
         let cmf = byteReader.byte()
         // First four bits are compression method.

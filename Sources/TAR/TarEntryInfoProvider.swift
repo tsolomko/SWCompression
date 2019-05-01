@@ -10,14 +10,14 @@ import BitByteData
 // impossible to do so, since `TarEntryInfo.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
 struct TarEntryInfoProvider {
 
-    private let byteReader: ByteReader
+    private let byteReader: LittleEndianByteReader
     private var lastGlobalExtendedHeader: TarExtendedHeader?
     private var lastLocalExtendedHeader: TarExtendedHeader?
     private var longLinkName: String?
     private var longName: String?
 
     init(_ data: Data) {
-        self.byteReader = ByteReader(data: data)
+        self.byteReader = LittleEndianByteReader(data: data)
     }
 
     mutating func next() throws -> TarEntryInfo? {

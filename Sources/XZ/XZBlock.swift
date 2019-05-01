@@ -15,7 +15,7 @@ struct XZBlock {
         return data.count
     }
 
-    init(_ blockHeaderSize: UInt8, _ byteReader: ByteReader, _ checkSize: Int) throws {
+    init(_ blockHeaderSize: UInt8, _ byteReader: LittleEndianByteReader, _ checkSize: Int) throws {
         let blockHeaderStartIndex = byteReader.offset - 1
         let realBlockHeaderSize = (blockHeaderSize.toInt() + 1) * 4
 
@@ -34,7 +34,7 @@ struct XZBlock {
         /// Should match the size of data after decompression.
         let uncompressedSize = blockFlags & 0x80 != 0 ? try byteReader.multiByteDecode() : -1
 
-        var filters: [(ByteReader) throws -> Data] = []
+        var filters: [(LittleEndianByteReader) throws -> Data] = []
         for _ in 0..<filtersCount {
             let filterID = try byteReader.multiByteDecode()
             guard UInt64(filterID) < 0x4000000000000000
@@ -75,7 +75,7 @@ struct XZBlock {
         byteReader.offset += 4
 
         let compressedDataStart = byteReader.offset
-        let out = try filters.reversed().reduce(byteReader) { try ByteReader(data: $1($0)) }
+        let out = try filters.reversed().reduce(byteReader) { try LittleEndianByteReader(data: $1($0)) }
 
         guard compressedSize < 0 || compressedSize == byteReader.offset - compressedDataStart,
             uncompressedSize < 0 || uncompressedSize == out.data.count

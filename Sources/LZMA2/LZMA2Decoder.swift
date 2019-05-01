@@ -8,14 +8,14 @@ import BitByteData
 
 final class LZMA2Decoder {
 
-    private let byteReader: ByteReader
+    private let byteReader: LittleEndianByteReader
     private let decoder: LZMADecoder
 
     var out: [UInt8] {
         return self.decoder.out
     }
 
-    init(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws {
+    init(_ byteReader: LittleEndianByteReader, _ dictSizeByte: UInt8) throws {
         self.byteReader = byteReader
         self.decoder = LZMADecoder(byteReader)
 

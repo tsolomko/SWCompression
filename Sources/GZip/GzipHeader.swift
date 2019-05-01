@@ -53,11 +53,11 @@ public struct GzipHeader {
      it might not be archived with GZip at all.
      */
     public init(archive data: Data) throws {
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         try self.init(byteReader)
     }
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         // First two bytes should be correct 'magic' bytes
         let magic = byteReader.uint16()
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }

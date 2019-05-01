@@ -23,7 +23,7 @@ public class LZMA: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(data: Data) throws -> Data {
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         let properties = try LZMAProperties(byteReader)
         let uncompSize = byteReader.int(fromBytes: 8)
         return try decompress(byteReader, properties, uncompSize)
@@ -52,11 +52,11 @@ public class LZMA: DecompressionAlgorithm {
     public static func decompress(data: Data,
                                   properties: LZMAProperties,
                                   uncompressedSize: Int? = nil) throws -> Data {
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         return try decompress(byteReader, properties, uncompressedSize)
     }
 
-    static func decompress(_ byteReader: ByteReader,
+    static func decompress(_ byteReader: LittleEndianByteReader,
                            _ properties: LZMAProperties,
                            _ uncompSize: Int?) throws -> Data {
         let decoder = LZMADecoder(byteReader)

@@ -102,7 +102,7 @@ public struct ZipEntryInfo: ContainerEntryInfo {
     /// CRC32 of entry's data.
     public let crc: UInt32
 
-    init(_ byteReader: ByteReader, _ cdEntry: ZipCentralDirectoryEntry, _ localHeader: ZipLocalHeader,
+    init(_ byteReader: LittleEndianByteReader, _ cdEntry: ZipCentralDirectoryEntry, _ localHeader: ZipLocalHeader,
          _ hasDataDescriptor: Bool) {
         self.name = cdEntry.fileName
 

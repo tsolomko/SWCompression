@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-extension ByteReader {
+extension LittleEndianByteReader {
 
     /**
      Reads a `String` field from TAR container. The end of the field is defined by either:

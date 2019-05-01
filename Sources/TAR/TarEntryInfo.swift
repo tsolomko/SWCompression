@@ -199,7 +199,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.blockStartIndex = 0
     }
 
-    init(_ byteReader: ByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
+    init(_ byteReader: LittleEndianByteReader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) throws {
         self.blockStartIndex = byteReader.offset
 

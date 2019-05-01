@@ -38,7 +38,7 @@ struct ZipLocalHeader {
 
     let dataOffset: Int
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         // Check signature.
         guard byteReader.uint32() == 0x04034b50
             else { throw ZipError.wrongSignature }
