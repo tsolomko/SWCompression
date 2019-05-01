@@ -41,7 +41,7 @@ struct ZipEndOfCentralDirectory {
         // There is also a .ZIP file comment, but we don't need it.
         // Here's how it can be processed:
         // let zipCommentLength = byteReader.int(fromBytes: 2)
-        // let zipComment = String(data: Data(bytes: byteReader.bytes(count: zipCommentLength)),
+        // let zipComment = String(data: Data(byteReader.bytes(count: zipCommentLength)),
         //                         encoding: .utf8)
 
         // Check if zip64 records are present.

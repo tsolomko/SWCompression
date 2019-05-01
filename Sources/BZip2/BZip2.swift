@@ -218,7 +218,7 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
 
-        return Data(bytes: out)
+        return Data(out)
     }
 
 }
