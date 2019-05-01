@@ -5,7 +5,7 @@
 
 import Foundation
 
-public extension BZip2 {
+extension BZip2 {
 
     /// Represents the size of the blocks in which data is split during BZip2 compression.
     public enum BlockSize: Int {
@@ -62,4 +62,5 @@ public extension BZip2 {
         }
 
     }
+
 }
