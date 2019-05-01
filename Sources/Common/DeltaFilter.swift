@@ -29,7 +29,7 @@ final class DeltaFilter {
             }
         }
 
-        return Data(bytes: out)
+        return Data(out)
     }
 
 }

@@ -203,7 +203,7 @@ public class Deflate: DecompressionAlgorithm {
             }
         }
 
-        return Data(bytes: out)
+        return Data(out)
     }
 
 }

@@ -30,7 +30,7 @@ public class LZMA2: DecompressionAlgorithm {
     static func decompress(_ byteReader: ByteReader, _ dictSizeByte: UInt8) throws -> Data {
         let decoder = try LZMA2Decoder(byteReader, dictSizeByte)
         try decoder.decode()
-        return Data(bytes: decoder.out)
+        return Data(decoder.out)
     }
 
 }

@@ -53,7 +53,7 @@ public class ZlibArchive: Archive {
             120, // CM (Compression Method) = 8 (DEFLATE), CINFO (Compression Info) = 7 (32K window size).
             218 // Flags: slowest algorithm, no preset dictionary.
         ]
-        var outData = Data(bytes: out)
+        var outData = Data(out)
         outData.append(Deflate.compress(data: data))
 
         let adler32 = CheckSums.adler32(data)
@@ -61,7 +61,7 @@ public class ZlibArchive: Archive {
         for i in 0..<4 {
             adlerBytes.append(UInt8(truncatingIfNeeded: (adler32 & (0xFF << ((3 - i) * 8))) >> ((3 - i) * 8)))
         }
-        outData.append(Data(bytes: adlerBytes))
+        outData.append(Data(adlerBytes))
 
         return outData
     }

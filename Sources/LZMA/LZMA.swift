@@ -65,7 +65,7 @@ public class LZMA: DecompressionAlgorithm {
         decoder.uncompressedSize = uncompSize ?? -1
 
         try decoder.decode()
-        return Data(bytes: decoder.out)
+        return Data(decoder.out)
     }
 
 }

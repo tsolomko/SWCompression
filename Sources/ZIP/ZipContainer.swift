@@ -66,7 +66,7 @@ public class ZipContainer: Container {
         byteReader.offset = helper.dataOffset
         switch helper.entryInfo.compressionMethod {
         case .copy:
-            fileData = Data(bytes: byteReader.bytes(count: uncompSize.toInt()))
+            fileData = Data(byteReader.bytes(count: uncompSize.toInt()))
         case .deflate:
             let bitReader = LsbBitReader(byteReader)
             fileData = try Deflate.decompress(bitReader)
