@@ -36,9 +36,7 @@ struct Sha256 {
         var h7 = 0x5be0cd19 as UInt32
 
         // Padding
-        var bytes = data.withUnsafeBytes {
-            [UInt8](UnsafeBufferPointer(start: $0, count: data.count / MemoryLayout<UInt8>.size))
-        }
+        var bytes = data.withUnsafeBytes { $0.map { $0 } }
 
         let originalLength = bytes.count
         var newLength = originalLength * 8 + 1
