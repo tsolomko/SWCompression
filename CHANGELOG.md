@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.2
+
+- Increased the lowest required version of BitByteData dependency to 1.4.1.
+
 ## 4.5.1
 
 - Minimum required version of BitByteData is now 1.4.0.

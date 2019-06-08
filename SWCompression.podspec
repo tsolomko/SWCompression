@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "4.5.1"
+  s.version      = "4.5.2"
   s.summary      = "A framework with functions for working with compression, archives and containers."
   
   s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."
@@ -22,10 +22,10 @@ Pod::Spec.new do |s|
 
   s.swift_version = "4.2"
 
-  s.dependency "BitByteData", "~> 1.4.0"
+  s.dependency "BitByteData", "~> 1.4.1"
 
   s.subspec "Deflate" do |sp|
-    sp.source_files = "Sources/{Deflate/*,Common/*}.swift"
+    sp.source_files = "Sources/{Deflate/*,Common/*,Common/CodingTree/*}.swift"
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_DEFLATE" }
   end
 
@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec "BZip2" do |sp|
-    sp.source_files = "Sources/{BZip2/*,Common/*}.swift"
+    sp.source_files = "Sources/{BZip2/*,Common/*,Common/CodingTree/*}.swift"
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_BZ2" }
   end
 
