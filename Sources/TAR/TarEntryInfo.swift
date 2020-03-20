@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -406,7 +406,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
             // It determines the end of the actual prefix and the beginning of the updated name field.
             #if (swift(>=4.1.50) || (swift(>=3.4) && !swift(>=4.0))) || !os(Linux)
                 let lastPrefixSlashIndex = nameData.prefix(upTo: maxPrefixLength)
-                    .range(of: Data(bytes: [0x2f]), options: .backwards)?.lowerBound ?? -1
+                    .range(of: Data([0x2f]), options: .backwards)?.lowerBound ?? -1
             #else
                 // TODO: This is a workaround for runtime crash in `Data.prefix(upTo:).range(of:options:)` on Linux with
                 // Swift 4.1. It seems like it is fixed in 4.2 and master snapshots, so it will be removed when Swift
@@ -480,7 +480,7 @@ fileprivate extension Data {
             value >>= 8
         }
         buffer[0] |= 0x80 // Highest bit indicates base-256 encoding.
-        self.append(Data(bytes: buffer))
+        self.append(Data(buffer))
     }
 
     mutating func append(tarString string: String?, maxLength: Int) throws {

@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -123,7 +123,7 @@ extension Deflate: CompressionAlgorithm {
                 mainLiterals.code(symbol: lengthSymbol)
                 bitWriter.write(number: lengthExtraBits, bitsCount: lengthExtraBitsCount)
 
-                let distanceSymbol = ((Constants.distanceBase.index { $0 > distance.toInt() }) ?? 30) - 1
+                let distanceSymbol = ((Constants.distanceBase.firstIndex { $0 > distance.toInt() }) ?? 30) - 1
                 let distanceExtraBits = distance.toInt() - Constants.distanceBase[distanceSymbol]
                 let distanceExtraBitsCount = distanceSymbol == 0 || distanceSymbol == 1 ?
                     0 : ((distanceSymbol >> 1) - 1)
@@ -184,7 +184,7 @@ extension Deflate: CompressionAlgorithm {
                     buffer.append(BLDCode.lengthDistance(UInt16(truncatingIfNeeded: matchLength),
                                                          UInt16(truncatingIfNeeded: distance)))
                     stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
-                    stats[286 + ((Constants.distanceBase.index { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
+                    stats[286 + ((Constants.distanceBase.firstIndex { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
                     inputIndex += matchLength
                 } else {
                     buffer.append(BLDCode.byte(byte))

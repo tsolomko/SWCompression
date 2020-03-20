@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -250,7 +250,7 @@ extension BZip2: CompressionAlgorithm {
         /// Mutable copy of `characters`.
         var dictionary = characters
         for i in 0..<array.count {
-            let index = dictionary.index(of: array[i])!
+            let index = dictionary.firstIndex(of: array[i])!
             out.append(index)
             let old = dictionary.remove(at: index)
             dictionary.insert(old, at: 0)

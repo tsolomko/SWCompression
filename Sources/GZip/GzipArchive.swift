@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -170,7 +170,7 @@ public class GzipArchive: Archive {
         headerBytes.append(2) // Extra flags; 2 means that DEFLATE used slowest algorithm.
         headerBytes.append(os)
 
-        var outData = Data(bytes: headerBytes)
+        var outData = Data(headerBytes)
 
         outData.append(fileNameData)
         outData.append(commentData)
@@ -189,14 +189,14 @@ public class GzipArchive: Archive {
         for i: UInt32 in 0..<4 {
             crcBytes.append(UInt8(truncatingIfNeeded: (crc32 & (0xFF << (i * 8))) >> (i * 8)))
         }
-        outData.append(Data(bytes: crcBytes))
+        outData.append(Data(crcBytes))
 
         let isize = UInt64(data.count) % UInt64(1) << 32
         var isizeBytes = [UInt8]()
         for i: UInt64 in 0..<4 {
             isizeBytes.append(UInt8(truncatingIfNeeded: (isize & (0xFF << (i * 8))) >> (i * 8)))
         }
-        outData.append(Data(bytes: isizeBytes))
+        outData.append(Data(isizeBytes))
 
         return outData
     }

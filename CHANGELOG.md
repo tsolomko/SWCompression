@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.3
+
+- Improved compatibility with the latest versions of Swift (5.x) and Xcode.
+
 ## 4.5.2
 
 - Increased the lowest required version of BitByteData dependency to 1.4.1.

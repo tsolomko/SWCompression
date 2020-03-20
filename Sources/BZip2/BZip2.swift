@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -218,7 +218,7 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
 
-        return Data(bytes: out)
+        return Data(out)
     }
 
 }

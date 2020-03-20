@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -97,7 +97,7 @@ public class SevenZipContainer: Container {
                 }
 
                 // Load the stream.
-                let streamData = Data(bytes: byteReader.bytes(count: packInfo.packSizes[streamIndex]))
+                let streamData = Data(byteReader.bytes(count: packInfo.packSizes[streamIndex]))
 
                 // Check stream's CRC, if it's available.
                 if streamIndex < packInfo.digests.count,
@@ -122,7 +122,7 @@ public class SevenZipContainer: Container {
             // Check, if we aren't about to read too much from a stream.
             guard fileSize <= unpackedStreamData.bytesLeft
                 else { throw SevenZipError.internalStructureError }
-            let fileData = Data(bytes: unpackedStreamData.bytes(count: fileSize))
+            let fileData = Data(unpackedStreamData.bytes(count: fileSize))
 
             let calculatedFileCRC = CheckSums.crc32(fileData)
             if nonEmptyFileIndex < substreamInfo.digests.count {

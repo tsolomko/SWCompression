@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 import PackageDescription
 
 let package = Package(
@@ -13,7 +13,7 @@ let package = Package(
         // .package(url: "https://github.com/jakeheis/SwiftCLI",
         //          from: "5.2.0"),
         .package(url: "https://github.com/tsolomko/BitByteData",
-                 from: "1.4.1"),
+                 from: "1.4.2"),
     ],
     targets: [
         // SWCOMP: Uncomment the lines below to build swcomp example program.
@@ -28,5 +28,5 @@ let package = Package(
             path: "Sources",
             sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
     ],
-    swiftLanguageVersions: [4]
+    swiftLanguageVersions: [.v5]
 )

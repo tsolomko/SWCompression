@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Timofey Solomko
+// Copyright (c) 2020 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -19,7 +19,7 @@ struct TestZipExtraField: ZipExtraField {
     init(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
-        self.helloString = String(data: Data(bytes: byteReader.bytes(count: size)), encoding: .utf8)
+        self.helloString = String(data: Data(byteReader.bytes(count: size)), encoding: .utf8)
     }
 
 }
