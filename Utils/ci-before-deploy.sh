@@ -12,6 +12,5 @@ rm -rf Carthage/Checkouts
 (set +x; echo "=> Preparing deployment files.")
 carthage build --no-skip-current
 carthage archive SWCompression
-swift build
 sourcekitten doc --spm-module SWCompression > docs.json
 jazzy
