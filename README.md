@@ -136,7 +136,7 @@ let decompressedData = try? GzipArchive.unarchive(archive: data)
 ### Handling Errors
 
 Most SWCompression functions can throw an error and you are responsible for handling them.
-If you look at list of available error types and their cases, you may be frightened by their number.
+If you look at the list of available error types and their cases, you may be frightened by their number.
 However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
 
 Thus, you only need to handle the most common type of error for your archive/algorithm. For example:
@@ -146,9 +146,9 @@ do {
     // let data = <Your compressed data>
     let decompressedData = try XZArchive.unarchive(archive: data)
 } catch let error as XZError {
-    <handle XZ related error here>
+    // <handle XZ related error here>
 } catch let error {
-    <handle all other errors here>
+    // <handle all other errors here>
 }
 ```
 
