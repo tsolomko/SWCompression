@@ -81,6 +81,9 @@ def action_pw(args):
     if not args.no_test_files:
         print("=> Downloading files used for testing")
         _sprun(["git", "submodule", "update", "--init", "--recursive"])
+        _sprun(["cp", "-f", "Tests/Test Files/gitattributes-copy", "Tests/Test Files/.gitattributes"])
+        _sprun(["git", "lfs", "pull"], cwd="Tests/Test Files/")
+        _sprun(["git", "lfs", "checkout"], cwd="Tests/Test Files/")
 
 parser = argparse.ArgumentParser(description="A tool with useful commands for developing SWCompression")
 subparsers = parser.add_subparsers(title="commands", help="a command to perform", metavar="CMD")
