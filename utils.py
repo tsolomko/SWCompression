@@ -76,6 +76,8 @@ def _pw_macos():
 def action_pw(args):
     if args.os == "macos":
         _pw_macos()
+    elif args.os == "other":
+        pass
     else:
         raise Exception("Unknown OS")
     if not args.no_test_files:
@@ -103,7 +105,7 @@ parser_cw.set_defaults(func=action_cw)
 # Parser for 'prepare-workspace' command.
 parser_pw = subparsers.add_parser("prepare-workspace", help="prepare workspace",
                             description="prepares workspace for developing SWCompression")
-parser_pw.add_argument("os", choices=["macos"], help="development operating system", metavar="OS")
+parser_pw.add_argument("os", choices=["macos", "other"], help="development operating system", metavar="OS")
 parser_pw.add_argument("--no-test-files", "-T", action="store_true", dest="no_test_files",
                         help="don't download example files used for testing")
 parser_pw.set_defaults(func=action_pw)
