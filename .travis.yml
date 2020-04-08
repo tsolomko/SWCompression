@@ -1,3 +1,4 @@
+# TODO: There is probably a way to simplify this very explicit build matrix.
 git:
   depth: 1
   submodules: false
@@ -6,7 +7,7 @@ jobs:
     - stage: test
       language: swift
       os: osx
-      osx_image: xcode10.3
+      osx_image: xcode10.1 # Swift 4.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       before_install:
@@ -20,7 +21,35 @@ jobs:
     - stage: test
       language: swift
       os: osx
-      osx_image: xcode11.3
+      osx_image: xcode10.3 # Swift 5.0
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode11.3 # Swift 5.1
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode11.4 # Swift 5.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       before_install:
@@ -36,7 +65,37 @@ jobs:
       os: linux
       dist: xenial
       env:
+      - SWIFT_VERSION=4.2
+      install:
+      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: xenial
+      env:
       - SWIFT_VERSION=5.0
+      install:
+      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: xenial
+      env:
+      - SWIFT_VERSION=5.1
+      install:
+      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: xenial
+      env:
+      - SWIFT_VERSION=5.2
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
