@@ -4,20 +4,7 @@ git:
   submodules: false
 jobs:
   include:
-    - stage: test
-      language: swift
-      os: osx
-      osx_image: xcode10.1 # Swift 4.2
-      env:
-      - HOMEBREW_NO_INSTALL_CLEANUP=1
-      before_install:
-      - brew update
-      install:
-      - ./utils.py ci install-macos
-      before_script:
-      - ./utils.py prepare-workspace macos
-      script:
-      - ./utils.py ci script-macos
+    # We cannot test with Swift 4.2 on macOS since Carthage doesn't work with multiple Swift versions.
     - stage: test
       language: swift
       os: osx
