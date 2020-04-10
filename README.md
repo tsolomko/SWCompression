@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://travis-ci.com/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.com/tsolomko/SWCompression)
 
-A framework with (de)compression algorithms and functions for processing various archives and containers.
+A framework with (de)compression algorithms and functions for working with various archives and containers.
 
 ## What is this?
 
@@ -17,8 +17,7 @@ SWCompression &mdash; is a framework with a collection of functions for:
 
 It also works both on Apple platforms and __Linux__.
 
-All features are listed in the tables below.
-"TBD" means that feature is planned but not implemented (yet).
+All features are listed in the tables below. "TBD" means that feature is planned but not implemented (yet).
 
 |               | Deflate | BZip2 | LZMA/LZMA2 |
 | ------------- | ------- | ----- | ---------- |
@@ -38,7 +37,7 @@ SWCompression can be integrated into your project using Swift Package Manager, C
 
 ### Swift Package Manager
 
-Add SWCompression to you package dependencies and specify it as a dependency for your target, e.g.:
+To install using SPM, add SWCompression to you package dependencies and specify it as a dependency for your target, e.g.:
 
 ```swift
 import PackageDescription
@@ -62,12 +61,11 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.5'` and `use_frameworks!` to your Podfile.
+Add `pod 'SWCompression', '~> 4.5'` and `use_frameworks!` lines to your Podfile.
 
 To complete installation, run `pod install`.
 
-If you need only some parts of framework, you can install only them using sub-podspecs.
-Available subspecs:
+If you need only some parts of framework, you can install only them using sub-podspecs. Available subspecs:
 
 - SWCompression/BZip2
 - SWCompression/Deflate
@@ -82,15 +80,15 @@ Available subspecs:
 
 #### "Optional Dependencies"
 
-For both ZIP and 7-Zip there is a most commonly used compression method. This is Deflate for ZIP and LZMA/LZMA2 for
-7-Zip. Thus, SWCompression/ZIP subspec has SWCompression/Deflate subspec as a dependency and SWCompression/LZMA subspec
-is a dependency for SWCompression/SevenZip.
+For both ZIP and 7-Zip there is the most commonly used compression method: Deflate and LZMA/LZMA2 correspondingly. Thus,
+SWCompression/ZIP subspec has SWCompression/Deflate subspec as a dependency and SWCompression/LZMA subspec is a
+dependency for SWCompression/SevenZip.
 
-But both of these formats support other compression methods as well, and some of them are implemented in SWCompression.
+But both of these formats also support other compression methods, and some of them are implemented in SWCompression.
 For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
 
-"Optional dependency" in this context means that SWCompression/ZIP or SWCompression/7-Zip will support particular
-compression methods only if a corresponding subspec is expicitly specified in your Podfile and installed.
+"Optional dependency" in this context means that SWCompression/ZIP or SWCompression/7-Zip will support a compression
+method only if a corresponding subspec is expicitly specified in your Podfile and installed.
 
 List of "optional dependecies":
 
@@ -106,29 +104,31 @@ BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
+__Important:__ Only Swift 5.x is supported when installing BitByteData via Carthage.
+
 Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.5`.
 
 Then run `carthage update`.
 
-Finally, drag and drop `SWCompression.framework` from `Carthage/Build` folder
-into the "Embedded Binaries" section on your targets' "General" tab in Xcode.
+Finally, drag and drop `SWCompression.framework` from the `Carthage/Build` directory into the "Embedded Binaries" section
+on your targets' "General" tab in Xcode.
 
 SWCompression uses [BitByteData](https://github.com/tsolomko/BitByteData) framework, so Carthage will also download it,
-and you should drag and drop `BitByteData.framework` file into the "Embedded Binaries" as well.
+and you should put the `BitByteData.framework` file into the "Embedded Binaries" as well.
 
 ## Usage
 
 ### Basic Example
 
-If you'd like to decompress "deflated" data just use:
+For example, if you want to decompress "deflated" data just use:
 
 ```swift
 // let data = <Your compressed data>
 let decompressedData = try? Deflate.decompress(data: data)
 ```
 
-However, it is unlikely that you will encounter deflated data outside of any archive.
-So, in case of GZip archive you should use:
+However, it is unlikely that you will encounter deflated data outside of any archive. So, in the case of GZip archive
+you should use:
 
 ```swift
 let decompressedData = try? GzipArchive.unarchive(archive: data)
@@ -136,9 +136,9 @@ let decompressedData = try? GzipArchive.unarchive(archive: data)
 
 ### Handling Errors
 
-Most SWCompression functions can throw an error and you are responsible for handling them.
-If you look at the list of available error types and their cases, you may be frightened by their number.
-However, most of these cases (such as `XZError.wrongMagic`) exist for diagnostic purposes.
+Most SWCompression functions can throw errors and you are responsible for handling them. If you look at the list of
+available error types and their cases, you may be frightened by their number. However, most of the cases (such as
+`XZError.wrongMagic`) exist for diagnostic purposes.
 
 Thus, you only need to handle the most common type of error for your archive/algorithm. For example:
 
@@ -153,67 +153,67 @@ do {
 }
 ```
 
-Or, if you don't care about errors at all, use `try?`.
-
 ### Documentation
 
-Every function or type of SWCompression's public API is documented.
-This documentation can be found at its own [website](http://tsolomko.github.io/SWCompression).
+Every function or type of SWCompression's public API is documented. This documentation can be found at its own
+[website](http://tsolomko.github.io/SWCompression).
 
 ### Sophisticated example
 
-There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp".
-To build it you need to uncomment several lines in "Package.swift" and run `swift build -c release`.
+There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp". To build it
+you need to uncomment several lines in "Package.swift" and run `swift build -c release`.
 
 ## Contributing
 
-Whether you find a bug, have a suggestion, idea or something else,
-please [create an issue](https://github.com/tsolomko/SWCompression/issues) on GitHub.
+Whether you find a bug, have a suggestion, idea, feedback or something else, please
+[create an issue](https://github.com/tsolomko/SWCompression/issues) on GitHub.
 
-In case you have encoutered a bug, it would be especially helpful if you attach a file (archive, etc.)
-that caused the bug to happen.
+In the case of a bug, it will be especially helpful if you attach a file (archive, etc.) that caused the bug to occur.
 
-If you'd like to contribute code, please [create a pull request](https://github.com/tsolomko/SWCompression/pulls) on GitHub.
+If you'd like to contribute, please [create a pull request](https://github.com/tsolomko/SWCompression/pulls) on GitHub.
 
 __Note:__ If you are considering working on SWCompression, please note that Xcode project (SWCompression.xcodeproj)
 was created manually and you shouldn't use `swift package generate-xcodeproj` command.
 
 ### Executing tests locally
 
-If you'd like to run tests on your computer, you need to do an additional step after cloning this repository:
+If you want to run tests on your computer, you need to do an additional step after cloning the repository:
 
 ```bash
-git submodule update --init --recursive
+./utils.py prepare-workspace {macos|other}
 ```
 
-This command downloads files which are used for testing. These files are stored in a
-[separate repository](https://github.com/tsolomko/SWCompression-Test-Files).
-Git LFS is used for storing them which is the reason for having them in the separate repository,
-since Swift Package Manager have some problems with Git LFS-enabled repositories
-(installing git-lfs _locally_ with `--skip-smudge` option is required to solve these problems).
+The argument of this function is an operating system that you're using. This command will download files used in tests,
+and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed.
 
-__Note:__ You can also use "Utils/prepare-workspace-macos.sh" script from the repository,
-which not only downloads test files but also downloads dependencies.
+Test files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS.
+There are two reasons for this complicated setup. Firstly, some of these files can be quite big, and it would be
+unfortunate if the users of SWCompression had to download them every time during the installation. Secondly, Swift
+Package Manager and contemporary versions of Xcode don't always work well with git-lfs-enabled repositories. To prevent
+any potential problems test files were moved into another repository. Additionaly, the custom command line tool `utils.py`
+is used to work around issues occuring on certain user systems (see, for example, #9).
+
+Please note, that if you want to add a new _type_ of test files, in addition to running `git lfs track`, you have to
+also copy into the "Tests/Test Files/gitattributes-copy" file a line this command adds to the "Tests/Test Files/.gitattributes"
+file. __Do not commit the ".gitattributes" file to the git history. It is git-ignored for a reason!__
 
 ## Performance
 
-Usage of whole module optimizations is recommended for best performance.
-These optimizations are enabled by default for Release configurations.
+Using whole module optimizations is recommended for the best performance. They are enabled by default in the Release build
+configuration.
 
 [Tests Results](Tests/Results.md) document contains results of benchmarking of various functions.
 
 ## Why?
 
-First of all, existing solutions for work with compression, archives and containers have certain disadvantages.
-They might not support a particular compression algorithm or archive format and they all have different APIs,
-which sometimes can be slightly confusing for users.
-This project attempts to provide missing (and sometimes existing) functionality through unified API
-which is easy to use and remember.
+First of all, existing solutions for working with compression, archives and containers have certain disadvantages. They
+might not support a particular compression algorithm or archive format and they all have different APIs, which sometimes
+can be slightly confusing for users, especially when you mix different libraries in one project. This project attempts to
+provide missing (and sometimes existing) functionality through the unified API which is easy to use and remember.
 
-Secondly, it may be important to have a compression framework written completely in Swift,
-without relying on either system libraries or solutions implemented in different languages.
-Additionaly, since SWCompression is written fully in Swift without Objective-C,
-it can also be used on __Linux__.
+Secondly, in some cases it may be important to have a compression framework written entirely in Swift, without relying
+on either system libraries or solutions implemented in other languages. Additionaly, since SWCompression is written
+completely in Swift without Objective-C, it can also be used on __Linux__.
 
 ## Future plans
 
@@ -223,11 +223,6 @@ new features.
 - Performance...
 - Better Deflate compression.
 - Something else...
-
-## Support Financially
-
-If you would like to support this project or me financially you can do so via PayPal using
-[this link](https://paypal.me/tsolomko).
 
 ## License
 
