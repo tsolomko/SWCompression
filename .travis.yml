@@ -52,16 +52,6 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=4.2
-      install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
-      script:
-      - ./utils.py ci script-linux
-    - stage: test
-      language: generic
-      os: linux
-      dist: xenial
-      env:
       - SWIFT_VERSION=5.0
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
@@ -91,7 +81,7 @@ jobs:
       if: tag IS present
       language: generic
       os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       env:
