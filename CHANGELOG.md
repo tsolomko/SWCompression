@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.5.4
+
+- Fixed issues when installing using SPM or Xcode in certain situations.
+- Fixed incompatibility with Swift Package Manager from Swift 4.2.
+
 ## 4.5.3
 
 - Improved compatibility with the latest versions of Swift (5.x) and Xcode.
