@@ -3,11 +3,11 @@ sourcekitten_sourcefile: docs.json
 clean: true
 author: Timofey Solomko
 module: SWCompression
-module_version: 4.5.1
+module_version: 4.5.4
 copyright: '© 2020 Timofey Solomko'
 readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
-github_file_prefix: https://github.com/tsolomko/SWCompression/tree/4.5.1
+github_file_prefix: https://github.com/tsolomko/SWCompression/tree/4.5.4
 theme: fullwidth
 
 custom_categories:

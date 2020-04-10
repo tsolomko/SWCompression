@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.5.4
+
+- Fixed issues when installing using SPM or Xcode in certain situations.
+- Fixed incompatibility with Swift Package Manager from Swift 4.2.
+
+## 4.5.3
+
+- Improved compatibility with the latest versions of Swift (5.x) and Xcode.
+
+## 4.5.2
+
+- Increased the lowest required version of BitByteData dependency to 1.4.1.
+
 ## 4.5.1
 
 - Minimum required version of BitByteData is now 1.4.0.
