@@ -191,7 +191,7 @@ There are two reasons for this complicated setup. Firstly, some of these files c
 unfortunate if the users of SWCompression had to download them every time during the installation. Secondly, Swift
 Package Manager and contemporary versions of Xcode don't always work well with git-lfs-enabled repositories. To prevent
 any potential problems test files were moved into another repository. Additionaly, the custom command line tool `utils.py`
-is used to work around issues occuring on certain user systems (see, for example, #9).
+is used to work around issues occuring on certain user systems (see, for example, [#9](https://github.com/tsolomko/SWCompression/issues/9)).
 
 Please note, that if you want to add a new _type_ of test files, in addition to running `git lfs track`, you have to
 also copy into the "Tests/Test Files/gitattributes-copy" file a line this command adds to the "Tests/Test Files/.gitattributes"
