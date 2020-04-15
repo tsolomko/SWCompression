@@ -29,11 +29,11 @@ stages:
     steps:
     - script: |
         brew update
-        ./utils.py ci install-macos
+        ./utils.py ci install-macos-azp
       displayName: 'Install'
     - script: ./utils.py prepare-workspace macos
       displayName: 'Prepare Workspace'
-    - script: ./utils.py ci script-macos
+    - script: ./utils.py ci script-macos-azp
       displayName: 'Build & Test'
     - script: swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Release'

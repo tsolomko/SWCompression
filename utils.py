@@ -28,16 +28,16 @@ def _ci_install_macos():
     _sprun(["git", "lfs", "install"])
     _sprun(["gem", "install", "-N", "xcpretty-travis-formatter"])
 
+def _ci_install_macos_azp():
+    _sprun(["brew", "install", "git-lfs"])
+    _sprun(["git", "lfs", "install"])
+    _sprun(["gem", "install", "-N", "xcpretty-azure-pipelines-formatter"])
+
 def _ci_install_linux():
-    _sprun("curl -sL https://swiftenv.fuller.li/install.sh > install.sh", shell=True)
+    _sprun(["curl -sL https://swiftenv.fuller.li/install.sh > install.sh"], shell=True)
     _sprun(["cat", "install.sh"])
     _sprun(["chmod", "+x", "install.sh"])
-    _sprun(["./install.sh"])
-
-def _ci_script_linux():
-    _sprun(["swift", "--version"])
-    _sprun(["swift", "build"])
-    _sprun(["swift", "build", "-c", "release"])
+    _sprun(["./install.sh"], shell=True)
 
 def _ci_script_macos():
     _sprun(["swift", "--version"])
@@ -54,17 +54,41 @@ def _ci_script_macos():
         xcpretty_command = ["xcpretty", "-f", "`xcpretty-travis-formatter`"]
         subprocess.run(xcpretty_command, stdin=xcodebuild_process.stdout, shell=True, check=True)
 
+def _ci_script_macos_azp():
+    _sprun(["swift", "--version"])
+    xcodebuild_command_parts = ["xcodebuild", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
+    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
+                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
+                    (["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"], ["clean", "build"]), 
+                    (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
+    
+    for destination, action in destinations_actions:
+        xcodebuild_command = xcodebuild_command_parts + destination + action
+        print("+ {0} | xcpretty -f `xcpretty-azure-pipelines-formatter`".format(" ".join(xcodebuild_command)))
+        xcodebuild_process = subprocess.Popen(xcodebuild_command, stdout=subprocess.PIPE)
+        xcpretty_command = ["xcpretty", "-f", "`xcpretty-azure-pipelines-formatter`"]
+        subprocess.run(xcpretty_command, stdin=xcodebuild_process.stdout, shell=True, check=True)
+
+def _ci_script_linux():
+    _sprun(["swift", "--version"])
+    _sprun(["swift", "build"])
+    _sprun(["swift", "build", "-c", "release"])
+
 def action_ci(args):
     if args.cmd == "before-deploy":
         _ci_before_deploy()
     elif args.cmd == "install-macos":
         _ci_install_macos()
+    elif args.cmd == "install-macos-azp":
+        _ci_install_macos_azp()
     elif args.cmd == "install-linux":
         _ci_install_linux()
-    elif args.cmd == "script-linux":
-        _ci_script_linux()
     elif args.cmd == "script-macos":
         _ci_script_macos()
+    elif args.cmd == "script-macos-azp":
+        _ci_script_macos_azp()
+    elif args.cmd == "script-linux":
+        _ci_script_linux()
     else:
         raise Exception("Unknown CI command")
 
@@ -103,7 +127,8 @@ subparsers = parser.add_subparsers(title="commands", help="a command to perform"
 # Parser for 'ci' command.
 parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
-parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "install-linux", "script-linux", "script-macos"],
+parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "install-macos-azp", "install-linux",
+                                        "script-macos", "script-macos-azp", "script-linux"],
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.set_defaults(func=action_ci)
 
