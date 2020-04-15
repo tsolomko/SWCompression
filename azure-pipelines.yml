@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+    - develop
+    - release-*
+    - hotfix-*
+  tags:
+    include:
+    - '*'
+
+stages:
+- stage: test
+  displayName: 'Build & Test'
+  jobs:
+  - job: macos
+    strategy:
+      matrix:
+        macosSwift50:
+          imageName: 'macOS-10.14'
+          DEVELOPER_DIR: '/Applications/Xcode_10.3.app'
+        macosSwift51:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_11.3.1.app'
+        macosSwift52:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_11.4.app'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - script: |
+        brew update
+        ./utils.py ci install-macos
+      displayName: 'Install'
+    - script: ./utils.py prepare-workspace macos
+      displayName: 'Prepare Workspace'
+    - script: ./utils.py ci script-macos
+      displayName: 'Build & Test'
+    - script: swift build -c release # Check Release build just in case.
+      displayName: 'Build SPM Release'
+  - job: linux
+    strategy:
+      matrix:
+        linuxSwift50:
+          imageName: 'ubuntu-18.04'
+          SWIFT_VERSION: '5.0'
+        linuxSwift51:
+          imageName: 'ubuntu-18.04'
+          SWIFT_VERSION: '5.1'
+        linuxSwift52:
+          imageName: 'ubuntu-18.04'
+          SWIFT_VERSION: '5.2'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - script: ./utils.py ci install-linux
+      displayName: 'Install'
+    - script: ./utils.py ci script-linux
+      displayName: 'Build SPM Debug & Release'
+# - stage: Deploy
+#   dependsOn: Test
+#   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags') # Deploy on tags only
