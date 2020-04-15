@@ -28,11 +28,19 @@ def _ci_install_macos():
     _sprun(["git", "lfs", "install"])
     _sprun(["gem", "install", "-N", "xcpretty-travis-formatter"])
 
+def _ci_install_linux():
+    _sprun("curl -sL https://swiftenv.fuller.li/install.sh > install.sh", shell=True)
+    _sprun(["cat", "install.sh"])
+    _sprun(["chmod", "+x", "install.sh"])
+    _sprun(["./install.sh"])
+
 def _ci_script_linux():
+    _sprun(["swift", "--version"])
     _sprun(["swift", "build"])
     _sprun(["swift", "build", "-c", "release"])
 
 def _ci_script_macos():
+    _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
     destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
                     (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
@@ -51,6 +59,8 @@ def action_ci(args):
         _ci_before_deploy()
     elif args.cmd == "install-macos":
         _ci_install_macos()
+    elif args.cmd == "install-linux":
+        _ci_install_linux()
     elif args.cmd == "script-linux":
         _ci_script_linux()
     elif args.cmd == "script-macos":
@@ -93,7 +103,7 @@ subparsers = parser.add_subparsers(title="commands", help="a command to perform"
 # Parser for 'ci' command.
 parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
-parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "script-linux", "script-macos"],
+parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "install-linux", "script-linux", "script-macos"],
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.set_defaults(func=action_ci)
 
