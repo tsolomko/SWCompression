@@ -50,7 +50,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.0
       install:
@@ -60,7 +60,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.1
       install:
@@ -70,7 +70,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.2
       install:

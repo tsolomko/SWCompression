@@ -1,9 +1,7 @@
 trigger:
   branches:
-    include:
-    - develop
-    - release-*
-    - hotfix-*
+    exclude:
+    - master
   tags:
     include:
     - '*'
@@ -29,11 +27,11 @@ stages:
     steps:
     - script: |
         brew update
-        ./utils.py ci install-macos-azp
+        ./utils.py ci install-macos
       displayName: 'Install'
     - script: ./utils.py prepare-workspace macos
       displayName: 'Prepare Workspace'
-    - script: ./utils.py ci script-macos-azp
+    - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
     - script: swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Release'
