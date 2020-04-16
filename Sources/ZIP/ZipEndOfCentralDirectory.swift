@@ -11,19 +11,21 @@ struct ZipEndOfCentralDirectory {
     /// Number of the current disk.
     private(set) var currentDiskNumber: UInt32
 
-    /// Number of the disk with the start of CD.
-    private(set) var cdDiskNumber: UInt32
     private(set) var cdEntries: UInt64
-    private(set) var cdSize: UInt64
     private(set) var cdOffset: UInt64
+
+    // There are two fields in the EndOfCD that aren't currently used anywhere except in the initalizer.
+    //    /// Number of the disk with the start of CD.
+    //    private var cdDiskNumber: UInt32
+    //    private var cdSize: UInt64
 
     init(_ byteReader: LittleEndianByteReader) throws {
         /// Indicates if Zip64 records should be present.
         var zip64RecordExists = false
 
         self.currentDiskNumber = byteReader.uint32(fromBytes: 2)
-        self.cdDiskNumber = byteReader.uint32(fromBytes: 2)
-        guard self.currentDiskNumber == self.cdDiskNumber
+        var cdDiskNumber = byteReader.uint32(fromBytes: 2)
+        guard self.currentDiskNumber == cdDiskNumber
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Number of CD entries on the current disk.
@@ -34,7 +36,7 @@ struct ZipEndOfCentralDirectory {
             else { throw ZipError.multiVolumesNotSupported }
 
         /// Size of Central Directory.
-        self.cdSize = byteReader.uint64(fromBytes: 4)
+        var cdSize = byteReader.uint64(fromBytes: 4)
         /// Offset to the start of Central Directory.
         self.cdOffset = byteReader.uint64(fromBytes: 4)
 
@@ -45,9 +47,9 @@ struct ZipEndOfCentralDirectory {
         //                         encoding: .utf8)
 
         // Check if zip64 records are present.
-        if self.currentDiskNumber == 0xFFFF || self.cdDiskNumber == 0xFFFF ||
+        if self.currentDiskNumber == 0xFFFF || cdDiskNumber == 0xFFFF ||
             cdEntriesCurrentDisk == 0xFFFF || self.cdEntries == 0xFFFF ||
-            self.cdSize == 0xFFFFFFFF || self.cdOffset == 0xFFFFFFFF {
+            cdSize == 0xFFFFFFFF || self.cdOffset == 0xFFFFFFFF {
             zip64RecordExists = true
         }
 
@@ -88,7 +90,7 @@ struct ZipEndOfCentralDirectory {
 
             // Update values read from basic End of CD with the ones from Zip64 End of CD.
             self.currentDiskNumber = byteReader.uint32()
-            self.cdDiskNumber = byteReader.uint32()
+            cdDiskNumber = byteReader.uint32()
             guard currentDiskNumber == cdDiskNumber
                 else { throw ZipError.multiVolumesNotSupported }
 
@@ -97,7 +99,7 @@ struct ZipEndOfCentralDirectory {
             guard cdEntries == cdEntriesCurrentDisk
                 else { throw ZipError.multiVolumesNotSupported }
 
-            self.cdSize = byteReader.uint64()
+            cdSize = byteReader.uint64()
             self.cdOffset = byteReader.uint64()
 
             // Then, there might be 'zip64 extensible data sector' with 'special purpose data'.
