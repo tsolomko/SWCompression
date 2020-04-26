@@ -45,6 +45,7 @@
 		064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */ = {isa = PBXBuildFile; fileRef = 064D01A820FD071300CAE058 /* текстовый файл.answer */; };
 		064D01AC20FD077D00CAE058 /* test_unicode_ustar.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */; };
 		064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */; };
+		064DF453245618A300D285F3 /* bad_cd_ext_ts.zip in Resources */ = {isa = PBXBuildFile; fileRef = 064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */; };
 		064F72241F1E5D4400017297 /* 7zContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72231F1E5D4400017297 /* 7zContainer.swift */; };
 		064F72291F1E638A00017297 /* 7zError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064F72281F1E638A00017297 /* 7zError.swift */; };
 		0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */; };
@@ -266,6 +267,7 @@
 		064D01A820FD071300CAE058 /* текстовый файл.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "текстовый файл.answer"; sourceTree = "<group>"; };
 		064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_ustar.tar; sourceTree = "<group>"; };
 		064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_pax.tar; sourceTree = "<group>"; };
+		064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = bad_cd_ext_ts.zip; sourceTree = "<group>"; };
 		064F72231F1E5D4400017297 /* 7zContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zContainer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		064F72281F1E638A00017297 /* 7zError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zError.swift; sourceTree = "<group>"; };
 		0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XZStreamHeader.swift; sourceTree = "<group>"; };
@@ -781,6 +783,7 @@
 				06F065DC1FFB763300312A82 /* SWCompressionSourceCode.zip */,
 				06F065DD1FFB763300312A82 /* test_zip64.zip */,
 				06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */,
+				064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */,
 			);
 			path = ZIP;
 			sourceTree = "<group>";
@@ -1027,6 +1030,7 @@
 				06F066531FFB763400312A82 /* long_test_pax.tar in Resources */,
 				06F066391FFB763400312A82 /* test8.xz in Resources */,
 				06F0662F1FFB763400312A82 /* test9.gz in Resources */,
+				064DF453245618A300D285F3 /* bad_cd_ext_ts.zip in Resources */,
 				06F066751FFB763400312A82 /* test1.bz2 in Resources */,
 				064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */,
 				06F0662D1FFB763400312A82 /* test6.gz in Resources */,
