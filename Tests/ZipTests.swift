@@ -264,4 +264,14 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries.isEmpty, true)
     }
 
+    func testBadCdExtTs() throws {
+        // Tests ability to not crash when opening ZIP files with non well-formed Extended Timestamp extra field.
+        // Such fields are sometimes present in Central Directory of ZIP files created by Finder in some versions of macOS.
+        let testData = try Constants.data(forTest: "bad_cd_ext_ts", withType: ZipTests.testType)
+        let entries = try ZipContainer.open(container: testData)
+        XCTAssertEqual(entries.count, 2)
+        let answerData = try Constants.data(forAnswer: "test4")
+        XCTAssertEqual(entries[1].data, answerData)
+    }
+
 }

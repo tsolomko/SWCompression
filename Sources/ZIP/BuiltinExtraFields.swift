@@ -17,6 +17,7 @@ struct ExtendedTimestampExtraField: ZipExtraField {
     var mtime: UInt32?
 
     init(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+        let endOffset = byteReader.offset + size
         self.size = size
         self.location = location
         switch location {
@@ -37,6 +38,9 @@ struct ExtendedTimestampExtraField: ZipExtraField {
                 self.ctime = byteReader.uint32()
             }
         }
+        // This is a workaround for non well-formed extra field present in Central Directory of ZIP files created
+        // by Finder in some versions of macOS.
+        byteReader.offset = endOffset
     }
 
 }

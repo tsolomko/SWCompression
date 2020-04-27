@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.5
+
+- Fixed a crash which was sometimes happening when encountering non well-formed Extended Timestamp in ZIP files.
+
 ## 4.5.4
 
 - Fixed issues when installing using SPM or Xcode in certain situations.
