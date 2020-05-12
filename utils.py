@@ -25,7 +25,7 @@ def _ci_before_deploy():
     _sprun(["jazzy"])
 
 def _ci_install_macos():
-    _sprun(["brew", "install", "git-lfs"])
+    _sprun(["brew", "upgrade", "git-lfs"])
     _sprun(["git", "lfs", "install"])
 
 def _ci_install_linux():
