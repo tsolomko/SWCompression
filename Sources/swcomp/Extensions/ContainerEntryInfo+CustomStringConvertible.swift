@@ -62,7 +62,9 @@ extension ContainerEntryInfo where Self: CustomStringConvertible {
         }
 
         if let zipEntry = self as? ZipEntryInfo {
-            output += "Comment: \(zipEntry.comment)\n"
+            if !zipEntry.comment.isEmpty {
+                output += "Comment: \(zipEntry.comment)\n"
+            }
             output += String(format: "External File Attributes: 0x%08X\n", zipEntry.externalFileAttributes)
             output += "Is text file: \(zipEntry.isTextFile)\n"
             output += "File system type: \(zipEntry.fileSystemType)\n"
