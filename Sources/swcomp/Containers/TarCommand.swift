@@ -10,17 +10,17 @@ import SwiftCLI
 class TarCommand: Command {
 
     let name = "tar"
-    let shortDescription = "Extracts TAR container"
+    let shortDescription = "Extracts a TAR container"
 
     let gz = Flag("-z", "--gz", description: "Decompress with GZip first")
     let bz2 = Flag("-j", "--bz2", description: "Decompress with BZip2 first")
     let xz = Flag("-x", "--xz", description: "Decompress with XZ first")
 
-    let info = Flag("-i", "--info", description: "Print list of entries in container and their attributes")
-    let extract = Key<String>("-e", "--extract", description: "Extract container into specified directory")
-    let format = Flag("-f", "--format", description: "Print \"format\" of the container")
+    let info = Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
+    let extract = Key<String>("-e", "--extract", description: "Extract a container into specified directory")
+    let format = Flag("-f", "--format", description: "Print the \"format\" of a container")
     let create = Key<String>("-c", "--create",
-                             description: "Create a new container containing specified file/directory (recursively)")
+                             description: "Create a new container containing the specified file/directory (recursively)")
 
     let verbose = Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
 

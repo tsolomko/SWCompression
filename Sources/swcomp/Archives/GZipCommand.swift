@@ -10,14 +10,14 @@ import SwiftCLI
 class GZipCommand: Command {
 
     let name = "gz"
-    let shortDescription = "Creates or extracts GZip archive"
+    let shortDescription = "Creates or extracts a GZip archive"
 
-    let compress = Flag("-c", "--compress", description: "Compress input file into GZip archive")
-    let decompress = Flag("-d", "--decompress", description: "Decompress GZip archive")
-    let info = Flag("-i", "--info", description: "Print information from GZip header")
+    let compress = Flag("-c", "--compress", description: "Compress an input file into a GZip archive")
+    let decompress = Flag("-d", "--decompress", description: "Decompress a GZip archive")
+    let info = Flag("-i", "--info", description: "Print information from a GZip header")
 
     let useGZipName = Flag("-n", "--use-gzip-name",
-                           description: "Use name saved inside GZip archive as output path, if possible")
+                           description: "Use the name saved inside a GZip archive as an output path, if possible")
 
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [compress, decompress, info], restriction: .exactlyOne)
