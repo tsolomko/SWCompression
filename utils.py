@@ -76,13 +76,16 @@ def action_cw(args):
     _sprun(["rm", "-f", "Package.resolved"])
     _sprun(["rm", "-f", "SWCompression.framework.zip"])
 
-def _pw_macos():
+def _pw_macos(debug):
     print("=> Downloading dependency (BitByteData) using Carthage")
-    _sprun(["carthage", "bootstrap"])
+    if debug:
+        _sprun(["carthage", "bootstrap", "--configuration", "Debug", "--no-use-binaries"])
+    else:
+        _sprun(["carthage", "bootstrap"])
 
 def action_pw(args):
     if args.os == "macos":
-        _pw_macos()
+        _pw_macos(args.debug)
     elif args.os == "other":
         pass
     else:
@@ -115,6 +118,8 @@ parser_pw = subparsers.add_parser("prepare-workspace", help="prepare workspace",
 parser_pw.add_argument("os", choices=["macos", "other"], help="development operating system", metavar="OS")
 parser_pw.add_argument("--no-test-files", "-T", action="store_true", dest="no_test_files",
                         help="don't download example files used for testing")
+parser_pw.add_argument("--debug", "-d", action="store_true", dest="debug",
+                        help="build BitByteData in Debug configuration")
 parser_pw.set_defaults(func=action_pw)
 
 args = parser.parse_args()
