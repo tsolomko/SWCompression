@@ -122,7 +122,7 @@ jobs:
       if: tag IS present
       language: generic
       os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       env:
