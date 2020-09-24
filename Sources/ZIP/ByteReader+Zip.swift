@@ -33,7 +33,11 @@ extension ByteReader {
 fileprivate extension String {
 
     #if os(Linux)
-        static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
+        #if compiler(>=5.3)
+            static let cp437Encoding: CFStringEncoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
+        #else
+            static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
+        #endif
         static let cp437Available: Bool = CFStringIsEncodingAvailable(cp437Encoding)
     #else
         static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
