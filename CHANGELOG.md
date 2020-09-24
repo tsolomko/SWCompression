@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.6
+
+- Fixed a compiling issue on Linux with Swift 5.3.
+
 ## 4.5.5
 
 - Fixed a crash which was sometimes happening when encountering non well-formed Extended Timestamp in ZIP files.
