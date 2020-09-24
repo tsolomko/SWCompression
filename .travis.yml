@@ -48,6 +48,20 @@ jobs:
       script:
       - ./utils.py ci script-macos
     - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode12 # Swift 5.3
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
       language: generic
       os: linux
       dist: xenial
@@ -83,6 +97,16 @@ jobs:
       dist: xenial
       env:
       - SWIFT_VERSION=5.2
+      install:
+      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: xenial
+      env:
+      - SWIFT_VERSION=5.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
