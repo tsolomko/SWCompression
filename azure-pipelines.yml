@@ -22,6 +22,9 @@ stages:
         macosSwift52:
           imageName: 'macOS-10.15'
           DEVELOPER_DIR: '/Applications/Xcode_11.4.app'
+        macosSwift53:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_12.app'
     pool:
       vmImage: $(imageName)
     steps:
@@ -47,6 +50,9 @@ stages:
         linuxSwift52:
           imageName: 'ubuntu-18.04'
           SWIFT_VERSION: '5.2'
+        linuxSwift53:
+          imageName: 'ubuntu-18.04'
+          SWIFT_VERSION: '5.3'
     pool:
       vmImage: $(imageName)
     steps:

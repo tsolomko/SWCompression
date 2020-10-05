@@ -25,7 +25,12 @@ def _ci_before_deploy():
     _sprun(["jazzy"])
 
 def _ci_install_macos():
-    _sprun(["brew", "upgrade", "git-lfs"])
+    script = """if brew ls --versions "git-lfs" >/dev/null; then
+                    HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade "git-lfs"
+                else
+                    HOMEBREW_NO_AUTO_UPDATE=1 brew install "git-lfs"
+                fi"""
+    _sprun([script], shell=True)
     _sprun(["git", "lfs", "install"])
 
 def _ci_install_linux():
@@ -79,10 +84,16 @@ def action_cw(args):
 def _pw_macos(debug):
     print("=> Downloading dependency (BitByteData) using Carthage")
     if debug:
-        _sprun(["carthage", "bootstrap", "--configuration", "Debug", "--no-use-binaries"])
+        # _sprun(["carthage", "bootstrap", "--configuration", "Debug", "--no-use-binaries"])
+        # TODO: Temporary solution until the issue with Carthage is fixed
+        script = "./bbd-bootstrap.sh --configuration Debug --no-use-binaries"
+        _sprun([script], shell=True)
     else:
-        _sprun(["carthage", "bootstrap"])
-
+        # _sprun(["carthage", "bootstrap"])
+        # TODO: Temporary solution until the issue with Carthage is fixed
+        script = "./bbd-bootstrap.sh"
+        _sprun([script], shell=True)
+        
 def action_pw(args):
     if args.os == "macos":
         _pw_macos(args.debug)
