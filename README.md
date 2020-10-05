@@ -105,7 +105,7 @@ BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
-__Important:__ Only Swift 5.x is supported when installing BitByteData via Carthage.
+__Important:__ Only Swift 5.x is supported when installing SWCompression via Carthage.
 
 Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.5`.
 
