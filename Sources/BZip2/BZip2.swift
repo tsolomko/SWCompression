@@ -69,7 +69,7 @@ public class BZip2: DecompressionAlgorithm {
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }
 
-        var pointer = bitReader.int(fromBits: 24)
+        let pointer = bitReader.int(fromBits: 24)
 
         func computeUsed() -> [Bool] {
             let huffmanUsedMap = bitReader.int(fromBits: 16)
