@@ -943,10 +943,11 @@
 			};
 			buildConfigurationList = 06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */;
 			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 06BE1ABE1DB410F100EE0F59;
 			productRefGroup = 06BE1AC91DB410F100EE0F59 /* Products */;
