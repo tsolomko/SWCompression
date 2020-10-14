@@ -152,7 +152,7 @@ public class ZipContainer: Container {
                 // We found it!
                 break
             }
-            if byteReader.offset == 0 {
+            if byteReader.offset == 4 {
                 throw ZipError.notFoundCentralDirectoryEnd
             }
             byteReader.offset -= 5
