@@ -139,4 +139,16 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(data, answerData)
     }
 
+    func testBadFile_short() {
+        XCTAssertThrowsError(try GzipArchive.unarchive(archive: Data([0])))
+        XCTAssertThrowsError(try GzipArchive.multiUnarchive(archive: Data([0])))
+        XCTAssertThrowsError(try GzipHeader(archive: Data([0])))
+    }
+    
+    func testBadFile_invalid() throws {
+        let testData = try Constants.data(forAnswer: "test6")
+        XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData))
+        XCTAssertThrowsError(try GzipArchive.multiUnarchive(archive: testData))
+    }
+
 }
