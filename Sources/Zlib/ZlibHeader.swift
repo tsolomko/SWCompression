@@ -45,6 +45,10 @@ public struct ZlibHeader {
     }
 
     init(_ byteReader: ByteReader) throws {
+        // Valid Zlib header must contain at least 2 bytes of data.
+        guard byteReader.bytesLeft >= 2
+            else { throw ZlibError.wrongCompressionMethod }
+
         // compressionMethod and compressionInfo combined are needed later for integrity check.
         let cmf = byteReader.byte()
         // First four bits are compression method.

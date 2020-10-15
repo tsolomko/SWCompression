@@ -26,6 +26,10 @@ public class BZip2: DecompressionAlgorithm {
     }
 
     static func decompress(_ bitReader: MsbBitReader) throws -> Data {
+        // Valid BZip2 "archive" must contain at least 14 bytes of data.
+        guard bitReader.bitsLeft >= 14 * 8
+            else { throw BZip2Error.wrongMagic }
+
         /// An array for storing output data
         var out = Data()
 

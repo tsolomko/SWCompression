@@ -23,6 +23,10 @@ public class ZlibArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archive data: Data) throws -> Data {
+        // Valid Zlib archive must contain at least 8 bytes of data.
+        guard data.count >= 8
+            else { throw ZlibError.wrongCompressionMethod }
+
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = LsbBitReader(data: data)
 
