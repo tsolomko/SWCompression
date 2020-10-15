@@ -34,4 +34,9 @@ class LzmaTests: XCTestCase {
         try self.perform(test: "test11")
     }
 
+    func testLzmaEmpty() throws {
+        let testData = try Constants.data(forTest: "test_empty", withType: LzmaTests.testType)
+        XCTAssertEqual(try LZMA.decompress(data: testData), Data())
+    }
+
 }
