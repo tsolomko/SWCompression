@@ -66,6 +66,12 @@ jobs:
       - echo 'EXCLUDED_ARCHS = $(inherited) $(EXCLUDED_ARCHS__EFFECTIVE_PLATFORM_SUFFIX_$(EFFECTIVE_PLATFORM_SUFFIX)__NATIVE_ARCH_64_BIT_$(NATIVE_ARCH_64_BIT)__XCODE_$(XCODE_VERSION_MAJOR))' >> $xcconfig
       - export XCODE_XCCONFIG_FILE="$xcconfig"
       - carthage bootstrap
+      - git submodule update --init --recursive
+      - cp -f Tests/Test Files/gitattributes-copy Tests/Test Files/.gitattributes
+      - cd Tests/Test Files/
+      - git lfs pull
+      - git lfs checkout
+      - cd -
       script:
       - ./utils.py ci script-macos
     - stage: test
