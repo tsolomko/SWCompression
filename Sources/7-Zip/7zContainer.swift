@@ -202,6 +202,10 @@ public class SevenZipContainer: Container {
     }
 
     private static func readHeader(_ data: Data) throws -> SevenZipHeader? {
+        // Valid 7-Zip container must contain at least a SignatureHeader, which is 32 bytes long.
+        guard data.count >= 32
+            else { throw SevenZipError.wrongSignature }
+
         let bitReader = MsbBitReader(data: data)
 
         // **SignatureHeader**
@@ -223,19 +227,18 @@ public class SevenZipContainer: Container {
         let nextHeaderSize = bitReader.int(fromBytes: 8)
         let nextHeaderCRC = bitReader.uint32()
 
-        bitReader.offset = 12
+        bitReader.offset -= 20
         guard CheckSums.crc32(bitReader.bytes(count: 20)) == startHeaderCRC
             else { throw SevenZipError.wrongCRC }
 
         // **Header**
         bitReader.offset += nextHeaderOffset
-        let headerStartIndex = bitReader.offset
-        let headerEndIndex: Int
-
         if bitReader.isFinished {
             return nil // In case of completely empty container.
         }
 
+        let headerStartIndex = bitReader.offset
+        let headerEndIndex: Int
         let type = bitReader.byte()
         let header: SevenZipHeader
 
