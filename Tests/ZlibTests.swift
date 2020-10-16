@@ -37,4 +37,19 @@ class ZlibTests: XCTestCase {
         XCTAssertEqual(testData, reextractedData)
     }
 
+    func testZlibEmpty() throws {
+        let testData = try Constants.data(forTest: "test_empty", withType: ZlibTests.testType)
+        XCTAssertEqual(try ZlibArchive.unarchive(archive: testData), Data())
+    }
+
+    func testBadFile_short() {
+        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: Data([0x78])))
+        XCTAssertThrowsError(try ZlibHeader(archive: Data([0x78])))
+    }
+
+    func testBadFile_invalid() throws {
+        let testData = try Constants.data(forAnswer: "test6")
+        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: testData))
+    }
+
 }

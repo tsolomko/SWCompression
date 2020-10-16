@@ -264,7 +264,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         let linkName = byteReader.tarCString(maxLength: 100)
 
         // There are two different formats utilizing this section of TAR header: GNU format and POSIX (aka "ustar";
-        // also PAX containers can also be considered POSIX). They differ in the value of magic field as well as what
+        // PAX containers can also be considered as POSIX). They differ in the value of magic field as well as what
         // comes after deviceMinorNumber field. While "ustar" format may contain prefix for file name, GNU format
         // uses this place for storing atime/ctime and fields related to sparse-files. In practice, these fields are
         // rarely used by GNU tar and only present if "incremental backups" options were used. Thus, GNU format TAR
@@ -309,7 +309,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
         if local != nil || global != nil {
             self.format = .pax
-        } else if magic == 0x00_20_20_72_61_74_73_75 || longName != nil || longLinkName != nil {
+        } else if magic == 0x0020207261747375 || longName != nil || longLinkName != nil {
             self.format = .gnu
         } else if magic == 0x3030007261747375 || magic == 0x3030207261747375 {
             self.format = .ustar

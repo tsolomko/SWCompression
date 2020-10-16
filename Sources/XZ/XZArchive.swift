@@ -35,6 +35,10 @@ public class XZArchive: Archive {
 
         var result = Data()
         while !byteReader.isFinished {
+            // Valid XZ archive must contain at least 32 bytes of data.
+            guard byteReader.bytesLeft >= 32
+                else { throw XZError.wrongMagic }
+
             let streamResult = try processStream(byteReader)
             result.append(streamResult.data)
             guard !streamResult.checkError
@@ -68,6 +72,10 @@ public class XZArchive: Archive {
 
         var result = [Data]()
         while !byteReader.isFinished {
+            // Valid XZ archive must contain at least 32 bytes of data.
+            guard byteReader.bytesLeft >= 32
+                else { throw XZError.wrongMagic }
+
             let streamResult = try processStream(byteReader)
             result.append(streamResult.data)
             guard !streamResult.checkError

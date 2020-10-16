@@ -141,6 +141,10 @@ public class ZipContainer: Container {
     }
 
     private static func infoWithHelper(_ data: Data) throws -> [ZipEntryInfoHelper] {
+        // Valid ZIP container must contain at least an End of Central Directory record, which is at least 22 bytes long.
+        guard data.count >= 22
+            else { throw ZipError.notFoundCentralDirectoryEnd }
+
         let byteReader = LittleEndianByteReader(data: data)
         var entries = [ZipEntryInfoHelper]()
 
@@ -152,7 +156,7 @@ public class ZipContainer: Container {
                 // We found it!
                 break
             }
-            if byteReader.offset == 0 {
+            if byteReader.offset == 4 {
                 throw ZipError.notFoundCentralDirectoryEnd
             }
             byteReader.offset -= 5

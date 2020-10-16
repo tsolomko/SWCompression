@@ -19,6 +19,10 @@ final class LZMARangeDecoder {
     }
 
     init?(_ byteReader: LittleEndianByteReader) {
+        // To initialize rande decoder at least 5 bytes are necessary.
+        guard byteReader.bytesLeft >= 5
+            else { return nil }
+
         self.byteReader = byteReader
 
         let byte = self.byteReader.byte()

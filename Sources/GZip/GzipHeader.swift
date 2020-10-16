@@ -58,6 +58,10 @@ public struct GzipHeader {
     }
 
     init(_ reader: LsbBitReader) throws {
+        // Valid GZip header must contain at least 2 bytes of data.
+        guard reader.bytesLeft >= 10
+            else { throw GzipError.wrongMagic }
+
         // First two bytes should be correct 'magic' bytes
         let magic = reader.uint16()
         guard magic == 0x8b1f else { throw GzipError.wrongMagic }

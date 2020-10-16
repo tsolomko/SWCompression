@@ -10,6 +10,17 @@ class TarTests: XCTestCase {
 
     private static let testType: String = "tar"
 
+    func testBadFile_short() {
+        XCTAssertThrowsError(try TarContainer.open(container: Data([0, 1, 2])))
+    }
+    
+    func testBadFile_invalid() throws {
+        // This is potentially a misleading test, since there is no way to guarantee that a file is not a TAR container.
+        // We use randomly generated data, since the 0-filled data is processed as an empty container.
+        let testData = try Constants.data(forAnswer: "test7")
+        XCTAssertThrowsError(try TarContainer.open(container: testData))
+    }
+
     func test() throws {
         let testData = try Constants.data(forTest: "test", withType: TarTests.testType)
 
