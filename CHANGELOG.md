@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.5.7
+
+- Fixed a crash when trying to open a very small file as a 7-Zip container, a BZip2 "archive", a GZip archive (both when
+  using `unarchive` and `multiUnarchive`), a LZMA "archive", a XZ archive (both when using `unarchive` and `splitUnarchive`),
+  a ZIP container, or a Zlib archive.
+- Fixed a crash when trying to open an unexpectedly truncated file as a GZip or XZ archive.
+- Fixed a crash when trying to open an invalid file as a ZIP container. The `ZipError.notFoundCentralDirectoryEnd` error
+  is now thrown instead as was originally intended.
+- Fixed a crash when trying to read a GZip or Zlib header from a very small file.
+- Fixed a compilation warning in BZip2.
+
 ## 4.5.6
 
 - Fixed a compiling issue on Linux with Swift 5.3.
