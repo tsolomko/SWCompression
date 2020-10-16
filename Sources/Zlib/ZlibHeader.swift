@@ -45,6 +45,10 @@ public struct ZlibHeader {
     }
 
     init(_ byteReader: ByteReader) throws {
+        // Valid Zlib header must contain at least 2 bytes of data.
+        guard byteReader.bytesLeft >= 2
+            else { throw ZlibError.wrongCompressionMethod }
+
         // compressionMethod and compressionInfo combined are needed later for integrity check.
         let cmf = byteReader.byte()
         // First four bits are compression method.
@@ -65,7 +69,7 @@ public struct ZlibHeader {
         // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check.
         let flags = byteReader.byte()
 
-        // First five bits are fcheck bits which are supposed to be integrity check:
+        // First five bits are fcheck bits which are used for integrity check:
         //  let fcheck = flags & 0x1F
 
         // Sixth bit indicate if archive contain Adler-32 checksum of preset dictionary.

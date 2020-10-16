@@ -23,6 +23,10 @@ public class LZMA: DecompressionAlgorithm {
      - Returns: Decompressed data.
      */
     public static func decompress(data: Data) throws -> Data {
+        // Valid LZMA "archive" must contain at least 13 bytes of data with properties and uncompressed size.
+        guard data.count >= 13
+            else { throw LZMAError.wrongProperties }
+
         let byteReader = ByteReader(data: data)
         let properties = try LZMAProperties(byteReader)
         let uncompSize = byteReader.int(fromBytes: 8)

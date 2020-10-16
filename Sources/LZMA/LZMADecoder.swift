@@ -255,8 +255,7 @@ final class LZMADecoder {
                         // Middle bits of distance are decoded as direct bits from RangeDecoder.
                         dist += rangeDecoder.decode(directBits: (numDirectBits - LZMAConstants.numAlignBits))
                             << LZMAConstants.numAlignBits
-                        // Low 4 bits are decoded with a bit tree decoder (called 'AlignDecoder')...
-                        // ...with "Reverse" scheme.
+                        // Low 4 bits are decoded with a bit tree decoder (called 'AlignDecoder') using "Reverse" scheme.
                         dist += alignDecoder.reverseDecode(with: rangeDecoder)
                     }
                     rep0 = dist

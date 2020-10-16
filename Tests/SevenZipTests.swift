@@ -10,6 +10,15 @@ class SevenZipTests: XCTestCase {
 
     private static let testType: String = "7z"
 
+    func testBadFile_short() {
+        XCTAssertThrowsError(try SevenZipContainer.open(container: Data([0, 1, 2])))
+    }
+    
+    func testBadFile_invalid() throws {
+        let testData = try Constants.data(forAnswer: "test6")
+        XCTAssertThrowsError(try SevenZipContainer.open(container: testData))
+    }
+
     func test1() throws {
         let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)

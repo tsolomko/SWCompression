@@ -10,6 +10,15 @@ class ZipTests: XCTestCase {
 
     private static let testType: String = "zip"
 
+    func testBadFile_short() {
+        XCTAssertThrowsError(try ZipContainer.open(container: Data([0, 1, 2, 3, 4, 5, 6, 7])))
+    }
+    
+    func testBadFile_invalid() throws {
+        let testData = try Constants.data(forAnswer: "test6")
+        XCTAssertThrowsError(try ZipContainer.open(container: testData))
+    }
+    
     func testBigContainer() throws {
         let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType)
 
