@@ -56,9 +56,9 @@ public class Deflate: DecompressionAlgorithm {
                 // There are two alphabets in use and each one needs a Huffman tree.
 
                 /// Huffman tree for literal and length symbols/codes.
-                var mainLiterals: DecodingTree
+                var mainLiterals: DecodingTree<LsbBitReader>
                 /// Huffman tree for backward distance symbols/codes.
-                var mainDistances: DecodingTree
+                var mainDistances: DecodingTree<LsbBitReader>
 
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.

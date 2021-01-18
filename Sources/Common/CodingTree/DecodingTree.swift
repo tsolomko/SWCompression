@@ -6,14 +6,16 @@
 import Foundation
 import BitByteData
 
-final class DecodingTree {
+final class DecodingTree<T: BitReader> {
 
-    private let bitReader: BitReader
+    private let bitReader: T
 
     private let tree: [Int]
     private let leafCount: Int
 
-    init(codes: [Code], maxBits: Int, _ bitReader: BitReader) {
+    @_specialize(where T == LsbBitReader)
+    @_specialize(where T == MsbBitReader)
+    init(codes: [Code], maxBits: Int, _ bitReader: T) {
         self.bitReader = bitReader
 
         // Calculate maximum amount of leaves in a tree.
