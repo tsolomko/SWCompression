@@ -268,6 +268,9 @@ extension BZip2: CompressionAlgorithm {
                 lengthOfZerosRun += 1
             }
             if (byte == 0 && i == array.count - 1) || byte != 0 {
+                // Runs of zeros are represented using a modified binary system with two "digits", RUNA and RUNB, where
+                //  RUNA represents 1 and RUNB represents 2 (whereas in the usual base-2 system the digits are 0 and 1).
+                // (We don't need a digit for zero since we can't get a run of length 0 by definition.)
                 if lengthOfZerosRun > 0 {
                     let digitsNumber = Int(floor(log2(Double(lengthOfZerosRun) + 1)))
                     var remainder = lengthOfZerosRun
@@ -285,16 +288,15 @@ extension BZip2: CompressionAlgorithm {
                 }
             }
             if byte != 0 {
+                // We add one, because 1 is used as RUNB.
                 let newSymbol = byte + 1
-                // We add one because, 1 is used as RUNB.
-                // We don't add two instead, because 0 is never encountered as separate symbol, without RUNA meaning.
                 out.append(newSymbol)
                 if newSymbol > maxSymbol {
                     maxSymbol = newSymbol
                 }
             }
         }
-        // Add 'end of stream' symbol.
+        // Add the 'end of stream' symbol.
         out.append(maxSymbol + 1)
         return (out, maxSymbol)
     }
