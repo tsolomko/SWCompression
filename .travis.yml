@@ -100,7 +100,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=4.2
+      - SWIFT_VERSION=4.2.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -110,7 +110,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.0
+      - SWIFT_VERSION=5.0.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -120,7 +120,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.1
+      - SWIFT_VERSION=5.1.5
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -130,7 +130,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.2
+      - SWIFT_VERSION=5.2.5
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -140,7 +140,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.3
+      - SWIFT_VERSION=5.3.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
