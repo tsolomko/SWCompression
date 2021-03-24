@@ -146,10 +146,11 @@ jobs:
       script:
       - ./utils.py ci script-linux
     - stage: deploy
-      if: tag IS present
+      # Don't deploy if it is a test release.
+      if: (tag IS present) AND (tag =~ /^\d+\.\d+\.\d+$/)
       language: generic
       os: osx
-      osx_image: xcode11.4
+      osx_image: xcode12
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       env:
@@ -157,31 +158,15 @@ jobs:
       addons:
         homebrew:
           packages:
-          - carthage
           - sourcekitten
           update: true
       install:
       - gem install -N jazzy
       - gem update -N cocoapods
       before_deploy:
-      - >
-        if ! [ "$BEFORE_DEPLOY_RUN" ]; then
-          export BEFORE_DEPLOY_RUN=1;
-          ./utils.py prepare-workspace macos -T
-          ./utils.py ci before-deploy;
-        fi
+      - ./utils.py ci before-deploy
       deploy:
-      - provider: releases
-        skip_cleanup: true
-        api_key: $GITHUB_TOKEN
-        file: "SWCompression.framework.zip"
-        on:
-          tags: true
       - provider: pages
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: docs
-        on:
-          tags: true
-          # Don't upload documentation if it is a test release.
-          condition: $(git describe) != *"test"*
