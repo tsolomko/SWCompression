@@ -104,17 +104,25 @@ BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
-__Important:__ Only Swift 5.x is supported when installing BitByteData via Carthage.
+__Important:__ Only Swift 5.x is supported when installing SWCompression via Carthage.
 
 Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.5`.
 
-Then run `carthage update`.
+Then:
 
-Finally, drag and drop `SWCompression.framework` from the `Carthage/Build` directory into the "Embedded Binaries" section
-on your targets' "General" tab in Xcode.
+1. If you use Xcode 12 or later you should run `carthage update --use-xcframeworks --no-use-binaries`. After that drag
+and drop both `SWCompression.xcframework` and `BitByteData.xcframework` files from from the `Carthage/Build/` directory
+into the "Frameworks, Libraries, and Embedded Content" section of your target's "General" tab in Xcode.
 
-SWCompression uses [BitByteData](https://github.com/tsolomko/BitByteData) framework, so Carthage will also download it,
-and you should put the `BitByteData.framework` file into the "Embedded Binaries" as well.
+2. If you use Xcode 11 or earlier you should run `carthage update --no-use-binaries`. After that drag and drop both
+`SWCompression.framework` and `BitByteData.framework` files from from the `Carthage/Build/<platform>/` directory into the
+"Embedded Binaries" section of your target's "General" tab in Xcode.
+
+For Xcode 12 or later you can currently also use the
+[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
+
+Please also note that support for non-xcframework method of installing SWCompression is likely to be dropped in the
+future major update.
 
 ## Usage
 
@@ -185,6 +193,13 @@ If you want to run tests on your computer, you need to do an additional step aft
 
 The argument of this function is an operating system that you're using. This command will download files used in tests,
 and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed.
+
+Currently, the Carthage part of this procedure may fail when using Xcode 12 or later. In that case you should manually
+run `carthage update --use-xcframeworks --no-use-binaries` or use
+[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md). Please also
+note that when on working on SWCompression in Xcode when building the project you may see ld warnings about a directory
+not being found. These are expected and harmless. Finally, you should keep in mind that support for non-xcframework method
+of installing dependencies is likely to be dropped in the future major update.
 
 Test files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS.
 There are two reasons for this complicated setup. Firstly, some of these files can be quite big, and it would be
