@@ -32,6 +32,7 @@ def _ci_script_macos():
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
     destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
                     (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
+                    # For Swift 5.3 watchOS simulator is called differently.
                     (["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"], ["clean", "build"]), 
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
     
@@ -72,22 +73,18 @@ def action_cw(args):
     _sprun(["rm", "-f", "Package.resolved"])
     _sprun(["rm", "-f", "SWCompression.framework.zip"])
 
-def _pw_macos(debug):
+def _pw_macos(debug, xcf):
     print("=> Downloading dependency (BitByteData) using Carthage")
+    script = ["carthage", "bootstrap", "--no-use-binaries"]
     if debug:
-        # _sprun(["carthage", "bootstrap", "--configuration", "Debug", "--no-use-binaries"])
-        # TODO: Temporary solution until the issue with Carthage is fixed
-        script = "./bbd-bootstrap.sh --configuration Debug --no-use-binaries"
-        _sprun([script], shell=True)
-    else:
-        # _sprun(["carthage", "bootstrap"])
-        # TODO: Temporary solution until the issue with Carthage is fixed
-        script = "./bbd-bootstrap.sh"
-        _sprun([script], shell=True)
+        script += ["--configuration", "Debug"]
+    if xcf:
+        script += ["--use-xcframeworks"]
+    _sprun(script)
         
 def action_pw(args):
     if args.os == "macos":
-        _pw_macos(args.debug)
+        _pw_macos(args.debug, args.xcf)
     elif args.os == "other":
         pass
     else:
@@ -122,6 +119,8 @@ parser_pw.add_argument("--no-test-files", "-T", action="store_true", dest="no_te
                         help="don't download example files used for testing")
 parser_pw.add_argument("--debug", "-d", action="store_true", dest="debug",
                         help="build BitByteData in Debug configuration")
+parser_pw.add_argument("--xcf", action="store_true", dest="xcf",
+                        help="build BitByteData as a XCFramework")
 parser_pw.set_defaults(func=action_pw)
 
 args = parser.parse_args()
