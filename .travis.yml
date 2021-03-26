@@ -48,6 +48,7 @@ jobs:
       script:
       - ./utils.py ci script-macos
     - stage: test
+      # TODO: Remove this stage when the non-xcf installation method with Carthage is no longer supported.
       language: swift
       os: osx
       osx_image: xcode12 # Swift 5.3
@@ -58,8 +59,6 @@ jobs:
       install:
       - ./utils.py ci install-macos
       before_script:
-      # - ./utils.py prepare-workspace macos
-      # TODO: Remove lines below when Carthage gets a workaround for problems with Xcode 12
       - xcconfig=$(mktemp /tmp/static.xcconfig.XXXXXX)
       - trap 'rm -f "$xcconfig"' INT TERM HUP EXIT
       - echo 'EXCLUDED_ARCHS__EFFECTIVE_PLATFORM_SUFFIX_simulator__NATIVE_ARCH_64_BIT_x86_64__XCODE_1200 = arm64 arm64e armv7 armv7s armv6 armv8' >> $xcconfig
@@ -67,8 +66,30 @@ jobs:
       - export XCODE_XCCONFIG_FILE="$xcconfig"
       - carthage bootstrap
       - git submodule update --init --recursive
-      - cp -f Tests/Test Files/gitattributes-copy Tests/Test Files/.gitattributes
-      - cd Tests/Test Files/
+      - cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
+      - cd "Tests/Test Files/"
+      - git lfs pull
+      - git lfs checkout
+      - cd -
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode12.4 # Swift 5.3.2
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      # TODO: Move this line into ./utils.py prepare-workspace macos when the old Swift versions and non-xcf installation
+      #  method with Carthage are no longer supported.
+      - carthage bootstrap --use-xcframeworks --no-use-binaries
+      - git submodule update --init --recursive
+      - cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
+      - cd "Tests/Test Files/"
       - git lfs pull
       - git lfs checkout
       - cd -
@@ -79,7 +100,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=4.2
+      - SWIFT_VERSION=4.2.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -89,7 +110,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.0
+      - SWIFT_VERSION=5.0.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -99,7 +120,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.1
+      - SWIFT_VERSION=5.1.5
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -109,7 +130,7 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.2
+      - SWIFT_VERSION=5.2.5
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
@@ -119,16 +140,17 @@ jobs:
       os: linux
       dist: xenial
       env:
-      - SWIFT_VERSION=5.3
+      - SWIFT_VERSION=5.3.3
       install:
       - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
       script:
       - ./utils.py ci script-linux
     - stage: deploy
-      if: tag IS present
+      # Don't deploy if it is a test release.
+      if: (tag IS present) AND (tag =~ /^\d+\.\d+\.\d+$/)
       language: generic
       os: osx
-      osx_image: xcode11.4
+      osx_image: xcode12
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
       env:
@@ -136,31 +158,15 @@ jobs:
       addons:
         homebrew:
           packages:
-          - carthage
           - sourcekitten
           update: true
       install:
       - gem install -N jazzy
       - gem update -N cocoapods
       before_deploy:
-      - >
-        if ! [ "$BEFORE_DEPLOY_RUN" ]; then
-          export BEFORE_DEPLOY_RUN=1;
-          ./utils.py prepare-workspace macos -T
-          ./utils.py ci before-deploy;
-        fi
+      - ./utils.py ci before-deploy
       deploy:
-      - provider: releases
-        skip_cleanup: true
-        api_key: $GITHUB_TOKEN
-        file: "SWCompression.framework.zip"
-        on:
-          tags: true
       - provider: pages
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: docs
-        on:
-          tags: true
-          # Don't upload documentation if it is a test release.
-          condition: $(git describe) != *"test"*
