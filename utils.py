@@ -10,17 +10,8 @@ def _sprun(cmd, *args, **kwargs):
     subprocess.run(cmd, check=True, *args, **kwargs)
 
 def _ci_before_deploy():
-    print("=> Removing bcsymbolmap files for dependencies.")
-    platforms = ["Mac", "watchOS", "tvOS", "iOS"]
-    for platform in platforms:
-        _sprun(["rm", "-f", "Carthage/Build/{0}/*.bcsymbolmap".format(platform)])
-    print("=> Removing checkouts for dependencies.")
-    _sprun(["rm", "-rf", "Carthage/Checkouts"])
-    print("=> Preparing deployment files.")
-    _sprun(["carthage", "build", "--no-skip-current"])
-    _sprun(["carthage", "archive", "SWCompression"])
     docs_json_file = open("docs.json", "w")
-    _sprun(["sourcekitten", "doc", "--spm-module", "SWCompression"], stdout=docs_json_file)
+    _sprun(["sourcekitten", "doc", "--spm", "--module-name", "SWCompression"], stdout=docs_json_file)
     docs_json_file.close()
     _sprun(["jazzy"])
 
@@ -104,7 +95,7 @@ def action_pw(args):
     if not args.no_test_files:
         print("=> Downloading files used for testing")
         _sprun(["git", "submodule", "update", "--init", "--recursive"])
-        _sprun(["cp", "-f", "Tests/Test Files/gitattributes-copy", "Tests/Test Files/.gitattributes"])
+        _sprun(["cp", "Tests/Test Files/gitattributes-copy", "Tests/Test Files/.gitattributes"])
         _sprun(["git", "lfs", "pull"], cwd="Tests/Test Files/")
         _sprun(["git", "lfs", "checkout"], cwd="Tests/Test Files/")
 
