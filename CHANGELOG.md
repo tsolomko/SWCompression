@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.8
+
+- Fixed incompatibility with Carthage `--use-xcframeworks` method of installation.
+
 ## 4.5.7
 
 - Fixed a crash when trying to open a very small file as a 7-Zip container, a BZip2 "archive", a GZip archive (both when
