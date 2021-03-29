@@ -10,7 +10,7 @@ stages:
 - stage: test
   displayName: 'Build & Test'
   jobs:
-  - job: macos
+  - job: macosLegacy
     strategy:
       matrix:
         macosSwift50:
@@ -22,9 +22,6 @@ stages:
         macosSwift52:
           imageName: 'macOS-10.15'
           DEVELOPER_DIR: '/Applications/Xcode_11.4.1.app'
-        macosSwift53:
-          imageName: 'macOS-10.15'
-          DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
     pool:
       vmImage: $(imageName)
     steps:
@@ -35,6 +32,28 @@ stages:
     - script: ./utils.py prepare-workspace macos
       displayName: 'Prepare Workspace'
     - script: ./utils.py ci script-macos
+      displayName: 'Build & Test'
+    - script: swift build -c release
+      displayName: 'Build SPM Release'
+  - job: macosNew
+    # We split Xcode 12+ jobs into a separate matrix since we need to use XCFramework for this versions.
+    # We also need to use a different watchos simulator name for newer Xcode versions.
+    # For it is only for Swift 5.3 but future versions will also probably be included here.
+    strategy:
+      matrix:
+        macosSwift53:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - script: |
+        brew update
+        ./utils.py ci install-macos
+      displayName: 'Install'
+    - script: ./utils.py prepare-workspace macos --xcf
+      displayName: 'Prepare Workspace'
+    - script: ./utils.py ci script-macos --new-watchos-simulator
       displayName: 'Build & Test'
     - script: swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Release'
