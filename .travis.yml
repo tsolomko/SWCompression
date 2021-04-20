@@ -72,7 +72,7 @@ jobs:
       - git lfs checkout
       - cd -
       script:
-      - ./utils.py ci script-macos
+      - ./utils.py ci script-macos --new-watchos-simulator
     - stage: test
       language: swift
       os: osx
@@ -84,17 +84,9 @@ jobs:
       install:
       - ./utils.py ci install-macos
       before_script:
-      # TODO: Move this line into ./utils.py prepare-workspace macos when the old Swift versions and non-xcf installation
-      #  method with Carthage are no longer supported.
-      - carthage bootstrap --use-xcframeworks --no-use-binaries
-      - git submodule update --init --recursive
-      - cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
-      - cd "Tests/Test Files/"
-      - git lfs pull
-      - git lfs checkout
-      - cd -
+      - ./utils.py prepare-workspace macos --xcf
       script:
-      - ./utils.py ci script-macos
+      - ./utils.py ci script-macos --new-watchos-simulator
     - stage: test
       language: generic
       os: linux
@@ -102,7 +94,7 @@ jobs:
       env:
       - SWIFT_VERSION=4.2.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
@@ -112,7 +104,7 @@ jobs:
       env:
       - SWIFT_VERSION=5.0.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
@@ -122,7 +114,7 @@ jobs:
       env:
       - SWIFT_VERSION=5.1.5
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
@@ -132,7 +124,7 @@ jobs:
       env:
       - SWIFT_VERSION=5.2.5
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
@@ -142,7 +134,7 @@ jobs:
       env:
       - SWIFT_VERSION=5.3.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: deploy
