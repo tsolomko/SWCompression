@@ -4,7 +4,15 @@ git:
   submodules: false
 jobs:
   include:
-    # We cannot test with Swift 4.2 on macOS since Carthage doesn't work with multiple Swift versions.
+    # We test only building using SPM with Swift 4.2 on macos since Carthage doesn't support multiple Swift language versions.
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode10.1 # Swift 4.2
+      script:
+      - swift --version
+      - swift build
+      - swift build -c release
     - stage: test
       language: swift
       os: osx
