@@ -6,10 +6,10 @@
 import Foundation
 import BitByteData
 
-final class LZMA2Decoder {
+struct LZMA2Decoder {
 
     private let byteReader: ByteReader
-    private let decoder: LZMADecoder
+    private var decoder: LZMADecoder
 
     var out: [UInt8] {
         return self.decoder.out
@@ -32,7 +32,7 @@ final class LZMA2Decoder {
     }
 
     /// Main LZMA2 decoder function.
-    func decode() throws {
+    mutating func decode() throws {
         mainLoop: while true {
             let controlByte = byteReader.byte()
             switch controlByte {
@@ -54,7 +54,7 @@ final class LZMA2Decoder {
     }
 
     /// Function which dispatches LZMA2 decoding process based on `controlByte`.
-    private func dispatch(_ controlByte: UInt8) throws {
+    private mutating func dispatch(_ controlByte: UInt8) throws {
         let uncompressedSizeBits = controlByte & 0x1F
         let reset = (controlByte & 0x60) >> 5
         let unpackSize = (uncompressedSizeBits.toInt() << 16) +
@@ -82,7 +82,7 @@ final class LZMA2Decoder {
             else { throw LZMA2Error.wrongSizes }
     }
 
-    private func decodeUncompressed() {
+    private mutating func decodeUncompressed() {
         let dataSize = self.byteReader.byte().toInt() << 8 + self.byteReader.byte().toInt() + 1
         for _ in 0..<dataSize {
             self.decoder.put(self.byteReader.byte())
@@ -93,7 +93,7 @@ final class LZMA2Decoder {
      Sets `lc`, `pb` and `lp` properties of LZMA decoder with a single `byte` using standard LZMA properties encoding
      scheme and resets decoder's state and sub-decoders.
      */
-    private func updateProperties() throws {
+    private mutating func updateProperties() throws {
         self.decoder.properties = try LZMAProperties(lzmaByte: byteReader.byte(),
                                                      self.decoder.properties.dictionarySize)
         self.decoder.resetStateAndDecoders()

@@ -6,9 +6,9 @@
 import Foundation
 import BitByteData
 
-final class LZMARangeDecoder {
+struct LZMARangeDecoder {
 
-    private var byteReader: ByteReader
+    private let byteReader: ByteReader
 
     private var range = 0xFFFFFFFF as UInt32
     private var code = 0 as UInt32
@@ -18,10 +18,10 @@ final class LZMARangeDecoder {
         return self.code == 0
     }
 
-    init?(_ byteReader: ByteReader) {
+    init(_ byteReader: ByteReader) throws {
         // To initialize rande decoder at least 5 bytes are necessary.
         guard byteReader.bytesLeft >= 5
-            else { return nil }
+            else { throw LZMAError.rangeDecoderInitError }
 
         self.byteReader = byteReader
 
@@ -29,9 +29,8 @@ final class LZMARangeDecoder {
         for _ in 0..<4 {
             self.code = (self.code << 8) | UInt32(self.byteReader.byte())
         }
-        if byte != 0 || self.code == self.range {
-            return nil
-        }
+        guard byte == 0 && self.code != self.range
+            else { throw LZMAError.rangeDecoderInitError }
     }
 
     init() {
@@ -39,15 +38,15 @@ final class LZMARangeDecoder {
     }
 
     /// `range` property cannot be smaller than `(1 << 24)`. This function keeps it bigger.
-    func normalize() {
-        if self.range < UInt32(LZMAConstants.topValue) {
+    mutating func normalize() {
+        if self.range < LZMAConstants.topValue {
             self.range <<= 8
             self.code = (self.code << 8) | UInt32(byteReader.byte())
         }
     }
 
     /// Decodes sequence of direct bits (binary symbols with fixed and equal probabilities).
-    func decode(directBits: Int) -> Int {
+    mutating func decode(directBits: Int) -> Int {
         var res: UInt32 = 0
         var count = directBits
         repeat {
@@ -70,7 +69,7 @@ final class LZMARangeDecoder {
     }
 
     /// Decodes binary symbol (bit) with predicted (estimated) probability.
-    func decode(bitWithProb prob: inout Int) -> Int {
+    mutating func decode(bitWithProb prob: inout Int) -> Int {
         let bound = (self.range >> UInt32(LZMAConstants.numBitModelTotalBits)) * UInt32(prob)
         let symbol: Int
         if self.code < bound {
