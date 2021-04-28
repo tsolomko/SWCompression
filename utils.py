@@ -5,9 +5,13 @@ import os
 import subprocess
 import sys
 
-def _sprun(cmd, *args, **kwargs):
+def _sprun(cmd: list, *args, **kwargs):
     print("+ " + " ".join(cmd))
     subprocess.run(cmd, check=True, *args, **kwargs)
+
+def _sprun_shell(cmd: str, *args, **kwargs):
+    print("+ " + cmd)
+    subprocess.run(cmd, check=True, shell=True, *args, **kwargs)
 
 def _ci_before_deploy():
     docs_json_file = open("docs.json", "w")
@@ -21,31 +25,36 @@ def _ci_install_macos():
                 else
                     HOMEBREW_NO_AUTO_UPDATE=1 brew install "git-lfs"
                 fi"""
-    _sprun([script], shell=True)
+    _sprun_shell(script)
     _sprun(["git", "lfs", "install"])
-    _sprun(["gem", "install", "-N", "xcpretty-travis-formatter"])
 
 def _ci_install_linux():
-    _sprun(["eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\""], shell=True)
+    _sprun_shell("eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\"")
 
-def _ci_script_macos(new_watchos_simulator):
+def _ci_script_macos(new_watchos_simulator, watchos_test):
     _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
     destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
                     (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
 
+    watchos_destination = None
     if new_watchos_simulator:
-        destinations_actions.append((["-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm'"], ["clean", "build"]))
+        watchos_destination = ["-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm'"]
     else:
-        destinations_actions.append((["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"], ["clean", "build"]))
+        watchos_destination = ["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"]
 
-    for destination, action in destinations_actions:
-        xcodebuild_command = xcodebuild_command_parts + destination + action
-        print("+ {0} | xcpretty -f `xcpretty-travis-formatter`".format(" ".join(xcodebuild_command)))
-        xcodebuild_process = subprocess.Popen(xcodebuild_command, stdout=subprocess.PIPE)
-        xcpretty_command = ["xcpretty", "-f", "`xcpretty-travis-formatter`"]
-        subprocess.run(xcpretty_command, stdin=xcodebuild_process.stdout, shell=True, check=True)
+    watchos_actions = None
+    if watchos_test:
+        watchos_actions = ["clean", "test"]
+    else:
+        watchos_actions = ["clean", "build"]
+
+    destinations_actions.append((watchos_destination, watchos_actions))
+
+    for destination, actions in destinations_actions:
+        xcodebuild_command = xcodebuild_command_parts + destination + actions
+        _sprun_shell(" ".join(xcodebuild_command))
 
 def _ci_script_linux():
     env = os.environ.copy()
@@ -63,7 +72,7 @@ def action_ci(args):
     elif args.cmd == "install-linux":
         _ci_install_linux()
     elif args.cmd == "script-macos":
-        _ci_script_macos(args.new_watchos_simulator)
+        _ci_script_macos(args.new_watchos_simulator, args.watchos_test)
     elif args.cmd == "script-linux":
         _ci_script_linux()
     else:
@@ -113,6 +122,9 @@ parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "instal
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.add_argument("--new-watchos-simulator", action="store_true", dest="new_watchos_simulator",
                         help="use the newest watchos simulator which is necessary for xcode 12+ \
+                        (used only by 'script-macos' subcommand)")
+parser_ci.add_argument("--watchos-test", action="store_true", dest="watchos_test",
+                        help="test on watchos simulator; available only for Xcode 12.5+ \
                         (used only by 'script-macos' subcommand)")
 parser_ci.set_defaults(func=action_ci)
 
