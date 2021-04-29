@@ -11,6 +11,7 @@ extension UnsignedInteger {
     func toInt() -> Int {
         return Int(truncatingIfNeeded: self)
     }
+
 }
 
 extension Int {
