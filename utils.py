@@ -54,6 +54,7 @@ def _ci_script_macos(new_watchos_simulator, watchos_test):
 
     for destination, actions in destinations_actions:
         xcodebuild_command = xcodebuild_command_parts + destination + actions
+        # If xcodebuild is not run inside shell, then destination parameters are ignored for some reason.
         _sprun_shell(" ".join(xcodebuild_command))
 
 def _ci_script_linux():
