@@ -6,7 +6,7 @@
 import Foundation
 
 struct LZMAConstants {
-    static let topValue = 1 << 24
+    static let topValue: UInt32 = 1 << 24
     static let numBitModelTotalBits = 11
     static let numMoveBits = 5
     static let probInitValue = (1 << numBitModelTotalBits) / 2

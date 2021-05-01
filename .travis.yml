@@ -10,6 +10,8 @@ jobs:
       osx_image: xcode10.3 # Swift 5.0
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -24,6 +26,8 @@ jobs:
       osx_image: xcode11.3 # Swift 5.1
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -38,6 +42,8 @@ jobs:
       osx_image: xcode11.4 # Swift 5.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -52,6 +58,24 @@ jobs:
       osx_image: xcode12.4 # Swift 5.3.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos --xcf
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode12.5 # Swift 5.4
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean test'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
       before_install:
       - brew update
       install:
@@ -93,11 +117,21 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: focal
+      dist: bionic
       env:
       - SWIFT_VERSION=5.3.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: bionic
+      env:
+      - SWIFT_VERSION=5.4
+      install:
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: deploy
@@ -122,7 +156,6 @@ jobs:
       - ./utils.py ci before-deploy
       deploy:
       - provider: pages
-        skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: docs
         skip_cleanup: true

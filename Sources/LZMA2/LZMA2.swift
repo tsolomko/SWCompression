@@ -28,7 +28,7 @@ public class LZMA2: DecompressionAlgorithm {
     }
 
     static func decompress(_ byteReader: LittleEndianByteReader, _ dictSizeByte: UInt8) throws -> Data {
-        let decoder = try LZMA2Decoder(byteReader, dictSizeByte)
+        var decoder = try LZMA2Decoder(byteReader, dictSizeByte)
         try decoder.decode()
         return Data(decoder.out)
     }

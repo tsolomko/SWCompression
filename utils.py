@@ -5,9 +5,13 @@ import os
 import subprocess
 import sys
 
-def _sprun(cmd, *args, **kwargs):
+def _sprun(cmd: list, *args, **kwargs):
     print("+ " + " ".join(cmd))
     subprocess.run(cmd, check=True, *args, **kwargs)
+
+def _sprun_shell(cmd: str, *args, **kwargs):
+    print("+ " + cmd)
+    subprocess.run(cmd, check=True, shell=True, *args, **kwargs)
 
 def _ci_before_deploy():
     docs_json_file = open("docs.json", "w")
@@ -21,27 +25,25 @@ def _ci_install_macos():
                 else
                     HOMEBREW_NO_AUTO_UPDATE=1 brew install "git-lfs"
                 fi"""
-    _sprun([script], shell=True)
+    _sprun_shell(script)
     _sprun(["git", "lfs", "install"])
 
 def _ci_install_linux():
-    _sprun(["eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\""], shell=True)
+    _sprun_shell("eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\"")
 
-def _ci_script_macos(new_watchos_simulator):
+def _ci_script_macos():
+    _sprun_shell("xcodebuild -version")
     _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
-    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
-                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
+    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]),
+                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]),
+                    (["-destination 'platform=watchOS Simulator,name=" + os.environ["WATCHOS_SIMULATOR"] + "'"], [os.environ["WATCHOS_ACTIONS"]]),
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
 
-    if new_watchos_simulator:
-        destinations_actions.append((["-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm'"], ["clean", "build"]))
-    else:
-        destinations_actions.append((["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"], ["clean", "build"]))
-
-    for destination, action in destinations_actions:
-        xcodebuild_command = xcodebuild_command_parts + destination + action
-        _sprun(xcodebuild_command)
+    for destination, actions in destinations_actions:
+        xcodebuild_command = xcodebuild_command_parts + destination + actions
+        # If xcodebuild is not run inside shell, then destination parameters are ignored for some reason.
+        _sprun_shell(" ".join(xcodebuild_command))
 
 def _ci_script_linux():
     env = os.environ.copy()
@@ -59,7 +61,7 @@ def action_ci(args):
     elif args.cmd == "install-linux":
         _ci_install_linux()
     elif args.cmd == "script-macos":
-        _ci_script_macos(args.new_watchos_simulator)
+        _ci_script_macos()
     elif args.cmd == "script-linux":
         _ci_script_linux()
     else:
