@@ -31,26 +31,14 @@ def _ci_install_macos():
 def _ci_install_linux():
     _sprun_shell("eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\"")
 
-def _ci_script_macos(new_watchos_simulator, watchos_test):
+def _ci_script_macos():
+    _sprun_shell("xcodebuild -version")
     _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
-    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]), 
-                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]), 
+    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]),
+                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]),
+                    (["-destination 'platform=watchOS Simulator,name=" + os.environ["WATCHOS_SIMULATOR"] + "'"], [os.environ["WATCHOS_ACTIONS"]]),
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
-
-    watchos_destination = None
-    if new_watchos_simulator:
-        watchos_destination = ["-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm'"]
-    else:
-        watchos_destination = ["-destination 'platform=watchOS Simulator,name=Apple Watch - 38mm'"]
-
-    watchos_actions = None
-    if watchos_test:
-        watchos_actions = ["clean", "test"]
-    else:
-        watchos_actions = ["clean", "build"]
-
-    destinations_actions.append((watchos_destination, watchos_actions))
 
     for destination, actions in destinations_actions:
         xcodebuild_command = xcodebuild_command_parts + destination + actions
@@ -73,7 +61,7 @@ def action_ci(args):
     elif args.cmd == "install-linux":
         _ci_install_linux()
     elif args.cmd == "script-macos":
-        _ci_script_macos(args.new_watchos_simulator, args.watchos_test)
+        _ci_script_macos()
     elif args.cmd == "script-linux":
         _ci_script_linux()
     else:
@@ -121,12 +109,6 @@ parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
 parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "install-linux", "script-macos", "script-linux"],
                         help="a command to perform on CI", metavar="CI_CMD")
-parser_ci.add_argument("--new-watchos-simulator", action="store_true", dest="new_watchos_simulator",
-                        help="use the newest watchos simulator which is necessary for xcode 12+ \
-                        (used only by 'script-macos' subcommand)")
-parser_ci.add_argument("--watchos-test", action="store_true", dest="watchos_test",
-                        help="test on watchos simulator; available only for Xcode 12.5+ \
-                        (used only by 'script-macos' subcommand)")
 parser_ci.set_defaults(func=action_ci)
 
 # Parser for 'cleanup-workspace' command.

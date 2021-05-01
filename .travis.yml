@@ -19,6 +19,8 @@ jobs:
       osx_image: xcode10.3 # Swift 5.0
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -33,6 +35,8 @@ jobs:
       osx_image: xcode11.3 # Swift 5.1
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -47,6 +51,8 @@ jobs:
       osx_image: xcode11.4 # Swift 5.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -62,6 +68,8 @@ jobs:
       osx_image: xcode12 # Swift 5.3
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
       before_install:
       - brew update
       install:
@@ -80,13 +88,15 @@ jobs:
       - git lfs checkout
       - cd -
       script:
-      - ./utils.py ci script-macos --new-watchos-simulator
+      - ./utils.py ci script-macos
     - stage: test
       language: swift
       os: osx
       osx_image: xcode12.4 # Swift 5.3.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
       before_install:
       - brew update
       install:
@@ -94,11 +104,27 @@ jobs:
       before_script:
       - ./utils.py prepare-workspace macos --xcf
       script:
-      - ./utils.py ci script-macos --new-watchos-simulator
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode12.5 # Swift 5.4
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean test'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos --xcf
+      script:
+      - ./utils.py ci script-macos
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=4.2.3
       install:
@@ -108,7 +134,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.0.3
       install:
@@ -118,7 +144,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.1.5
       install:
@@ -128,7 +154,7 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.2.5
       install:
@@ -138,9 +164,19 @@ jobs:
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.3.3
+      install:
+      - ./utils.py ci install-linux
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: bionic
+      env:
+      - SWIFT_VERSION=5.4
       install:
       - ./utils.py ci install-linux
       script:
