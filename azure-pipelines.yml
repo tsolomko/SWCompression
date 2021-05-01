@@ -10,52 +10,49 @@ stages:
 - stage: test
   displayName: 'Build & Test'
   jobs:
-  - job: macosLegacy
+  - job: macos
     strategy:
       matrix:
         macosSwift50:
           imageName: 'macOS-10.14'
           DEVELOPER_DIR: '/Applications/Xcode_10.3.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift51:
           imageName: 'macOS-10.15'
           DEVELOPER_DIR: '/Applications/Xcode_11.3.1.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift52:
           imageName: 'macOS-10.15'
           DEVELOPER_DIR: '/Applications/Xcode_11.4.1.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+        macosSwift53:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+          UTILS_PW_XCF_FLAG: '--xcf'
+        # macosSwift54:
+        #   imageName: 'macOS-11.3'
+        #   DEVELOPER_DIR: '/Applications/Xcode_12.5.app'
+        #   WATCHOS_ACTIONS: 'clean test'
+        #   WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
+        #   UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
     steps:
     - script: |
+        set -e -o xtrace
         brew update
         ./utils.py ci install-macos
       displayName: 'Install'
-    - script: ./utils.py prepare-workspace macos
+    - script: ./utils.py prepare-workspace macos $UTILS_PW_XCF_FLAG
       displayName: 'Prepare Workspace'
     - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
     - script: swift build -c release
-      displayName: 'Build SPM Release'
-  - job: macosNew
-    # We split Xcode 12+ jobs into a separate matrix since we need to use XCFramework for this versions.
-    # We also need to use a different watchos simulator name for newer Xcode versions.
-    # For it is only for Swift 5.3 but future versions will also probably be included here.
-    strategy:
-      matrix:
-        macosSwift53:
-          imageName: 'macOS-10.15'
-          DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
-    pool:
-      vmImage: $(imageName)
-    steps:
-    - script: |
-        brew update
-        ./utils.py ci install-macos
-      displayName: 'Install'
-    - script: ./utils.py prepare-workspace macos --xcf
-      displayName: 'Prepare Workspace'
-    - script: ./utils.py ci script-macos --new-watchos-simulator
-      displayName: 'Build & Test'
-    - script: swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Release'
   - job: linux
     strategy:
@@ -70,8 +67,11 @@ stages:
           imageName: 'ubuntu-18.04'
           SWIFT_VERSION: '5.2.5'
         linuxSwift53:
-          imageName: 'ubuntu-20.04'
+          imageName: 'ubuntu-18.04'
           SWIFT_VERSION: '5.3.3'
+        linuxSwift54:
+          imageName: 'ubuntu-18.04'
+          SWIFT_VERSION: '5.4'
     pool:
       vmImage: $(imageName)
     steps:
