@@ -4,13 +4,23 @@ git:
   submodules: false
 jobs:
   include:
-    # We cannot test with Swift 4.2 on macOS since Carthage doesn't work with multiple Swift versions.
+    # We test only building using SPM with Swift 4.2 on macos since Carthage doesn't support multiple Swift language versions.
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode10.1 # Swift 4.2
+      script:
+      - swift --version
+      - swift build
+      - swift build -c release
     - stage: test
       language: swift
       os: osx
       osx_image: xcode10.3 # Swift 5.0
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -25,6 +35,8 @@ jobs:
       osx_image: xcode11.3 # Swift 5.1
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -39,6 +51,8 @@ jobs:
       osx_image: xcode11.4 # Swift 5.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 4 - 44mm'
       before_install:
       - brew update
       install:
@@ -54,6 +68,8 @@ jobs:
       osx_image: xcode12 # Swift 5.3
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
       before_install:
       - brew update
       install:
@@ -79,70 +95,90 @@ jobs:
       osx_image: xcode12.4 # Swift 5.3.2
       env:
       - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean build'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
       before_install:
       - brew update
       install:
       - ./utils.py ci install-macos
       before_script:
-      # TODO: Move this line into ./utils.py prepare-workspace macos when the old Swift versions and non-xcf installation
-      #  method with Carthage are no longer supported.
-      - carthage bootstrap --use-xcframeworks --no-use-binaries
-      - git submodule update --init --recursive
-      - cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
-      - cd "Tests/Test Files/"
-      - git lfs pull
-      - git lfs checkout
-      - cd -
+      - ./utils.py prepare-workspace macos --xcf
+      script:
+      - ./utils.py ci script-macos
+    - stage: test
+      language: swift
+      os: osx
+      osx_image: xcode12.5 # Swift 5.4
+      env:
+      - HOMEBREW_NO_INSTALL_CLEANUP=1
+      - WATCHOS_ACTIONS='clean test'
+      - WATCHOS_SIMULATOR='Apple Watch Series 6 - 44mm'
+      before_install:
+      - brew update
+      install:
+      - ./utils.py ci install-macos
+      before_script:
+      - ./utils.py prepare-workspace macos --xcf
       script:
       - ./utils.py ci script-macos
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=4.2.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.0.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.1.5
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.2.5
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: test
       language: generic
       os: linux
-      dist: xenial
+      dist: bionic
       env:
       - SWIFT_VERSION=5.3.3
       install:
-      - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+      - ./utils.py ci install-linux
+      script:
+      - ./utils.py ci script-linux
+    - stage: test
+      language: generic
+      os: linux
+      dist: bionic
+      env:
+      - SWIFT_VERSION=5.4
+      install:
+      - ./utils.py ci install-linux
       script:
       - ./utils.py ci script-linux
     - stage: deploy
@@ -167,6 +203,8 @@ jobs:
       - ./utils.py ci before-deploy
       deploy:
       - provider: pages
-        skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: docs
+        skip_cleanup: true
+        on:
+          tags: true

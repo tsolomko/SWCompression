@@ -63,7 +63,7 @@ public class LZMA: DecompressionAlgorithm {
     static func decompress(_ byteReader: ByteReader,
                            _ properties: LZMAProperties,
                            _ uncompSize: Int?) throws -> Data {
-        let decoder = LZMADecoder(byteReader)
+        var decoder = LZMADecoder(byteReader)
         decoder.properties = properties
         decoder.resetStateAndDecoders()
         decoder.uncompressedSize = uncompSize ?? -1

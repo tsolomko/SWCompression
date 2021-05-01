@@ -54,6 +54,10 @@ class BZip2Tests: XCTestCase {
         try self.perform(test: "test9")
     }
 
+    func testNonStandardRunLength() throws {
+        try self.perform(test: "test_nonstandard_runlength")
+    }
+
     func testBadFile_short() {
         XCTAssertThrowsError(try BZip2.decompress(data: Data([0])))
     }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.5.9
+
+- Improved performance of LZMA/LZMA2 and, consequently, of XZ.
+- Fixed a rare crash when processing a BZip2 archive which uses non-standard (but allowed) run length values.
+
 ## 4.5.8
 
 - Fixed incompatibility with Carthage `--use-xcframeworks` method of installation.

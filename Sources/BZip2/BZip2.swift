@@ -211,7 +211,9 @@ public class BZip2: DecompressionAlgorithm {
         out.reserveCapacity(blockSize.sizeInKilobytes * 1000)
         while i < nt.count {
             if i < nt.count - 4 && nt[i] == nt[i + 1] && nt[i] == nt[i + 2] && nt[i] == nt[i + 3] {
-                let runLength = nt[i + 4] + 4
+                // While the reference implementation of BZip2 doesn't produce such output, the "specification"
+                // technically allows run lengths greater than 255. To allow this we have to convert to Int.
+                let runLength = nt[i + 4].toInt() + 4
                 for _ in 0..<runLength {
                     out.append(nt[i])
                 }
