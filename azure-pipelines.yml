@@ -77,7 +77,14 @@ stages:
     steps:
     - script: ./utils.py ci install-linux
       displayName: 'Install'
-    - script: ./utils.py ci script-linux
+    # There is an issue with Swift 5.4 on Linux which fails the build. See https://bugs.swift.org/browse/SR-14594.
+    - script: |
+        if [[ $SWIFT_VERSION = '5.4' ]]
+        then
+          echo "Skipping Swift 5.4 on linux due to issue with Swift itself."
+        else
+          ./utils.py ci script-linux
+        fi
       displayName: 'Build SPM Debug & Release'
 # - stage: Deploy
 #   dependsOn: Test

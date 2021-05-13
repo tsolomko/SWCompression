@@ -3,6 +3,10 @@ git:
   depth: 1
   submodules: false
 jobs:
+  allow_failures:
+    # There is an issue with Swift 5.4 on Linux which fails the build. See https://bugs.swift.org/browse/SR-14594.
+    env:
+      - SWIFT_VERSION=5.4
   include:
     - stage: test
       language: swift
