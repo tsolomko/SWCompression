@@ -75,7 +75,7 @@ struct ZipLocalHeader {
             case 0x0001: // Zip64
                 // Zip64 extra field is a special case, because it requires knowledge about local header fields,
                 // in particular, uncompressed and compressed sizes.
-                // In local header both uncompressed size and compressed size fields are required.
+                // In the local header both uncompressed size and compressed size fields are required.
                 self.uncompSize = byteReader.uint64()
                 self.compSize = byteReader.uint64()
                 self.zip64FieldsArePresent = true

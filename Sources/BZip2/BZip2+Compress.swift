@@ -79,10 +79,8 @@ extension BZip2: CompressionAlgorithm {
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
 
         let usedBytes = Set(out).sorted()
-        out = mtf(out, characters: usedBytes)
-
         var maxSymbol = 0
-        (out, maxSymbol) = rleOfMtf(out)
+        (out, maxSymbol) = mtfRle(out, characters: usedBytes)
 
         // First, we analyze data and create Huffman trees and selectors.
         // Then we will perform encoding itself.
@@ -258,16 +256,23 @@ extension BZip2: CompressionAlgorithm {
         return out
     }
 
-    private static func rleOfMtf(_ array: [Int]) -> ([Int], Int) {
+    private static func mtfRle(_ array: [Int], characters: [Int]) -> ([Int], Int) {
         var out = [Int]()
+        /// Mutable copy of `characters`.
+        var dictionary = characters
         var lengthOfZerosRun = 0
         var maxSymbol = 1
         for i in 0..<array.count {
-            let byte = array[i]
+            let byte = dictionary.firstIndex(of: array[i])!
+
+            // Run length encoding of zeros.
             if byte == 0 {
                 lengthOfZerosRun += 1
             }
             if (byte == 0 && i == array.count - 1) || byte != 0 {
+                // Runs of zeros are represented using a modified binary system with two "digits", RUNA and RUNB, where
+                //  RUNA represents 1 and RUNB represents 2 (whereas in the usual base-2 system the digits are 0 and 1).
+                // (We don't need a digit for zero since we can't get a run of length 0 by definition.)
                 if lengthOfZerosRun > 0 {
                     let digitsNumber = Int(floor(log2(Double(lengthOfZerosRun) + 1)))
                     var remainder = lengthOfZerosRun
@@ -285,16 +290,19 @@ extension BZip2: CompressionAlgorithm {
                 }
             }
             if byte != 0 {
+                // We add one, because 1 is used as RUNB.
                 let newSymbol = byte + 1
-                // We add one because, 1 is used as RUNB.
-                // We don't add two instead, because 0 is never encountered as separate symbol, without RUNA meaning.
                 out.append(newSymbol)
                 if newSymbol > maxSymbol {
                     maxSymbol = newSymbol
                 }
             }
+
+            // Move to the front.
+            let old = dictionary.remove(at: byte)
+            dictionary.insert(old, at: 0)
         }
-        // Add 'end of stream' symbol.
+        // Add the 'end of stream' symbol.
         out.append(maxSymbol + 1)
         return (out, maxSymbol)
     }
