@@ -6,22 +6,29 @@
 import Foundation
 import BitByteData
 
+fileprivate struct CodingIndex {
+
+    let treeCode: Int
+    let bitSize: Int
+
+}
+
 final class EncodingTree {
 
     private let bitWriter: BitWriter
 
-    private let codingIndices: [[Int]]
+    private let codingIndices: [CodingIndex]
 
     init(codes: [Code], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
         self.bitWriter = bitWriter
 
-        var codingIndices = Array(repeating: [-1, -1], count: codes.count)
+        var codingIndices = Array(repeating: CodingIndex(treeCode: -1, bitSize: -1), count: codes.count)
 
         for code in codes {
             // Codes have already been reversed.
             // TODO: This assumption may be only correct for Huffman codes.
             let treeCode = reverseCodes ? code.code : code.code.reversed(bits: code.bits)
-            codingIndices[code.symbol] = [treeCode, code.bits]
+            codingIndices[code.symbol] = CodingIndex(treeCode: treeCode, bitSize: code.bits)
         }
         self.codingIndices = codingIndices
 
@@ -33,10 +40,10 @@ final class EncodingTree {
 
         let codingIndex = self.codingIndices[symbol]
 
-        guard codingIndex[0] > -1
+        guard codingIndex.treeCode > -1
             else { fatalError("Symbol is not found.") }
 
-        self.bitWriter.write(number: codingIndex[0], bitsCount: codingIndex[1])
+        self.bitWriter.write(number: codingIndex.treeCode, bitsCount: codingIndex.bitSize)
     }
 
     func bitSize(for stats: [Int]) -> Int {
@@ -45,10 +52,10 @@ final class EncodingTree {
             guard symbol < self.codingIndices.count
                 else { fatalError("Symbol is not found.") }
             let codingIndex = self.codingIndices[symbol]
-            guard codingIndex[0] > -1
+            guard codingIndex.treeCode > -1
                 else { fatalError("Symbol is not found.") }
 
-            totalSize += count * codingIndex[1]
+            totalSize += count * codingIndex.bitSize
         }
         return totalSize
     }

@@ -79,10 +79,8 @@ extension BZip2: CompressionAlgorithm {
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
 
         let usedBytes = Set(out).sorted()
-        out = mtf(out, characters: usedBytes)
-
         var maxSymbol = 0
-        (out, maxSymbol) = rleOfMtf(out)
+        (out, maxSymbol) = mtfRle(out, characters: usedBytes)
 
         // First, we analyze data and create Huffman trees and selectors.
         // Then we will perform encoding itself.
@@ -258,12 +256,16 @@ extension BZip2: CompressionAlgorithm {
         return out
     }
 
-    private static func rleOfMtf(_ array: [Int]) -> ([Int], Int) {
+    private static func mtfRle(_ array: [Int], characters: [Int]) -> ([Int], Int) {
         var out = [Int]()
+        /// Mutable copy of `characters`.
+        var dictionary = characters
         var lengthOfZerosRun = 0
         var maxSymbol = 1
         for i in 0..<array.count {
-            let byte = array[i]
+            let byte = dictionary.firstIndex(of: array[i])!
+
+            // Run length encoding of zeros.
             if byte == 0 {
                 lengthOfZerosRun += 1
             }
@@ -295,6 +297,10 @@ extension BZip2: CompressionAlgorithm {
                     maxSymbol = newSymbol
                 }
             }
+
+            // Move to the front.
+            let old = dictionary.remove(at: byte)
+            dictionary.insert(old, at: 0)
         }
         // Add the 'end of stream' symbol.
         out.append(maxSymbol + 1)
