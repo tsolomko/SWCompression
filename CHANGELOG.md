@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.5.10
+
+- Fixed compilation issues on Windows (PR #22 by @trametheka).
+- Performed minor optimizations to BZip2 and Deflate compression functionality.
+- Increased the lowest required version of BitByteData dependency to 1.4.4.
+
 ## 4.5.9
 
 - Improved performance of LZMA/LZMA2 and, consequently, of XZ.
