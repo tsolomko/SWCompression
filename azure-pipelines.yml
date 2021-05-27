@@ -5,12 +5,15 @@ trigger:
   tags:
     include:
     - '*'
+    exclude:
+    - '*-test*'
 
 stages:
 - stage: test
   displayName: 'Build & Test'
   jobs:
   - job: macos
+    # TODO: Add Xcode 12.5/Swift 5.4. It requires macOS 11 which is currently unavailable on AZP. For Xcode 12.5 we can also enable testing on watchos.
     strategy:
       matrix:
         macosSwift50:
@@ -59,32 +62,28 @@ stages:
       matrix:
         linuxSwift50:
           imageName: 'ubuntu-18.04'
-          SWIFT_VERSION: '5.0.3'
+          containerImage: 'swift:5.0.3-bionic'
         linuxSwift51:
           imageName: 'ubuntu-18.04'
-          SWIFT_VERSION: '5.1.5'
+          containerImage: 'swift:5.1.5-bionic'
         linuxSwift52:
           imageName: 'ubuntu-18.04'
-          SWIFT_VERSION: '5.2.5'
+          containerImage: 'swift:5.2.5-bionic'
         linuxSwift53:
           imageName: 'ubuntu-18.04'
-          SWIFT_VERSION: '5.3.3'
+          containerImage: 'swift:5.3.3-bionic'
         linuxSwift54:
           imageName: 'ubuntu-18.04'
-          SWIFT_VERSION: '5.4'
+          containerImage: 'swift:5.4.1-bionic'
     pool:
       vmImage: $(imageName)
+    container: $[ variables['containerImage'] ]
     steps:
-    - script: ./utils.py ci install-linux
-      displayName: 'Install'
-    # There is an issue with Swift 5.4 on Linux which fails the build. See https://bugs.swift.org/browse/SR-14594.
     - script: |
-        if [[ $SWIFT_VERSION = '5.4' ]]
-        then
-          echo "Skipping Swift 5.4 on linux due to issue with Swift itself."
-        else
-          ./utils.py ci script-linux
-        fi
+        set -e -o xtrace
+        swift --version
+        swift build
+        swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Debug & Release'
 # - stage: Deploy
 #   dependsOn: Test
