@@ -28,9 +28,6 @@ def _ci_install_macos():
     _sprun_shell(script)
     _sprun(["git", "lfs", "install"])
 
-def _ci_install_linux():
-    _sprun_shell("eval \"$(curl -sL https://swiftenv.fuller.li/install.sh)\"")
-
 def _ci_script_macos():
     _sprun_shell("xcodebuild -version")
     _sprun(["swift", "--version"])
@@ -45,25 +42,13 @@ def _ci_script_macos():
         # If xcodebuild is not run inside shell, then destination parameters are ignored for some reason.
         _sprun_shell(" ".join(xcodebuild_command))
 
-def _ci_script_linux():
-    env = os.environ.copy()
-    env["SWIFTENV_ROOT"] = env["HOME"] +"/.swiftenv"
-    env["PATH"] = env["SWIFTENV_ROOT"] + "/bin:" + env["SWIFTENV_ROOT"] + "/shims:"+ env["PATH"]
-    _sprun(["swift", "--version"], env=env)
-    _sprun(["swift", "build"], env=env)
-    _sprun(["swift", "build", "-c", "release"], env=env)
-
 def action_ci(args):
     if args.cmd == "before-deploy":
         _ci_before_deploy()
     elif args.cmd == "install-macos":
         _ci_install_macos()
-    elif args.cmd == "install-linux":
-        _ci_install_linux()
     elif args.cmd == "script-macos":
         _ci_script_macos()
-    elif args.cmd == "script-linux":
-        _ci_script_linux()
     else:
         raise Exception("Unknown CI command")
 
@@ -107,7 +92,7 @@ subparsers = parser.add_subparsers(title="commands", help="a command to perform"
 # Parser for 'ci' command.
 parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
-parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "install-linux", "script-macos", "script-linux"],
+parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "script-macos"],
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.set_defaults(func=action_ci)
 
