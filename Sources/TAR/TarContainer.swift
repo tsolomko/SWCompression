@@ -126,6 +126,9 @@ public class TarContainer: Container {
             } else {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
+                // Verify that data is not truncated.
+                guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
+                    else { throw TarError.wrongField }
                 let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
                 entries.append(TarEntry(info: entryInfo, data: entryData))
             }
