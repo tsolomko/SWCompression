@@ -1,0 +1,105 @@
+trigger:
+  branches:
+    exclude:
+    - master
+  tags:
+    include:
+    - '*'
+    exclude:
+    - '*-test*'
+
+stages:
+- stage: test
+  displayName: 'Build & Test'
+  jobs:
+  - job: macosSwift42
+    pool:
+      vmImage: 'macOS-10.14'
+    variables:
+      DEVELOPER_DIR: '/Applications/Xcode_10.1.app'
+    steps:
+    - script: |
+        set -e -o xtrace
+        swift --version
+        swift build
+        swift build -c release
+      displayName: 'Build SPM Debug & Release'
+  - job: macos
+    # TODO: Add Xcode 12.5/Swift 5.4. It requires macOS 11 which is currently unavailable on AZP. For Xcode 12.5 we can also enable testing on watchos.
+    strategy:
+      matrix:
+        macosSwift50:
+          imageName: 'macOS-10.14'
+          DEVELOPER_DIR: '/Applications/Xcode_10.3.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+        macosSwift51:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_11.3.1.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+        macosSwift52:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_11.4.1.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+        macosSwift53:
+          imageName: 'macOS-10.15'
+          DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+          WATCHOS_ACTIONS: 'clean build'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
+          UTILS_PW_XCF_FLAG: '--xcf'
+        # macosSwift54:
+        #   imageName: 'macOS-11.3'
+        #   DEVELOPER_DIR: '/Applications/Xcode_12.5.app'
+        #   WATCHOS_ACTIONS: 'clean test'
+        #   WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
+        #   UTILS_PW_XCF_FLAG: '--xcf'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - script: |
+        set -e -o xtrace
+        brew update
+        ./utils.py ci install-macos
+      displayName: 'Install'
+    - script: ./utils.py prepare-workspace macos $UTILS_PW_XCF_FLAG
+      displayName: 'Prepare Workspace'
+    - script: ./utils.py ci script-macos
+      displayName: 'Build & Test'
+    - script: swift build -c release
+      displayName: 'Build SPM Release'
+  - job: linux
+    strategy:
+      matrix:
+        linuxSwift42:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:4.2.4'
+        linuxSwift50:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:5.0.3-bionic'
+        linuxSwift51:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:5.1.5-bionic'
+        linuxSwift52:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:5.2.5-bionic'
+        linuxSwift53:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:5.3.3-bionic'
+        linuxSwift54:
+          imageName: 'ubuntu-18.04'
+          containerImage: 'swift:5.4.1-bionic'
+    pool:
+      vmImage: $(imageName)
+    container: $[ variables['containerImage'] ]
+    steps:
+    - script: |
+        set -e -o xtrace
+        swift --version
+        swift build
+        swift build -c release # Check Release build just in case.
+      displayName: 'Build SPM Debug & Release'
+# - stage: Deploy
+#   dependsOn: Test
+#   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags') # Deploy on tags only
