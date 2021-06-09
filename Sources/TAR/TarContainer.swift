@@ -36,7 +36,8 @@ public class TarContainer: Container {
      */
     public static func formatOf(container data: Data) throws -> Format {
         // TAR container should be at least 512 bytes long (when it contains only one header).
-        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
+        guard data.count >= 512
+            else { throw TarError.tooSmallFileIsPassed }
 
         /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
@@ -127,6 +128,9 @@ public class TarContainer: Container {
                 let dataStartIndex = entryInfo.blockStartIndex + 512
                 let dataEndIndex = dataStartIndex + entryInfo.size!
                 // Verify that data is not truncated.
+                // The data.startIndex inequality is strict since by this point at least one header (i.e. 512 bytes)
+                // has been processed. The data.endIndex inequality is strict since there must be a 1024 bytes-long EOF
+                // marker block which isn't included into any entry.
                 guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
                     else { throw TarError.wrongField }
                 let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
@@ -151,9 +155,9 @@ public class TarContainer: Container {
      - Returns: Array of `TarEntryInfo`.
      */
     public static func info(container data: Data) throws -> [TarEntryInfo] {
-        // First, if the TAR container contains only header, it should be at least 512 bytes long.
-        // So we have to check this.
-        guard data.count >= 512 else { throw TarError.tooSmallFileIsPassed }
+        // TAR container should be at least 512 bytes long (when it contains only one header).
+        guard data.count >= 512
+            else { throw TarError.tooSmallFileIsPassed }
 
         /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
