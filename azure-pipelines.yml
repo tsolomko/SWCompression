@@ -100,6 +100,47 @@ stages:
         swift build
         swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Debug & Release'
+  - job: windows
+    strategy:
+      matrix:
+        windowsSwift54:
+          imageName: 'windows-2019'
+          SWIFT_VERSION: '5.4.1'
+    pool:
+      vmImage: $(imageName)
+    variables:
+      DEVELOPER_DIR: 'C:\Library\Developer'
+      SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
+      XCTEST_DIR: 'C:\Library\Developer\Platforms\Windows.platform\Developer\Library\XCTest-development'
+      SWIFTFLAGS: '--sdk $(SDKROOT)'
+      SWIFTTESTFLAGS: '-Xswiftc -I -Xswiftc $(XCTEST_DIR)\usr\lib\swift\windows\x86_64 -Xswiftc -L -Xswiftc $(XCTEST_DIR)\usr\lib\swift\windows -Xswiftc -sdk -Xswiftc $(SDKROOT)'
+    steps:
+    - task: BatchScript@1
+      inputs:
+        filename: C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/Tools/VsDevCmd.bat
+        arguments: -no_logo -arch=x64 -host_arch=x64
+        modifyEnvironment: true
+      displayName: 'vsvarsall.bat'
+    - pwsh: Invoke-WebRequest -Uri https://swift.org/builds/swift-$(SWIFT_VERSION)-release/windows10/swift-$(SWIFT_VERSION)-RELEASE/swift-$(SWIFT_VERSION)-RELEASE-windows10.exe -OutFile swift-install.exe
+      displayName: 'Download Swift'
+    - task: BatchScript@1
+      inputs:
+        filename: .\swift-install.exe
+        arguments: /install /quiet
+        modifyEnvironment: true
+      displayName: 'Install Swift'
+    - script: |
+        copy %SDKROOT%\usr\share\ucrt.modulemap "%UniversalCRTSdkDir%\Include\%UCRTVersion%\ucrt\module.modulemap"
+        copy %SDKROOT%\usr\share\visualc.modulemap "%VCToolsInstallDir%\include\module.modulemap"
+        copy %SDKROOT%\usr\share\visualc.apinotes "%VCToolsInstallDir%\include\visualc.apinotes"
+        copy %SDKROOT%\usr\share\winsdk.modulemap "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
+      displayName: 'Configure SDK'
+    - script: |
+        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-67\usr\bin;%PATH%
+        swift.exe --version
+        swift.exe build %SWIFTFLAGS%
+        swift.exe build -c release %SWIFTFLAGS%
+      displayName: 'Build SPM Debug & Release'
 # - stage: Deploy
 #   dependsOn: Test
 #   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags') # Deploy on tags only
