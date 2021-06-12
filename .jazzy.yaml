@@ -1,6 +1,6 @@
 # Run: sourcekitten doc --spm --module-name SWCompression > docs.json
 sourcekitten_sourcefile: docs.json
-clean: true
+clean: false
 author: Timofey Solomko
 module: SWCompression
 module_version: 4.5.10
