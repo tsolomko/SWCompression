@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.5.11
+
+- Fixed a crash when processing a truncated TAR file.
+- Added missing documentation for `LZMAProperties.init()`.
+- Windows is now supported.
+
 ## 4.5.10
 
 - Fixed compilation issues on Windows (PR #22 by @trametheka).
