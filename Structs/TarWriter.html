@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TarWriter Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/TarWriter" class="dashAnchor"></a>
+
+    <a title="TarWriter Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          SWCompression 4.8.6 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/tsolomko/SWCompression">
+            <img class="header-icon" src="../img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">SWCompression Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      TarWriter Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Compression.html">Compression</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BZip2.html">BZip2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BZip2/BlockSize.html">– BlockSize</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Deflate.html">Deflate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LZMA.html">LZMA</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LZMAProperties.html">LZMAProperties</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZ4.html">LZ4</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Archives.html">Archives</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/GzipArchive.html">GzipArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/GzipArchive/Member.html">– Member</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GzipHeader.html">GzipHeader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GzipHeader/ExtraField.html">– ExtraField</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZlibHeader/CompressionLevel.html">– CompressionLevel</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../7-Zip.html">7-Zip</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SevenZipContainer.html">SevenZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntry.html">SevenZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../TAR.html">TAR</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer/Format.html">– Format</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarReader.html">TarReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarWriter.html">TarWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntryInfo.html">TarEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../ZIP.html">ZIP</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntryInfo.html">ZipEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ZipExtraField.html">ZipExtraField</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZipExtraFieldLocation.html">ZipExtraFieldLocation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Errors.html">Errors</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/BZip2Error.html">BZip2Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DataError.html">DataError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DeflateError.html">DeflateError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GzipError.html">GzipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZMA2Error.html">LZMA2Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SevenZipError.html">SevenZipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarCreateError.html">TarCreateError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZipError.html">ZipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZlibError.html">ZlibError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntryInfo.html">ContainerEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CompressionAlgorithm.html">CompressionAlgorithm</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Common%20Auxiliary%20Types.html">Common Auxiliary Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ContainerEntryType.html">ContainerEntryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DosAttributes.html">DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Permissions.html">Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/CompressionMethod.html">CompressionMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/FileSystemType.html">FileSystemType</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>TarWriter</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">TarWriter</span></code></pre>
+
+                </div>
+              </div>
+            <p>A type that allows to iteratively create TAR containers with the output being written into a <code>FileHandle</code>.</p>
+
+<p>The <code>TarWriter</code> may be helpful in reducing the peak memory usage on certain platforms. However, to achieve this both
+the creation of TAR entries and the calls to <code>TarWriter</code> should be wrapped inside the <code>autoreleasepool</code>. Since the
+<code>autoreleasepool</code> is available only on Darwin platforms, the memory reducing effect may be not as significant on
+non-Darwin platforms (such as Linux or Windows).</p>
+
+<p>The following code demonstrates an example usage of the <code>TarWriter</code>:</p>
+<pre class="highlight swift"><code>   <span class="k">let</span> <span class="nv">handle</span><span class="p">:</span> <span class="kt">FileHandle</span> <span class="o">=</span> <span class="o">...</span>
+   <span class="k">let</span> <span class="nv">writer</span> <span class="o">=</span> <span class="kt">TarWriter</span><span class="p">(</span><span class="nv">fileHandle</span><span class="p">:</span> <span class="n">handle</span><span class="p">)</span>
+   <span class="k">try</span> <span class="n">autoreleasepool</span> <span class="p">{</span>
+       <span class="k">let</span> <span class="nv">entry</span><span class="p">:</span> <span class="kt">TarEntry</span> <span class="o">=</span> <span class="o">...</span>
+       <span class="k">try</span> <span class="n">writer</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+   <span class="p">}</span>
+   <span class="k">try</span> <span class="n">writer</span><span class="o">.</span><span class="nf">finalize</span><span class="p">()</span>
+   <span class="k">try</span> <span class="n">handle</span><span class="o">.</span><span class="nf">close</span><span class="p">()</span>
+</code></pre>
+
+<p>Note that <code><a href="../Structs/TarWriter.html#/s:13SWCompression9TarWriterV8finalizeyyKF">TarWriter.finalize()</a></code> must be called after finishing appending entries to the container. In addition,
+closing the <code>FileHandle</code> remains the responsibility of the caller.</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    Due to the API availability limitations of Foundation&rsquo;s <code>FileHandle</code>, on certain platforms errors in
+<code>FileHandle</code> operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
+impossible to correctly handle in Swift code). As such, it is not recommended to use <code>TarWriter</code> on those platforms.
+The following platforms are <em>unaffected</em> by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+, tvOS 13.4+, and any
+other platforms without Objective-C runtime.
+
+</div>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarWriter.swift#L36-L144">Show on GitHub</a>
+              </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression9TarWriterV10fileHandle5forceACSo06NSFileE0C_AA0B9ContainerC6FormatOtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(fileHandle:force:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression9TarWriterV10fileHandle5forceACSo06NSFileE0C_AA0B9ContainerC6FormatOtcfc">init(fileHandle:<wbr>force:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a new instance for writing TAR entries using the specified <code>format</code> into the provided <code>fileHandle</code>.</p>
+
+<p>The <code>TarWriter</code> will be forced to use the provided <code>format</code>, meaning that certain properties of the <code>entries</code> may
+be missing from the output data if the chosen format does not support corresponding features. The default <code>.pax</code>
+format supports the largest set of features. Other (non-PAX) formats should only be used if you have a specific
+need for them and you understand limitations of those formats.</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    <p><code><a href="../Structs/TarWriter.html#/s:13SWCompression9TarWriterV8finalizeyyKF">TarWriter.finalize()</a></code> must be called after all entries have been appended.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">fileHandle</span><span class="p">:</span> <span class="kt">FileHandle</span><span class="p">,</span> <span class="n">force</span> <span class="nv">format</span><span class="p">:</span> <span class="kt"><a href="../Classes/TarContainer.html">TarContainer</a></span><span class="o">.</span><span class="kt">Format</span> <span class="o">=</span> <span class="o">.</span><span class="n">pax</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>fileHandle</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A handle into which the output will be written. Note that the <code>TarWriter</code> does not
+close the <code>fileHandle</code> and this remains the responsibility of the caller.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>force</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Force the usage of the specified format.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarWriter.swift#L58-L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression9TarWriterV6appendyyAA0B5EntryVKF"></a>
+                    <a name="//apple_ref/swift/Method/append(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression9TarWriterV6appendyyAA0B5EntryVKF">append(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds a new TAR entry at the end of the TAR container.</p>
+
+<p>On Darwin platforms it is recommended to wrap both the initialization of a <code><a href="../Structs/TarEntry.html">TarEntry</a></code> and the call to this
+function inside the <code>autoreleasepool</code> in order to reduce the peak memory usage.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Errors from the <code>FileHandle</code> operations.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">append</span><span class="p">(</span><span class="n">_</span> <span class="nv">entry</span><span class="p">:</span> <span class="kt"><a href="../Structs/TarEntry.html">TarEntry</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarWriter.swift#L74-L121">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression9TarWriterV8finalizeyyKF"></a>
+                    <a name="//apple_ref/swift/Method/finalize()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression9TarWriterV8finalizeyyKF">finalize()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Finalizes the TAR container by adding an EOF marker.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    Errors from the <code>FileHandle</code> operations.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">finalize</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarWriter.swift#L128-L132">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2024 Timofey Solomko</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>

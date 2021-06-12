@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TarEntryInfo Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/TarEntryInfo" class="dashAnchor"></a>
+
+    <a title="TarEntryInfo Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          SWCompression 4.8.6 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/tsolomko/SWCompression">
+            <img class="header-icon" src="../img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">SWCompression Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      TarEntryInfo Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Compression.html">Compression</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BZip2.html">BZip2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BZip2/BlockSize.html">– BlockSize</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Deflate.html">Deflate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LZMA.html">LZMA</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LZMAProperties.html">LZMAProperties</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LZMA2.html">LZMA2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZ4.html">LZ4</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Archives.html">Archives</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/GzipArchive.html">GzipArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/GzipArchive/Member.html">– Member</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GzipHeader.html">GzipHeader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GzipHeader/ExtraField.html">– ExtraField</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/XZArchive.html">XZArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZlibArchive.html">ZlibArchive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZlibHeader.html">ZlibHeader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZlibHeader/CompressionLevel.html">– CompressionLevel</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../7-Zip.html">7-Zip</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SevenZipContainer.html">SevenZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntry.html">SevenZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SevenZipEntryInfo.html">SevenZipEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../TAR.html">TAR</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer.html">TarContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TarContainer/Format.html">– Format</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarReader.html">TarReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarWriter.html">TarWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntry.html">TarEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TarEntryInfo.html">TarEntryInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../ZIP.html">ZIP</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ZipContainer.html">ZipContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntry.html">ZipEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ZipEntryInfo.html">ZipEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ZipExtraField.html">ZipExtraField</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZipExtraFieldLocation.html">ZipExtraFieldLocation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Errors.html">Errors</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/BZip2Error.html">BZip2Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DataError.html">DataError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DeflateError.html">DeflateError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GzipError.html">GzipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZMAError.html">LZMAError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LZMA2Error.html">LZMA2Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SevenZipError.html">SevenZipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarCreateError.html">TarCreateError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TarError.html">TarError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/XZError.html">XZError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZipError.html">ZipError</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ZlibError.html">ZlibError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Archive.html">Archive</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Container.html">Container</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntry.html">ContainerEntry</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ContainerEntryInfo.html">ContainerEntryInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CompressionAlgorithm.html">CompressionAlgorithm</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DecompressionAlgorithm.html">DecompressionAlgorithm</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Common%20Auxiliary%20Types.html">Common Auxiliary Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ContainerEntryType.html">ContainerEntryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DosAttributes.html">DosAttributes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Permissions.html">Permissions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/CompressionMethod.html">CompressionMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/FileSystemType.html">FileSystemType</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>TarEntryInfo</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">TarEntryInfo</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ContainerEntryInfo.html">ContainerEntryInfo</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>Provides access to information about an entry from the TAR container.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L9-L244">Show on GitHub</a>
+              </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/ContainerEntryInfo"></a>
+                <a name="//apple_ref/swift/Section/ContainerEntryInfo" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/ContainerEntryInfo"></a>
+                  <h3 class="section-name"><span>ContainerEntryInfo</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV4nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV4nameSSvp">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s name.</p>
+
+<p>Depending on the particular format of the container, different container&rsquo;s structures are used
+to set this property, in the following preference order:</p>
+
+<ol>
+<li>Local PAX extended header &ldquo;path&rdquo; property.</li>
+<li>Global PAX extended header &ldquo;path&rdquo; property.</li>
+<li>GNU format type &ldquo;L&rdquo; (LongName) entry.</li>
+<li>Default TAR header.</li>
+</ol>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>name</code> cannot be encoded with ASCII or its ASCII byte-representation
+is longer than 100 bytes then a PAX extended header will be created to represent this value correctly, unless other
+format is forced.
+
+</div><div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When creating new TAR container, <code>name</code> is always encoded with UTF-8 in the basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L28">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV4sizeSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/size" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV4sizeSiSgvp">size</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s data size.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    This property cannot be directly modified. Instead it is updated automatically to be equal to its parent&rsquo;s
+<code>entry.data.count</code>.
+
+</div><div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>size</code> is bigger than 8589934591 then a PAX extended header will be
+created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+used to encode this value in the basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L39">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression18ContainerEntryInfoP4typeAA0bC4TypeOvp"></a>
+                    <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression18ContainerEntryInfoP4typeAA0bC4TypeOvp">type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Enums/ContainerEntryType.html">ContainerEntryType</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L15">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV10accessTime10Foundation4DateVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/accessTime" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV10accessTime10Foundation4DateVSgvp">accessTime</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s last access time (only available for PAX format; <code>nil</code> otherwise).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>accessTime</code> is not <code>nil</code> then a PAX extended header will be created
+to store this property, unless other format is forced.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">accessTime</span><span class="p">:</span> <span class="kt">Date</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L49">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV12creationTime10Foundation4DateVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/creationTime" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV12creationTime10Foundation4DateVSgvp">creationTime</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s creation time (only available for PAX format; <code>nil</code> otherwise).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>creationTime</code> is not <code>nil</code> then a PAX extended header will be
+created to store this property, unless other format is forced.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">creationTime</span><span class="p">:</span> <span class="kt">Date</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L57">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV16modificationTime10Foundation4DateVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/modificationTime" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV16modificationTime10Foundation4DateVSgvp">modificationTime</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s last modification time.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>modificationTime</code> is bigger than 8589934591 then a PAX extended
+header will be created to represent this value correctly, unless other format is forced. In addition, base-256
+encoding will be used to encode this value in the basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">modificationTime</span><span class="p">:</span> <span class="kt">Date</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L66">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression18ContainerEntryInfoP11permissionsAA11PermissionsVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/permissions" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression18ContainerEntryInfoP11permissionsAA11PermissionsVSgvp">permissions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">permissions</span><span class="p">:</span> <span class="kt"><a href="../Structs/Permissions.html">Permissions</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L30">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/TAR%20specific"></a>
+                <a name="//apple_ref/swift/Section/TAR specific" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/TAR%20specific"></a>
+                  <h3 class="section-name"><span>TAR specific</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV17compressionMethodAA011CompressionF0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/compressionMethod" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV17compressionMethodAA011CompressionF0Ovp">compressionMethod</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s compression method. Always <code>.copy</code> for the entries of TAR containers.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">compressionMethod</span><span class="p">:</span> <span class="kt"><a href="../Enums/CompressionMethod.html">CompressionMethod</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L73">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV7ownerIDSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/ownerID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV7ownerIDSiSgvp">ownerID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>ID of entry&rsquo;s owner.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>ownerID</code> is bigger than 2097151 then a PAX extended header will be
+created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+used to encode this value in the basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">ownerID</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L82">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV7groupIDSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/groupID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV7groupIDSiSgvp">groupID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>ID of the group of entry&rsquo;s owner.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>groupID</code> is bigger than 2097151 then a PAX extended header will be
+created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+used to encode this value in the basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">groupID</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L91">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV13ownerUserNameSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/ownerUserName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV13ownerUserNameSSSgvp">ownerUserName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>User name of entry&rsquo;s owner.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When a new TAR container is created, if <code>ownerUserName</code> cannot be encoded with ASCII or its ASCII
+byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
+correctly, unless other format is forced.
+
+</div><div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When creating new TAR container, <code>ownerUserName</code> is always encoded with UTF-8 in the ustar header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">ownerUserName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L101">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV14ownerGroupNameSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/ownerGroupName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV14ownerGroupNameSSSgvp">ownerGroupName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Name of the group of entry&rsquo;s owner.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>ownerGroupName</code> cannot be encoded with ASCII or its ASCII
+byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
+correctly, unless other format is forced.
+
+</div><div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When creating new TAR container, <code>ownerGroupName</code> is always encoded with UTF-8 in the ustar header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">ownerGroupName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L111">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV17deviceMajorNumberSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/deviceMajorNumber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV17deviceMajorNumberSiSgvp">deviceMajorNumber</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Device major number (used when entry is either block or character special file).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>deviceMajorNumber</code> is bigger than 2097151 then base-256 encoding
+will be used to encode this value in ustar header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">deviceMajorNumber</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L119">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV17deviceMinorNumberSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/deviceMinorNumber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV17deviceMinorNumberSiSgvp">deviceMinorNumber</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Device minor number (used when entry is either block or character special file).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>deviceMinorNumber</code> is bigger than 2097151 then base-256 encoding
+will be used to encode this value in ustar header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">deviceMinorNumber</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L127">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV7charsetSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/charset" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV7charsetSSSgvp">charset</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Name of the character set used to encode entry&rsquo;s data (only available for PAX format; <code>nil</code> otherwise).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>charset</code> is not <code>nil</code> then a PAX extended header will be created to
+store this property, unless other format is forced.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">charset</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L135">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV7commentSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/comment" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV7commentSSSgvp">comment</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Entry&rsquo;s comment (only available for PAX format; <code>nil</code> otherwise).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>comment</code> is not <code>nil</code> then a PAX extended header will be created to
+store this property, unless other format is forced.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">comment</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L143">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV8linkNameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/linkName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV8linkNameSSvp">linkName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Path to a linked file for symbolic link entry.</p>
+
+<p>Depending on the particular format of the container, different container&rsquo;s structures are used
+to set this property, in the following preference order:</p>
+
+<ol>
+<li>Local PAX extended header &ldquo;linkpath&rdquo; property.</li>
+<li>Global PAX extended header &ldquo;linkpath&rdquo; property.</li>
+<li>GNU format type &ldquo;K&rdquo; (LongLink) entry.</li>
+<li>Default TAR header.</li>
+</ol>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>linkName</code> cannot be encoded with ASCII or its ASCII
+byte-representation is longer than 100 bytes then a PAX extended header will be created to represent this value
+correctly, unless other format is forced.
+
+</div><div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When creating new TAR container, <code>linkName</code> is always encoded with UTF-8 in basic TAR header.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">linkName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L160">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV28unknownExtendedHeaderRecordsSDyS2SGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/unknownExtendedHeaderRecords" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV28unknownExtendedHeaderRecordsSDyS2SGSgvp">unknownExtendedHeaderRecords</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All custom (unknown) records from global and local PAX extended headers. <code>nil</code>, if there were no headers.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When new TAR container is created, if <code>unknownExtendedHeaderRecords</code> is not <code>nil</code> then a <em>local</em> PAX
+extended header will be created to store this property, unless other format is forced.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unknownExtendedHeaderRecords</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L168">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SWCompression12TarEntryInfoV4name4typeACSS_AA09ContainerC4TypeOtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(name:type:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SWCompression12TarEntryInfoV4name4typeACSS_AA09ContainerC4TypeOtcfc">init(name:<wbr>type:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes the entry&rsquo;s info with its name and type.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Entry&rsquo;s type cannot be modified after initialization.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Enums/ContainerEntryType.html">ContainerEntryType</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Entry&rsquo;s name.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Entry&rsquo;s type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/tsolomko/SWCompression/tree/4.8.6/Sources/TAR/TarEntryInfo.swift#L178-L182">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2024 Timofey Solomko</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>
