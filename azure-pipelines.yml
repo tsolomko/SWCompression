@@ -141,6 +141,43 @@ stages:
         swift.exe build %SWIFTFLAGS%
         swift.exe build -c release %SWIFTFLAGS%
       displayName: 'Build SPM Debug & Release'
-# - stage: Deploy
-#   dependsOn: Test
-#   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags') # Deploy on tags only
+- stage: deploy
+  displayName: Deploy
+  dependsOn: test
+  # Deploy on tags only; test tags are excluded in trigger section.
+  condition: and(not(eq(variables['Build.Reason'], 'PullRequest')), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+  jobs:
+  - job: ghPages
+    displayName: 'Publish API docs to GH Pages'
+    pool:
+      vmImage: 'macOS-10.15'
+    variables:
+      DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+    steps:
+    - script: |
+        set -e -o xtrace
+        brew update
+        brew install sourcekitten
+        gem install -N jazzy
+      displayName: 'Install Tools'
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+        sshPublicKey: '$(swcPubDeployKey)'
+        sshKeySecureFile: 'swc_deploy_key'
+      displayName: 'Install an SSH key'
+    - script: git worktree add docs gh-pages
+      displayName: 'Prepare Worktree'
+    - script: ./utils.py ci before-deploy
+      displayName: 'Before Deploy'
+    - script: |
+        set -e -o xtrace
+        git config --local user.name "Azure Pipelines"
+        git config --local user.email "azuredevops@microsoft.com"
+        cd docs
+        git add --all
+        git commit -m "Deploy to GH Pages [skip ci]" --amend
+        cd ..
+        git remote set-url --push origin git@github.com:tsolomko/SWCompression.git
+        git push --force origin gh-pages:gh-pages
+      displayName: 'Deploy to GH Pages'
