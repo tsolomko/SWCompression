@@ -16,7 +16,7 @@ SWCompression &mdash; is a framework with a collection of functions for:
 2. Reading (and sometimes writing) archives of different formats.
 3. Reading (and sometimes writing) containers such as ZIP, TAR and 7-Zip.
 
-It also works both on Apple platforms and __Linux__.
+It also works on Apple platforms, Linux, __and Windows__.
 
 All features are listed in the tables below. "TBD" means that feature is planned but not implemented (yet).
 
@@ -193,14 +193,12 @@ If you want to run tests on your computer, you need to do an additional step aft
 ```
 
 The argument of this function is an operating system that you're using. This command will download files used in tests,
-and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed.
-
-Currently, the Carthage part of this procedure may fail when using Xcode 12 or later. In that case you should manually
-run `carthage update --use-xcframeworks --no-use-binaries` or use
-[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md). Please also
-note that when on working on SWCompression in Xcode when building the project you may see ld warnings about a directory
-not being found. These are expected and harmless. Finally, you should keep in mind that support for non-xcframework method
-of installing dependencies is likely to be dropped in the future major update.
+and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed. When using
+Xcode 12 or later, you should also pass the `--xcf` option, or use the
+[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
+Please also note that when working on SWCompression in Xcode when building the project you may see ld warnings about a
+directory not being found. These are expected and harmless. Finally, you should keep in mind that support for non-xcframework
+method of installing dependencies is likely to be dropped in the future major update.
 
 Test files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS.
 There are two reasons for this complicated setup. Firstly, some of these files can be quite big, and it would be
@@ -233,9 +231,6 @@ completely in Swift without Objective-C, it can also be used on __Linux__.
 
 ## Future plans
 
-See [5.0 Update](https://github.com/tsolomko/SWCompression/projects/2) Project for the list of planned API changes and
-new features.
-
 - Performance...
 - Better Deflate compression.
 - Something else...
@@ -249,7 +244,7 @@ new features.
 - [pyflate](http://www.paul.sladen.org/projects/pyflate/)
 - [Deflate specification](https://www.ietf.org/rfc/rfc1951.txt)
 - [GZip specification](https://www.ietf.org/rfc/rfc1952.txt)
-- [Zlib specfication](https://www.ietf.org/rfc/rfc1950.txt)
+- [Zlib specification](https://www.ietf.org/rfc/rfc1950.txt)
 - [LZMA SDK and specification](http://www.7-zip.org/sdk.html)
 - [XZ specification](http://tukaani.org/xz/xz-file-format-1.0.4.txt)
 - [Wikipedia article about LZMA](https://en.wikipedia.org/wiki/Lempel–Ziv–Markov_chain_algorithm)

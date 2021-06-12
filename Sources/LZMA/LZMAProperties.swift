@@ -43,6 +43,7 @@ public struct LZMAProperties {
         self.dictionarySize = dictionarySize
     }
 
+    /// Initializes LZMA properties with default values of lc, lp, pb, and dictionary size.
     public init() { }
 
     init(lzmaByte: UInt8, _ dictSize: Int) throws {
