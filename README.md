@@ -58,7 +58,7 @@ let package = Package(
 )
 ```
 
-More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/main/Documentation).
 
 ### CocoaPods
 
