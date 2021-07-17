@@ -74,7 +74,7 @@ stages:
           containerImage: 'swift:5.3.3-bionic'
         linuxSwift54:
           imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.4.1-bionic'
+          containerImage: 'swift:5.4.2-bionic'
     pool:
       vmImage: $(imageName)
     container: $[ variables['containerImage'] ]
@@ -90,7 +90,7 @@ stages:
       matrix:
         windowsSwift54:
           imageName: 'windows-2019'
-          SWIFT_VERSION: '5.4.1'
+          SWIFT_VERSION: '5.4.2'
     pool:
       vmImage: $(imageName)
     variables:
