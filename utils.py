@@ -94,9 +94,6 @@ parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
 parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "script-macos"],
                         help="a command to perform on CI", metavar="CI_CMD")
-parser_ci.add_argument("--new-watchos-simulator", action="store_true", dest="new_watchos_simulator",
-                        help="use the newest watchos simulator which is necessary for xcode 12+ \
-                        (used only by 'script-macos' subcommand)")
 parser_ci.set_defaults(func=action_ci)
 
 # Parser for 'cleanup-workspace' command.
