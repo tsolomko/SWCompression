@@ -58,7 +58,7 @@ public struct GzipHeader {
     }
 
     init(_ reader: LsbBitReader) throws {
-        // Valid GZip header must contain at least 2 bytes of data.
+        // Valid GZip header must contain at least 10 bytes of data.
         guard reader.bytesLeft >= 10
             else { throw GzipError.wrongMagic }
 

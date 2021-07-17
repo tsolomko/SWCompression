@@ -39,7 +39,6 @@ public class TarContainer: Container {
         guard data.count >= 512
             else { throw TarError.tooSmallFileIsPassed }
 
-        /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
 
         var ustarEncountered = false
@@ -159,7 +158,6 @@ public class TarContainer: Container {
         guard data.count >= 512
             else { throw TarError.tooSmallFileIsPassed }
 
-        /// Object with input data which supports convenient work with bit shifts.
         var infoProvider = TarEntryInfoProvider(data)
         var entries = [TarEntryInfo]()
 

@@ -19,7 +19,7 @@ struct LZMARangeDecoder {
     }
 
     init(_ byteReader: LittleEndianByteReader) throws {
-        // To initialize rande decoder at least 5 bytes are necessary.
+        // To initialize range decoder at least 5 bytes are necessary.
         guard byteReader.bytesLeft >= 5
             else { throw LZMAError.rangeDecoderInitError }
 
