@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-final class DeltaFilter {
+enum DeltaFilter {
 
     static func decode(_ byteReader: LittleEndianByteReader, _ distance: Int) -> Data {
         var out = [UInt8]()
