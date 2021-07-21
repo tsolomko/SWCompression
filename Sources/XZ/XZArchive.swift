@@ -191,7 +191,6 @@ public class XZArchive: Archive {
             else { throw XZError.wrongMagic }
     }
 
-    /// Returns `true` if end of archive is reached, `false` otherwise.
     private static func processPadding(_ byteReader: LittleEndianByteReader) throws {
         guard !byteReader.isFinished
             else { return }
