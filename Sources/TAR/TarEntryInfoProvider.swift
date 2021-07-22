@@ -26,7 +26,7 @@ struct TarEntryInfoProvider {
             else { return nil }
 
         let header = try TarHeader(reader)
-        let info = try TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
+        let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
         let dataStartIndex = header.blockStartIndex + 512
 
         if case .special(let specialEntryType) = header.type {

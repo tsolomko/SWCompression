@@ -4,7 +4,6 @@
 // See LICENSE for license information
 
 import Foundation
-import BitByteData
 
 /// Provides access to information about an entry from the TAR container.
 public struct TarEntryInfo: ContainerEntryInfo {
@@ -193,7 +192,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
     }
 
     init(_ header: TarHeader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
-         _ longName: String?, _ longLinkName: String?) throws {
+         _ longName: String?, _ longLinkName: String?) {
         // TODO: Remove
         self.blockStartIndex = header.blockStartIndex
         // General notes for all the properties processing below:
@@ -287,7 +286,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
         // - crash with fatalError, etc.
         // - throw an error.
         // - ignore the problem, and just write NULLs.
-        // The last option is, obviously, is not ideal. Overall, it seems like using UTF-8 instead of ASCII is the most
+        // The last option is, obviously, not ideal. Overall, it seems like using UTF-8 instead of ASCII is the most
         // viable option.
 
         var out = Data()
