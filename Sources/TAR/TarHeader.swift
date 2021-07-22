@@ -6,6 +6,7 @@
 import Foundation
 import BitByteData
 
+/// This type represents the low-level header structure of the TAR format.
 struct TarHeader {
 
     enum HeaderEntryType {
@@ -31,16 +32,15 @@ struct TarHeader {
     private(set) var ctime: Date?
     private(set) var mtime: Date?
     let permissions: Permissions?
-    let ownerID: Int?
-    let groupID: Int?
-    private(set) var ownerUserName: String?
-    private(set) var ownerGroupName: String?
+    let uid: Int?
+    let gid: Int?
+    private(set) var uname: String?
+    private(set) var gname: String?
     private(set) var deviceMajorNumber: Int?
     private(set) var deviceMinorNumber: Int?
     let linkName: String
 
     let format: TarContainer.Format
-
     let blockStartIndex: Int
 
     init(_ reader: LittleEndianByteReader) throws {
@@ -54,8 +54,8 @@ struct TarHeader {
             self.permissions = nil
         }
 
-        self.ownerID = reader.tarInt(maxLength: 8)
-        self.groupID = reader.tarInt(maxLength: 8)
+        self.uid = reader.tarInt(maxLength: 8)
+        self.gid = reader.tarInt(maxLength: 8)
 
         guard let size = reader.tarInt(maxLength: 12)
             else { throw TarError.wrongField }
@@ -100,13 +100,13 @@ struct TarHeader {
         let magic = reader.uint64()
 
         if magic == 0x0020207261747375 || magic == 0x3030007261747375 || magic == 0x3030207261747375 {
-            self.ownerUserName = reader.tarCString(maxLength: 32)
-            self.ownerGroupName = reader.tarCString(maxLength: 32)
+            self.uname = reader.tarCString(maxLength: 32)
+            self.gname = reader.tarCString(maxLength: 32)
             self.deviceMajorNumber = reader.tarInt(maxLength: 8)
             self.deviceMinorNumber = reader.tarInt(maxLength: 8)
 
             if magic == 0x00_20_20_72_61_74_73_75 { // GNU format.
-                // GNU format mostly is identical to POSIX format and in the common situations can be considered as
+                // GNU format is mostly identical to POSIX format and in the common situations can be considered as
                 // having prefix containing only NULLs. However, in the case of incremental backups produced by GNU tar
                 // this part of the TAR header is used for storing a lot of different properties. For now, we are only
                 // reading atime and ctime.

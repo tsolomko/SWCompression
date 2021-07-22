@@ -205,8 +205,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
         //    the alternative, which was used in previous versions, is to throw an error.
 
         self.permissions = header.permissions
-        self.ownerID = (local?.uid ?? global?.uid) ?? header.ownerID
-        self.groupID = (local?.gid ?? global?.gid) ?? header.groupID
+        self.ownerID = (local?.uid ?? global?.uid) ?? header.uid
+        self.groupID = (local?.gid ?? global?.gid) ?? header.gid
         self.size = (local?.size ?? global?.size) ?? header.size
         if let paxMtime = local?.mtime ?? global?.mtime {
             self.modificationTime = Date(timeIntervalSince1970: paxMtime)
@@ -227,8 +227,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
             self.type = normalType
         }
 
-        self.ownerUserName = (local?.uname ?? global?.uname) ?? header.ownerUserName
-        self.ownerGroupName = (local?.gname ?? global?.gname) ?? header.ownerGroupName
+        self.ownerUserName = (local?.uname ?? global?.uname) ?? header.uname
+        self.ownerGroupName = (local?.gname ?? global?.gname) ?? header.gname
         self.deviceMajorNumber = header.deviceMajorNumber
         self.deviceMinorNumber = header.deviceMinorNumber
 
