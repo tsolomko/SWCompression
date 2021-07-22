@@ -10,22 +10,22 @@ import BitByteData
 // impossible to do so, since `TarEntryInfo.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
 struct TarEntryInfoProvider {
 
-    private let byteReader: LittleEndianByteReader
+    private let reader: LittleEndianByteReader
     private var lastGlobalExtendedHeader: TarExtendedHeader?
     private var lastLocalExtendedHeader: TarExtendedHeader?
     private var longLinkName: String?
     private var longName: String?
 
     init(_ data: Data) {
-        self.byteReader = LittleEndianByteReader(data: data)
+        self.reader = LittleEndianByteReader(data: data)
     }
 
     mutating func next() throws -> TarEntryInfo? {
-        guard byteReader.bytesLeft >= 1024,
-            byteReader.data[byteReader.offset..<byteReader.offset + 1024] != Data(count: 1024)
+        guard reader.bytesLeft >= 1024,
+            reader.data[reader.offset..<reader.offset + 1024] != Data(count: 1024)
             else { return nil }
 
-        let info = try TarEntryInfo(byteReader, lastGlobalExtendedHeader, lastLocalExtendedHeader,
+        let info = try TarEntryInfo(reader, lastGlobalExtendedHeader, lastLocalExtendedHeader,
                                     longName, longLinkName)
         let dataStartIndex = info.blockStartIndex + 512
 
@@ -33,23 +33,23 @@ struct TarEntryInfoProvider {
             switch specialEntryType {
             case .globalExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
-                lastGlobalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
+                lastGlobalExtendedHeader = try TarExtendedHeader(reader.data[dataStartIndex..<dataEndIndex])
             case .sunExtendedHeader:
                 fallthrough
             case .localExtendedHeader:
                 let dataEndIndex = dataStartIndex + info.size!
-                lastLocalExtendedHeader = try TarExtendedHeader(byteReader.data[dataStartIndex..<dataEndIndex])
+                lastLocalExtendedHeader = try TarExtendedHeader(reader.data[dataStartIndex..<dataEndIndex])
             case .longLinkName:
-                byteReader.offset = dataStartIndex
-                longLinkName = byteReader.tarCString(maxLength: info.size!)
+                reader.offset = dataStartIndex
+                longLinkName = reader.tarCString(maxLength: info.size!)
             case .longName:
-                byteReader.offset = dataStartIndex
-                longName = byteReader.tarCString(maxLength: info.size!)
+                reader.offset = dataStartIndex
+                longName = reader.tarCString(maxLength: info.size!)
             }
-            byteReader.offset = dataStartIndex + info.size!.roundTo512()
+            reader.offset = dataStartIndex + info.size!.roundTo512()
         } else {
             // Skip file data.
-            byteReader.offset = dataStartIndex + info.size!.roundTo512()
+            reader.offset = dataStartIndex + info.size!.roundTo512()
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
