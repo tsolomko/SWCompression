@@ -110,26 +110,60 @@ struct TarHeader {
                 // having prefix containing only NULLs. However, in the case of incremental backups produced by GNU tar
                 // this part of the TAR header is used for storing a lot of different properties. For now, we are only
                 // reading atime and ctime.
-
                 if let atime = reader.tarInt(maxLength: 12) {
                     self.atime = Date(timeIntervalSince1970: TimeInterval(atime))
                 }
-
                 if let ctime = reader.tarInt(maxLength: 12) {
                     self.ctime = Date(timeIntervalSince1970: TimeInterval(ctime))
                 }
+                self.format = .gnu
             } else {
                 self.prefix = reader.tarCString(maxLength: 155)
+                self.format = .ustar
             }
-        }
-
-        if magic == 0x0020207261747375 {
-            self.format = .gnu
-        } else if magic == 0x3030007261747375 || magic == 0x3030207261747375 {
-            self.format = .ustar
         } else {
             self.format = .prePosix
         }
+    }
+
+    init(specialName: String, specialType: SpecialEntryType, size: Int, uid: Int?, gid: Int?) {
+        self.name = specialName
+        self.type = .special(specialType)
+        self.size = size
+        self.permissions = Permissions(rawValue: 420)
+        self.uid = uid
+        self.gid = gid
+        self.mtime = Date()
+        self.linkName = ""
+        if specialType == .longName || specialType == .longLinkName {
+            self.format = .gnu
+        } else if specialType == .globalExtendedHeader || specialType == .localExtendedHeader {
+            self.format = .pax
+        } else {
+            self.format = .prePosix
+        }
+        // Unused if header was created using this initializer.
+        self.blockStartIndex = -1
+    }
+
+    init(_ info: TarEntryInfo) {
+        self.name = info.name
+        self.type = .normal(info.type)
+        self.size = info.size ?? 0 // TODO: tarInt(...) may not work as expected for 0 instead of nil.
+        self.atime = info.accessTime
+        self.ctime = info.creationTime
+        self.mtime = info.modificationTime
+        self.permissions = info.permissions
+        self.uid = info.ownerID
+        self.gid = info.groupID
+        self.uname = info.ownerUserName
+        self.gname = info.ownerGroupName
+        self.deviceMajorNumber = info.deviceMajorNumber
+        self.deviceMinorNumber = info.deviceMinorNumber
+        self.linkName = info.linkName
+        self.format = .pax // TODO: If TarEntryInfo.format is not removed than this should be `info.format`.
+        // Unused if header was created using this initializer.
+        self.blockStartIndex = -1
     }
 
 }
