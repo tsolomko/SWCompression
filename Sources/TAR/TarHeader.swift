@@ -24,21 +24,29 @@ struct TarHeader {
         case sunExtendedHeader = 88
     }
 
+    // These fields are present in all formats.
     let name: String
-    private(set) var prefix: String?
-    let size: Int
-    let type: HeaderEntryType
-    private(set) var atime: Date?
-    private(set) var ctime: Date?
-    private(set) var mtime: Date?
     let permissions: Permissions?
     let uid: Int?
     let gid: Int?
+    let size: Int
+    private(set) var mtime: Date?
+    // - checksum
+    let type: HeaderEntryType
+    let linkName: String
+
+    // Ustar only
+    // - magic
     private(set) var uname: String?
     private(set) var gname: String?
     private(set) var deviceMajorNumber: Int?
     private(set) var deviceMinorNumber: Int?
-    let linkName: String
+    private(set) var prefix: String?
+
+    // These fields are present in gnu and star formats.
+    // - magic
+    private(set) var atime: Date?
+    private(set) var ctime: Date?
 
     let format: TarContainer.Format
     let blockStartIndex: Int
