@@ -15,7 +15,9 @@ class TarCreateTests: XCTestCase {
         info.ownerID = 501
         info.groupID = 20
         info.permissions = Permissions(rawValue: 420)
-        let date = Date()
+        // We have to convert time interval to int, since tar can't store fractional timestamps, so we lose in accuracy.
+        let intTimeInterval = Int(Date().timeIntervalSince1970)
+        let date = Date(timeIntervalSince1970: Double(intTimeInterval))
         info.modificationTime = date
         info.creationTime = date
         info.accessTime = date
@@ -24,6 +26,7 @@ class TarCreateTests: XCTestCase {
         let data = Data("Hello, World!\n".utf8)
         let entry = TarEntry(info: info, data: data)
         let containerData = TarContainer.create(from: [entry])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newEntries = try TarContainer.open(container: containerData)
 
         XCTAssertEqual(newEntries.count, 1)
@@ -35,6 +38,9 @@ class TarCreateTests: XCTestCase {
         XCTAssertEqual(newEntries[0].info.ownerID, 501)
         XCTAssertEqual(newEntries[0].info.groupID, 20)
         XCTAssertEqual(newEntries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(newEntries[0].info.modificationTime, date)
+        XCTAssertEqual(newEntries[0].info.creationTime, date)
+        XCTAssertEqual(newEntries[0].info.accessTime, date)
         XCTAssertEqual(newEntries[0].info.comment, "comment")
         XCTAssertEqual(newEntries[0].data, data)
     }
@@ -63,6 +69,7 @@ class TarCreateTests: XCTestCase {
         info.unknownExtendedHeaderRecords = dict
 
         let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, "symbolic-link")
@@ -91,6 +98,7 @@ class TarCreateTests: XCTestCase {
         info.name.append("readme.txt")
 
         let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         // This name should fit into ustar format using "prefix" field
@@ -104,6 +112,7 @@ class TarCreateTests: XCTestCase {
         info.name.append("readme.txt")
 
         let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, info.name)
@@ -116,6 +125,7 @@ class TarCreateTests: XCTestCase {
         info.name.append(String(repeating: "readme/", count: 15))
 
         let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, info.name)
@@ -165,7 +175,7 @@ class TarCreateTests: XCTestCase {
         info.groupID = 20
         info.modificationTime = date
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .ustar)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .ustar)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
