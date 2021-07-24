@@ -232,4 +232,80 @@ class TarCreateTests: XCTestCase {
         XCTAssertNil(newInfo.comment)
     }
 
+    func testGnuLongName() throws {
+        var info = TarEntryInfo(name: "", type: .regular)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "name/", count: 25))
+        info.name.append("name.txt")
+
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testGnuLongLinkName() throws {
+        var info = TarEntryInfo(name: "", type: .symbolicLink)
+        info.name = "link"
+        info.linkName = "path/to/"
+        info.linkName.append(String(repeating: "name/", count: 25))
+        info.linkName.append("name.txt")
+
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testGnuBothLongNames() throws {
+        var info = TarEntryInfo(name: "", type: .symbolicLink)
+        info.name = "path/to/"
+        info.name.append(String(repeating: "name/", count: 25))
+        info.name.append("name.txt")
+        info.linkName = "path/to/"
+        info.linkName.append(String(repeating: "link/", count: 25))
+        info.linkName.append("link.txt")
+
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let newInfo = try TarContainer.open(container: containerData)[0].info
+
+        XCTAssertEqual(newInfo.name, info.name)
+    }
+
+    func testGnuTimes() throws {
+        var info = TarEntryInfo(name: "dir", type: .directory)
+        info.ownerUserName = "tsolomko"
+        info.ownerGroupName = "staff"
+        info.ownerID = 501
+        info.groupID = 20
+        info.permissions = Permissions(rawValue: 420)
+        // We have to convert time interval to int, since tar can't store fractional timestamps, so we lose in accuracy.
+        let intTimeInterval = Int(Date().timeIntervalSince1970)
+        let date = Date(timeIntervalSince1970: Double(intTimeInterval))
+        info.modificationTime = date
+        info.creationTime = date
+        info.accessTime = date
+
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let newEntries = try TarContainer.open(container: containerData)
+
+        XCTAssertEqual(newEntries.count, 1)
+        XCTAssertEqual(newEntries[0].info.name, "dir")
+        XCTAssertEqual(newEntries[0].info.type, .directory)
+        XCTAssertEqual(newEntries[0].info.size, 0)
+        XCTAssertEqual(newEntries[0].info.ownerUserName, "tsolomko")
+        XCTAssertEqual(newEntries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(newEntries[0].info.ownerID, 501)
+        XCTAssertEqual(newEntries[0].info.groupID, 20)
+        XCTAssertEqual(newEntries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(newEntries[0].info.modificationTime, date)
+        XCTAssertEqual(newEntries[0].info.creationTime, date)
+        XCTAssertEqual(newEntries[0].info.accessTime, date)
+        XCTAssertNil(newEntries[0].info.comment)
+    }
+
 }
