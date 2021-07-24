@@ -182,7 +182,7 @@ struct TarExtendedHeader {
             headerString += TarExtendedHeader.generateHeaderString(key, value)
         }
 
-        return headerString.data(using: .utf8)!
+        return Data(headerString.utf8)
     }
 
     private static func generateHeaderString(_ fieldName: String, _ valueString: String) -> String {

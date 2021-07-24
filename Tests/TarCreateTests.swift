@@ -21,7 +21,7 @@ class TarCreateTests: XCTestCase {
         info.accessTime = date
         info.comment = "comment"
 
-        let data = "Hello, World!\n".data(using: .utf8)!
+        let data = Data("Hello, World!\n".utf8)
         let entry = TarEntry(info: info, data: data)
         let containerData = TarContainer.create(from: [entry])
         let newEntries = try TarContainer.open(container: containerData)
