@@ -36,7 +36,7 @@ struct TarHeader {
     let linkName: String
 
     // Ustar only
-    // - magic
+    // - magic "ustar\000"
     private(set) var uname: String?
     private(set) var gname: String?
     private(set) var deviceMajorNumber: Int?
@@ -44,7 +44,7 @@ struct TarHeader {
     private(set) var prefix: String?
 
     // These fields are present in gnu and star formats.
-    // - magic
+    // - magic ("ustar  \0" for [old] gnu)
     private(set) var atime: Date?
     private(set) var ctime: Date?
 
@@ -262,7 +262,17 @@ struct TarHeader {
                 out.append(Data(count: 155)) // Empty prefix
             }
         } else if format == .gnu {
-            // TODO:
+            out.append(contentsOf: [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00]) // "ustar  \0"
+            if let atime = self.atime?.timeIntervalSince1970 {
+                out.append(tarInt: Int(atime), maxLength: 12)
+            } else {
+                out.append(tarInt: nil, maxLength: 12)
+            }
+            if let ctime = self.ctime?.timeIntervalSince1970 {
+                out.append(tarInt: Int(ctime), maxLength: 12)
+            } else {
+                out.append(tarInt: nil, maxLength: 12)
+            }
         }
 
         // Checksum calculation.
