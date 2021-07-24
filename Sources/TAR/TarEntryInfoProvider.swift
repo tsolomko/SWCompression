@@ -7,7 +7,7 @@ import Foundation
 import BitByteData
 
 // While it is tempting to make Provider conform to `IteratorProtocol` and `Sequence` protocols, it is in fact
-// impossible to do so, since `TarEntryInfo.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
+// impossible to do so, since `TarHeader.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
 struct TarEntryInfoProvider {
 
     private let reader: LittleEndianByteReader
@@ -26,7 +26,11 @@ struct TarEntryInfoProvider {
             else { return nil }
 
         let header = try TarHeader(reader)
+        // For header we read at most 512 bytes.
+        assert(reader.offset - header.blockStartIndex <= 512)
         let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
+        // Check, just in case, since we use blockStartIndex = -1 when creating TAR containers.
+        assert(header.blockStartIndex >= 0)
         let dataStartIndex = header.blockStartIndex + 512
 
         if case .special(let specialEntryType) = header.type {
@@ -54,6 +58,8 @@ struct TarEntryInfoProvider {
             longName = nil
             longLinkName = nil
         }
+        // Parsing must complete at the end of a 512 byte-long block.
+        assert(reader.bytesRead % 512 == 0)
         return info
     }
 
