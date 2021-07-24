@@ -77,26 +77,64 @@ public class TarContainer: Container {
      format used during container creation.
      */
     public static func create(from entries: [TarEntry]) throws -> Data {
+        try create(from: entries, force: .pax)
+    }
+
+    public static func create(from entries: [TarEntry], force format: TarContainer.Format) throws -> Data {
+        // The general strategy is as follows. For each entry we:
+        //  1. Create special entries if required by the entry's info and if supported by the format.
+        //  2. For each special entry we create TarHeader.
+        //  3. For each TarHeader we generate binary data, and the append it with the content of the special entry to
+        //     the output.
+        //  4. Perform the previous two steps for the entry itself.
+        // Every time we append something to the output we also make sure that the data is padded to 512 byte-long blocks.
+
+        // TODO: Add counters for special entries. Check if overflow.
         var out = Data()
-        var extHeadersCount = 0
         for entry in entries {
-            let extHeader = TarExtendedHeader(entry.info)
-            let extHeaderData = try extHeader.generateContainerData()
-            if !extHeaderData.isEmpty {
-                var extHeaderInfo = TarEntryInfo(name: "SWC_PaxHeader_\(extHeadersCount)", type: .unknown)
-                extHeaderInfo.specialEntryType = .localExtendedHeader
-                extHeaderInfo.permissions = Permissions(rawValue: 420)
-                extHeaderInfo.ownerID = entry.info.ownerID
-                extHeaderInfo.groupID = entry.info.groupID
-                extHeaderInfo.modificationTime = Date()
+            if format == .gnu {
+                if entry.info.name.utf8.count > 100 {
+                    guard let nameData = entry.info.name.data(using: .utf8)
+                        else { throw TarCreateError.utf8NonEncodable }
+                    let longNameHeader = TarHeader(specialName: "SWC_LongName", specialType: .longName,
+                                                   size: nameData.count, uid: entry.info.ownerID,
+                                                   gid: entry.info.groupID)
+                    out.append(longNameHeader.generateContainerData(.gnu))
+                    assert(out.count % 512 == 0)
+                    out.appendAsTarBlock(nameData)
+                }
 
-                let extHeaderEntry = TarEntry(info: extHeaderInfo, data: extHeaderData)
-                try out.append(extHeaderEntry.generateContainerData())
-
-                extHeadersCount += 1
+                if entry.info.linkName.utf8.count > 100 {
+                    guard let linkNameData = entry.info.linkName.data(using: .utf8)
+                        else { throw TarCreateError.utf8NonEncodable }
+                    let longLinkNameHeader = TarHeader(specialName: "SWC_LongLinkName", specialType: .longLinkName,
+                                                       size: linkNameData.count, uid: entry.info.ownerID,
+                                                       gid: entry.info.groupID)
+                    out.append(longLinkNameHeader.generateContainerData(.gnu))
+                    assert(out.count % 512 == 0)
+                    out.appendAsTarBlock(linkNameData)
+                }
+            } else if format == .pax {
+                let extHeader = TarExtendedHeader(entry.info)
+                let extHeaderData = try extHeader.generateContainerData()
+                if !extHeaderData.isEmpty {
+                    let extHeaderHeader = TarHeader(specialName: "SWC_LocalPaxHeader", specialType: .localExtendedHeader,
+                                                    size: extHeaderData.count, uid: entry.info.ownerID,
+                                                    gid: entry.info.groupID)
+                    out.append(extHeaderHeader.generateContainerData(.pax))
+                    assert(out.count % 512 == 0)
+                    out.appendAsTarBlock(extHeaderData)
+                }
             }
-            try out.append(entry.generateContainerData())
+
+            let header = TarHeader(entry.info)
+            out.append(header.generateContainerData(format))
+            assert(out.count % 512 == 0)
+            if let data = entry.data {
+                out.appendAsTarBlock(data)
+            }
         }
+        // Two 512-byte blocks consisting of zeros as an EOF marker.
         out.append(Data(count: 1024))
         return out
     }
