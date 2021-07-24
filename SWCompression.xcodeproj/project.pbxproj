@@ -54,7 +54,7 @@
 		06516B782139505800C9823B /* Sha256Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06516B772139505800C9823B /* Sha256Tests.swift */; };
 		0651FEC21F8E2E9100C49646 /* ContainerEntryType+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */; };
 		0656B8261F8A960700111605 /* TarEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B8251F8A960700111605 /* TarEntryInfo.swift */; };
-		0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */; };
+		0656B82B1F8A979A00111605 /* LittleEndianByteReader+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0656B82A1F8A979A00111605 /* LittleEndianByteReader+Tar.swift */; };
 		06595E0E1F1E8252006501C2 /* 7zFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06595E0D1F1E8252006501C2 /* 7zFolder.swift */; };
 		06595E131F1E90C2006501C2 /* 7zCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06595E121F1E90C2006501C2 /* 7zCoder.swift */; };
 		065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */; };
@@ -282,7 +282,7 @@
 		06516B772139505800C9823B /* Sha256Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sha256Tests.swift; sourceTree = "<group>"; };
 		0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerEntryType+Tar.swift"; sourceTree = "<group>"; };
 		0656B8251F8A960700111605 /* TarEntryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarEntryInfo.swift; sourceTree = "<group>"; };
-		0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+Tar.swift"; sourceTree = "<group>"; };
+		0656B82A1F8A979A00111605 /* LittleEndianByteReader+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LittleEndianByteReader+Tar.swift"; sourceTree = "<group>"; };
 		06595E0D1F1E8252006501C2 /* 7zFolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zFolder.swift; sourceTree = "<group>"; };
 		06595E121F1E90C2006501C2 /* 7zCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = 7zCoder.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		065D0ADB1F2B9D9100CE2DA8 /* 7zEntryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntryInfo.swift; sourceTree = "<group>"; };
@@ -641,7 +641,7 @@
 				0698B10821048FB800A7C551 /* TarCreateError.swift */,
 				061C06561F0E90C800832F0C /* TarError.swift */,
 				0651FEC11F8E2E9100C49646 /* ContainerEntryType+Tar.swift */,
-				0656B82A1F8A979A00111605 /* ByteReader+Tar.swift */,
+				0656B82A1F8A979A00111605 /* LittleEndianByteReader+Tar.swift */,
 				06CFF6B12078C5A5003B8375 /* TarEntryInfoProvider.swift */,
 				E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */,
 			);
@@ -1201,7 +1201,7 @@
 				06CDFCAD1F111DBE00292758 /* LZMAError.swift in Sources */,
 				06E6A6391F5C0FBB00D04856 /* CodeLength.swift in Sources */,
 				0642998B206017590044BA0C /* ZipExtraField.swift in Sources */,
-				0656B82B1F8A979A00111605 /* ByteReader+Tar.swift in Sources */,
+				0656B82B1F8A979A00111605 /* LittleEndianByteReader+Tar.swift in Sources */,
 				06B689581F278815007C9316 /* 7zProperty.swift in Sources */,
 				0686A63B1FA4C07D00E89C9E /* FileSystemType.swift in Sources */,
 				06516B76213938B000C9823B /* Sha256.swift in Sources */,
