@@ -216,9 +216,17 @@ struct TarHeader {
 
         // For prePosix format there is no additional fields.
 
+        // Magic
         if format == .ustar || format == .pax {
-            // The header layouts for these two formats are identical.
             out.append(contentsOf: [0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30]) // "ustar\000"
+        } else if format == .gnu {
+            out.append(contentsOf: [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00]) // "ustar  \0"
+        }
+
+        if format != .prePosix {
+            // Check in case other formats are added in the future.
+            assert(format == .ustar || format == .gnu || format == .pax)
+            // Both ustar, pax, and gnu formats contain the following four fields.
             // In theory, user/group name is not guaranteed to have only ASCII characters, so the same disclaimer as for
             // file name field applies here.
             out.append(tarString: self.uname, maxLength: 32)
@@ -226,52 +234,53 @@ struct TarHeader {
             out.append(tarInt: self.deviceMajorNumber, maxLength: 8)
             out.append(tarInt: self.deviceMinorNumber, maxLength: 8)
 
-            // Splitting the name property into the name and prefix fields.
-            // TODO: Review
-            let nameData = Data(self.name.utf8)
-            if nameData.count > 100 {
-                var maxPrefixLength = nameData.count
-                if maxPrefixLength > 156 {
-                    // We can set actual maximum possible length of prefix equal to 156 and not 155, because it may
-                    // include trailing slash which will be removed during splitting.
-                    maxPrefixLength = 156
-                } else if nameData[maxPrefixLength - 1] == 0x2F {
-                    // Skip trailing slash.
-                    maxPrefixLength -= 1
+            // ustar and pax formats contain prefix field.
+            if format == .ustar || format == .pax {
+                // Splitting the name property into the name and prefix fields.
+                // TODO: Review
+                let nameData = Data(self.name.utf8)
+                if nameData.count > 100 {
+                    var maxPrefixLength = nameData.count
+                    if maxPrefixLength > 156 {
+                        // We can set actual maximum possible length of prefix equal to 156 and not 155, because it may
+                        // include trailing slash which will be removed during splitting.
+                        maxPrefixLength = 156
+                    } else if nameData[maxPrefixLength - 1] == 0x2F {
+                        // Skip trailing slash.
+                        maxPrefixLength -= 1
+                    }
+
+                    // Looking for the last slash in the potential prefix. -1 if not found.
+                    // It determines the end of the actual prefix and the beginning of the updated name field.
+                    let lastPrefixSlashIndex = nameData.prefix(upTo: maxPrefixLength)
+                        .range(of: Data([0x2f]), options: .backwards)?.lowerBound ?? -1
+                    let updatedNameLength = nameData.count - lastPrefixSlashIndex - 1
+                    let prefixLength = lastPrefixSlashIndex
+
+                    if lastPrefixSlashIndex <= 0 || updatedNameLength > 100 || updatedNameLength == 0 || prefixLength > 155 {
+                        // Unsplittable name.
+                        out.append(Data(count: 155))
+                    } else {
+                        // Add prefix data to output.
+                        out.append(nameData.prefix(upTo: lastPrefixSlashIndex))
+                        // Update name field data in output.
+                        var newNameData = nameData.suffix(from: lastPrefixSlashIndex + 1)
+                        newNameData.append(Data(count: 100 - newNameData.count))
+                        out.replaceSubrange(0..<100, with: newNameData)
+                    }
                 }
-
-                // Looking for the last slash in the potential prefix. -1 if not found.
-                // It determines the end of the actual prefix and the beginning of the updated name field.
-                let lastPrefixSlashIndex = nameData.prefix(upTo: maxPrefixLength)
-                    .range(of: Data([0x2f]), options: .backwards)?.lowerBound ?? -1
-                let updatedNameLength = nameData.count - lastPrefixSlashIndex - 1
-                let prefixLength = lastPrefixSlashIndex
-
-                if lastPrefixSlashIndex <= 0 || updatedNameLength > 100 || updatedNameLength == 0 || prefixLength > 155 {
-                    // Unsplittable name.
-                    out.append(Data(count: 155))
+            } else if format == .gnu {
+                // Gnu format contains atime and ctime instead of a prefix field.
+                if let atime = self.atime?.timeIntervalSince1970 {
+                    out.append(tarInt: Int(atime), maxLength: 12)
                 } else {
-                    // Add prefix data to output.
-                    out.append(nameData.prefix(upTo: lastPrefixSlashIndex))
-                    // Update name field data in output.
-                    var newNameData = nameData.suffix(from: lastPrefixSlashIndex + 1)
-                    newNameData.append(Data(count: 100 - newNameData.count))
-                    out.replaceSubrange(0..<100, with: newNameData)
+                    out.append(tarInt: nil, maxLength: 12)
                 }
-            } else {
-                out.append(Data(count: 155)) // Empty prefix
-            }
-        } else if format == .gnu {
-            out.append(contentsOf: [0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00]) // "ustar  \0"
-            if let atime = self.atime?.timeIntervalSince1970 {
-                out.append(tarInt: Int(atime), maxLength: 12)
-            } else {
-                out.append(tarInt: nil, maxLength: 12)
-            }
-            if let ctime = self.ctime?.timeIntervalSince1970 {
-                out.append(tarInt: Int(ctime), maxLength: 12)
-            } else {
-                out.append(tarInt: nil, maxLength: 12)
+                if let ctime = self.ctime?.timeIntervalSince1970 {
+                    out.append(tarInt: Int(ctime), maxLength: 12)
+                } else {
+                    out.append(tarInt: nil, maxLength: 12)
+                }
             }
         }
 
@@ -281,6 +290,8 @@ struct TarHeader {
         let checksum = out.reduce(0 as Int) { $0 + $1.toInt() }
         let checksumString = String(format: "%06o", checksum).appending("\0 ")
         out.replaceSubrange(148..<156, with: checksumString.data(using: .ascii)!)
+
+        assert(out.count == 512)
 
         return out
     }
