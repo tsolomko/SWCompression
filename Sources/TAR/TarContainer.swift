@@ -77,7 +77,7 @@ public class TarContainer: Container {
      format used during container creation.
      */
     public static func create(from entries: [TarEntry]) -> Data {
-        create(from: entries, force: .pax)
+        return create(from: entries, force: .pax)
     }
 
     public static func create(from entries: [TarEntry], force format: TarContainer.Format)  -> Data {
