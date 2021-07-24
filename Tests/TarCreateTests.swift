@@ -23,7 +23,7 @@ class TarCreateTests: XCTestCase {
 
         let data = "Hello, World!\n".data(using: .utf8)!
         let entry = TarEntry(info: info, data: data)
-        let containerData = try TarContainer.create(from: [entry])
+        let containerData = TarContainer.create(from: [entry])
         let newEntries = try TarContainer.open(container: containerData)
 
         XCTAssertEqual(newEntries.count, 1)
@@ -62,7 +62,7 @@ class TarCreateTests: XCTestCase {
         info.linkName = "file"
         info.unknownExtendedHeaderRecords = dict
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, "symbolic-link")
@@ -90,7 +90,7 @@ class TarCreateTests: XCTestCase {
         info.name.append(String(repeating: "readme/", count: 15))
         info.name.append("readme.txt")
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         // This name should fit into ustar format using "prefix" field
@@ -103,7 +103,7 @@ class TarCreateTests: XCTestCase {
         info.name.append(String(repeating: "readme/", count: 25))
         info.name.append("readme.txt")
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, info.name)
@@ -115,7 +115,7 @@ class TarCreateTests: XCTestCase {
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 15))
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         XCTAssertEqual(newInfo.name, info.name)
@@ -137,7 +137,7 @@ class TarCreateTests: XCTestCase {
         info.comment = "комментарий"
         info.linkName = "путь/к/файлу"
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -165,7 +165,7 @@ class TarCreateTests: XCTestCase {
         info.groupID = 20
         info.modificationTime = date
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .ustar)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -189,7 +189,7 @@ class TarCreateTests: XCTestCase {
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.modificationTime = date
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -213,7 +213,7 @@ class TarCreateTests: XCTestCase {
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.ownerID = uid
 
-        let containerData = try TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 

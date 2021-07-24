@@ -76,11 +76,11 @@ public class TarContainer: Container {
      - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
      format used during container creation.
      */
-    public static func create(from entries: [TarEntry]) throws -> Data {
-        try create(from: entries, force: .pax)
+    public static func create(from entries: [TarEntry]) -> Data {
+        create(from: entries, force: .pax)
     }
 
-    public static func create(from entries: [TarEntry], force format: TarContainer.Format) throws -> Data {
+    public static func create(from entries: [TarEntry], force format: TarContainer.Format)  -> Data {
         // The general strategy is as follows. For each entry we:
         //  1. Create special entries if required by the entry's info and if supported by the format.
         //  2. For each special entry we create TarHeader.
@@ -94,8 +94,7 @@ public class TarContainer: Container {
         for entry in entries {
             if format == .gnu {
                 if entry.info.name.utf8.count > 100 {
-                    guard let nameData = entry.info.name.data(using: .utf8)
-                        else { throw TarCreateError.utf8NonEncodable }
+                    let nameData = Data(entry.info.name.utf8)
                     let longNameHeader = TarHeader(specialName: "SWC_LongName", specialType: .longName,
                                                    size: nameData.count, uid: entry.info.ownerID,
                                                    gid: entry.info.groupID)
@@ -105,8 +104,7 @@ public class TarContainer: Container {
                 }
 
                 if entry.info.linkName.utf8.count > 100 {
-                    guard let linkNameData = entry.info.linkName.data(using: .utf8)
-                        else { throw TarCreateError.utf8NonEncodable }
+                    let linkNameData = Data(entry.info.linkName.utf8)
                     let longLinkNameHeader = TarHeader(specialName: "SWC_LongLinkName", specialType: .longLinkName,
                                                        size: linkNameData.count, uid: entry.info.ownerID,
                                                        gid: entry.info.groupID)
@@ -116,7 +114,7 @@ public class TarContainer: Container {
                 }
             } else if format == .pax {
                 let extHeader = TarExtendedHeader(entry.info)
-                let extHeaderData = try extHeader.generateContainerData()
+                let extHeaderData = extHeader.generateContainerData()
                 if !extHeaderData.isEmpty {
                     let extHeaderHeader = TarHeader(specialName: "SWC_LocalPaxHeader", specialType: .localExtendedHeader,
                                                     size: extHeaderData.count, uid: entry.info.ownerID,
