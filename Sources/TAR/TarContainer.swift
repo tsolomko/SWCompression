@@ -83,45 +83,60 @@ public class TarContainer: Container {
     public static func create(from entries: [TarEntry], force format: TarContainer.Format)  -> Data {
         // The general strategy is as follows. For each entry we:
         //  1. Create special entries if required by the entry's info and if supported by the format.
-        //  2. For each special entry we create TarHeader.
-        //  3. For each TarHeader we generate binary data, and the append it with the content of the special entry to
+        //  2. For each special entry we create a TarHeader.
+        //  3. For each TarHeader we generate binary data, and then append it with the content of the special entry to
         //     the output.
         //  4. Perform the previous two steps for the entry itself.
         // Every time we append something to the output we also make sure that the data is padded to 512 byte-long blocks.
 
-        // TODO: Add counters for special entries. Check if overflow.
+        // In theory if the counters are big enough, the names of the special entries can become long enough to cause
+        // problems (truncation, etc.). In practice, the largest possible counter (Int.max) is 19 symbols long, which
+        // when combined with the longest used special entry name can never cause any problems, since it is still
+        // shorter then 99 symbols available in the "name" field of the TAR header.
+        // However, if in the distant future Int.max becomes large enough to cause any issues (e.g. 128-bit and higher
+        // integers), the following check will catch it.
+        assert(String(Int.max).count < 100 - 19) // "SWC_LocalPaxHeader_".count == 19
+        // We also use &+ when incrementing counters to prevent integer overflow crashes: we rather deal with the special
+        // entries having the same name, then crash the program.
+        var longNameCounter = 0
+        var longLinkNameCounter = 0
+        var localPaxHeaderCounter = 0
+
         var out = Data()
         for entry in entries {
             if format == .gnu {
                 if entry.info.name.utf8.count > 100 {
                     let nameData = Data(entry.info.name.utf8)
-                    let longNameHeader = TarHeader(specialName: "SWC_LongName", specialType: .longName,
-                                                   size: nameData.count, uid: entry.info.ownerID,
-                                                   gid: entry.info.groupID)
+                    let longNameHeader = TarHeader(specialName: "SWC_LongName_\(longNameCounter)",
+                                                   specialType: .longName, size: nameData.count,
+                                                   uid: entry.info.ownerID, gid: entry.info.groupID)
                     out.append(longNameHeader.generateContainerData(.gnu))
                     assert(out.count % 512 == 0)
                     out.appendAsTarBlock(nameData)
+                    longNameCounter &+= 1
                 }
 
                 if entry.info.linkName.utf8.count > 100 {
                     let linkNameData = Data(entry.info.linkName.utf8)
-                    let longLinkNameHeader = TarHeader(specialName: "SWC_LongLinkName", specialType: .longLinkName,
-                                                       size: linkNameData.count, uid: entry.info.ownerID,
-                                                       gid: entry.info.groupID)
+                    let longLinkNameHeader = TarHeader(specialName: "SWC_LongLinkName_\(longLinkNameCounter)",
+                                                       specialType: .longLinkName, size: linkNameData.count,
+                                                       uid: entry.info.ownerID, gid: entry.info.groupID)
                     out.append(longLinkNameHeader.generateContainerData(.gnu))
                     assert(out.count % 512 == 0)
                     out.appendAsTarBlock(linkNameData)
+                    longLinkNameCounter &+= 1
                 }
             } else if format == .pax {
                 let extHeader = TarExtendedHeader(entry.info)
                 let extHeaderData = extHeader.generateContainerData()
                 if !extHeaderData.isEmpty {
-                    let extHeaderHeader = TarHeader(specialName: "SWC_LocalPaxHeader", specialType: .localExtendedHeader,
-                                                    size: extHeaderData.count, uid: entry.info.ownerID,
-                                                    gid: entry.info.groupID)
+                    let extHeaderHeader = TarHeader(specialName: "SWC_LocalPaxHeader_\(localPaxHeaderCounter)",
+                                                    specialType: .localExtendedHeader, size: extHeaderData.count,
+                                                    uid: entry.info.ownerID, gid: entry.info.groupID)
                     out.append(extHeaderHeader.generateContainerData(.pax))
                     assert(out.count % 512 == 0)
                     out.appendAsTarBlock(extHeaderData)
+                    localPaxHeaderCounter &+= 1
                 }
             }
 
@@ -164,7 +179,7 @@ public class TarContainer: Container {
                 let dataEndIndex = dataStartIndex + entryInfo.size!
                 // Verify that data is not truncated.
                 // The data.startIndex inequality is strict since by this point at least one header (i.e. 512 bytes)
-                // has been processed. The data.endIndex inequality is strict since there must be a 1024 bytes-long EOF
+                // has been processed. The data.endIndex inequality is strict since there can be a 1024 bytes-long EOF
                 // marker block which isn't included into any entry.
                 guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
                     else { throw TarError.wrongField }
