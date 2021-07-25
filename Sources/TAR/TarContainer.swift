@@ -70,9 +70,6 @@ public class TarContainer: Container {
 
      - Parameter entries: TAR entries to store in the container.
 
-     - Throws: `TarCreateError.utf8NonEncodable` which indicates that one of the `TarEntryInfo`'s string properties
-     (such as `name`) cannot be encoded with UTF-8 encoding.
-
      - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
      format used during container creation.
      */
