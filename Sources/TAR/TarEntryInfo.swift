@@ -20,20 +20,21 @@ public struct TarEntryInfo: ContainerEntryInfo {
      3. GNU format type "L" (LongName) entry.
      4. Default TAR header.
 
-     - Note: When new TAR container is created, if `name` cannot be encoded with ASCII or its ASCII byte-representation
-     is longer than 100 bytes then a PAX extended header will be created to represent this value correctly.
-     - Note: When creating new TAR container, `name` is always encoded with UTF-8 in basic TAR header.
+     - Note: When a new TAR container is created, if `name` cannot be encoded with ASCII or its ASCII byte-representation
+     is longer than 100 bytes then a PAX extended header will be created to represent this value correctly, unless other
+     format is forced.
+     - Note: When creating new TAR container, `name` is always encoded with UTF-8 in the basic TAR header.
      */
     public var name: String
 
     /**
      Entry's data size.
 
-     - Note: This property cannot be directly modified. Instead it is updated automatically to be equal to its parent
+     - Note: This property cannot be directly modified. Instead it is updated automatically to be equal to its parent's
      `entry.data.count`.
-     - Note: When new TAR container is created, if `size` is bigger than 8589934591 then a PAX extended header will be
-     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
-     header.
+     - Note: When a new TAR container is created, if `size` is bigger than 8589934591 then a PAX extended header will be
+     created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+     used to encode this value in the basic TAR header.
     */
     public internal(set) var size: Int?
 
@@ -42,25 +43,25 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /**
      Entry's last access time (only available for PAX format; `nil` otherwise).
 
-     - Note: When new TAR container is created, if `accessTime` is not `nil` then a PAX extended header will be created
-     to store this property.
+     - Note: When a new TAR container is created, if `accessTime` is not `nil` then a PAX extended header will be created
+     to store this property, unless other format is forced.
      */
     public var accessTime: Date?
 
     /**
      Entry's creation time (only available for PAX format; `nil` otherwise).
 
-     - Note: When new TAR container is created, if `creationTime` is not `nil` then a PAX extended header will be
-     created to store this property.
+     - Note: When a new TAR container is created, if `creationTime` is not `nil` then a PAX extended header will be
+     created to store this property, unless other format is forced.
      */
     public var creationTime: Date?
 
     /**
      Entry's last modification time.
 
-     - Note: When new TAR container is created, if `modificationTime` is bigger than 8589934591 then a PAX extended
-     header will be created to represent this value correctly. Also, base-256 encoding will be used to encode this value
-     in basic TAR header.
+     - Note: When a new TAR container is created, if `modificationTime` is bigger than 8589934591 then a PAX extended
+     header will be created to represent this value correctly, unless other format is forced. In addition, base-256
+     encoding will be used to encode this value in the basic TAR header.
      */
     public var modificationTime: Date?
 
@@ -68,34 +69,34 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     // MARK: TAR specific
 
-    /// Entry's compression method. Always `.copy` for entries of TAR containers.
+    /// Entry's compression method. Always `.copy` for the entries of TAR containers.
     public let compressionMethod = CompressionMethod.copy
 
     /**
      ID of entry's owner.
 
-     - Note: When new TAR container is created, if `ownerID` is bigger than 2097151 then a PAX extended header will be
-     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
-     header.
+     - Note: When a new TAR container is created, if `ownerID` is bigger than 2097151 then a PAX extended header will be
+     created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+     used to encode this value in the basic TAR header.
      */
     public var ownerID: Int?
 
     /**
      ID of the group of entry's owner.
 
-     - Note: When new TAR container is created, if `groupID` is bigger than 2097151 then a PAX extended header will be
-     created to represent this value correctly. Also, base-256 encoding will be used to encode this value in basic TAR
-     header.
+     - Note: When a new TAR container is created, if `groupID` is bigger than 2097151 then a PAX extended header will be
+     created to represent this value correctly, unless other format is forced. In addition, base-256 encoding will be
+     used to encode this value in the basic TAR header.
      */
     public var groupID: Int?
 
     /**
      User name of entry's owner.
 
-     - Note: When new TAR container is created, if `ownerUserName` cannot be encoded with ASCII or its ASCII
+     - Note: When a new TAR container is created, if `ownerUserName` cannot be encoded with ASCII or its ASCII
      byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
-     correctly.
-     - Note: When creating new TAR container, `ownerUserName` is always encoded with UTF-8 in ustar header.
+     correctly, unless other format is forced.
+     - Note: When creating new TAR container, `ownerUserName` is always encoded with UTF-8 in the ustar header.
      */
     public var ownerUserName: String?
 
@@ -104,8 +105,8 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
      - Note: When new TAR container is created, if `ownerGroupName` cannot be encoded with ASCII or its ASCII
      byte-representation is longer than 32 bytes then a PAX extended header will be created to represent this value
-     correctly.
-     - Note: When creating new TAR container, `ownerGroupName` is always encoded with UTF-8 in ustar header.
+     correctly, unless other format is forced.
+     - Note: When creating new TAR container, `ownerGroupName` is always encoded with UTF-8 in the ustar header.
      */
     public var ownerGroupName: String?
 
@@ -129,7 +130,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
      Name of the character set used to encode entry's data (only available for PAX format; `nil` otherwise).
 
      - Note: When new TAR container is created, if `charset` is not `nil` then a PAX extended header will be created to
-     store this property.
+     store this property, unless other format is forced.
      */
     public var charset: String?
 
@@ -137,7 +138,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
      Entry's comment (only available for PAX format; `nil` otherwise).
 
      - Note: When new TAR container is created, if `comment` is not `nil` then a PAX extended header will be created to
-     store this property.
+     store this property, unless other format is forced.
      */
     public var comment: String?
 
@@ -153,7 +154,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
      - Note: When new TAR container is created, if `linkName` cannot be encoded with ASCII or its ASCII
      byte-representation is longer than 100 bytes then a PAX extended header will be created to represent this value
-     correctly.
+     correctly, unless other format is forced.
      - Note: When creating new TAR container, `linkName` is always encoded with UTF-8 in basic TAR header.
      */
     public var linkName: String
@@ -162,7 +163,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
      All custom (unknown) records from global and local PAX extended headers. `nil`, if there were no headers.
 
      - Note: When new TAR container is created, if `unknownExtendedHeaderRecords` is not `nil` then a *local* PAX
-     extended header will be created to store this property.
+     extended header will be created to store this property, unless other format is forced.
      */
     public var unknownExtendedHeaderRecords: [String: String]?
 
