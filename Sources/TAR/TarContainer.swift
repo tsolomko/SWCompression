@@ -43,12 +43,17 @@ public class TarContainer: Container {
 
         var ustarEncountered = false
 
-        while let info = try infoProvider.next() {
-            if info.specialEntryType == .globalExtendedHeader || info.specialEntryType == .localExtendedHeader {
-                return .pax
-            } else if info.specialEntryType == .longName || info.specialEntryType == .longLinkName {
-                return .gnu
-            } else {
+        parsingLoop: while true {
+            let result = try infoProvider.next()
+            switch result {
+            case .specialEntry(let specialEntryType):
+                if specialEntryType == .globalExtendedHeader || specialEntryType == .localExtendedHeader {
+                    return .pax
+                } else if specialEntryType == .longName || specialEntryType == .longLinkName {
+                    return .gnu
+                }
+            case .entryInfo(let info):
+                // TODO: Probably this case (depending on how info.format is set) is already covered by the above.
                 switch info.format {
                 case .pax:
                     return .pax
@@ -59,6 +64,13 @@ public class TarContainer: Container {
                 case .prePosix:
                     break
                 }
+            case .truncated:
+                // We don't have an error with a more suitable name.
+                throw TarError.wrongField
+            case .finished:
+                fallthrough
+            case .eofMarker:
+                break parsingLoop
             }
         }
 
@@ -209,10 +221,21 @@ public class TarContainer: Container {
         var infoProvider = TarEntryInfoProvider(data)
         var entries = [TarEntryInfo]()
 
-        while let info = try infoProvider.next() {
-            guard info.specialEntryType == nil
-                else { continue }
-            entries.append(info)
+        parsingLoop: while true {
+            let result = try infoProvider.next()
+            switch result {
+            case .specialEntry:
+                continue parsingLoop
+            case .entryInfo(let info):
+                entries.append(info)
+            case .truncated:
+                // We don't have an error with a more suitable name.
+                throw TarError.wrongField
+            case .finished:
+                fallthrough
+            case .eofMarker:
+                break parsingLoop
+            }
         }
 
         return entries

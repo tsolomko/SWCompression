@@ -10,6 +10,14 @@ import BitByteData
 // impossible to do so, since `TarHeader.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
 struct TarEntryInfoProvider {
 
+    enum ParsingResult {
+        case truncated
+        case eofMarker
+        case finished
+        case specialEntry(TarHeader.SpecialEntryType)
+        case entryInfo(TarEntryInfo)
+    }
+
     private let reader: LittleEndianByteReader
     private var lastGlobalExtendedHeader: TarExtendedHeader?
     private var lastLocalExtendedHeader: TarExtendedHeader?
@@ -20,15 +28,18 @@ struct TarEntryInfoProvider {
         self.reader = LittleEndianByteReader(data: data)
     }
 
-    mutating func next() throws -> TarEntryInfo? {
-        guard reader.bytesLeft >= 1024,
-            reader.data[reader.offset..<reader.offset + 1024] != Data(count: 1024)
-            else { return nil }
+    mutating func next() throws -> ParsingResult {
+        if reader.isFinished {
+            return .finished
+        } else if reader.bytesLeft >= 1024 && reader.data[reader.offset..<reader.offset + 1024] == Data(count: 1024) {
+            return .eofMarker
+        } else if reader.bytesLeft < 512 {
+            return .truncated
+        }
 
         let header = try TarHeader(reader)
         // For header we read at most 512 bytes.
         assert(reader.offset - header.blockStartIndex <= 512)
-        let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
         // Check, just in case, since we use blockStartIndex = -1 when creating TAR containers.
         assert(header.blockStartIndex >= 0)
         let dataStartIndex = header.blockStartIndex + 512
@@ -51,16 +62,16 @@ struct TarEntryInfoProvider {
                 longName = reader.tarCString(maxLength: header.size)
             }
             reader.offset = dataStartIndex + header.size.roundTo512()
+            return .specialEntry(specialEntryType)
         } else {
+            let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
             // Skip file data.
             reader.offset = dataStartIndex + header.size.roundTo512()
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
+            return .entryInfo(info)
         }
-        // Parsing must complete at the end of a 512 byte-long block.
-        assert(reader.bytesRead % 512 == 0)
-        return info
     }
 
 }
