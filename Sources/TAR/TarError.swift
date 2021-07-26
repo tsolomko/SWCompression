@@ -10,7 +10,7 @@ import Foundation
  It may indicate that either container is damaged or it might not be TAR container at all.
  */
 public enum TarError: Error {
-    /// Size of data is too small, even to contain only one header.
+    /// Data is unexpectedly truncated.
     case tooSmallFileIsPassed
     /// Failed to process a *required* TAR header's field.
     case wrongField

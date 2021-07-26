@@ -35,12 +35,7 @@ public class TarContainer: Container {
      - SeeAlso: `TarContainer.Format`
      */
     public static func formatOf(container data: Data) throws -> Format {
-        // TAR container should be at least 512 bytes long (when it contains only one header).
-        guard data.count >= 512
-            else { throw TarError.tooSmallFileIsPassed }
-
         var parser = TarParser(data)
-
         var ustarEncountered = false
 
         parsingLoop: while true {
@@ -66,7 +61,7 @@ public class TarContainer: Container {
                 }
             case .truncated:
                 // We don't have an error with a more suitable name.
-                throw TarError.wrongField
+                throw TarError.tooSmallFileIsPassed
             case .finished:
                 fallthrough
             case .eofMarker:
@@ -175,10 +170,6 @@ public class TarContainer: Container {
      - Returns: Array of `TarEntry`.
      */
     public static func open(container data: Data) throws -> [TarEntry] {
-        // TAR container should be at least 512 bytes long (when it contains only one header).
-        guard data.count >= 512
-            else { throw TarError.tooSmallFileIsPassed }
-
         var parser = TarParser(data)
         var entries = [TarEntry]()
 
@@ -200,13 +191,13 @@ public class TarContainer: Container {
                     // has been processed. The data.endIndex inequality is strict since there can be a 1024 bytes-long EOF
                     // marker block which isn't included into any entry.
                     guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
-                        else { throw TarError.wrongField }
+                        else { throw TarError.tooSmallFileIsPassed }
                     let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
                     entries.append(TarEntry(info: info, data: entryData))
                 }
             case .truncated:
                 // We don't have an error with a more suitable name.
-                throw TarError.wrongField
+                throw TarError.tooSmallFileIsPassed
             case .finished:
                 fallthrough
             case .eofMarker:
@@ -231,10 +222,6 @@ public class TarContainer: Container {
      - Returns: Array of `TarEntryInfo`.
      */
     public static func info(container data: Data) throws -> [TarEntryInfo] {
-        // TAR container should be at least 512 bytes long (when it contains only one header).
-        guard data.count >= 512
-            else { throw TarError.tooSmallFileIsPassed }
-
         var parser = TarParser(data)
         var entries = [TarEntryInfo]()
 
@@ -247,7 +234,7 @@ public class TarContainer: Container {
                 entries.append(info)
             case .truncated:
                 // We don't have an error with a more suitable name.
-                throw TarError.wrongField
+                throw TarError.tooSmallFileIsPassed
             case .finished:
                 fallthrough
             case .eofMarker:
