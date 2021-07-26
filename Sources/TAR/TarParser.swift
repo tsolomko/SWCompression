@@ -8,7 +8,7 @@ import BitByteData
 
 // While it is tempting to make Provider conform to `IteratorProtocol` and `Sequence` protocols, it is in fact
 // impossible to do so, since `TarHeader.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
-struct TarEntryInfoProvider {
+struct TarParser {
 
     enum ParsingResult {
         case truncated

@@ -39,12 +39,12 @@ public class TarContainer: Container {
         guard data.count >= 512
             else { throw TarError.tooSmallFileIsPassed }
 
-        var infoProvider = TarEntryInfoProvider(data)
+        var parser = TarParser(data)
 
         var ustarEncountered = false
 
         parsingLoop: while true {
-            let result = try infoProvider.next()
+            let result = try parser.next()
             switch result {
             case .specialEntry(let specialEntryType):
                 if specialEntryType == .globalExtendedHeader || specialEntryType == .localExtendedHeader {
@@ -218,11 +218,11 @@ public class TarContainer: Container {
         guard data.count >= 512
             else { throw TarError.tooSmallFileIsPassed }
 
-        var infoProvider = TarEntryInfoProvider(data)
+        var parser = TarParser(data)
         var entries = [TarEntryInfo]()
 
         parsingLoop: while true {
-            let result = try infoProvider.next()
+            let result = try parser.next()
             switch result {
             case .specialEntry:
                 continue parsingLoop
