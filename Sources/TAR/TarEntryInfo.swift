@@ -167,9 +167,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
      */
     public var unknownExtendedHeaderRecords: [String: String]?
 
-    // TODO: Remove
-    var specialEntryType: TarHeader.SpecialEntryType?
-
     let format: TarContainer.Format
 
     // TODO: Remove
@@ -215,17 +212,9 @@ public struct TarEntryInfo: ContainerEntryInfo {
         }
 
         // File type
-        // TODO:
-//        guard case .normal(let entryType) = header.type
-//            else { fatalError("TarEntryInfo.init: unexpected TarHeader.type, \(header.type)") }
-//        self.type = entryType
-        switch header.type {
-        case .special(let specialType):
-            self.specialEntryType = specialType
-            self.type = .unknown
-        case .normal(let normalType):
-            self.type = normalType
-        }
+        guard case .normal(let entryType) = header.type
+            else { fatalError("TarEntryInfo.init: unexpected TarHeader.type, \(header.type)") }
+        self.type = entryType
 
         self.ownerUserName = (local?.uname ?? global?.uname) ?? header.uname
         self.ownerGroupName = (local?.gname ?? global?.gname) ?? header.gname
