@@ -169,9 +169,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
 
     let format: TarContainer.Format
 
-    // TODO: Remove
-    let blockStartIndex: Int
-
     /**
      Initializes the entry's info with its name and type.
 
@@ -186,13 +183,10 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.linkName = ""
         // These properties are only used when entry is loaded from the container.
         self.format = .pax
-        self.blockStartIndex = 0
     }
 
     init(_ header: TarHeader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
          _ longName: String?, _ longLinkName: String?) {
-        // TODO: Remove
-        self.blockStartIndex = header.blockStartIndex
         // General notes for all the properties processing below:
         // 1. There might be a corresponding field in either global or local extended PAX header.
         // 2. We still need to read general TAR fields so we can't eliminate auxiliary local let-variables.

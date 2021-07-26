@@ -52,7 +52,7 @@ public class TarContainer: Container {
                 } else if specialEntryType == .longName || specialEntryType == .longLinkName {
                     return .gnu
                 }
-            case .entryInfo(let info):
+            case .entryInfo(let info, _):
                 // TODO: Probably this case (depending on how info.format is set) is already covered by the above.
                 switch info.format {
                 case .pax:
@@ -175,25 +175,42 @@ public class TarContainer: Container {
      - Returns: Array of `TarEntry`.
      */
     public static func open(container data: Data) throws -> [TarEntry] {
-        let infos = try info(container: data)
+        // TAR container should be at least 512 bytes long (when it contains only one header).
+        guard data.count >= 512
+            else { throw TarError.tooSmallFileIsPassed }
+
+        var parser = TarParser(data)
         var entries = [TarEntry]()
 
-        for entryInfo in infos {
-            if entryInfo.type == .directory {
-                var entry = TarEntry(info: entryInfo, data: nil)
-                entry.info.size = 0
-                entries.append(entry)
-            } else {
-                let dataStartIndex = entryInfo.blockStartIndex + 512
-                let dataEndIndex = dataStartIndex + entryInfo.size!
-                // Verify that data is not truncated.
-                // The data.startIndex inequality is strict since by this point at least one header (i.e. 512 bytes)
-                // has been processed. The data.endIndex inequality is strict since there can be a 1024 bytes-long EOF
-                // marker block which isn't included into any entry.
-                guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
-                    else { throw TarError.wrongField }
-                let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
-                entries.append(TarEntry(info: entryInfo, data: entryData))
+        parsingLoop: while true {
+            let result = try parser.next()
+            switch result {
+            case .specialEntry:
+                continue parsingLoop
+            case .entryInfo(let info, let blockStartIndex):
+                if info.type == .directory {
+                    var entry = TarEntry(info: info, data: nil)
+                    entry.info.size = 0
+                    entries.append(entry)
+                } else {
+                    let dataStartIndex = blockStartIndex + 512
+                    let dataEndIndex = dataStartIndex + info.size!
+                    // Verify that data is not truncated.
+                    // The data.startIndex inequality is strict since by this point at least one header (i.e. 512 bytes)
+                    // has been processed. The data.endIndex inequality is strict since there can be a 1024 bytes-long EOF
+                    // marker block which isn't included into any entry.
+                    guard dataStartIndex > data.startIndex && dataEndIndex < data.endIndex
+                        else { throw TarError.wrongField }
+                    let entryData = data.subdata(in: dataStartIndex..<dataEndIndex)
+                    entries.append(TarEntry(info: info, data: entryData))
+                }
+            case .truncated:
+                // We don't have an error with a more suitable name.
+                throw TarError.wrongField
+            case .finished:
+                fallthrough
+            case .eofMarker:
+                break parsingLoop
             }
         }
 
@@ -226,7 +243,7 @@ public class TarContainer: Container {
             switch result {
             case .specialEntry:
                 continue parsingLoop
-            case .entryInfo(let info):
+            case .entryInfo(let info, _):
                 entries.append(info)
             case .truncated:
                 // We don't have an error with a more suitable name.

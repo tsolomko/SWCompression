@@ -15,7 +15,7 @@ struct TarParser {
         case eofMarker
         case finished
         case specialEntry(TarHeader.SpecialEntryType)
-        case entryInfo(TarEntryInfo)
+        case entryInfo(TarEntryInfo, Int)
     }
 
     private let reader: LittleEndianByteReader
@@ -70,7 +70,7 @@ struct TarParser {
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
-            return .entryInfo(info)
+            return .entryInfo(info, header.blockStartIndex)
         }
     }
 
