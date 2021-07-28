@@ -93,7 +93,7 @@ class TarCommand: Command {
                 print("d = directory, f = file, l = symbolic link")
             }
             let entries = try self.createEntries(inputPath, verbose.value)
-            let containerData = try TarContainer.create(from: entries)
+            let containerData = TarContainer.create(from: entries)
             try containerData.write(to: URL(fileURLWithPath: self.archive.value))
         }
     }
