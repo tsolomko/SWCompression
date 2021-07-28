@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// Also known as PAX header.
 struct TarExtendedHeader {
 
     var unknownRecords = [String: String]()
@@ -112,6 +113,11 @@ struct TarExtendedHeader {
             (mtime < 0 || mtime > Double(maxOctalLengthTwelve)) {
             self.mtime = mtime
         }
+        // The non-asciiness of the (link)name is still a reason to use PAX headers, even though we encode using UTF-8
+        // in basic TAR headers anyway, because one can imagine a third-party implementation, that can read PAX headers
+        // properly, but still expects all string fields in the basic header to be ASCII-only. By using PAX headers we
+        // can "support" those implementations, though this will work only if they skip (non-ASCII/invalid) string
+        // fields after encountering a PAX header.
         let asciiNameData = info.name.data(using: .ascii)
         if asciiNameData == nil || asciiNameData!.count > 100 {
             self.path = info.name
