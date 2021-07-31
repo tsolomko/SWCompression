@@ -219,27 +219,29 @@ class TarCreateTests: XCTestCase {
     }
 
     func testBigUid() throws {
-        let uid = (1 << 32) - 1
-        var info = TarEntryInfo(name: "file.txt", type: .regular)
-        info.ownerID = uid
+        // Int.max tests that base-256 encoding of integer fields works in the edge case.
+        for uid in [(1 << 32) - 1, Int.max] {
+            var info = TarEntryInfo(name: "file.txt", type: .regular)
+            info.ownerID = uid
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
-        let newInfo = try TarContainer.open(container: containerData)[0].info
+            let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+            XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+            let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, "file.txt")
-        XCTAssertEqual(newInfo.type, .regular)
-        XCTAssertEqual(newInfo.size, 0)
-        XCTAssertEqual(newInfo.ownerID, uid)
-        XCTAssertEqual(newInfo.linkName, "")
-        XCTAssertEqual(newInfo.ownerUserName, "")
-        XCTAssertEqual(newInfo.ownerGroupName, "")
-        XCTAssertNil(newInfo.permissions)
-        XCTAssertNil(newInfo.groupID)
-        XCTAssertNil(newInfo.accessTime)
-        XCTAssertNil(newInfo.creationTime)
-        XCTAssertNil(newInfo.modificationTime)
-        XCTAssertNil(newInfo.comment)
+            XCTAssertEqual(newInfo.name, "file.txt")
+            XCTAssertEqual(newInfo.type, .regular)
+            XCTAssertEqual(newInfo.size, 0)
+            XCTAssertEqual(newInfo.ownerID, uid)
+            XCTAssertEqual(newInfo.linkName, "")
+            XCTAssertEqual(newInfo.ownerUserName, "")
+            XCTAssertEqual(newInfo.ownerGroupName, "")
+            XCTAssertNil(newInfo.permissions)
+            XCTAssertNil(newInfo.groupID)
+            XCTAssertNil(newInfo.accessTime)
+            XCTAssertNil(newInfo.creationTime)
+            XCTAssertNil(newInfo.modificationTime)
+            XCTAssertNil(newInfo.comment)
+        }
     }
 
     func testGnuLongName() throws {
