@@ -94,17 +94,17 @@ public class TarContainer: Container {
         // Every time we append something to the output we also make sure that the data is padded to 512 byte-long blocks.
 
         // In theory if the counters are big enough, the names of the special entries can become long enough to cause
-        // problems (truncation, etc.). In practice, the largest possible counter (Int.max) is 19 symbols long, which
+        // problems (truncation, etc.). In practice, the largest possible counter (UInt.max) is 20 symbols long, which
         // when combined with the longest used special entry name can never cause any problems, since it is still
         // shorter then 99 symbols available in the "name" field of the TAR header.
         // However, if in the distant future Int.max becomes large enough to cause any issues (e.g. 128-bit and higher
         // integers), the following check will catch it.
-        assert(String(Int.max).count < 100 - 19) // "SWC_LocalPaxHeader_".count == 19
+        assert(String(UInt.max).count < 100 - 19) // "SWC_LocalPaxHeader_".count == 19
         // We also use &+ when incrementing counters to prevent integer overflow crashes: we rather deal with the special
-        // entries having the same name, then crash the program.
-        var longNameCounter = 0
-        var longLinkNameCounter = 0
-        var localPaxHeaderCounter = 0
+        // entries having repeating names, then crash the program.
+        var longNameCounter = 0 as UInt
+        var longLinkNameCounter = 0 as UInt
+        var localPaxHeaderCounter = 0 as UInt
 
         var out = Data()
         for entry in entries {
