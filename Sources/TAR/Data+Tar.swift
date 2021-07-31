@@ -29,6 +29,9 @@ extension Data {
         }
 
         // Base-256 encoding.
+        // As long as we have at least 8 bytes for our value, conversion to base-256 will always succeed, since (64-bit)
+        // Int.max neatly fits into 8 bytes of 256-base encoding.
+        assert(maxLength >= 8 && Int.bitWidth <= 64)
         var buffer = Array(repeating: 0 as UInt8, count: maxLength)
         for i in stride(from: maxLength - 1, to: 0, by: -1) {
             buffer[i] = UInt8(truncatingIfNeeded: value & 0xFF)

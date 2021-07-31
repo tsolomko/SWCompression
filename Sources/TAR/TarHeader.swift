@@ -237,7 +237,6 @@ struct TarHeader {
             // ustar and pax formats contain prefix field.
             if format == .ustar || format == .pax {
                 // Splitting the name property into the name and prefix fields.
-                // TODO: Review
                 let nameData = Data(self.name.utf8)
                 if nameData.count > 100 {
                     var maxPrefixLength = nameData.count
@@ -252,6 +251,8 @@ struct TarHeader {
 
                     // Looking for the last slash in the potential prefix. -1 if not found.
                     // It determines the end of the actual prefix and the beginning of the updated name field.
+                    // This way of finding the last slash works, since there is no other Unicode character that contains
+                    // the 0x2F byte when encoded in UTF-8.
                     let lastPrefixSlashIndex = nameData.prefix(upTo: maxPrefixLength)
                         .range(of: Data([0x2f]), options: .backwards)?.lowerBound ?? -1
                     let updatedNameLength = nameData.count - lastPrefixSlashIndex - 1
