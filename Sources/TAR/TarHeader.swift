@@ -169,7 +169,7 @@ struct TarHeader {
         self.deviceMajorNumber = info.deviceMajorNumber
         self.deviceMinorNumber = info.deviceMinorNumber
         self.linkName = info.linkName
-        self.format = .pax // TODO: If TarEntryInfo.format is not removed than this should be `info.format`.
+        self.format = .pax
         // Unused if header was created using this initializer.
         self.blockStartIndex = -1
     }

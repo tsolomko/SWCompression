@@ -47,11 +47,10 @@ public class TarContainer: Container {
                 } else if specialEntryType == .longName || specialEntryType == .longLinkName {
                     return .gnu
                 }
-            case .entryInfo(let info, _):
-                // TODO: Probably this case (depending on how info.format is set) is already covered by the above.
-                switch info.format {
+            case .entryInfo(_, _, let headerFormat):
+                switch headerFormat {
                 case .pax:
-                    return .pax
+                    fatalError("Unexpected format of basic header: pax")
                 case .gnu:
                     return .gnu
                 case .ustar:
@@ -178,7 +177,7 @@ public class TarContainer: Container {
             switch result {
             case .specialEntry:
                 continue parsingLoop
-            case .entryInfo(let info, let blockStartIndex):
+            case .entryInfo(let info, let blockStartIndex, _):
                 if info.type == .directory {
                     var entry = TarEntry(info: info, data: nil)
                     entry.info.size = 0
@@ -230,7 +229,7 @@ public class TarContainer: Container {
             switch result {
             case .specialEntry:
                 continue parsingLoop
-            case .entryInfo(let info, _):
+            case .entryInfo(let info, _, _):
                 entries.append(info)
             case .truncated:
                 // We don't have an error with a more suitable name.
