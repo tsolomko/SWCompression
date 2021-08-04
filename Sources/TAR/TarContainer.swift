@@ -47,11 +47,10 @@ public class TarContainer: Container {
                 } else if specialEntryType == .longName || specialEntryType == .longLinkName {
                     return .gnu
                 }
-            case .entryInfo(let info, _):
-                // TODO: Probably this case (depending on how info.format is set) is already covered by the above.
-                switch info.format {
+            case .entryInfo(_, _, let headerFormat):
+                switch headerFormat {
                 case .pax:
-                    return .pax
+                    fatalError("Unexpected format of basic header: pax")
                 case .gnu:
                     return .gnu
                 case .ustar:
@@ -84,7 +83,24 @@ public class TarContainer: Container {
         return create(from: entries, force: .pax)
     }
 
-    public static func create(from entries: [TarEntry], force format: TarContainer.Format)  -> Data {
+    /**
+     Creates a new TAR container with `entries` as its content and generates its `Data` using the specified `format`.
+
+     This function forces the usage of the `format`, meaning that certain properties about the `entries` may be missing
+     from the resulting container data if the chosen format doesn't support certain features. For example, relatively
+     long names (and linknames) will be truncated if the `.ustar` or `.prePosix` format is specified.
+
+     It is highly recommended to use the `TarContainer.create(from:)` function (or use the `.pax` format) to ensure the
+     best representation of the `entries` in the output. Other (non-PAX) formats should only be used if you have a
+     specific need for them and you understand limitations of those formats.
+
+     - Parameter entries: TAR entries to store in the container.
+     - Parameter force: For the usage of the specified format.
+
+     - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
+     format used during container creation.
+     */
+    public static func create(from entries: [TarEntry], force format: TarContainer.Format) -> Data {
         // The general strategy is as follows. For each entry we:
         //  1. Create special entries if required by the entry's info and if supported by the format.
         //  2. For each special entry we create a TarHeader.
@@ -94,17 +110,17 @@ public class TarContainer: Container {
         // Every time we append something to the output we also make sure that the data is padded to 512 byte-long blocks.
 
         // In theory if the counters are big enough, the names of the special entries can become long enough to cause
-        // problems (truncation, etc.). In practice, the largest possible counter (Int.max) is 19 symbols long, which
+        // problems (truncation, etc.). In practice, the largest possible counter (UInt.max) is 20 symbols long, which
         // when combined with the longest used special entry name can never cause any problems, since it is still
         // shorter then 99 symbols available in the "name" field of the TAR header.
         // However, if in the distant future Int.max becomes large enough to cause any issues (e.g. 128-bit and higher
         // integers), the following check will catch it.
-        assert(String(Int.max).count < 100 - 19) // "SWC_LocalPaxHeader_".count == 19
+        assert(String(UInt.max).count < 100 - 19) // "SWC_LocalPaxHeader_".count == 19
         // We also use &+ when incrementing counters to prevent integer overflow crashes: we rather deal with the special
-        // entries having the same name, then crash the program.
-        var longNameCounter = 0
-        var longLinkNameCounter = 0
-        var localPaxHeaderCounter = 0
+        // entries having repeating names, then crash the program.
+        var longNameCounter = 0 as UInt
+        var longLinkNameCounter = 0 as UInt
+        var localPaxHeaderCounter = 0 as UInt
 
         var out = Data()
         for entry in entries {
@@ -178,7 +194,7 @@ public class TarContainer: Container {
             switch result {
             case .specialEntry:
                 continue parsingLoop
-            case .entryInfo(let info, let blockStartIndex):
+            case .entryInfo(let info, let blockStartIndex, _):
                 if info.type == .directory {
                     var entry = TarEntry(info: info, data: nil)
                     entry.info.size = 0
@@ -230,7 +246,7 @@ public class TarContainer: Container {
             switch result {
             case .specialEntry:
                 continue parsingLoop
-            case .entryInfo(let info, _):
+            case .entryInfo(let info, _, _):
                 entries.append(info)
             case .truncated:
                 // We don't have an error with a more suitable name.

@@ -167,8 +167,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
      */
     public var unknownExtendedHeaderRecords: [String: String]?
 
-    let format: TarContainer.Format
-
     /**
      Initializes the entry's info with its name and type.
 
@@ -181,8 +179,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.name = name
         self.type = type
         self.linkName = ""
-        // These properties are only used when entry is loaded from the container.
-        self.format = .pax
     }
 
     init(_ header: TarHeader, _ global: TarExtendedHeader?, _ local: TarExtendedHeader?,
@@ -214,16 +210,6 @@ public struct TarEntryInfo: ContainerEntryInfo {
         self.ownerGroupName = (local?.gname ?? global?.gname) ?? header.gname
         self.deviceMajorNumber = header.deviceMajorNumber
         self.deviceMinorNumber = header.deviceMinorNumber
-
-        if local != nil || global != nil {
-            self.format = .pax
-        } else if header.format == .gnu || longName != nil || longLinkName != nil {
-            self.format = .gnu
-        } else if header.format == .ustar {
-            self.format = .ustar
-        } else {
-            self.format = .prePosix
-        }
 
         // Set `name` and `linkName` to values from PAX or GNU format if possible.
         var name = header.name
