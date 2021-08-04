@@ -62,7 +62,7 @@ public class ZipContainer: Container {
         var crc32 = helper.entryInfo.crc
 
         let fileData: Data
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         byteReader.offset = helper.dataOffset
         switch helper.entryInfo.compressionMethod {
         case .copy:
@@ -145,7 +145,7 @@ public class ZipContainer: Container {
         guard data.count >= 22
             else { throw ZipError.notFoundCentralDirectoryEnd }
 
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
         var entries = [ZipEntryInfoHelper]()
 
         // First, we are looking for End of Central Directory record, specifically, for its signature.

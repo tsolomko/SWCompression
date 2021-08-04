@@ -40,17 +40,17 @@ public struct ZlibHeader {
      - Throws: `ZlibError`. It may indicate that either archive is damaged or it might not be archived with Zlib at all.
      */
     public init(archive data: Data) throws {
-        let byteReader = ByteReader(data: data)
-        try self.init(byteReader)
+        let reader = LsbBitReader(data: data)
+        try self.init(reader)
     }
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ reader: LsbBitReader) throws {
         // Valid Zlib header must contain at least 2 bytes of data.
-        guard byteReader.bytesLeft >= 2
+        guard reader.bytesLeft >= 2
             else { throw ZlibError.wrongCompressionMethod }
 
         // compressionMethod and compressionInfo combined are needed later for integrity check.
-        let cmf = byteReader.byte()
+        let cmf = reader.byte()
         // First four bits are compression method.
         // Only compression method = 8 (DEFLATE) is supported.
         let compressionMethod = cmf & 0xF
@@ -67,7 +67,7 @@ public struct ZlibHeader {
         self.windowSize = windowSize
 
         // fcheck, fdict and compresionLevel together make flags byte which is used in integrity check.
-        let flags = byteReader.byte()
+        let flags = reader.byte()
 
         // First five bits are fcheck bits which are used for integrity check:
         //  let fcheck = flags & 0x1F
@@ -85,7 +85,7 @@ public struct ZlibHeader {
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
-            byteReader.offset += 4
+            reader.offset += 4
         }
     }
 

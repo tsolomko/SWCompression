@@ -59,7 +59,7 @@ public struct LZMAProperties {
         self.dictionarySize = dictSize
     }
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         try self.init(lzmaByte: byteReader.byte(), byteReader.int(fromBytes: 4))
     }
 

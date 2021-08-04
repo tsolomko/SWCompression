@@ -26,7 +26,7 @@ public class XZArchive: Archive {
      */
     public static func unarchive(archive data: Data) throws -> Data {
         /// Object with input data which supports convenient work with bytes.
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
 
         // Note: We don't check footer's magic bytes at the beginning,
         //  because it is impossible to determine the end of each stream in multi-stream archives
@@ -68,7 +68,7 @@ public class XZArchive: Archive {
      */
     public static func splitUnarchive(archive data: Data) throws -> [Data] {
         // Same code as in `unarchive(archive:)` but with different type of `result`.
-        let byteReader = ByteReader(data: data)
+        let byteReader = LittleEndianByteReader(data: data)
 
         var result = [Data]()
         while !byteReader.isFinished {
@@ -87,7 +87,7 @@ public class XZArchive: Archive {
         return result
     }
 
-    private static func processStream(_ byteReader: ByteReader) throws -> (data: Data, checkError: Bool) {
+    private static func processStream(_ byteReader: LittleEndianByteReader) throws -> (data: Data, checkError: Bool) {
         var out = Data()
 
         let streamHeader = try XZStreamHeader(byteReader)
@@ -130,7 +130,7 @@ public class XZArchive: Archive {
     }
 
     private static func processIndex(_ blockInfos: [(unpaddedSize: Int, uncompSize: Int)],
-                                     _ byteReader: ByteReader) throws -> Int {
+                                     _ byteReader: LittleEndianByteReader) throws -> Int {
         let indexStartIndex = byteReader.offset - 1
         let recordsCount = try byteReader.multiByteDecode()
         guard recordsCount == blockInfos.count
@@ -167,7 +167,7 @@ public class XZArchive: Archive {
     }
 
     private static func processFooter(_ streamHeader: XZStreamHeader, _ indexSize: Int,
-                                      _ byteReader: ByteReader) throws {
+                                      _ byteReader: LittleEndianByteReader) throws {
         let footerCRC = byteReader.uint32()
         /// Indicates the size of Index field. Should match its real size.
         let backwardSize = (byteReader.int(fromBytes: 4) + 1) * 4
@@ -191,8 +191,7 @@ public class XZArchive: Archive {
             else { throw XZError.wrongMagic }
     }
 
-    /// Returns `true` if end of archive is reached, `false` otherwise.
-    private static func processPadding(_ byteReader: ByteReader) throws {
+    private static func processPadding(_ byteReader: LittleEndianByteReader) throws {
         guard !byteReader.isFinished
             else { return }
 

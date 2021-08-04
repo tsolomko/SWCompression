@@ -10,14 +10,14 @@ import SwiftCLI
 class BZip2Command: Command {
 
     let name = "bz2"
-    let shortDescription = "Creates or extracts BZip2 archive"
+    let shortDescription = "Creates or extracts a BZip2 archive"
 
-    let compress = Flag("-c", "--compress", description: "Compress input file into BZip2 archive")
-    let decompress = Flag("-d", "--decompress", description: "Decompress BZip2 archive")
+    let compress = Flag("-c", "--compress", description: "Compress an input file into a BZip2 archive")
+    let decompress = Flag("-d", "--decompress", description: "Decompress a BZip2 archive")
 
     let blockSize = Key<BZip2.BlockSize>("-b", "--block-size",
                                          description: """
-                                         Set block size for compression to a multiple of 100k bytes; \
+                                         Set the block size for compression to a multiple of 100k bytes; \
                                          possible values are from '1' (default) to '9'
                                          """)
 

@@ -8,7 +8,7 @@ import BitByteData
 
 struct LZMADecoder {
 
-    private let byteReader: ByteReader
+    private let byteReader: LittleEndianByteReader
 
     var properties = LZMAProperties()
 
@@ -72,7 +72,7 @@ struct LZMADecoder {
     /// Used to select exact variable from 'IsRep', 'IsRepG0', 'IsRepG1' and 'IsRepG2' arrays.
     private var state = 0
 
-    init(_ byteReader: ByteReader) {
+    init(_ byteReader: LittleEndianByteReader) {
         self.byteReader = byteReader
     }
 

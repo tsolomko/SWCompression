@@ -43,7 +43,7 @@ struct ZipCentralDirectoryEntry {
 
     let nextEntryOffset: Int
 
-    init(_ byteReader: ByteReader) throws {
+    init(_ byteReader: LittleEndianByteReader) throws {
         // Check signature.
         guard byteReader.uint32() == 0x02014b50
             else { throw ZipError.wrongSignature }

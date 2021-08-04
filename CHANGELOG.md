@@ -1,5 +1,26 @@
 # Changelog
 
+## 4.6.0
+
+- Swift 4.2 is no longer supported.
+- Minimum iOS deployment version (when installed via CocoaPods or Carthage) is now 9.0.
+- Increased the lowest required version of BitByteData dependency to 2.0.
+- Added the `TarContainer.create(from:force:)` function which allows to specify TAR format.
+    - It is now possible to create TAR containers of GNU, ustar (POSIX), and pre-POSIX formats.
+- The `TarContainer.create(from:)` function (alongside with the newly added function) no longer throws.
+    - The `TarCreateError.utf8NonEncodable` error is now never thrown.
+- Handling of truncated TAR containers should now be more consistent.
+    - Previously introduced check for truncated containers now throws the `TarError.tooSmallFileIsPassed` error instead
+    of `TarError.wrongField`.
+- Documentation has been updated:
+    - Adjusted documentation of the `TarEntryInfo` properties to account for other formats used in creation of a
+    container.
+    - Adjusted documentation of the `TarError.tooSmallFileIsPassed` error to mention its use in all situations when
+    truncated data is encountered.
+- swcomp changes:
+    - `zip -i` command now prints entry comments only if they are not empty.
+    - Slight grammatical improvements to the help messages of swcomp.
+
 ## 4.5.11
 
 - Fixed a crash when processing a truncated TAR file.

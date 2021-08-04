@@ -16,7 +16,7 @@ struct TestZipExtraField: ZipExtraField {
 
     var helloString: String?
 
-    init(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation) {
+    init(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation) {
         self.size = size
         self.location = location
         self.helloString = String(data: Data(byteReader.bytes(count: size)), encoding: .utf8)

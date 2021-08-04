@@ -5,7 +5,8 @@
 
 import Foundation
 
-struct LZMAConstants {
+enum LZMAConstants {
+
     static let topValue: UInt32 = 1 << 24
     static let numBitModelTotalBits = 11
     static let numMoveBits = 5
@@ -19,4 +20,5 @@ struct LZMAConstants {
     static let numFullDistances = 1 << (endPosModelIndex >> 1)
     static let matchMinLen = 2
     // LZMAConstants.numStates << LZMAConstants.numPosBitsMax = 192
+
 }

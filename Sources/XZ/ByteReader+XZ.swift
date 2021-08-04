@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-extension ByteReader {
+extension LittleEndianByteReader {
 
     func multiByteDecode() throws -> Int {
         var i = 1

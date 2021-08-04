@@ -1,6 +1,5 @@
 # SWCompression
 
-[![Swift 4.2](https://img.shields.io/badge/Swift-4.2-blue.svg)](https://developer.apple.com/swift/)
 [![Swift 5.X](https://img.shields.io/badge/Swift-5.X-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://travis-ci.com/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.com/tsolomko/SWCompression)
@@ -10,7 +9,7 @@ A framework with (de)compression algorithms and functions for working with vario
 
 ## What is this?
 
-SWCompression &mdash; is a framework with a collection of functions for:
+SWCompression is a framework with a collection of functions for:
 
 1. Decompression (and sometimes compression) using different algorithms.
 2. Reading (and sometimes writing) archives of different formats.
@@ -34,7 +33,7 @@ Also, SWCompression is _written with Swift only._
 
 ## Installation
 
-SWCompression can be integrated into your project using Swift Package Manager, CocoaPods or Carthage.
+SWCompression can be integrated into your project using Swift Package Manager, CocoaPods, or Carthage.
 
 ### Swift Package Manager
 
@@ -47,7 +46,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.5.0")
+                 from: "4.6.0")
     ],
     targets: [
         .target(
@@ -58,11 +57,11 @@ let package = Package(
 )
 ```
 
-More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/master/Documentation).
+More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/main/Documentation).
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.5'` and `use_frameworks!` lines to your Podfile.
+Add `pod 'SWCompression', '~> 4.6'` and `use_frameworks!` lines to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -105,19 +104,17 @@ BZip2 and LZMA/LZMA2 support).
 
 ### Carthage
 
-__Important:__ Only Swift 5.x is supported when installing SWCompression via Carthage.
-
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.5`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.6`.
 
 Then:
 
-1. If you use Xcode 12 or later you should run `carthage update --use-xcframeworks --no-use-binaries`. After that drag
-and drop both `SWCompression.xcframework` and `BitByteData.xcframework` files from from the `Carthage/Build/` directory
-into the "Frameworks, Libraries, and Embedded Content" section of your target's "General" tab in Xcode.
+1. If you use Xcode 12 or later you should run `carthage update --use-xcframeworks`. After that drag and drop both
+`SWCompression.xcframework` and `BitByteData.xcframework` files from from the `Carthage/Build/` directory into the
+"Frameworks, Libraries, and Embedded Content" section of your target's "General" tab in Xcode.
 
-2. If you use Xcode 11 or earlier you should run `carthage update --no-use-binaries`. After that drag and drop both
-`SWCompression.framework` and `BitByteData.framework` files from from the `Carthage/Build/<platform>/` directory into the
-"Embedded Binaries" section of your target's "General" tab in Xcode.
+2. If you use Xcode 11 or earlier you should run `carthage update`. After that drag and drop both
+`SWCompression.framework` and `BitByteData.framework` files from from the `Carthage/Build/<platform>/` directory into
+the "Embedded Binaries" section of your target's "General" tab in Xcode.
 
 For Xcode 12 or later you can currently also use the
 [xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
@@ -165,7 +162,8 @@ do {
 ### Documentation
 
 Every function or type of SWCompression's public API is documented. This documentation can be found at its own
-[website](http://tsolomko.github.io/SWCompression).
+[website](http://tsolomko.github.io/SWCompression) or via a slightly shorter link:
+[swcompression.tsolomko.me](http://swcompression.tsolomko.me)
 
 ### Sophisticated example
 
@@ -175,7 +173,8 @@ you need to uncomment several lines in "Package.swift" and run `swift build -c r
 ## Contributing
 
 Whether you find a bug, have a suggestion, idea, feedback or something else, please
-[create an issue](https://github.com/tsolomko/SWCompression/issues) on GitHub.
+[create an issue](https://github.com/tsolomko/SWCompression/issues) on GitHub. If you have any questions, you can ask
+them on the [Discussions](https://github.com/tsolomko/SWCompression/discussions) page.
 
 In the case of a bug, it will be especially helpful if you attach a file (archive, etc.) that caused the bug to occur.
 
@@ -205,7 +204,7 @@ There are two reasons for this complicated setup. Firstly, some of these files c
 unfortunate if the users of SWCompression had to download them every time during the installation. Secondly, Swift
 Package Manager and contemporary versions of Xcode don't always work well with git-lfs-enabled repositories. To prevent
 any potential problems test files were moved into another repository. Additionaly, the custom command line tool `utils.py`
-is used to work around issues occuring on certain user systems (see, for example, #9).
+is used to work around issues occuring on certain user systems (see, for example, [#9](https://github.com/tsolomko/SWCompression/issues/9)).
 
 Please note, that if you want to add a new _type_ of test files, in addition to running `git lfs track`, you have to
 also copy into the "Tests/Test Files/gitattributes-copy" file a line this command adds to the "Tests/Test Files/.gitattributes"

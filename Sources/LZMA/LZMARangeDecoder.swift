@@ -8,7 +8,7 @@ import BitByteData
 
 struct LZMARangeDecoder {
 
-    private let byteReader: ByteReader
+    private let byteReader: LittleEndianByteReader
 
     private var range = 0xFFFFFFFF as UInt32
     private var code = 0 as UInt32
@@ -18,8 +18,8 @@ struct LZMARangeDecoder {
         return self.code == 0
     }
 
-    init(_ byteReader: ByteReader) throws {
-        // To initialize rande decoder at least 5 bytes are necessary.
+    init(_ byteReader: LittleEndianByteReader) throws {
+        // To initialize range decoder at least 5 bytes are necessary.
         guard byteReader.bytesLeft >= 5
             else { throw LZMAError.rangeDecoderInitError }
 
@@ -34,7 +34,7 @@ struct LZMARangeDecoder {
     }
 
     init() {
-        self.byteReader = ByteReader(data: Data())
+        self.byteReader = LittleEndianByteReader(data: Data())
     }
 
     /// `range` property cannot be smaller than `(1 << 24)`. This function keeps it bigger.

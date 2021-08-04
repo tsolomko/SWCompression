@@ -191,6 +191,28 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].data, nil)
     }
 
+    func testOnlyDirectoryHeader() throws {
+        // This tests the correct handling of the situation when there is nothing in the container but one basic header,
+        // even no EOF marker (two blocks of zeros).
+        let testData = try Constants.data(forTest: "test_only_dir_header", withType: TarTests.testType)
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .ustar)
+
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "empty_dir/")
+        XCTAssertEqual(entries[0].info.type, .directory)
+        XCTAssertEqual(entries[0].info.size, 0)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.ownerUserName, "timofeysolomko")
+        XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
+        XCTAssertNil(entries[0].info.comment)
+        XCTAssertEqual(entries[0].data, nil)
+    }
+
     func testEmptyContainer() throws {
         let testData = try Constants.data(forTest: "test_empty_cont", withType: TarTests.testType)
 

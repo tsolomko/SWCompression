@@ -10,7 +10,7 @@ import SwiftCLI
 class LZMACommand: Command {
 
     let name = "lzma"
-    let shortDescription = "Extracts LZMA archive"
+    let shortDescription = "Extracts a LZMA archive"
 
     let archive = Parameter()
     let outputPath = OptionalParameter()

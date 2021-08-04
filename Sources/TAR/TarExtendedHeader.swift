@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// Also known as PAX header.
 struct TarExtendedHeader {
 
     var unknownRecords = [String: String]()
@@ -112,6 +113,11 @@ struct TarExtendedHeader {
             (mtime < 0 || mtime > Double(maxOctalLengthTwelve)) {
             self.mtime = mtime
         }
+        // The non-asciiness of the (link)name is still a reason to use PAX headers, even though we encode using UTF-8
+        // in basic TAR headers anyway, because one can imagine a third-party implementation, that can read PAX headers
+        // properly, but still expects all string fields in the basic header to be ASCII-only. By using PAX headers we
+        // can "support" those implementations, though this will work only if they skip (non-ASCII/invalid) string
+        // fields after encountering a PAX header.
         let asciiNameData = info.name.data(using: .ascii)
         if asciiNameData == nil || asciiNameData!.count > 100 {
             self.path = info.name
@@ -128,66 +134,65 @@ struct TarExtendedHeader {
         self.unknownRecords = info.unknownExtendedHeaderRecords ?? [:]
     }
 
-    func generateContainerData() throws -> Data {
+    func generateContainerData() -> Data {
         var headerString = ""
         if let atime = self.atime {
-            headerString += try TarExtendedHeader.generateHeaderString("atime", String(atime))
+            headerString += TarExtendedHeader.generateHeaderString("atime", String(atime))
         }
 
         if let ctime = self.ctime {
-            headerString += try TarExtendedHeader.generateHeaderString("ctime", String(ctime))
+            headerString += TarExtendedHeader.generateHeaderString("ctime", String(ctime))
         }
 
         if let mtime = self.mtime {
-            headerString += try TarExtendedHeader.generateHeaderString("mtime", String(mtime))
+            headerString += TarExtendedHeader.generateHeaderString("mtime", String(mtime))
         }
 
         if let size = self.size {
-            headerString += try TarExtendedHeader.generateHeaderString("size", String(size))
+            headerString += TarExtendedHeader.generateHeaderString("size", String(size))
         }
 
         if let uid = self.uid {
-            headerString += try TarExtendedHeader.generateHeaderString("uid", String(uid))
+            headerString += TarExtendedHeader.generateHeaderString("uid", String(uid))
         }
 
         if let gid = self.gid {
-            headerString += try TarExtendedHeader.generateHeaderString("gid", String(gid))
+            headerString += TarExtendedHeader.generateHeaderString("gid", String(gid))
         }
 
         if let uname = self.uname {
-            headerString += try TarExtendedHeader.generateHeaderString("uname", uname)
+            headerString += TarExtendedHeader.generateHeaderString("uname", uname)
         }
 
         if let gname = self.gname {
-            headerString += try TarExtendedHeader.generateHeaderString("gname", gname)
+            headerString += TarExtendedHeader.generateHeaderString("gname", gname)
         }
 
         if let path = self.path {
-            headerString += try TarExtendedHeader.generateHeaderString("path", path)
+            headerString += TarExtendedHeader.generateHeaderString("path", path)
         }
 
         if let linkpath = self.linkpath {
-            headerString += try TarExtendedHeader.generateHeaderString("linkpath", linkpath)
+            headerString += TarExtendedHeader.generateHeaderString("linkpath", linkpath)
         }
 
         if let charset = self.charset {
-            headerString += try TarExtendedHeader.generateHeaderString("charset", charset)
+            headerString += TarExtendedHeader.generateHeaderString("charset", charset)
         }
 
         if let comment = self.comment {
-            headerString += try TarExtendedHeader.generateHeaderString("comment", comment)
+            headerString += TarExtendedHeader.generateHeaderString("comment", comment)
         }
 
         for (key, value) in self.unknownRecords {
-            headerString += try TarExtendedHeader.generateHeaderString(key, value)
+            headerString += TarExtendedHeader.generateHeaderString(key, value)
         }
 
-        return headerString.data(using: .utf8)!
+        return Data(headerString.utf8)
     }
 
-    private static func generateHeaderString(_ fieldName: String, _ valueString: String) throws -> String {
-        guard let valueCount = valueString.data(using: .utf8)?.count
-            else { throw TarCreateError.utf8NonEncodable }
+    private static func generateHeaderString(_ fieldName: String, _ valueString: String) -> String {
+        let valueCount = Data(valueString.utf8).count
         return TarExtendedHeader.calculateCountString(fieldName, valueCount) + " \(fieldName)=\(valueString)\n"
     }
 

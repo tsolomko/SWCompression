@@ -33,7 +33,7 @@ public protocol ZipExtraField {
      - Postcondition: `size` property of a created instance must be equal to the second argument.
      - Postcondition: exactly `size` amount of bytes must be read by initializer from `byteReader`.
      */
-    init?(_ byteReader: ByteReader, _ size: Int, location: ZipExtraFieldLocation)
+    init?(_ byteReader: LittleEndianByteReader, _ size: Int, location: ZipExtraFieldLocation)
 
 }
 

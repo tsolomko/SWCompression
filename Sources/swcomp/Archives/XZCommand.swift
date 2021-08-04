@@ -10,7 +10,7 @@ import SwiftCLI
 class XZCommand: Command {
 
     let name = "xz"
-    let shortDescription = "Extracts XZ archive"
+    let shortDescription = "Extracts a XZ archive"
 
     let archive = Parameter()
     let outputPath = OptionalParameter()

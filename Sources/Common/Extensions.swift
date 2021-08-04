@@ -7,7 +7,7 @@ import Foundation
 
 extension UnsignedInteger {
 
-    @inline(__always)
+    @inlinable @inline(__always)
     func toInt() -> Int {
         return Int(truncatingIfNeeded: self)
     }
@@ -16,12 +16,12 @@ extension UnsignedInteger {
 
 extension Int {
 
-    @inline(__always)
+    @inlinable @inline(__always)
     func toUInt8() -> UInt8 {
         return UInt8(truncatingIfNeeded: UInt(self))
     }
 
-    @inline(__always)
+    @inlinable @inline(__always)
     func roundTo512() -> Int {
         if self >= Int.max - 510 {
             return Int.max
