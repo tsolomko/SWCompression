@@ -157,7 +157,7 @@ struct TarHeader {
     init(_ info: TarEntryInfo) {
         self.name = info.name
         self.type = .normal(info.type)
-        self.size = info.size ?? 0 // TODO: tarInt(...) may not work as expected for 0 instead of nil.
+        self.size = info.size ?? 0
         self.atime = info.accessTime
         self.ctime = info.creationTime
         self.mtime = info.modificationTime

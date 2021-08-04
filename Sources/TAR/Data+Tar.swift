@@ -53,7 +53,6 @@ extension Data {
     /// This should work in the same way as `String.padding(toLength: length, withPad: "\0", startingAt: 0)`.
     @inline(__always)
     private func zeroPad(_ length: Int) -> Data {
-        // TODO: Maybe this should modify self
         var out = length < self.count ? self.prefix(upTo: length) : self
         out.append(Data(count: length - out.count))
         return out

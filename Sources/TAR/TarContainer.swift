@@ -83,7 +83,24 @@ public class TarContainer: Container {
         return create(from: entries, force: .pax)
     }
 
-    public static func create(from entries: [TarEntry], force format: TarContainer.Format)  -> Data {
+    /**
+     Creates a new TAR container with `entries` as its content and generates its `Data` using the specified `format`.
+
+     This function forces the usage of the `format`, meaning that certain properties about the `entries` may be missing
+     from the resulting container data if the chosen format doesn't support certain features. For example, relatively
+     long names (and linknames) will be truncated if the `.ustar` or `.prePosix` format is specified.
+
+     It is highly recommended to use the `TarContainer.create(from:)` function (or use the `.pax` format) to ensure the
+     best representation of the `entries` in the output. Other (non-PAX) formats should only be used if you have a
+     specific need for them and you understand limitations of those formats.
+
+     - Parameter entries: TAR entries to store in the container.
+     - Parameter force: For the usage of the specified format.
+
+     - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
+     format used during container creation.
+     */
+    public static func create(from entries: [TarEntry], force format: TarContainer.Format) -> Data {
         // The general strategy is as follows. For each entry we:
         //  1. Create special entries if required by the entry's info and if supported by the format.
         //  2. For each special entry we create a TarHeader.
