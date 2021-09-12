@@ -2,7 +2,6 @@
 
 [![Swift 5.X](https://img.shields.io/badge/Swift-5.X-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
-[![Build Status](https://travis-ci.com/tsolomko/SWCompression.svg?branch=develop)](https://travis-ci.com/tsolomko/SWCompression)
 [![Build Status](https://dev.azure.com/tsolomko/SWCompression/_apis/build/status/tsolomko.SWCompression?branchName=develop)](https://dev.azure.com/tsolomko/SWCompression/_build/latest?definitionId=3&branchName=develop)
 
 A framework with (de)compression algorithms and functions for working with various archives and containers.

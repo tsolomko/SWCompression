@@ -37,12 +37,12 @@ stages:
           WATCHOS_ACTIONS: 'clean build'
           WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
-        # macosSwift54:
-        #   imageName: 'macOS-11.3'
-        #   DEVELOPER_DIR: '/Applications/Xcode_12.5.app'
-        #   WATCHOS_ACTIONS: 'clean test'
-        #   WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
-        #   UTILS_PW_XCF_FLAG: '--xcf'
+        macosSwift54:
+          imageName: 'macOS-11'
+          DEVELOPER_DIR: '/Applications/Xcode_12.5.1.app'
+          WATCHOS_ACTIONS: 'clean test'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
+          UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
     steps:
