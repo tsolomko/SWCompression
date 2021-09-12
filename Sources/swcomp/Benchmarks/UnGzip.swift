@@ -12,7 +12,7 @@ class UnGzip: BenchmarkCommand {
     let name = "un-gzip"
     let shortDescription = "GZip unarchiving"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "GZip Unarchive"
     let benchmarkFunction: (Data) throws -> Any = GzipArchive.unarchive

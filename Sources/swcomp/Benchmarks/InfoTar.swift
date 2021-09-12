@@ -12,7 +12,7 @@ class InfoTar: BenchmarkCommand {
     let name = "info-tar"
     let shortDescription = "TAR info function"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "TAR info function"
     let benchmarkFunction: (Data) throws -> Any = TarContainer.info

@@ -12,7 +12,7 @@ class UnBz2: BenchmarkCommand {
     let name = "un-bz2"
     let shortDescription = "BZip2 unarchiving"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "BZip2 Unarchive"
     let benchmarkFunction: (Data) throws -> Any = BZip2.decompress

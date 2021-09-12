@@ -12,7 +12,7 @@ class CompDeflate: BenchmarkCommand {
     let name = "comp-deflate"
     let shortDescription = "Deflate compression"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "Deflate Compression"
     let benchmarkFunction: (Data) throws -> Any = Deflate.compress

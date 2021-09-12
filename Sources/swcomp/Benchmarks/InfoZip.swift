@@ -12,7 +12,7 @@ class InfoZip: BenchmarkCommand {
     let name = "info-zip"
     let shortDescription = "ZIP info function"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "ZIP info function"
     let benchmarkFunction: (Data) throws -> Any = ZipContainer.info

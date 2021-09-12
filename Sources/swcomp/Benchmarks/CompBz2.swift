@@ -12,7 +12,7 @@ class CompBz2: BenchmarkCommand {
     let name = "comp-bz2"
     let shortDescription = "BZip2 compression"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "BZip2 Compression"
     let benchmarkFunction: (Data) throws -> Any = BZip2.compress

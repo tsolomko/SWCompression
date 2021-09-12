@@ -12,7 +12,7 @@ class UnXz: BenchmarkCommand {
     let name = "un-xz"
     let shortDescription = "XZ unarchiving"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "XZ Unarchive"
     let benchmarkFunction: (Data) throws -> Any = XZArchive.unarchive

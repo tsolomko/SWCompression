@@ -12,7 +12,7 @@ class Info7z: BenchmarkCommand {
     let name = "info-7z"
     let shortDescription = "7-Zip info function"
 
-    let files = CollectedParameter()
+    let inputs = CollectedParameter()
 
     let benchmarkName = "7-Zip info function"
     let benchmarkFunction: (Data) throws -> Any = SevenZipContainer.info

@@ -13,12 +13,25 @@ import SwiftCLI
 
 protocol BenchmarkCommand: Command {
 
-    var files: CollectedParameter { get }
+    associatedtype InputType
+
+    var inputs: CollectedParameter { get }
 
     var benchmarkName: String { get }
 
-    var benchmarkFunction: (Data) throws -> Any { get }
+    func loadInput(_ input: String) throws -> InputType
 
+    var benchmarkFunction: (InputType) throws -> Any { get }
+
+}
+
+extension BenchmarkCommand where InputType == Data {
+
+    func loadInput(_ input: String) throws -> Data {
+        let inputURL = URL(fileURLWithPath: input)
+        return try Data(contentsOf: inputURL, options: .mappedIfSafe)
+    }
+            
 }
 
 extension BenchmarkCommand {
@@ -28,11 +41,10 @@ extension BenchmarkCommand {
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        for file in self.files.value {
-            print("File: \(file)")
+        for input in self.inputs.value {
+            print("Input: \(input)")
 
-            let inputURL = URL(fileURLWithPath: file)
-            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            let loadedInput = try self.loadInput(input)
 
             var totalTime: Double = 0
 
@@ -45,7 +57,7 @@ extension BenchmarkCommand {
             #endif
             // Zeroth (excluded) iteration.
             let startTime = CFAbsoluteTimeGetCurrent()
-            _ = try benchmarkFunction(fileData)
+            _ = try benchmarkFunction(loadedInput)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             print(String(format: "(%.3f) ", timeElapsed), terminator: "")
             #if !os(Linux)
@@ -54,7 +66,7 @@ extension BenchmarkCommand {
             
             for _ in 1...10 {
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try benchmarkFunction(fileData)
+                _ = try benchmarkFunction(loadedInput)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 print(String(format: "%.3f ", timeElapsed), terminator: "")
                 #if !os(Linux)
