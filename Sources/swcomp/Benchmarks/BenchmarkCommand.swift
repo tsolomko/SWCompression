@@ -86,8 +86,9 @@ extension BenchmarkCommand {
                 }
             }
             let avgSpeed = totalSpeed / 10
-            let devSpeed = (maxSpeed - minSpeed) / 2
-            print("\nAverage: \(SpeedFormat(avgSpeed).format()) \u{B1} \(SpeedFormat(devSpeed).format())\n")
+            let avgSpeedFormat = SpeedFormat(avgSpeed)
+            let speedUncertainty = (maxSpeed - minSpeed) / 2
+            print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))\n")
         }
     }
 

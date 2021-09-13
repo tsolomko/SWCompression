@@ -42,4 +42,19 @@ enum SpeedFormat {
         }
     }
 
+    func format(_ speed: Double) -> String {
+        switch self {
+        case .bytes(_):
+            return String(format: "%.3f B/s", speed)
+        case .kilo(_):
+            return String(format: "%.3f kB/s", speed / 1000)
+        case .mega(_):
+            return String(format: "%.3f MB/s", speed / 1000 / 1000)
+        case .giga(_):
+            return String(format: "%.3f GB/s", speed / 1000 / 1000 / 1000)
+        case .tera(_):
+            return String(format: "%.3f TB/s", speed / 1000 / 1000 / 1000 / 1000)
+        }
+    }
+
 }
