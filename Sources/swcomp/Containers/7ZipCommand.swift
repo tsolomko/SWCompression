@@ -9,6 +9,8 @@ import SwiftCLI
 
 class SevenZipCommand: ContainerCommand {
 
+    typealias ContainerType = SevenZipContainer
+
     let name = "7z"
     let shortDescription = "Extracts a 7-Zip container"
 
@@ -17,8 +19,5 @@ class SevenZipCommand: ContainerCommand {
     let verbose = Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
 
     let archive = Parameter()
-
-    let openFunction: (Data) throws -> [SevenZipEntry] = SevenZipContainer.open
-    let infoFunction: (Data) throws -> [SevenZipEntryInfo] = SevenZipContainer.info
 
 }

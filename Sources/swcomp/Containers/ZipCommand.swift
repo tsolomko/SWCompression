@@ -9,6 +9,8 @@ import SwiftCLI
 
 class ZipCommand: ContainerCommand {
 
+    typealias ContainerType = ZipContainer
+
     let name = "zip"
     let shortDescription = "Extracts a ZIP container"
 
@@ -17,8 +19,5 @@ class ZipCommand: ContainerCommand {
     let verbose = Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
 
     let archive = Parameter()
-
-    let openFunction: (Data) throws -> [ZipEntry] = ZipContainer.open
-    let infoFunction: (Data) throws -> [ZipEntryInfo] = ZipContainer.info
 
 }
