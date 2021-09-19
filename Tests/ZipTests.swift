@@ -18,6 +18,11 @@ class ZipTests: XCTestCase {
         let testData = try Constants.data(forAnswer: "test6")
         XCTAssertThrowsError(try ZipContainer.open(container: testData))
     }
+
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try ZipContainer.info(container: Data()))
+        XCTAssertThrowsError(try ZipContainer.open(container: Data()))
+    }
     
     func testBigContainer() throws {
         let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType)

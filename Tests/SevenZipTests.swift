@@ -19,6 +19,11 @@ class SevenZipTests: XCTestCase {
         XCTAssertThrowsError(try SevenZipContainer.open(container: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try SevenZipContainer.info(container: Data()))
+        XCTAssertThrowsError(try SevenZipContainer.open(container: Data()))
+    }
+
     func test1() throws {
         let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)

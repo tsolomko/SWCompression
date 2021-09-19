@@ -151,4 +151,8 @@ class GzipTests: XCTestCase {
         XCTAssertThrowsError(try GzipArchive.multiUnarchive(archive: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try GzipArchive.unarchive(archive: Data()))
+    }
+
 }
