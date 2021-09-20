@@ -6,10 +6,6 @@
 import Foundation
 import BitByteData
 
-#if os(Linux)
-    import CoreFoundation
-#endif
-
 extension LittleEndianByteReader {
 
     func zipString(_ length: Int, _ useUtf8: Bool) -> String? {
