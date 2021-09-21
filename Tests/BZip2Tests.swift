@@ -67,4 +67,8 @@ class BZip2Tests: XCTestCase {
         XCTAssertThrowsError(try BZip2.decompress(data: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try BZip2.decompress(data: Data()))
+    }
+
 }

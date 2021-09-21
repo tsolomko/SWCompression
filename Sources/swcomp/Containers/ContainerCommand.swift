@@ -9,16 +9,13 @@ import SwiftCLI
 
 protocol ContainerCommand: Command {
 
-    associatedtype Entry: ContainerEntry
+    associatedtype ContainerType: Container
 
     var info: Flag { get }
     var extract: Key<String> { get }
     var verbose: Flag { get }
 
     var archive: Parameter { get }
-
-    var openFunction: (Data) throws -> [Entry] { get }
-    var infoFunction: (Data) throws -> [Entry.Info] { get }
 
 }
 
@@ -33,7 +30,7 @@ extension ContainerCommand {
         let fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
                                 options: .mappedIfSafe)
         if info.value {
-            let entries = try infoFunction(fileData)
+            let entries = try ContainerType.info(container: fileData)
             swcomp.printInfo(entries)
         } else if let outputPath = self.extract.value {
             if try !isValidOutputDirectory(outputPath, create: true) {
@@ -41,7 +38,7 @@ extension ContainerCommand {
                 exit(1)
             }
 
-            let entries = try openFunction(fileData)
+            let entries = try ContainerType.open(container: fileData)
             try swcomp.write(entries, outputPath, verbose.value)
         }
     }

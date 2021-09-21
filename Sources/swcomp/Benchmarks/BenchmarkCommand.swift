@@ -13,12 +13,28 @@ import SwiftCLI
 
 protocol BenchmarkCommand: Command {
 
-    var files: CollectedParameter { get }
+    associatedtype InputType
+
+    var inputs: CollectedParameter { get }
 
     var benchmarkName: String { get }
 
-    var benchmarkFunction: (Data) throws -> Any { get }
+    func loadInput(_ input: String) throws -> (InputType, Double)
 
+    var benchmarkFunction: (InputType) throws -> Any { get }
+
+}
+
+extension BenchmarkCommand where InputType == Data {
+
+    func loadInput(_ input: String) throws -> (Data, Double) {
+        let inputURL = URL(fileURLWithPath: input)
+        let inputData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+        let attr = try FileManager.default.attributesOfItem(atPath: input)
+        let inputSize = Double(attr[.size] as! UInt64)
+        return (inputData, inputSize)
+    }
+            
 }
 
 extension BenchmarkCommand {
@@ -28,16 +44,15 @@ extension BenchmarkCommand {
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        for file in self.files.value {
-            print("File: \(file)")
+        for input in self.inputs.value {
+            print("Input: \(input)")
 
-            let inputURL = URL(fileURLWithPath: file)
-            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            let (loadedInput, inputSize) = try self.loadInput(input)
 
-            var totalTime: Double = 0
+            var totalSpeed: Double = 0
 
-            var maxTime = Double(Int.min)
-            var minTime = Double(Int.max)
+            var maxSpeed = Double(Int.min)
+            var minSpeed = Double(Int.max)
 
             print("Iterations: ", terminator: "")
             #if !os(Linux)
@@ -45,30 +60,35 @@ extension BenchmarkCommand {
             #endif
             // Zeroth (excluded) iteration.
             let startTime = CFAbsoluteTimeGetCurrent()
-            _ = try benchmarkFunction(fileData)
+            _ = try benchmarkFunction(loadedInput)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            print(String(format: "(%.3f) ", timeElapsed), terminator: "")
+            let speed = inputSize / timeElapsed
+            print("(\(SpeedFormat(speed).format())), ", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
             
             for _ in 1...10 {
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try benchmarkFunction(fileData)
+                _ = try benchmarkFunction(loadedInput)
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                print(String(format: "%.3f ", timeElapsed), terminator: "")
+                let speed = inputSize / timeElapsed
+                print(SpeedFormat(speed).format() + ", ", terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
-                totalTime += timeElapsed
-                if timeElapsed > maxTime {
-                    maxTime = timeElapsed
+                totalSpeed += speed
+                if speed > maxSpeed {
+                    maxSpeed = speed
                 }
-                if timeElapsed < minTime {
-                    minTime = timeElapsed
+                if speed < minSpeed {
+                    minSpeed = speed
                 }
             }
-            print(String(format: "\nAverage: %.3f \u{B1} %.3f\n", totalTime / 10, (maxTime - minTime) / 2))
+            let avgSpeed = totalSpeed / 10
+            let avgSpeedFormat = SpeedFormat(avgSpeed)
+            let speedUncertainty = (maxSpeed - minSpeed) / 2
+            print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))\n")
         }
     }
 

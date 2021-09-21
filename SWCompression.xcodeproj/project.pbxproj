@@ -220,6 +220,9 @@
 		E652D8F5263D678000FC229B /* test_nonstandard_runlength.answer in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */; };
 		E66F36242538726E00076A6E /* test_empty.lzma in Resources */ = {isa = PBXBuildFile; fileRef = E66F36232538726E00076A6E /* test_empty.lzma */; };
 		E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */ = {isa = PBXBuildFile; fileRef = E66F362B2538E2B700076A6E /* test_empty.zlib */; };
+		E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */; };
+		E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */; };
+		E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -447,6 +450,9 @@
 		E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.answer; sourceTree = "<group>"; };
 		E66F36232538726E00076A6E /* test_empty.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.lzma; sourceTree = "<group>"; };
 		E66F362B2538E2B700076A6E /* test_empty.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.zlib; sourceTree = "<group>"; };
+		E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_3.7z; sourceTree = "<group>"; };
+		E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_4.7z; sourceTree = "<group>"; };
+		E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_2.7z; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -883,6 +889,9 @@
 				06F066061FFB763300312A82 /* test_win.7z */,
 				0627A4D220FE521B0023987C /* test_unicode.7z */,
 				068D070321368617002A6C3B /* test_delta_filter.7z */,
+				E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */,
+				E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */,
+				E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */,
 				06F066071FFB763300312A82 /* SWCompressionSourceCode.7z */,
 			);
 			path = 7z;
@@ -949,7 +958,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "Timofey Solomko";
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
@@ -991,6 +1000,7 @@
 				06F066201FFB763300312A82 /* test1.answer in Resources */,
 				06F0664E1FFB763400312A82 /* test_v7.tar in Resources */,
 				06F0662E1FFB763400312A82 /* test2.gz in Resources */,
+				E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */,
 				06F0665C1FFB763400312A82 /* test9.lzma in Resources */,
 				06F066661FFB763400312A82 /* test3.7z in Resources */,
 				06F0664B1FFB763400312A82 /* test.tar in Resources */,
@@ -1073,6 +1083,7 @@
 				06F066351FFB763400312A82 /* test5.xz in Resources */,
 				06F066631FFB763400312A82 /* test_complicated_coding_scheme.7z in Resources */,
 				06F066641FFB763400312A82 /* test_anti_file.7z in Resources */,
+				E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */,
 				064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */,
 				06F0665E1FFB763400312A82 /* test_empty_cont.7z in Resources */,
 				06F066731FFB763400312A82 /* test3.bz2 in Resources */,
@@ -1083,6 +1094,7 @@
 				06F066571FFB763400312A82 /* test_empty_file.tar in Resources */,
 				06F066441FFB763400312A82 /* test_data_descriptor.zip in Resources */,
 				06F066581FFB763400312A82 /* full_test.tar in Resources */,
+				E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */,
 				06F0662B1FFB763400312A82 /* test3.gz in Resources */,
 				06F0664C1FFB763400312A82 /* test_pax.tar in Resources */,
 				06F0663A1FFB763400312A82 /* test_multi.xz in Resources */,
@@ -1270,7 +1282,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1351,7 +1363,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
@@ -1412,7 +1424,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 80;
+				DYLIB_CURRENT_VERSION = 81;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1439,7 +1451,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 80;
+				DYLIB_CURRENT_VERSION = 81;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

@@ -52,4 +52,8 @@ class ZlibTests: XCTestCase {
         XCTAssertThrowsError(try ZlibArchive.unarchive(archive: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: Data()))
+    }
+
 }

@@ -6,10 +6,6 @@
 import Foundation
 import BitByteData
 
-#if os(Linux)
-    import CoreFoundation
-#endif
-
 extension LittleEndianByteReader {
 
     func zipString(_ length: Int, _ useUtf8: Bool) -> String? {
@@ -21,12 +17,7 @@ extension LittleEndianByteReader {
             return String(data: stringData, encoding: .utf8)
         }
         if String.cp437Available && !stringData.needsUtf8() {
-        #if os(Windows)
             return String(data: stringData, encoding: String.cp437Encoding)
-        #else
-            return String(data: stringData, encoding: String.Encoding(rawValue:
-                CFStringConvertEncodingToNSStringEncoding(String.cp437Encoding)))
-        #endif
         } else {
             return String(data: stringData, encoding: .utf8)
         }
@@ -36,21 +27,9 @@ extension LittleEndianByteReader {
 
 fileprivate extension String {
 
-    #if os(Linux)
-        #if compiler(>=5.3)
-            static let cp437Encoding: CFStringEncoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
-        #else
-            static let cp437Encoding: CFStringEncoding = UInt32(truncatingIfNeeded: UInt(kCFStringEncodingDOSLatinUS))
-        #endif
-        static let cp437Available: Bool = CFStringIsEncodingAvailable(cp437Encoding)
-    #elseif os(Windows)
-        // "Latin-US (DOS)" CP437-2147483120
-        static let cp437Encoding = String.Encoding(rawValue: 0x80000400)
-        static let cp437Available = String.availableStringEncodings.contains(cp437Encoding)
-    #else
-        static let cp437Encoding = CFStringEncoding(CFStringEncodings.dosLatinUS.rawValue)
-        static let cp437Available = CFStringIsEncodingAvailable(cp437Encoding)
-    #endif
+    // "Latin-US (DOS)" CP437-2147483120
+    static let cp437Encoding = String.Encoding(rawValue: 0x80000400)
+    static let cp437Available = String.availableStringEncodings.contains(cp437Encoding)
 
 }
 

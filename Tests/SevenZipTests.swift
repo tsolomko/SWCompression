@@ -19,6 +19,11 @@ class SevenZipTests: XCTestCase {
         XCTAssertThrowsError(try SevenZipContainer.open(container: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try SevenZipContainer.info(container: Data()))
+        XCTAssertThrowsError(try SevenZipContainer.open(container: Data()))
+    }
+
     func test1() throws {
         let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
@@ -385,6 +390,67 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.isAnti, false)
         XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
 
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
+    func testFormatMinorVersions() throws {
+        let answerData = try Constants.data(forAnswer: "test2")
+
+        var testData = try Constants.data(forTest: "test_minor_version_2", withType: SevenZipTests.testType)
+        var entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test2.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 0))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 4168830779)
+        XCTAssertEqual(entries[0].data, answerData)
+
+        testData = try Constants.data(forTest: "test_minor_version_3", withType: SevenZipTests.testType)
+        entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test2.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNotNil(entries[0].info.accessTime)
+        XCTAssertNotNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 4168830779)
+        XCTAssertEqual(entries[0].data, answerData)
+
+        testData = try Constants.data(forTest: "test_minor_version_4", withType: SevenZipTests.testType)
+        entries = try SevenZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test2.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNotNil(entries[0].info.accessTime)
+        XCTAssertNotNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 4168830779)
         XCTAssertEqual(entries[0].data, answerData)
     }
 

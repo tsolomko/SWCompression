@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "4.6.0"
+  s.version      = "4.6.1"
   s.summary      = "A framework with functions for working with compression, archives and containers."
   
   s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."

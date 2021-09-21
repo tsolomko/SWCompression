@@ -51,5 +51,9 @@ class LzmaTests: XCTestCase {
         XCTAssertThrowsError(try LZMA.decompress(data: testData))
     }
 
+    func testEmptyData() throws {
+        XCTAssertThrowsError(try LZMA.decompress(data: Data()))
+        XCTAssertThrowsError(try LZMA2.decompress(data: Data()))
+    }
 
 }

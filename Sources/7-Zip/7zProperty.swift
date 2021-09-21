@@ -6,7 +6,7 @@
 import Foundation
 import BitByteData
 
-class SevenZipProperty {
+struct SevenZipProperty {
 
     let type: UInt8
     let size: Int
