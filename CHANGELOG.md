@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.6.1
+
+- Fixed a crash in LZMA2 when trying to process an empty `Data`.
+- swcomp changes:
+    - Added `benchmark create-tar` benchmarking command.
+    - Benchmarking results are now printed in the units of speed instead of time elapsed.
+
 ## 4.6.0
 
 - Swift 4.2 is no longer supported.
