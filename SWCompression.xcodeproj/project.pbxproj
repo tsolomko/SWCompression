@@ -222,6 +222,16 @@
 		E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */ = {isa = PBXBuildFile; fileRef = E66F362B2538E2B700076A6E /* test_empty.zlib */; };
 		E6791E1826FD001A003852A9 /* DataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1726FD001A003852A9 /* DataError.swift */; };
 		E6791E1B26FD0094003852A9 /* LZ4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1A26FD0094003852A9 /* LZ4.swift */; };
+		E6791E2926FD04F0003852A9 /* test1.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2026FD04F0003852A9 /* test1.lz4 */; };
+		E6791E2A26FD04F0003852A9 /* test7.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2126FD04F0003852A9 /* test7.lz4 */; };
+		E6791E2B26FD04F0003852A9 /* test3.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2226FD04F0003852A9 /* test3.lz4 */; };
+		E6791E2C26FD04F0003852A9 /* test4.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2326FD04F0003852A9 /* test4.lz4 */; };
+		E6791E2D26FD04F0003852A9 /* test8.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2426FD04F0003852A9 /* test8.lz4 */; };
+		E6791E2E26FD04F0003852A9 /* test6.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2526FD04F0003852A9 /* test6.lz4 */; };
+		E6791E2F26FD04F0003852A9 /* test9.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2626FD04F0003852A9 /* test9.lz4 */; };
+		E6791E3026FD04F0003852A9 /* test5.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2726FD04F0003852A9 /* test5.lz4 */; };
+		E6791E3126FD04F0003852A9 /* test2.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2826FD04F0003852A9 /* test2.lz4 */; };
+		E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E3226FD05EC003852A9 /* LZ4Tests.swift */; };
 		E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */; };
 		E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */; };
 		E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */; };
@@ -454,6 +464,16 @@
 		E66F362B2538E2B700076A6E /* test_empty.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.zlib; sourceTree = "<group>"; };
 		E6791E1726FD001A003852A9 /* DataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataError.swift; sourceTree = "<group>"; };
 		E6791E1A26FD0094003852A9 /* LZ4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4.swift; sourceTree = "<group>"; };
+		E6791E2026FD04F0003852A9 /* test1.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1.lz4; sourceTree = "<group>"; };
+		E6791E2126FD04F0003852A9 /* test7.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7.lz4; sourceTree = "<group>"; };
+		E6791E2226FD04F0003852A9 /* test3.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.lz4; sourceTree = "<group>"; };
+		E6791E2326FD04F0003852A9 /* test4.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4.lz4; sourceTree = "<group>"; };
+		E6791E2426FD04F0003852A9 /* test8.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8.lz4; sourceTree = "<group>"; };
+		E6791E2526FD04F0003852A9 /* test6.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6.lz4; sourceTree = "<group>"; };
+		E6791E2626FD04F0003852A9 /* test9.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9.lz4; sourceTree = "<group>"; };
+		E6791E2726FD04F0003852A9 /* test5.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5.lz4; sourceTree = "<group>"; };
+		E6791E2826FD04F0003852A9 /* test2.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.lz4; sourceTree = "<group>"; };
+		E6791E3226FD05EC003852A9 /* LZ4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4Tests.swift; sourceTree = "<group>"; };
 		E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_3.7z; sourceTree = "<group>"; };
 		E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_4.7z; sourceTree = "<group>"; };
 		E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_2.7z; sourceTree = "<group>"; };
@@ -706,6 +726,7 @@
 				06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */,
 				06F065A71FFB763300312A82 /* GzipTests.swift */,
 				06F065AB1FFB763300312A82 /* LzmaTests.swift */,
+				E6791E3226FD05EC003852A9 /* LZ4Tests.swift */,
 				06F065AA1FFB763300312A82 /* SevenZipTests.swift */,
 				06B15D9C210E17FC00AF2EA1 /* TarCreateTests.swift */,
 				06F065A61FFB763300312A82 /* TarTests.swift */,
@@ -726,6 +747,7 @@
 				06F066081FFB763300312A82 /* BZip2 */,
 				06F065B81FFB763300312A82 /* GZip */,
 				06F065F11FFB763300312A82 /* LZMA */,
+				E6791E1F26FD04D0003852A9 /* LZ4 */,
 				06F065DF1FFB763300312A82 /* TAR */,
 				06F065C61FFB763300312A82 /* XZ */,
 				06F065D31FFB763300312A82 /* ZIP */,
@@ -928,6 +950,22 @@
 			path = LZ4;
 			sourceTree = "<group>";
 		};
+		E6791E1F26FD04D0003852A9 /* LZ4 */ = {
+			isa = PBXGroup;
+			children = (
+				E6791E2026FD04F0003852A9 /* test1.lz4 */,
+				E6791E2826FD04F0003852A9 /* test2.lz4 */,
+				E6791E2226FD04F0003852A9 /* test3.lz4 */,
+				E6791E2326FD04F0003852A9 /* test4.lz4 */,
+				E6791E2726FD04F0003852A9 /* test5.lz4 */,
+				E6791E2526FD04F0003852A9 /* test6.lz4 */,
+				E6791E2126FD04F0003852A9 /* test7.lz4 */,
+				E6791E2426FD04F0003852A9 /* test8.lz4 */,
+				E6791E2626FD04F0003852A9 /* test9.lz4 */,
+			);
+			path = LZ4;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1029,23 +1067,28 @@
 				06F066421FFB763400312A82 /* test_win.zip in Resources */,
 				0698B10D2106136500A7C551 /* test_big_num_field.tar in Resources */,
 				06F0663B1FFB763400312A82 /* test7.xz in Resources */,
+				E6791E3126FD04F0003852A9 /* test2.lz4 in Resources */,
 				06F066601FFB763400312A82 /* test_7z_copy.7z in Resources */,
 				06F0666F1FFB763400312A82 /* test5.bz2 in Resources */,
 				06F0666B1FFB763400312A82 /* test_empty_file.7z in Resources */,
 				06F066451FFB763400312A82 /* test_zip_lzma.zip in Resources */,
 				06F066741FFB763400312A82 /* test2.bz2 in Resources */,
+				E6791E2F26FD04F0003852A9 /* test9.lz4 in Resources */,
 				06F066721FFB763400312A82 /* test7.bz2 in Resources */,
 				06F0665B1FFB763400312A82 /* test10.lzma in Resources */,
 				06F0663C1FFB763400312A82 /* test3.xz in Resources */,
 				06F066591FFB763400312A82 /* test_win.tar in Resources */,
 				06F066621FFB763400312A82 /* test_all_timestamps.7z in Resources */,
 				06F066251FFB763400312A82 /* test8.answer in Resources */,
+				E6791E2B26FD04F0003852A9 /* test3.lz4 in Resources */,
+				E6791E2926FD04F0003852A9 /* test1.lz4 in Resources */,
 				06F066241FFB763400312A82 /* test2.answer in Resources */,
 				06F066541FFB763400312A82 /* long_test_oldgnu.tar in Resources */,
 				06F066551FFB763400312A82 /* test_empty_cont.tar in Resources */,
 				06F066271FFB763400312A82 /* test6.answer in Resources */,
 				06F066321FFB763400312A82 /* test.zlib in Resources */,
 				06F066671FFB763400312A82 /* test2.7z in Resources */,
+				E6791E2E26FD04F0003852A9 /* test6.lz4 in Resources */,
 				062D591421248758003543BD /* test_delta_filter.xz in Resources */,
 				0698B10B2104E11200A7C551 /* test_gnu_inc_format.tar in Resources */,
 				06F0661F1FFB763300312A82 /* test3.answer in Resources */,
@@ -1074,8 +1117,11 @@
 				06F066211FFB763300312A82 /* test9.answer in Resources */,
 				06F066221FFB763300312A82 /* test5.answer in Resources */,
 				06F0662C1FFB763400312A82 /* test7.gz in Resources */,
+				E6791E2A26FD04F0003852A9 /* test7.lz4 in Resources */,
+				E6791E2C26FD04F0003852A9 /* test4.lz4 in Resources */,
 				06F066681FFB763400312A82 /* test_7z_bzip2.7z in Resources */,
 				06F066531FFB763400312A82 /* long_test_pax.tar in Resources */,
+				E6791E3026FD04F0003852A9 /* test5.lz4 in Resources */,
 				06F066391FFB763400312A82 /* test8.xz in Resources */,
 				06F0662F1FFB763400312A82 /* test9.gz in Resources */,
 				064DF453245618A300D285F3 /* bad_cd_ext_ts.zip in Resources */,
@@ -1115,6 +1161,7 @@
 				0627A4D320FE521C0023987C /* test_unicode.7z in Resources */,
 				06F066381FFB763400312A82 /* test9.xz in Resources */,
 				06F066231FFB763300312A82 /* test7.answer in Resources */,
+				E6791E2D26FD04F0003852A9 /* test8.lz4 in Resources */,
 				06F066771FFB763400312A82 /* test8.bz2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1249,6 +1296,7 @@
 			files = (
 				06F066151FFB763300312A82 /* ZlibTests.swift in Sources */,
 				06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */,
+				E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */,
 				06F066171FFB763300312A82 /* BZip2Tests.swift in Sources */,
 				06F066181FFB763300312A82 /* TarTests.swift in Sources */,
 				06516B782139505800C9823B /* Sha256Tests.swift in Sources */,
