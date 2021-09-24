@@ -59,17 +59,17 @@ enum XxHash32 {
     private static func finalize(_ data: Data, _ ptr: Int, _ acc: UInt32) -> UInt32 {
         var acc = acc &+ UInt32(truncatingIfNeeded: data.count)
         var ptr = ptr
-        while data.endIndex - ptr >= 4 {
+        while data.count - ptr >= 4 {
             var lane = 0 as UInt32
             for k: UInt32 in 0..<4 {
-                lane &+= UInt32(truncatingIfNeeded: data[ptr]) << (k * 8)
+                lane &+= UInt32(truncatingIfNeeded: data[data.startIndex + ptr]) << (k * 8)
                 ptr += 1
             }
             acc &+= lane &* prime3
             acc = (acc <<< 17) &* prime4
         }
-        while data.endIndex - ptr >= 1 {
-            let lane = UInt32(truncatingIfNeeded: data[ptr])
+        while data.count - ptr >= 1 {
+            let lane = UInt32(truncatingIfNeeded: data[data.startIndex + ptr])
             ptr += 1
             acc &+= lane &* prime5
             acc = (acc <<< 11) &* prime1
