@@ -9,4 +9,6 @@ public enum DataError: Error {
     case truncated
     case corrupted
     case checksumMismatch([Data])
+    case unsupportedFeature
+    case encrypted
 }
