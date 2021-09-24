@@ -13,6 +13,8 @@ public enum LZ4: DecompressionAlgorithm {
         // TODO: Switch between frame and block decoding modes?
         // TODO: Small/empty data size check + Tests! (bytesLeft >= 4 + 3 + 4?)
         // TODO: Test various advanced options of LZ4.
+        // TODO: Skippable frames
+        // TODO: Legacy frames
 
         // Magic number.
         guard reader.uint32() == 0x184D2204
@@ -43,9 +45,9 @@ public enum LZ4: DecompressionAlgorithm {
             else { throw DataError.corrupted }
         // Since we don't do manual memory allocation, we don't need to decode the block maximum size from `bd`.
 
-        let contentSize: Int?
+        var contentSize: Int? = nil
         if contentSizePresent {
-            // Since Data is indexed by Int type, the maximum size of the uncompressed data that we can decode is
+            // Since Data is indexed by the Int type, the maximum size of the uncompressed data that we can decode is
             // Int.max. However, LZ4 supports uncompressed data sizes up to UInt64.max, which is larger, so we check
             // for this possibility.
             let rawContentSize = reader.uint64()
@@ -54,14 +56,8 @@ public enum LZ4: DecompressionAlgorithm {
             contentSize = Int(truncatingIfNeeded: rawContentSize)
         }
 
-        // TODO: Support custom dictionaries.
         guard !dictIdPresent
             else { throw DataError.unsupportedFeature }
-        // let dictId: Int?
-        // if dictIdPresent {
-        //     assert(Int.bitWidth > 32) // TODO: We need to properly support 32-bit platforms.
-        //     dictId = Int(truncatingIfNeeded: reader.uint32())
-        // }
 
         // Header doesn't include magic number.
         let headerData = data[data.startIndex + 4..<data.startIndex + 4 + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
@@ -82,12 +78,18 @@ public enum LZ4: DecompressionAlgorithm {
                 reader.offset -= 4
             }
         }
-        // TODO: Checksum
+        if contentSizePresent {
+            guard out.count == contentSize
+                else { throw DataError.corrupted }
+        }
+        if contentChecksumPresent {
+            guard XxHash32.hash(data: out) == reader.uint32()
+                else { throw DataError.checksumMismatch([out]) }
+        }
         return out
     }
 
-    // TODO: Multi-frame decoding (similar to XZArchive.splitUnarchive).
-    // TODO: Multi-thread decoding of blocks if they are independent.
+    // TODO: Multi-frame decoding (similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive).
 
     private static func processBlock(_ reader: LittleEndianByteReader) throws -> Data {
         fatalError("Not implemented yet")
