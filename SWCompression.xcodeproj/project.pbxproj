@@ -233,6 +233,7 @@
 		E6791E3126FD04F0003852A9 /* test2.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6791E2826FD04F0003852A9 /* test2.lz4 */; };
 		E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E3226FD05EC003852A9 /* LZ4Tests.swift */; };
 		E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C4150626FE230A00F9D36F /* XxHash32.swift */; };
+		E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */; };
 		E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */; };
 		E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */; };
 		E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */; };
@@ -476,6 +477,7 @@
 		E6791E2826FD04F0003852A9 /* test2.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.lz4; sourceTree = "<group>"; };
 		E6791E3226FD05EC003852A9 /* LZ4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4Tests.swift; sourceTree = "<group>"; };
 		E6C4150626FE230A00F9D36F /* XxHash32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32.swift; sourceTree = "<group>"; };
+		E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32Tests.swift; sourceTree = "<group>"; };
 		E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_3.7z; sourceTree = "<group>"; };
 		E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_4.7z; sourceTree = "<group>"; };
 		E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_2.7z; sourceTree = "<group>"; };
@@ -737,6 +739,7 @@
 				06D42DA62067B71000C1A98B /* TestZipExtraField.swift */,
 				06F065A31FFB763300312A82 /* ZlibTests.swift */,
 				06516B772139505800C9823B /* Sha256Tests.swift */,
+				E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1308,6 +1311,7 @@
 				06F066191FFB763300312A82 /* GzipTests.swift in Sources */,
 				06D42DA72067B71000C1A98B /* TestZipExtraField.swift in Sources */,
 				06F0661D1FFB763300312A82 /* LzmaTests.swift in Sources */,
+				E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */,
 				06F0661B1FFB763300312A82 /* XzTests.swift in Sources */,
 				06F0661E1FFB763300312A82 /* BZip2CompressionTests.swift in Sources */,
 				06F066131FFB763300312A82 /* Constants.swift in Sources */,
