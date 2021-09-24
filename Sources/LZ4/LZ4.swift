@@ -63,7 +63,8 @@ public enum LZ4: DecompressionAlgorithm {
         //     dictId = Int(truncatingIfNeeded: reader.uint32())
         // }
 
-        let headerData = data[data.startIndex..<data.startIndex + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
+        // Header doesn't include magic number.
+        let headerData = data[data.startIndex + 4..<data.startIndex + 4 + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
         let headerChecksum = XxHash32.hash(data: headerData)
         guard UInt8(truncatingIfNeeded: (headerChecksum >> 8) & 0xFF) == reader.byte()
             else { throw DataError.corrupted }
