@@ -100,6 +100,9 @@ public enum LZ4: DecompressionAlgorithm {
                 else { throw DataError.corrupted }
 
             if compressed {
+                // TODO: Dependent blocks
+                guard independentBlocks
+                    else { throw DataError.unsupportedFeature }
                 out.append(try LZ4.processCompressedBlock(blockData))
             } else {
                 out.append(blockData)
@@ -122,7 +125,64 @@ public enum LZ4: DecompressionAlgorithm {
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
 
     private static func processCompressedBlock(_ data: Data) throws -> Data {
-        fatalError("Not implemented yet")
+        // TODO: Checks for truncation (which are still possible if the values in block are wrong) + tests!
+        let reader = LittleEndianByteReader(data: data)
+        var out = Data()
+
+        while true {
+            let token = reader.byte()
+
+            var literalCount = (token >> 4).toInt()
+            if literalCount == 15 {
+                while true {
+                    let byte = reader.byte()
+                    // There is no size limit on the literal count, so we need to check that it remains within Int range
+                    // (similar to content size considerations).
+                    let (newLiteralCount, overflow) = literalCount.addingReportingOverflow(byte.toInt())
+                    guard !overflow
+                        else { throw DataError.unsupportedFeature }
+                    literalCount = newLiteralCount
+                    if byte != 255 {
+                        break
+                    }
+                }
+            }
+            out.append(contentsOf: reader.bytes(count: literalCount))
+
+            // The last sequence contains only literals.
+            if reader.isFinished {
+                // TODO: Test end of block restrictions?
+                break
+            }
+
+            let offset = reader.uint16().toInt()
+            // The value of 0 is not valid.
+            guard offset > 0 && offset <= out.endIndex
+                else { throw DataError.corrupted }
+
+            var matchLength = 4 + (token & 0xF).toInt()
+            if matchLength == 19 {
+                while true {
+                    let byte = reader.byte()
+                    // Again, there is no size limit on the match length, so we need to check that it remains within Int
+                    // range.
+                    let (newMatchLength, overflow) = matchLength.addingReportingOverflow(byte.toInt())
+                    guard !overflow
+                        else { throw DataError.unsupportedFeature }
+                    matchLength = newMatchLength
+                    if byte != 255 {
+                        break
+                    }
+                }
+            }
+
+            let matchStartIndex = out.endIndex - offset
+            for i in 0..<matchLength {
+                out.append(out[matchStartIndex + i])
+            }
+        }
+
+        return out
     }
 
 }
