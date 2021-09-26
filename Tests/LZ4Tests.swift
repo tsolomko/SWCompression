@@ -11,7 +11,7 @@ class LZ4Tests: XCTestCase {
     private static let testType: String = "lz4"
 
     // These tests test frames with independent blocks (since they all have only one block). The frames also have
-    // additional features enabled, such as content size and block checksums.
+    // additional features enabled, such as content size and block checksums. They also test legacy frame format.
 
     func perform(test testName: String) throws {
         let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
@@ -21,40 +21,57 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    private static func perform(legacyTest testName: String) throws {
+        let testData = try Constants.data(forTest: testName + "_legacy", withType: LZ4Tests.testType)
+        let decompressedData = try LZ4.decompress(data: testData)
+
+        let answerData = try Constants.data(forAnswer: testName)
+        XCTAssertEqual(decompressedData, answerData)
+    }
+
     func test1LZ4() throws {
         try self.perform(test: "test1")
+        try LZ4Tests.perform(legacyTest: "test1")
     }
 
     func test2LZ4() throws {
         try self.perform(test: "test2")
+        try LZ4Tests.perform(legacyTest: "test2")
     }
 
     func test3LZ4() throws {
         try self.perform(test: "test3")
+        try LZ4Tests.perform(legacyTest: "test3")
     }
 
     func test4LZ4() throws {
         try self.perform(test: "test4")
+        try LZ4Tests.perform(legacyTest: "test4")
     }
 
     func test5LZ4() throws {
         try self.perform(test: "test5")
+        try LZ4Tests.perform(legacyTest: "test5")
     }
 
     func test6LZ4() throws {
         try self.perform(test: "test6")
+        try LZ4Tests.perform(legacyTest: "test6")
     }
 
     func test7LZ4() throws {
         try self.perform(test: "test7")
+        try LZ4Tests.perform(legacyTest: "test7")
     }
 
     func test8LZ4() throws {
         try self.perform(test: "test8")
+        try LZ4Tests.perform(legacyTest: "test8")
     }
 
     func test9LZ4() throws {
         try self.perform(test: "test9")
+        try LZ4Tests.perform(legacyTest: "test9")
     }
 
     func testDependentBlocks() throws {

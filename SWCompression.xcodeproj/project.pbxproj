@@ -229,6 +229,15 @@
 		E652FED227007E79006BC312 /* test2.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEC927007E79006BC312 /* test2.lz4 */; };
 		E652FED427007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED327007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 */; };
 		E652FED6270091B6006BC312 /* test_skippable_frame.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */; };
+		E652FEE027009BDD006BC312 /* test5_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED727009BDC006BC312 /* test5_legacy.lz4 */; };
+		E652FEE127009BDD006BC312 /* test4_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED827009BDC006BC312 /* test4_legacy.lz4 */; };
+		E652FEE227009BDD006BC312 /* test6_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED927009BDC006BC312 /* test6_legacy.lz4 */; };
+		E652FEE327009BDD006BC312 /* test7_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDA27009BDC006BC312 /* test7_legacy.lz4 */; };
+		E652FEE427009BDD006BC312 /* test3_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDB27009BDC006BC312 /* test3_legacy.lz4 */; };
+		E652FEE527009BDD006BC312 /* test8_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDC27009BDD006BC312 /* test8_legacy.lz4 */; };
+		E652FEE627009BDD006BC312 /* test2_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDD27009BDD006BC312 /* test2_legacy.lz4 */; };
+		E652FEE727009BDD006BC312 /* test9_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDE27009BDD006BC312 /* test9_legacy.lz4 */; };
+		E652FEE827009BDD006BC312 /* test1_legacy.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEDF27009BDD006BC312 /* test1_legacy.lz4 */; };
 		E66F36242538726E00076A6E /* test_empty.lzma in Resources */ = {isa = PBXBuildFile; fileRef = E66F36232538726E00076A6E /* test_empty.lzma */; };
 		E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */ = {isa = PBXBuildFile; fileRef = E66F362B2538E2B700076A6E /* test_empty.zlib */; };
 		E6791E1826FD001A003852A9 /* DataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1726FD001A003852A9 /* DataError.swift */; };
@@ -475,6 +484,15 @@
 		E652FEC927007E79006BC312 /* test2.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.lz4; sourceTree = "<group>"; };
 		E652FED327007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = SWCompressionSourceCode.tar.lz4; sourceTree = "<group>"; };
 		E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_skippable_frame.lz4; sourceTree = "<group>"; };
+		E652FED727009BDC006BC312 /* test5_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test5_legacy.lz4; sourceTree = "<group>"; };
+		E652FED827009BDC006BC312 /* test4_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test4_legacy.lz4; sourceTree = "<group>"; };
+		E652FED927009BDC006BC312 /* test6_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDA27009BDC006BC312 /* test7_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test7_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDB27009BDC006BC312 /* test3_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDC27009BDD006BC312 /* test8_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test8_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDD27009BDD006BC312 /* test2_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDE27009BDD006BC312 /* test9_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test9_legacy.lz4; sourceTree = "<group>"; };
+		E652FEDF27009BDD006BC312 /* test1_legacy.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test1_legacy.lz4; sourceTree = "<group>"; };
 		E66F36232538726E00076A6E /* test_empty.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.lzma; sourceTree = "<group>"; };
 		E66F362B2538E2B700076A6E /* test_empty.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.zlib; sourceTree = "<group>"; };
 		E6791E1726FD001A003852A9 /* DataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataError.swift; sourceTree = "<group>"; };
@@ -963,6 +981,15 @@
 		E6791E1F26FD04D0003852A9 /* LZ4 */ = {
 			isa = PBXGroup;
 			children = (
+				E652FEDF27009BDD006BC312 /* test1_legacy.lz4 */,
+				E652FEDD27009BDD006BC312 /* test2_legacy.lz4 */,
+				E652FEDB27009BDC006BC312 /* test3_legacy.lz4 */,
+				E652FED827009BDC006BC312 /* test4_legacy.lz4 */,
+				E652FED727009BDC006BC312 /* test5_legacy.lz4 */,
+				E652FED927009BDC006BC312 /* test6_legacy.lz4 */,
+				E652FEDA27009BDC006BC312 /* test7_legacy.lz4 */,
+				E652FEDC27009BDD006BC312 /* test8_legacy.lz4 */,
+				E652FEDE27009BDD006BC312 /* test9_legacy.lz4 */,
 				E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */,
 				E652FEC627007E79006BC312 /* test1.lz4 */,
 				E652FEC927007E79006BC312 /* test2.lz4 */,
@@ -1062,7 +1089,9 @@
 				06F066291FFB763400312A82 /* test1.gz in Resources */,
 				06F0666C1FFB763400312A82 /* test_empty_dir.7z in Resources */,
 				06F066201FFB763300312A82 /* test1.answer in Resources */,
+				E652FEE727009BDD006BC312 /* test9_legacy.lz4 in Resources */,
 				06F0664E1FFB763400312A82 /* test_v7.tar in Resources */,
+				E652FEE527009BDD006BC312 /* test8_legacy.lz4 in Resources */,
 				06F0662E1FFB763400312A82 /* test2.gz in Resources */,
 				E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */,
 				06F0665C1FFB763400312A82 /* test9.lzma in Resources */,
@@ -1086,6 +1115,7 @@
 				06F0666B1FFB763400312A82 /* test_empty_file.7z in Resources */,
 				06F066451FFB763400312A82 /* test_zip_lzma.zip in Resources */,
 				06F066741FFB763400312A82 /* test2.bz2 in Resources */,
+				E652FEE027009BDD006BC312 /* test5_legacy.lz4 in Resources */,
 				06F066721FFB763400312A82 /* test7.bz2 in Resources */,
 				06F0665B1FFB763400312A82 /* test10.lzma in Resources */,
 				06F0663C1FFB763400312A82 /* test3.xz in Resources */,
@@ -1093,6 +1123,7 @@
 				06F066621FFB763400312A82 /* test_all_timestamps.7z in Resources */,
 				06F066251FFB763400312A82 /* test8.answer in Resources */,
 				06F066241FFB763400312A82 /* test2.answer in Resources */,
+				E652FEE327009BDD006BC312 /* test7_legacy.lz4 in Resources */,
 				06F066541FFB763400312A82 /* long_test_oldgnu.tar in Resources */,
 				06F066551FFB763400312A82 /* test_empty_cont.tar in Resources */,
 				06F066271FFB763400312A82 /* test6.answer in Resources */,
@@ -1122,6 +1153,7 @@
 				06F066481FFB763400312A82 /* SWCompressionSourceCode.zip in Resources */,
 				06F0665D1FFB763400312A82 /* test8.lzma in Resources */,
 				06F0664F1FFB763400312A82 /* test_oldgnu.tar in Resources */,
+				E652FEE127009BDD006BC312 /* test4_legacy.lz4 in Resources */,
 				E60CBA8A26AF379200A20130 /* test_only_dir_header.tar in Resources */,
 				06F066211FFB763300312A82 /* test9.answer in Resources */,
 				06F066221FFB763300312A82 /* test5.answer in Resources */,
@@ -1139,6 +1171,7 @@
 				06F0664D1FFB763400312A82 /* test_ustar.tar in Resources */,
 				E652FED6270091B6006BC312 /* test_skippable_frame.lz4 in Resources */,
 				06F0665A1FFB763400312A82 /* test11.lzma in Resources */,
+				E652FEE427009BDD006BC312 /* test3_legacy.lz4 in Resources */,
 				06F066401FFB763400312A82 /* test_zip_bzip2.zip in Resources */,
 				06F066461FFB763400312A82 /* test_empty_file.zip in Resources */,
 				06F066331FFB763400312A82 /* random_file.zlib in Resources */,
@@ -1154,12 +1187,15 @@
 				06F066641FFB763400312A82 /* test_anti_file.7z in Resources */,
 				E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */,
 				064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */,
+				E652FEE827009BDD006BC312 /* test1_legacy.lz4 in Resources */,
 				E652FED127007E79006BC312 /* test6.lz4 in Resources */,
 				06F0665E1FFB763400312A82 /* test_empty_cont.7z in Resources */,
 				E652FED427007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 in Resources */,
+				E652FEE627009BDD006BC312 /* test2_legacy.lz4 in Resources */,
 				E652FECF27007E79006BC312 /* test1.lz4 in Resources */,
 				E652FECC27007E79006BC312 /* test4.lz4 in Resources */,
 				06F066731FFB763400312A82 /* test3.bz2 in Resources */,
+				E652FEE227009BDD006BC312 /* test6_legacy.lz4 in Resources */,
 				E652FED227007E79006BC312 /* test2.lz4 in Resources */,
 				E652FED027007E79006BC312 /* test5.lz4 in Resources */,
 				06F066471FFB763400312A82 /* test_empty_cont.zip in Resources */,
