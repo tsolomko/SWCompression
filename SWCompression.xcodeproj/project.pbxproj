@@ -228,6 +228,7 @@
 		E652FED127007E79006BC312 /* test6.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEC827007E79006BC312 /* test6.lz4 */; };
 		E652FED227007E79006BC312 /* test2.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEC927007E79006BC312 /* test2.lz4 */; };
 		E652FED427007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED327007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 */; };
+		E652FED6270091B6006BC312 /* test_skippable_frame.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */; };
 		E66F36242538726E00076A6E /* test_empty.lzma in Resources */ = {isa = PBXBuildFile; fileRef = E66F36232538726E00076A6E /* test_empty.lzma */; };
 		E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */ = {isa = PBXBuildFile; fileRef = E66F362B2538E2B700076A6E /* test_empty.zlib */; };
 		E6791E1826FD001A003852A9 /* DataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1726FD001A003852A9 /* DataError.swift */; };
@@ -473,6 +474,7 @@
 		E652FEC827007E79006BC312 /* test6.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test6.lz4; sourceTree = "<group>"; };
 		E652FEC927007E79006BC312 /* test2.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test2.lz4; sourceTree = "<group>"; };
 		E652FED327007F2F006BC312 /* SWCompressionSourceCode.tar.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = SWCompressionSourceCode.tar.lz4; sourceTree = "<group>"; };
+		E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_skippable_frame.lz4; sourceTree = "<group>"; };
 		E66F36232538726E00076A6E /* test_empty.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.lzma; sourceTree = "<group>"; };
 		E66F362B2538E2B700076A6E /* test_empty.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.zlib; sourceTree = "<group>"; };
 		E6791E1726FD001A003852A9 /* DataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataError.swift; sourceTree = "<group>"; };
@@ -961,6 +963,7 @@
 		E6791E1F26FD04D0003852A9 /* LZ4 */ = {
 			isa = PBXGroup;
 			children = (
+				E652FED5270091B6006BC312 /* test_skippable_frame.lz4 */,
 				E652FEC627007E79006BC312 /* test1.lz4 */,
 				E652FEC927007E79006BC312 /* test2.lz4 */,
 				E652FEC127007E78006BC312 /* test3.lz4 */,
@@ -1134,6 +1137,7 @@
 				06F0662D1FFB763400312A82 /* test6.gz in Resources */,
 				E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */,
 				06F0664D1FFB763400312A82 /* test_ustar.tar in Resources */,
+				E652FED6270091B6006BC312 /* test_skippable_frame.lz4 in Resources */,
 				06F0665A1FFB763400312A82 /* test11.lzma in Resources */,
 				06F066401FFB763400312A82 /* test_zip_bzip2.zip in Resources */,
 				06F066461FFB763400312A82 /* test_empty_file.zip in Resources */,

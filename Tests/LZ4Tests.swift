@@ -90,4 +90,12 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(thrownError as? DataError, .truncated)
     }
 
+    func testSkippableFrame() throws {
+        let testData = try Constants.data(forTest: "test_skippable_frame", withType: LZ4Tests.testType)
+        let decompressedData = try LZ4.decompress(data: testData)
+
+        let answerData = try Constants.data(forAnswer: "test4")
+        XCTAssertEqual(decompressedData, answerData)
+    }
+
 }
