@@ -137,4 +137,17 @@ class LZ4Tests: XCTestCase {
         }
     }
 
+    func testDictionary() throws {
+        let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
+        let dictData = try Constants.data(forTest: "lz4_dict", withType: "")
+
+        var testData = try Constants.data(forTest: "test_dict_B5", withType: LZ4Tests.testType)
+        var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData, dictionaryID: 20000)
+        XCTAssertEqual(decompressedData, answerData)
+
+        testData = try Constants.data(forTest: "test_dict_B5_BD", withType: LZ4Tests.testType)
+        decompressedData = try LZ4.decompress(data: testData, dictionary: dictData, dictionaryID: 20000)
+        XCTAssertEqual(decompressedData, answerData)
+    }
+
 }
