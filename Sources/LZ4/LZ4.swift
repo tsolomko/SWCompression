@@ -24,12 +24,22 @@ public enum LZ4: DecompressionAlgorithm {
         case 0x184D2204:
             return try LZ4.process(frame: data[(data.startIndex + 4)...])
         case 0x184D2A50...0x184D2A5F:
-            fatalError("Skippable frame")
+            let frameSize = try process(skippableFrame: data[(data.startIndex + 4)...])
+            return try decompress(data: data[(data.startIndex + 4 + frameSize)...])
         case 0x184C2102:
             fatalError("Legacy frame")
         default:
             throw DataError.corrupted
         }
+    }
+
+    private static func process(skippableFrame data: Data) throws -> Data.Index {
+        guard data.count >= 4
+            else { throw DataError.truncated }
+        let size = data[data.startIndex..<data.startIndex + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
+        guard data.count >= size + 4
+            else { throw DataError.truncated }
+        return size.toInt() + 4
     }
 
     private static func process(frame data: Data) throws -> Data {
