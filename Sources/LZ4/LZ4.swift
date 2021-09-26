@@ -16,7 +16,7 @@ public enum LZ4: DecompressionAlgorithm {
         let reader = LittleEndianByteReader(data: data)
         // TODO: Switch between frame and block decoding modes?
         // TODO: Tests for data truncated at various places.
-        // TODO: Test various advanced options of LZ4.
+        // TODO: Test various block sizes of LZ4.
 
         // Magic number.
         // TODO: Skippable frames
@@ -130,7 +130,12 @@ public enum LZ4: DecompressionAlgorithm {
         let reader = LittleEndianByteReader(data: data)
         var out = dict ?? Data()
 
+        // These two variables used in checking end of block restrictions.
+        var sequenceCount = 0
+        var lastMatchStartIndex = -1
+
         while true {
+            sequenceCount += 1
             let token = reader.byte()
 
             var literalCount = (token >> 4).toInt()
@@ -152,7 +157,11 @@ public enum LZ4: DecompressionAlgorithm {
 
             // The last sequence contains only literals.
             if reader.isFinished {
-                // TODO: Test end of block restrictions?
+                // End of block restrictions.
+                guard literalCount >= 5 || sequenceCount == 1
+                    else { throw DataError.corrupted }
+                guard out.endIndex - lastMatchStartIndex >= 12 || lastMatchStartIndex == -1
+                    else { throw DataError.corrupted }
                 break
             }
 
@@ -181,6 +190,7 @@ public enum LZ4: DecompressionAlgorithm {
             for i in 0..<matchLength {
                 out.append(out[matchStartIndex + i])
             }
+            lastMatchStartIndex = matchStartIndex
         }
 
         if let dict = dict {
