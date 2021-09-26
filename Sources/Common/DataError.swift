@@ -5,7 +5,7 @@
 
 import Foundation
 
-public enum DataError: Error {
+public enum DataError: Error, Equatable {
     case truncated
     case corrupted
     case checksumMismatch([Data])
