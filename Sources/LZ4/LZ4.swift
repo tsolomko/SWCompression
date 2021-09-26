@@ -9,6 +9,13 @@ import BitByteData
 public enum LZ4: DecompressionAlgorithm {
 
     public static func decompress(data: Data) throws -> Data {
+        return try LZ4.decompress(data: data, dictionary: nil)
+    }
+
+    public static func decompress(data: Data, dictionary: Data?, dictionaryID: Int? = nil) throws -> Data {
+        if let dictID = dictionaryID {
+            precondition(dictID < UInt32.max, "dictionaryID is too big.")
+        }
         // Valid LZ4 frame must contain at least a magic number (4 bytes).
         guard data.count >= 4
             else { throw DataError.truncated }
@@ -19,7 +26,7 @@ public enum LZ4: DecompressionAlgorithm {
         let magic = data[data.startIndex..<data.startIndex + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
         switch magic {
         case 0x184D2204:
-            return try LZ4.process(frame: data[(data.startIndex + 4)...])
+            return try LZ4.process(frame: data[(data.startIndex + 4)...], dictionary, dictionaryID)
         case 0x184D2A50...0x184D2A5F:
             let frameSize = try process(skippableFrame: data[(data.startIndex + 4)...])
             return try LZ4.decompress(data: data[(data.startIndex + 4 + frameSize)...])
@@ -69,7 +76,7 @@ public enum LZ4: DecompressionAlgorithm {
         return out
     }
 
-    private static func process(frame data: Data) throws -> Data {
+    private static func process(frame data: Data, _ dictionary: Data?, _ extDictId: Int?) throws -> Data {
         // Valid LZ4 frame must contain frame descriptor (at least 3 bytes) and EndMark (4 bytes), assuming no data blocks.
         guard data.count >= 7
             else { throw DataError.truncated }
@@ -99,8 +106,6 @@ public enum LZ4: DecompressionAlgorithm {
         guard bd & 0x8F == 0
             else { throw DataError.corrupted }
         // Since we don't do manual memory allocation, we don't need to decode the block maximum size from `bd`.
-        // TODO: We may pass block max size to process(block:), and then call Data(capacity:) (though, what we should
-        // TODO: do in the case of dependent blocks)? (Check performance.)
 
         let contentSize: Int?
         if contentSizePresent {
@@ -120,8 +125,28 @@ public enum LZ4: DecompressionAlgorithm {
             contentSize = nil
         }
 
-        guard !dictIdPresent
-            else { throw DataError.unsupportedFeature }
+        let dictId: Int?
+        if dictIdPresent {
+            // At this point valid LZ4 frame must have at least 9 bytes remaining for: dictionary ID (4 bytes), header
+            // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
+            // TODO: test truncated
+            guard reader.bytesLeft >= 9
+                else { throw DataError.truncated }
+
+            let rawDictID = reader.uint32()
+            // Detects overflow issues on 32-bit platforms.
+            guard rawDictID <= UInt32(truncatingIfNeeded: Int.max)
+                else { throw DataError.unsupportedFeature }
+            dictId = Int(truncatingIfNeeded: rawDictID)
+        } else {
+            dictId = nil
+        }
+
+        if let extDictId = extDictId, let dictId = dictId {
+            // If dictionary ID is present in the frame, and passed as an argument, then they must be equal.
+            guard extDictId == dictId
+                else { throw DataError.corrupted }
+        }
 
         let headerData = data[data.startIndex..<data.startIndex + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
         let headerChecksum = XxHash32.hash(data: headerData)
@@ -156,9 +181,15 @@ public enum LZ4: DecompressionAlgorithm {
 
             if compressed {
                 if independentBlocks {
-                    out.append(try LZ4.process(block: blockData))
+                    out.append(try LZ4.process(block: blockData, dictionary))
                 } else {
-                    out.append(try LZ4.process(block: blockData, out[max(out.endIndex - 64 * 1024, 0)...]))
+                    if out.isEmpty, let dictionary = dictionary {
+                        out.append(try LZ4.process(block: blockData,
+                                                   dictionary[max(dictionary.endIndex - 64 * 1024, 0)...]))
+                    } else {
+                        out.append(try LZ4.process(block: blockData,
+                                                   out[max(out.endIndex - 64 * 1024, 0)...]))
+                    }
                 }
             } else {
                 out.append(blockData)
@@ -179,6 +210,7 @@ public enum LZ4: DecompressionAlgorithm {
     }
 
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
+    // TODO: Public method for querying dictionary ID.
 
     private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
         let reader = LittleEndianByteReader(data: data)
