@@ -9,11 +9,9 @@ import BitByteData
 public enum LZ4: DecompressionAlgorithm {
 
     public static func decompress(data: Data) throws -> Data {
-        // Valid LZ4 frame must contain magic number (4 bytes), frame descriptor (at least 3 bytes), and EndMark
-        // (4 bytes), assuming zero data blocks.
-        guard data.count >= 11
+        // Valid LZ4 frame must contain at least a magic number (4 bytes).
+        guard data.count >= 4
             else { throw DataError.truncated }
-        let reader = LittleEndianByteReader(data: data)
         // TODO: Switch between frame and block decoding modes?
         // TODO: Tests for data truncated at various places.
         // TODO: Test various block sizes of LZ4.
@@ -21,8 +19,24 @@ public enum LZ4: DecompressionAlgorithm {
         // Magic number.
         // TODO: Skippable frames
         // TODO: Legacy frames
-        guard reader.uint32() == 0x184D2204
-            else { throw DataError.corrupted }
+        let magic = data[data.startIndex..<data.startIndex + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
+        switch magic {
+        case 0x184D2204:
+            return try LZ4.process(frame: data[(data.startIndex + 4)...])
+        case 0x184D2A50...0x184D2A5F:
+            fatalError("Skippable frame")
+        case 0x184C2102:
+            fatalError("Legacy frame")
+        default:
+            throw DataError.corrupted
+        }
+    }
+
+    private static func process(frame data: Data) throws -> Data {
+        // Valid LZ4 frame must contain frame descriptor (at least 3 bytes) and EndMark (4 bytes), assuming zero data blocks.
+        guard data.count >= 7
+            else { throw DataError.truncated }
+        let reader = LittleEndianByteReader(data: data)
 
         // Frame Descriptor
         let flg = reader.byte()
@@ -70,8 +84,7 @@ public enum LZ4: DecompressionAlgorithm {
         guard !dictIdPresent
             else { throw DataError.unsupportedFeature }
 
-        // Header doesn't include magic number.
-        let headerData = data[data.startIndex + 4..<data.startIndex + 4 + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
+        let headerData = data[data.startIndex..<data.startIndex + 2 + (contentSizePresent ? 8 : 0) + (dictIdPresent ? 4 : 0)]
         let headerChecksum = XxHash32.hash(data: headerData)
         guard UInt8(truncatingIfNeeded: (headerChecksum >> 8) & 0xFF) == reader.byte()
             else { throw DataError.corrupted }
@@ -101,9 +114,9 @@ public enum LZ4: DecompressionAlgorithm {
 
             if compressed {
                 if independentBlocks {
-                    out.append(try LZ4.processCompressedBlock(blockData))
+                    out.append(try LZ4.process(block: blockData))
                 } else {
-                    out.append(try LZ4.processCompressedBlock(blockData, out[max(out.endIndex - 64 * 1024, 0)...]))
+                    out.append(try LZ4.process(block: blockData, out[max(out.endIndex - 64 * 1024, 0)...]))
                 }
             } else {
                 out.append(blockData)
@@ -125,7 +138,7 @@ public enum LZ4: DecompressionAlgorithm {
 
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
 
-    private static func processCompressedBlock(_ data: Data, _ dict: Data? = nil) throws -> Data {
+    private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
         let reader = LittleEndianByteReader(data: data)
         var out = dict ?? Data()
 
