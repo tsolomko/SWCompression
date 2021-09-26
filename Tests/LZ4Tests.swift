@@ -123,4 +123,18 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    func testBlockSizes() throws {
+        // These tests don't include any checksums (becaused they are too time consuming). Only content sizes are used
+        // for verification. We still test both dependent and independent blocks.
+        let answerData = Data(count: 5242880)
+
+        for blockSize in ["4", "5", "6", "7", "1234"] {
+            for dep in ["", "_BD"] {
+                let testData = try Constants.data(forTest: "test_B" + blockSize + dep, withType: LZ4Tests.testType)
+                let decompressedData = try LZ4.decompress(data: testData)
+                XCTAssertEqual(decompressedData, answerData)
+            }
+        }
+    }
+
 }

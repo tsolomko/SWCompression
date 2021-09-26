@@ -14,7 +14,6 @@ public enum LZ4: DecompressionAlgorithm {
             else { throw DataError.truncated }
         // TODO: Switch between frame and block decoding modes?
         // TODO: Tests for data truncated at various places.
-        // TODO: Test various block sizes of LZ4.
 
         // Magic number.
         let magic = data[data.startIndex..<data.startIndex + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
@@ -41,7 +40,6 @@ public enum LZ4: DecompressionAlgorithm {
     }
 
     private static func process(legacyFrame data: Data) throws -> Data {
-        // TODO: Test legacy frame with multiple blocks (problematic at the moment because blocks are fixed size of 8 MB; null-byte blocks?).
         let reader = LittleEndianByteReader(data: data)
         var out = Data()
         // The end of a frame is determined is either by end-of-file or by encountering a valid frame magic number.
@@ -101,6 +99,8 @@ public enum LZ4: DecompressionAlgorithm {
         guard bd & 0x8F == 0
             else { throw DataError.corrupted }
         // Since we don't do manual memory allocation, we don't need to decode the block maximum size from `bd`.
+        // TODO: We may pass block max size to process(block:), and then call Data(capacity:) (though, what we should
+        // TODO: do in the case of dependent blocks)? (Check performance.)
 
         let contentSize: Int?
         if contentSizePresent {
