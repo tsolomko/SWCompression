@@ -10,6 +10,9 @@ class LZ4Tests: XCTestCase {
 
     private static let testType: String = "lz4"
 
+    // These tests test frames with independent blocks (since they all have only one block). The frames also have
+    // additional features enabled, such as content size and block checksums.
+
     func perform(test testName: String) throws {
         let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
         let decompressedData = try LZ4.decompress(data: testData)
@@ -52,6 +55,16 @@ class LZ4Tests: XCTestCase {
 
     func test9LZ4() throws {
         try self.perform(test: "test9")
+    }
+
+    func testDependentBlocks() throws {
+        // This test contains dependent blocks (with the size of 64 kB), as well as has additional features enabled,
+        // such as content size and block checksums.
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode.tar", withType: LZ4Tests.testType)
+        let decompressedData = try LZ4.decompress(data: testData)
+
+        let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
+        XCTAssertEqual(decompressedData, answerData)
     }
 
 }
