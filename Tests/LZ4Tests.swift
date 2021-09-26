@@ -115,4 +115,12 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    func testLegacyFrameMultipleBlocks() throws {
+        let testData = try Constants.data(forTest: "zeros", withType: LZ4Tests.testType)
+        let decompressedData = try LZ4.decompress(data: testData)
+
+        let answerData = Data(count: 18874368)
+        XCTAssertEqual(decompressedData, answerData)
+    }
+
 }
