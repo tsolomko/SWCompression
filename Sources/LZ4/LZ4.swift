@@ -126,7 +126,6 @@ public enum LZ4: DecompressionAlgorithm {
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
 
     private static func processCompressedBlock(_ data: Data, _ dict: Data? = nil) throws -> Data {
-        // TODO: Checks for truncation (which are still possible if the values in block are wrong) + tests!
         let reader = LittleEndianByteReader(data: data)
         var out = dict ?? Data()
 
@@ -136,11 +135,17 @@ public enum LZ4: DecompressionAlgorithm {
 
         while true {
             sequenceCount += 1
+            // TODO: test truncated
+            guard data.endIndex - reader.offset > 1
+                else { throw DataError.truncated }
             let token = reader.byte()
 
             var literalCount = (token >> 4).toInt()
             if literalCount == 15 {
                 while true {
+                    // TODO: test truncated
+                    guard data.endIndex - reader.offset > 1
+                        else { throw DataError.truncated }
                     let byte = reader.byte()
                     // There is no size limit on the literal count, so we need to check that it remains within Int range
                     // (similar to content size considerations).
@@ -153,6 +158,9 @@ public enum LZ4: DecompressionAlgorithm {
                     }
                 }
             }
+            // TODO: test truncated
+            guard data.endIndex - reader.offset >= literalCount
+                else { throw DataError.truncated }
             out.append(contentsOf: reader.bytes(count: literalCount))
 
             // The last sequence contains only literals.
@@ -165,6 +173,9 @@ public enum LZ4: DecompressionAlgorithm {
                 break
             }
 
+            // TODO: test truncated
+            guard data.endIndex - reader.offset > 2
+                else { throw DataError.truncated }
             let offset = reader.uint16().toInt()
             // The value of 0 is not valid.
             guard offset > 0 && offset <= out.endIndex
@@ -173,6 +184,9 @@ public enum LZ4: DecompressionAlgorithm {
             var matchLength = 4 + (token & 0xF).toInt()
             if matchLength == 19 {
                 while true {
+                    // TODO: test truncated
+                    guard data.endIndex - reader.offset > 1
+                        else { throw DataError.truncated }
                     let byte = reader.byte()
                     // Again, there is no size limit on the match length, so we need to check that it remains within Int
                     // range.
