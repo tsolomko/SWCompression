@@ -100,10 +100,11 @@ public enum LZ4: DecompressionAlgorithm {
                 else { throw DataError.corrupted }
 
             if compressed {
-                // TODO: Dependent blocks
-                guard independentBlocks
-                    else { throw DataError.unsupportedFeature }
-                out.append(try LZ4.processCompressedBlock(blockData))
+                if independentBlocks {
+                    out.append(try LZ4.processCompressedBlock(blockData))
+                } else {
+                    out.append(try LZ4.processCompressedBlock(blockData, out[max(out.endIndex - 64 * 1024, 0)...]))
+                }
             } else {
                 out.append(blockData)
             }
@@ -124,10 +125,10 @@ public enum LZ4: DecompressionAlgorithm {
 
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
 
-    private static func processCompressedBlock(_ data: Data) throws -> Data {
+    private static func processCompressedBlock(_ data: Data, _ dict: Data? = nil) throws -> Data {
         // TODO: Checks for truncation (which are still possible if the values in block are wrong) + tests!
         let reader = LittleEndianByteReader(data: data)
-        var out = Data()
+        var out = dict ?? Data()
 
         while true {
             let token = reader.byte()
@@ -182,6 +183,9 @@ public enum LZ4: DecompressionAlgorithm {
             }
         }
 
+        if let dict = dict {
+            return out[dict.endIndex...]
+        }
         return out
     }
 
