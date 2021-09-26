@@ -26,7 +26,7 @@ let package = Package(
             name: "SWCompression",
             dependencies: ["BitByteData"],
             path: "Sources",
-            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
+            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
     ],
     swiftLanguageVersions: [.v5]
 )
