@@ -67,4 +67,27 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    func testBadFile_short() {
+        LZ4Tests.checkTruncationError(Data([0]))
+    }
+
+    func testBadFile_invalid() throws {
+        let testData = try Constants.data(forAnswer: "test6")
+        var thrownError: Error?
+        XCTAssertThrowsError(try LZ4.decompress(data: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
+        XCTAssertEqual(thrownError as? DataError, .corrupted)
+    }
+
+    func testEmptyData() {
+        LZ4Tests.checkTruncationError(Data())
+    }
+
+    private static func checkTruncationError(_ data: Data) {
+        var thrownError: Error?
+        XCTAssertThrowsError(try LZ4.decompress(data: data)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
+        XCTAssertEqual(thrownError as? DataError, .truncated)
+    }
+
 }
