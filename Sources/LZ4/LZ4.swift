@@ -12,10 +12,7 @@ public enum LZ4: DecompressionAlgorithm {
         return try LZ4.decompress(data: data, dictionary: nil)
     }
 
-    public static func decompress(data: Data, dictionary: Data?, dictionaryID: Int? = nil) throws -> Data {
-        if let dictID = dictionaryID {
-            precondition(dictID < UInt32.max, "dictionaryID is too big.")
-        }
+    public static func decompress(data: Data, dictionary: Data?, dictionaryID: UInt32? = nil) throws -> Data {
         // Valid LZ4 frame must contain at least a magic number (4 bytes).
         guard data.count >= 4
             else { throw DataError.truncated }
@@ -76,7 +73,7 @@ public enum LZ4: DecompressionAlgorithm {
         return out
     }
 
-    private static func process(frame data: Data, _ dictionary: Data?, _ extDictId: Int?) throws -> Data {
+    private static func process(frame data: Data, _ dictionary: Data?, _ extDictId: UInt32?) throws -> Data {
         // Valid LZ4 frame must contain frame descriptor (at least 3 bytes) and EndMark (4 bytes), assuming no data blocks.
         guard data.count >= 7
             else { throw DataError.truncated }
@@ -210,7 +207,6 @@ public enum LZ4: DecompressionAlgorithm {
     }
 
     // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
-    // TODO: Public method for querying dictionary ID.
 
     private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
         let reader = LittleEndianByteReader(data: data)
