@@ -124,6 +124,9 @@ public enum LZ4: DecompressionAlgorithm {
 
         let dictId: Int?
         if dictIdPresent {
+            // If dictionary ID is present in the frame, then we must have a dictionary to successfully decode it.
+            guard dictionary != nil
+                else { throw DataError.corrupted }
             // At this point valid LZ4 frame must have at least 9 bytes remaining for: dictionary ID (4 bytes), header
             // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
             // TODO: test truncated
