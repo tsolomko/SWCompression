@@ -15,6 +15,9 @@ class LZ4Command: Command {
     let compress = Flag("-c", "--compress", description: "Compress an input file into a LZ4 archive")
     let decompress = Flag("-d", "--decompress", description: "Decompress a LZ4 archive")
 
+    let dictionary = Key<String>("-D", "--dict", description: "Path to a dictionary to use in decompression or compression")
+    let dictionaryID = Key<Int>("--dictID", description: "Optional dictionary ID; must less than or equal to 4294967295.")
+
     var optionGroups: [OptionGroup] {
         let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
         return [actions]
@@ -41,8 +44,24 @@ class LZ4Command: Command {
                 exit(1)
             }
 
+            let dictID: UInt32?
+            if let dictionaryID = dictionaryID.value {
+                guard dictionaryID <= UInt32.max
+                    else { print("ERROR: Too large dictionary ID."); exit(1) }
+                dictID = UInt32(truncatingIfNeeded: dictionaryID)
+            } else {
+                dictID = nil
+            }
+
+            let dictData: Data?
+            if let dictionary = dictionary.value {
+                dictData = try Data(contentsOf: URL(fileURLWithPath: dictionary), options: .mappedIfSafe)
+            } else {
+                dictData = nil
+            }
+
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-            let decompressedData = try LZ4.decompress(data: fileData)
+            let decompressedData = try LZ4.decompress(data: fileData, dictionary: dictData, dictionaryID: dictID)
             try decompressedData.write(to: outputURL)
         } else if compress.value {
             print("LZ4 compression is not implemented yet")
