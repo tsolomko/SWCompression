@@ -8,6 +8,8 @@ import BitByteData
 
 public enum LZ4: DecompressionAlgorithm {
 
+    // TODO: Tests for data truncated at various places.
+
     public static func decompress(data: Data) throws -> Data {
         return try LZ4.decompress(data: data, dictionary: nil)
     }
@@ -16,22 +18,52 @@ public enum LZ4: DecompressionAlgorithm {
         // Valid LZ4 frame must contain at least a magic number (4 bytes).
         guard data.count >= 4
             else { throw DataError.truncated }
-        // TODO: Switch between frame and block decoding modes?
-        // TODO: Tests for data truncated at various places.
 
         // Magic number.
         let magic = data[data.startIndex..<data.startIndex + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
         switch magic {
         case 0x184D2204:
-            return try LZ4.process(frame: data[(data.startIndex + 4)...], dictionary, dictionaryID)
+            return try LZ4.process(frame: data[(data.startIndex + 4)...], dictionary, dictionaryID).0
         case 0x184D2A50...0x184D2A5F:
             let frameSize = try process(skippableFrame: data[(data.startIndex + 4)...])
             return try LZ4.decompress(data: data[(data.startIndex + 4 + frameSize)...])
         case 0x184C2102:
-            return try LZ4.process(legacyFrame: data[(data.startIndex + 4)...])
+            return try LZ4.process(legacyFrame: data[(data.startIndex + 4)...]).0
         default:
             throw DataError.corrupted
         }
+    }
+
+    public static func multiDecompress(data: Data, dictionary: Data? = nil, dictionaryID: UInt32? = nil) throws -> [Data] {
+        var result = [Data]()
+        var nextFrameOffset = data.startIndex
+
+        repeat {
+            // Magic number.
+            // The input must contain at least one valid LZ4 frame, which in turn must contain at least a magic number.
+            guard nextFrameOffset + 4 <= data.endIndex
+                else { throw DataError.truncated }
+            let magic = data[nextFrameOffset..<nextFrameOffset + 4].withUnsafeBytes { $0.bindMemory(to: UInt32.self)[0] }
+            nextFrameOffset += 4
+            var out: Data? = nil
+
+            switch magic {
+            case 0x184D2204:
+                (out, nextFrameOffset) = try LZ4.process(frame: data[nextFrameOffset...], dictionary, dictionaryID)
+            case 0x184D2A50...0x184D2A5F:
+                nextFrameOffset += try process(skippableFrame: data[nextFrameOffset...])
+            case 0x184C2102:
+                (out, nextFrameOffset) = try LZ4.process(legacyFrame: data[nextFrameOffset...])
+            default:
+                throw DataError.corrupted
+            }
+
+            if let out = out {
+                result.append(out)
+            }
+        } while nextFrameOffset < data.endIndex
+
+        return result
     }
 
     private static func process(skippableFrame data: Data) throws -> Data.Index {
@@ -43,7 +75,10 @@ public enum LZ4: DecompressionAlgorithm {
         return size + 4
     }
 
-    private static func process(legacyFrame data: Data) throws -> Data {
+    // The functions below return uncompressed data and the offset to the next byte after the processed frame (even if
+    // the end of the input data was reached). The offset is needed to make multiDecompress function work.
+
+    private static func process(legacyFrame data: Data) throws -> (Data, Data.Index) {
         let reader = LittleEndianByteReader(data: data)
         var out = Data()
         // The end of a frame is determined is either by end-of-file or by encountering a valid frame magic number.
@@ -52,8 +87,8 @@ public enum LZ4: DecompressionAlgorithm {
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
             let rawBlockSize = reader.uint32()
-            // TODO: Can legacy and non-legacy frames can be contacenated (check reference implementation)?
             if rawBlockSize == 0x184D2204 || rawBlockSize == 0x184C2102 || 0x184D2A50...0x184D2A5F ~= rawBlockSize {
+                reader.offset -= 4
                 break
             }
             // Detects overflow issues on 32-bit platforms.
@@ -70,10 +105,10 @@ public enum LZ4: DecompressionAlgorithm {
 
             out.append(try LZ4.process(block: blockData))
         }
-        return out
+        return (out, reader.offset)
     }
 
-    private static func process(frame data: Data, _ dictionary: Data?, _ extDictId: UInt32?) throws -> Data {
+    private static func process(frame data: Data, _ dictionary: Data?, _ extDictId: UInt32?) throws -> (Data, Data.Index) {
         // Valid LZ4 frame must contain frame descriptor (at least 3 bytes) and EndMark (4 bytes), assuming no data blocks.
         guard data.count >= 7
             else { throw DataError.truncated }
@@ -206,10 +241,8 @@ public enum LZ4: DecompressionAlgorithm {
             guard XxHash32.hash(data: out) == reader.uint32()
                 else { throw DataError.checksumMismatch([out]) }
         }
-        return out
+        return (out, reader.offset)
     }
-
-    // TODO: Multi-frame decoding, similar to XZArchive.splitUnarchive or GzipArchive.multiUnarchive.
 
     private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
         let reader = LittleEndianByteReader(data: data)
