@@ -156,4 +156,17 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    func testMultiFrameDecompress() throws {
+        // The test file contains three frames:
+        // - Legacy frame format, compressed test1.answer,
+        // - Skippable frame with 1233 bytes of random data,
+        // - Normal frame with compressed test4.answer.
+        let testData = try Constants.data(forTest: "test_multi_frame", withType: LZ4Tests.testType)
+        let result = try LZ4.multiDecompress(data: testData)
+
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result[0], try Constants.data(forAnswer: "test1"))
+        XCTAssertEqual(result[1], try Constants.data(forAnswer: "test4"))
+    }
+
 }
