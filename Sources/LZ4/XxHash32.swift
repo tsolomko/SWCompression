@@ -32,18 +32,18 @@ enum XxHash32 {
     @inline(__always)
     private static func hashSmall(_ data: Data, _ seed: UInt32) -> UInt32 {
         let acc  = seed &+ prime5
-        return finalize(data, 0, acc)
+        return finalize(data, data.startIndex, acc)
     }
 
     @inline(__always)
     private static func hashBig(_ data: Data, _ seed: UInt32) -> UInt32 {
         var accs = [seed &+ prime1 &+ prime2, seed &+ prime2, seed &+ 0, seed &- prime1]
-        var i = 0
-        while data.count - i >= 16 { // Loop over stripes.
+        var i = data.startIndex
+        while data.endIndex - i >= 16 { // Loop over stripes.
             for j in 0..<4 { // Loop over lanes.
                 var lane = 0 as UInt32
                 for k: UInt32 in 0..<4 {
-                    lane &+= UInt32(truncatingIfNeeded: data[data.startIndex + i + j * 4 + k.toInt()]) << (k * 8)
+                    lane &+= UInt32(truncatingIfNeeded: data[i + j * 4 + k.toInt()]) << (k * 8)
                 }
                 accs[j] &+= lane &* prime2
                 accs[j] = accs[j] <<< 13
@@ -58,19 +58,19 @@ enum XxHash32 {
 
     private static func finalize(_ data: Data, _ ptr: Int, _ acc: UInt32) -> UInt32 {
         var acc = acc &+ UInt32(truncatingIfNeeded: data.count)
-        var ptr = ptr
-        while data.count - ptr >= 4 {
+        var i = ptr
+        while data.endIndex - i >= 4 {
             var lane = 0 as UInt32
             for k: UInt32 in 0..<4 {
-                lane &+= UInt32(truncatingIfNeeded: data[data.startIndex + ptr]) << (k * 8)
-                ptr += 1
+                lane &+= UInt32(truncatingIfNeeded: data[i]) << (k * 8)
+                i += 1
             }
             acc &+= lane &* prime3
             acc = (acc <<< 17) &* prime4
         }
-        while data.count - ptr >= 1 {
-            let lane = UInt32(truncatingIfNeeded: data[data.startIndex + ptr])
-            ptr += 1
+        while data.endIndex - i >= 1 {
+            let lane = UInt32(truncatingIfNeeded: data[i])
+            i += 1
             acc &+= lane &* prime5
             acc = (acc <<< 11) &* prime1
         }
