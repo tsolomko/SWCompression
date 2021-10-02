@@ -49,14 +49,14 @@ extension LZ4: CompressionAlgorithm {
         out.append(bd)
 
         if contentSize {
-            let size = UInt64(truncatingIfNeeded: data.count)
+            let size = data.count
             for i in 0..<8 {
                 out.append(UInt8(truncatingIfNeeded: (size & (0xFF << (i * 8))) >> (i * 8)))
             }
         }
 
         if let dictionaryID = dictionaryID {
-            for i in 0..<4 {
+            for i: UInt32 in 0..<4 {
                 out.append(UInt8(truncatingIfNeeded: (dictionaryID & (0xFF << (i * 8))) >> (i * 8)))
             }
         }
@@ -82,7 +82,7 @@ extension LZ4: CompressionAlgorithm {
                     fatalError("Patalogical size of non-compressible block.")
                 }
                 let blockSize = (0x80000000 as UInt32) | UInt32(truncatingIfNeeded: blockData.count)
-                for i in 0..<4 {
+                for i: UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
                 }
                 out.append(contentsOf: blockData)
@@ -93,7 +93,7 @@ extension LZ4: CompressionAlgorithm {
                     fatalError("Patalogical size of compressed block.")
                 }
                 let blockSize = UInt32(truncatingIfNeeded: compressedBlock.count)
-                for i in 0..<4 {
+                for i:UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
                 }
                 out.append(contentsOf: compressedBlock)
@@ -101,7 +101,7 @@ extension LZ4: CompressionAlgorithm {
 
             if blockChecksums {
                 let blockChecksum = XxHash32.hash(data: Data(compressedBlock))
-                for i in 0..<4 {
+                for i: UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockChecksum & (0xFF << (i * 8))) >> (i * 8)))
                 }
             }
@@ -113,7 +113,7 @@ extension LZ4: CompressionAlgorithm {
         // Content checksum.
         if contentChecksum {
             let hash = XxHash32.hash(data: data)
-            for i in 0..<4 {
+            for i: UInt32 in 0..<4 {
                 out.append(UInt8(truncatingIfNeeded: (hash & (0xFF << (i * 8))) >> (i * 8)))
             }
         }
