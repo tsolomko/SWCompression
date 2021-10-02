@@ -184,30 +184,39 @@ was created manually and you shouldn't use `swift package generate-xcodeproj` co
 
 ### Executing tests locally
 
-If you want to run tests on your computer, you need to do an additional step after cloning the repository:
+If you want to run tests on your computer, you need to do a couple of additional steps after cloning the repository:
 
 ```bash
-./utils.py prepare-workspace {macos|other}
+./utils.py download-bbd-macos
+git submodule update --init --recursive
+cd "Tests/Test Files"
+cp gitattributes-copy .gitattributes
+git lfs pull
+git lfs checkout
 ```
 
-The argument of this function is an operating system that you're using. This command will download files used in tests,
-and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed. When using
-Xcode 12 or later, you should also pass the `--xcf` option, or use the
-[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
-Please also note that when working on SWCompression in Xcode when building the project you may see ld warnings about a
-directory not being found. These are expected and harmless. Finally, you should keep in mind that support for non-xcframework
-method of installing dependencies is likely to be dropped in the future major update.
+The first command will download the BitByteData dependency, which requires having Carthage installed. When using Xcode
+12 or later, you should also pass the `--xcf` option, or use the
+[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md). Please note
+that when building SWCompression's Xcode project you may see ld warnings about a directory not being found. These are
+expected and harmless. Finally, you should keep in mind that support for non-xcframework method of installing
+dependencies is likely to be dropped in the future major update.
 
-Test files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS.
-There are two reasons for this complicated setup. Firstly, some of these files can be quite big, and it would be
-unfortunate if the users of SWCompression had to download them every time during the installation. Secondly, Swift
-Package Manager and contemporary versions of Xcode don't always work well with git-lfs-enabled repositories. To prevent
-any potential problems test files were moved into another repository. Additionaly, the custom command line tool `utils.py`
-is used to work around issues occuring on certain user systems (see, for example, [#9](https://github.com/tsolomko/SWCompression/issues/9)).
+The remaining commands will download the files used in tests. These files are stored in a
+[separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS. There are two reasons for
+this complicated setup. Firstly, some of these files can be quite big, and it would be unfortunate if the users of
+SWCompression had to download them during the installation. Secondly, Swift Package Manager and contemporary versions of
+Xcode don't always work well with git-lfs-enabled repositories. To prevent any potential problems test files were moved
+into another repository.
 
 Please note, that if you want to add a new _type_ of test files, in addition to running `git lfs track`, you have to
 also copy into the "Tests/Test Files/gitattributes-copy" file a line this command adds to the "Tests/Test Files/.gitattributes"
 file. __Do not commit the ".gitattributes" file to the git history. It is git-ignored for a reason!__
+
+Please also be mindful of Git LFS bandwidth quota on GitHub: try to limit downloading lfs'd files using `git lfs pull`.
+In CI we use some caching techniques to help with the quota, so if you're going to add new tests that require several
+new test files you should try to submit them all together to reduce the amount of times CI needs to recreate the cache
+(recreating the cache requires to do `git lfs pull` for all test files).
 
 ## Performance
 
