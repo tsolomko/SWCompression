@@ -6,36 +6,36 @@
 import XCTest
 import SWCompression
 
-class BZip2CompressionTests: XCTestCase {
+class LZ4CompressionTests: XCTestCase {
 
-    private static let testType: String = "bz2"
+    private static let testType: String = "lz4"
 
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
 
-        let compressedData = BZip2.compress(data: answerData)
+        let compressedData = LZ4.compress(data: answerData)
 
         if testName != "test5" { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("BZip2.\(testName).compressionRatio = \(compressionRatio)")
+            print("LZ4.\(testName).compressionRatio = \(compressionRatio)")
         } else {
             print("No compression ratio for test5.")
         }
 
-        let redecompressedData = try BZip2.decompress(data: compressedData)
+        let redecompressedData = try LZ4.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
 
     func stringTest(_ string: String) throws {
         let answerData = Data(string.utf8)
 
-        let compressedData = BZip2.compress(data: answerData)
+        let compressedData = LZ4.compress(data: answerData)
 
-        let redecompressedData = try BZip2.decompress(data: compressedData)
+        let redecompressedData = try LZ4.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
 
-    func testBZip2CompressStrings() throws {
+    func testLZ4CompressStrings() throws {
         try stringTest("banana")
         try stringTest("abaaba")
         try stringTest("abracadabra")
@@ -46,7 +46,7 @@ class BZip2CompressionTests: XCTestCase {
         try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
     }
 
-    func testBZip2CompressBytes() throws {
+    func testLZ4CompressBytes() throws {
         var bytes = ""
         for i: UInt8 in 0...255 {
             bytes += String(format: "%c", i)
@@ -54,39 +54,39 @@ class BZip2CompressionTests: XCTestCase {
         try stringTest(bytes)
     }
 
-    func testWithAnswer1BZip2Compress() throws {
+    func testWithAnswer1LZ4Compress() throws {
         try answerTest("test1")
     }
 
-    func testWithAnswer2BZip2Compress() throws {
+    func testWithAnswer2LZ4Compress() throws {
         try answerTest("test2")
     }
 
-    func testWithAnswer3BZip2Compress() throws {
+    func testWithAnswer3LZ4Compress() throws {
         try answerTest("test3")
     }
 
-    func testWithAnswer4BZip2Compress() throws {
+    func testWithAnswer4LZ4Compress() throws {
         try answerTest("test4")
     }
 
-    func testWithAnswer5BZip2Compress() throws {
+    func testWithAnswer5LZ4Compress() throws {
         try answerTest("test5")
     }
 
-    func testWithAnswer6BZip2Compress() throws {
+    func testWithAnswer6LZ4Compress() throws {
         try answerTest("test6")
     }
 
-//    func testWithAnswer7BZip2Compress() throws {
-//        try answerTest("test7")
-//    }
+    func testWithAnswer7LZ4Compress() throws {
+        try answerTest("test7")
+    }
 
-    func testWithAnswer8BZip2Compress() throws {
+    func testWithAnswer8LZ4Compress() throws {
         try answerTest("test8")
     }
 
-    func testWithAnswer9BZip2Compress() throws {
+    func testWithAnswer9LZ4Compress() throws {
         try answerTest("test9")
     }
 

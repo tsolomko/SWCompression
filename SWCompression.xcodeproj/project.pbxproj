@@ -259,6 +259,7 @@
 		E6791E1B26FD0094003852A9 /* LZ4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1A26FD0094003852A9 /* LZ4.swift */; };
 		E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E3226FD05EC003852A9 /* LZ4Tests.swift */; };
 		E6974C5B2701AC2600E06C60 /* test_dict_B5_dictID.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */; };
+		E6B18E85270884E300F9AB99 /* LZ4CompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */; };
 		E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C4150626FE230A00F9D36F /* XxHash32.swift */; };
 		E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */; };
 		E6DF9ECE2704BF14003BD91E /* test_multi_frame.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6DF9ECD2704BF14003BD91E /* test_multi_frame.lz4 */; };
@@ -532,6 +533,7 @@
 		E6791E1A26FD0094003852A9 /* LZ4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4.swift; sourceTree = "<group>"; };
 		E6791E3226FD05EC003852A9 /* LZ4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4Tests.swift; sourceTree = "<group>"; };
 		E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5_dictID.lz4; sourceTree = "<group>"; };
+		E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4CompressionTests.swift; sourceTree = "<group>"; };
 		E6C4150626FE230A00F9D36F /* XxHash32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32.swift; sourceTree = "<group>"; };
 		E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32Tests.swift; sourceTree = "<group>"; };
 		E6DF9ECD2704BF14003BD91E /* test_multi_frame.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi_frame.lz4; sourceTree = "<group>"; };
@@ -788,6 +790,7 @@
 				06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */,
 				06F065A71FFB763300312A82 /* GzipTests.swift */,
 				06F065AB1FFB763300312A82 /* LzmaTests.swift */,
+				E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */,
 				E6791E3226FD05EC003852A9 /* LZ4Tests.swift */,
 				06F065AA1FFB763300312A82 /* SevenZipTests.swift */,
 				06B15D9C210E17FC00AF2EA1 /* TarCreateTests.swift */,
@@ -1418,6 +1421,7 @@
 				06F066151FFB763300312A82 /* ZlibTests.swift in Sources */,
 				06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */,
 				E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */,
+				E6B18E85270884E300F9AB99 /* LZ4CompressionTests.swift in Sources */,
 				06F066171FFB763300312A82 /* BZip2Tests.swift in Sources */,
 				06F066181FFB763300312A82 /* TarTests.swift in Sources */,
 				06516B782139505800C9823B /* Sha256Tests.swift in Sources */,
