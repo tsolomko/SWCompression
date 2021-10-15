@@ -93,7 +93,7 @@ extension LZ4: CompressionAlgorithm {
                     fatalError("Patalogical size of compressed block.")
                 }
                 let blockSize = UInt32(truncatingIfNeeded: compressedBlock.count)
-                for i:UInt32 in 0..<4 {
+                for i: UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
                 }
                 out.append(contentsOf: compressedBlock)
@@ -122,8 +122,129 @@ extension LZ4: CompressionAlgorithm {
     }
 
     private static func compress(block: Data, _ dict: Data?) -> [UInt8] {
-        // TODO:
-        return block.withUnsafeBytes { $0.map { $0 } }
+        var out = dict?.withUnsafeBytes { $0.map { $0 } } ?? [UInt8]()
+        let outStartIndex = out.endIndex
+
+        let blockBytes = block.withUnsafeBytes { $0.map { $0 } }
+        var matchStorage = [UInt32: Int]()
+
+        /// Literals of the currently constructed sequence.
+        /// If the array isn't empty this indicates that there is an in-progress sequence.
+        var currentLiterals = [UInt8]()
+        var i = blockBytes.startIndex
+
+        // Match searching algorithm is mostly the same as the one that we use for Deflate.
+
+        while i < blockBytes.endIndex - 5 {
+            let matchCrc = CheckSums.crc32(Data(blockBytes[i..<i + 4]))
+            guard let matchStartIndex = matchStorage[matchCrc] else {
+                // No match found.
+                // We need to save where we met this four-byte sequence.
+                matchStorage[matchCrc] = i
+                currentLiterals.append(blockBytes[i])
+                i += 1
+                continue
+            }
+            // We need to update position of this match to keep distances as small as possible.
+            matchStorage[matchCrc] = i
+
+            // Minimum match length equals to four.
+            var matchLength = 4
+            /// Cyclic index which is used to compare bytes in match and in input.
+            var repeatIndex = matchStartIndex + matchLength
+            let distance = i - matchStartIndex
+            // Maximum allowed distance equals to 65535.
+            guard distance <= 65535 else {
+                currentLiterals.append(blockBytes[i])
+                i += 1
+                continue
+            }
+
+            // TODO: While theoretically match length is not limited, we still have a practical limit of Int.max.
+            // We exclude the last 5 bytes from the potential match since we need them for the separate
+            // end-of-block sequence which contains only literals.
+            while i + matchLength < blockBytes.endIndex - 5 &&
+                    blockBytes[i + matchLength] == blockBytes[repeatIndex] {
+                matchLength += 1
+                repeatIndex += 1
+                // TODO: Maybe this can be simplified with modulo division? (Performance?)
+                if repeatIndex > i {
+                    repeatIndex = matchStartIndex + 1
+                }
+            }
+
+            if blockBytes.endIndex - distance < 12 {
+                // The last match must start at least 12 bytes before the end of block.
+                break
+            }
+
+            // Writing a sequence.
+            // We start by constructing a token.
+            var token = UInt8(truncatingIfNeeded: min(15, currentLiterals.count)) << 4
+            token |= UInt8(truncatingIfNeeded: min(15, matchLength - 4))
+            out.append(token)
+            // Then we output additional bytes of the literals count.
+            var literalsCount = currentLiterals.count - 15
+            while literalsCount >= 0 {
+                // TODO: Maybe this can be simplified with some fancy math expression.
+                if literalsCount > 255 {
+                    out.append(255)
+                } else {
+                    out.append(UInt8(truncatingIfNeeded: literalsCount))
+                }
+                literalsCount -= 255
+            }
+            for literal in currentLiterals {
+                out.append(literal)
+            }
+            // Next we write the distance ("offset" in LZ4 terms) as little-endian UInt16 number.
+            out.append(UInt8(truncatingIfNeeded: distance & 0xFF))
+            out.append(UInt8(truncatingIfNeeded: (distance >> 8) & 0xFF))
+            // Finally, we output match length in the same as we did for literals count.
+            // But before that we need to skip the entire match in the input.
+            i += matchLength
+            matchLength -= 19 // 4 (min match length) + 15 (token value)
+            while matchLength >= 0 {
+                // TODO: Maybe this can be simplified with some fancy math expression.
+                if matchLength > 255 {
+                    out.append(255)
+                } else {
+                    out.append(UInt8(truncatingIfNeeded: matchLength))
+                }
+                matchLength -= 255
+            }
+            currentLiterals = [UInt8]()
+        }
+
+        // The last 5 bytes should be processed as literals. They will be either included in the unfinished sequence,
+        // or they will form a new sequence. This also covers the case when the size of input is less than 5 bytes.
+        if blockBytes.endIndex - i >= 5 {
+            while i < blockBytes.endIndex {
+                currentLiterals.append(blockBytes[i])
+                i += 1
+            }
+        }
+
+        // It may happen that we haven't found any matches, so no sequences have been written to the output yet.
+        // In this case we need to write a sequence into the output that contains the entire input as literals.
+        if currentLiterals.count > 0 {
+            out.append(UInt8(truncatingIfNeeded: min(15, currentLiterals.count)) << 4)
+            var literalsCount = currentLiterals.count - 15
+            while literalsCount >= 0 {
+                // TODO: Maybe this can be simplified with some fancy math expression.
+                if literalsCount > 255 {
+                    out.append(255)
+                } else {
+                    out.append(UInt8(truncatingIfNeeded: literalsCount))
+                }
+                literalsCount -= 255
+            }
+            for literal in currentLiterals {
+                out.append(literal)
+            }
+        }
+
+        return Array(out[outStartIndex...])
     }
 
 }
