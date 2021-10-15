@@ -12,7 +12,7 @@ class BenchmarkGroup: CommandGroup {
     let name = "benchmark"
     let shortDescription = "Run the specified benchmark using external files"
 
-    let children: [Routable] = [UnGzip(), UnXz(), UnBz2(), UnLZ4(), InfoTar(), InfoZip(), Info7z(), CompDeflate(), CompBz2(), CreateTar()]
+    let children: [Routable] = [UnGzip(), UnXz(), UnBz2(), UnLZ4(), InfoTar(), InfoZip(), Info7z(), CompDeflate(), CompBz2(), CompLZ4(), CreateTar()]
 
 }
 
@@ -37,6 +37,18 @@ class CompDeflate: BenchmarkCommand {
 
     let benchmarkName = "Deflate Compression"
     let benchmarkFunction: (Data) throws -> Any = Deflate.compress
+
+}
+
+class CompLZ4: BenchmarkCommand {
+
+    let name = "comp-lz4"
+    let shortDescription = "LZ4 compression (independent blocks)"
+
+    let inputs = CollectedParameter()
+
+    let benchmarkName = "LZ4 Compression with independent blocks"
+    let benchmarkFunction: (Data) throws -> Any = LZ4.compress
 
 }
 
