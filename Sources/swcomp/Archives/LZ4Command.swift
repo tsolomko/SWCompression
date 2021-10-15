@@ -64,8 +64,19 @@ class LZ4Command: Command {
             let decompressedData = try LZ4.decompress(data: fileData, dictionary: dictData, dictionaryID: dictID)
             try decompressedData.write(to: outputURL)
         } else if compress.value {
-            print("LZ4 compression is not implemented yet")
-            exit(1)
+            let inputURL = URL(fileURLWithPath: self.input.value)
+            let fileName = inputURL.lastPathComponent
+
+            let outputURL: URL
+            if let outputPath = output.value {
+                outputURL = URL(fileURLWithPath: outputPath)
+            } else {
+                outputURL = inputURL.appendingPathExtension("lz4")
+            }
+
+            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            let compressedData = try LZ4.compress(data: fileData)
+            try compressedData.write(to: outputURL)
         }
     }
 
