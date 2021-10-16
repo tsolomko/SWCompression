@@ -54,6 +54,11 @@ Pod::Spec.new do |s|
     sp.source_files = "Sources/{LZMA2/*,Common/*}.swift"
   end
 
+  s.subspec "LZ4" do |sp|
+    sp.source_files = "Sources/{LZ4/*,Common/*}.swift"
+    sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_LZ4" }
+  end
+
   s.subspec "XZ" do |sp|
     sp.dependency "SWCompression/LZMA2"
     sp.source_files = "Sources/{XZ/*,Common/*}.swift"
