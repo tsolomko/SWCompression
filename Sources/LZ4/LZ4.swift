@@ -221,10 +221,10 @@ public enum LZ4: DecompressionAlgorithm {
                 } else {
                     if out.isEmpty, let dictionary = dictionary {
                         out.append(try LZ4.process(block: blockData,
-                                                   dictionary[max(dictionary.endIndex - 64 * 1024, 0)...]))
+                                                   dictionary[max(dictionary.endIndex - 64 * 1024, dictionary.startIndex)...]))
                     } else {
                         out.append(try LZ4.process(block: blockData,
-                                                   out[max(out.endIndex - 64 * 1024, 0)...]))
+                                                   out[max(out.endIndex - 64 * 1024, out.startIndex)...]))
                     }
                 }
             } else {
