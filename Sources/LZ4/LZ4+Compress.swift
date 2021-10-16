@@ -75,11 +75,14 @@ extension LZ4: CompressionAlgorithm {
         }
 
         for i in stride(from: data.startIndex, to: data.endIndex, by: blockSize) {
-            // TODO: Which block size should we use here: the arbitrary requested by the user, or the maxBlockSize?
+            // TODO: Which block size should we use here: the arbitrary (requested by the user) or the maxBlockSize?
             let blockData = data[i..<min(i + blockSize, data.endIndex)]
             let compressedBlock = LZ4.compress(block: blockData, dict)
             if !independentBlocks {
-                dict = blockData[max(blockData.endIndex - 64 * 1024, 0)...]
+                // If the blocks are dependent then we need to update the dictionary with the uncompressed data
+                // from the current block.
+                // TODO: Probably fails for dependent blocks with block size less than 64 KB.
+                dict = blockData[max(blockData.endIndex - 64 * 1024, blockData.startIndex)...]
             }
 
             if compressedBlock.count > blockData.count {
