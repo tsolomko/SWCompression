@@ -8,29 +8,22 @@ import SWCompression
 
 class LZ4CompressionTests: XCTestCase {
 
-    private static let testType: String = "lz4"
-
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
-
         let compressedData = LZ4.compress(data: answerData)
-
-        if testName != "test5" { // Compression ratio is always bad for empty file.
+        if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print("LZ4.\(testName).compressionRatio = \(compressionRatio)")
         } else {
-            print("No compression ratio for test5.")
+            print("No compression ratio for empty data.")
         }
-
         let redecompressedData = try LZ4.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
 
     func stringTest(_ string: String) throws {
         let answerData = Data(string.utf8)
-
         let compressedData = LZ4.compress(data: answerData)
-
         let redecompressedData = try LZ4.decompress(data: compressedData)
         XCTAssertEqual(redecompressedData, answerData)
     }
@@ -88,6 +81,34 @@ class LZ4CompressionTests: XCTestCase {
 
     func testWithAnswer9LZ4Compress() throws {
         try answerTest("test9")
+    }
+
+    func testWithRandomOptions() throws {
+        for i in 1...9 {
+            let independentBlocks = Bool.random()
+            let blockChecksums = Bool.random()
+            let contentChecksum = Bool.random()
+            let contentSize = Bool.random()
+            let blockSize = Int.random(in: 1024...4 * 1024 * 1024)
+
+            let answerData = try Constants.data(forAnswer: "test\(i)")
+            let compressedData = LZ4.compress(data: answerData, independentBlocks: independentBlocks,
+                                              blockChecksums: blockChecksums, contentChecksum: contentChecksum,
+                                              contentSize: contentSize, blockSize: blockSize, dictionary: nil,
+                                              dictionaryID: nil)
+            do {
+                let redecompressedData = try LZ4.decompress(data: compressedData)
+                XCTAssertEqual(redecompressedData, answerData, "Test #\(i) failed (result mismatch) with the following " +
+                               "options: independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
+                               "content checksum = \(contentChecksum), content size = \(contentSize), " +
+                               "block size = \(blockSize) bytes")
+            } catch let error {
+                XCTFail("Test #\(i) failed (DataError.\(error) caught) with the following options: " +
+                        "independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
+                        "content checksum = \(contentChecksum), content size = \(contentSize), " +
+                        "block size = \(blockSize) bytes")
+            }
+        }
     }
 
 }
