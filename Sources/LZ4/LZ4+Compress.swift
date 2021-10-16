@@ -65,7 +65,15 @@ extension LZ4: CompressionAlgorithm {
         let headerChecksum = XxHash32.hash(data: Data(out[4...]))
         out.append(UInt8(truncatingIfNeeded: (headerChecksum >> 8) & 0xFF))
 
-        var dict = dictionary
+        // TODO: Maybe we can use Data() instead of optional?
+        var dict: Data?
+        if let dictionary = dictionary {
+            // Provided dictionary can be smaller than the standard size of 64 KB.
+            dict = dictionary[max(dictionary.endIndex - 64 * 1024, dictionary.startIndex)...]
+        } else {
+            dict = nil
+        }
+
         for i in stride(from: data.startIndex, to: data.endIndex, by: blockSize) {
             // TODO: Which block size should we use here: the arbitrary requested by the user, or the maxBlockSize?
             let blockData = data[i..<min(i + blockSize, data.endIndex)]
@@ -129,16 +137,16 @@ extension LZ4: CompressionAlgorithm {
     }
 
     private static func compress(block: Data, _ dict: Data?) -> [UInt8] {
-        var out = dict?.withUnsafeBytes { $0.map { $0 } } ?? [UInt8]()
-        let outStartIndex = out.endIndex
+        var out = [UInt8]()
 
-        let blockBytes = block.withUnsafeBytes { $0.map { $0 } }
-        var matchStorage = [UInt32: Int]()
+        var blockBytes = dict?.withUnsafeBytes { $0.map { $0 } } ?? [UInt8]()
+        var matchStorage = LZ4.populateMatchStorage(blockBytes)
+        var i = blockBytes.endIndex
+        block.withUnsafeBytes { $0.forEach { blockBytes.append($0) } }
 
         /// Literals of the currently constructed sequence.
         /// If the array isn't empty this indicates that there is an in-progress sequence.
         var currentLiterals = [UInt8]()
-        var i = blockBytes.startIndex
 
         // Match searching algorithm is mostly the same as the one that we use for Deflate.
 
@@ -253,7 +261,18 @@ extension LZ4: CompressionAlgorithm {
             out.append(literal)
         }
 
-        return Array(out[outStartIndex...])
+        return out
+    }
+
+    private static func populateMatchStorage(_ dict: [UInt8]) -> [UInt32: Int] {
+        guard !dict.isEmpty
+            else { return [:] }
+        var matchStorage = [UInt32: Int]()
+        for i in dict.startIndex..<dict.endIndex - 4 {
+            let matchCrc = CheckSums.crc32(Data(dict[i..<i + 4]))
+            matchStorage[matchCrc] = i
+        }
+        return matchStorage
     }
 
 }
