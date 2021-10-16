@@ -221,6 +221,7 @@
 		E609D7B7271AFAA400068E79 /* test_small_dict_B5.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E609D7B4271AFAA400068E79 /* test_small_dict_B5.lz4 */; };
 		E60CBA8A26AF379200A20130 /* test_only_dir_header.tar in Resources */ = {isa = PBXBuildFile; fileRef = E60CBA8926AF379200A20130 /* test_only_dir_header.tar */; };
 		E631055927084D5D006EACC3 /* LZ4+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E631055827084D5D006EACC3 /* LZ4+Compress.swift */; };
+		E6421E8F271B54C6000359B6 /* test_7z_lz4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6421E8E271B54C6000359B6 /* test_7z_lz4.7z */; };
 		E648151D26A889B8009261F0 /* TarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E648151C26A889B8009261F0 /* TarHeader.swift */; };
 		E64F71BC26AAFD6A008BB308 /* Data+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */; };
 		E652D8F3263D670900FC229B /* test_nonstandard_runlength.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */; };
@@ -498,6 +499,7 @@
 		E60CBA8926AF379200A20130 /* test_only_dir_header.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_only_dir_header.tar; sourceTree = "<group>"; };
 		E631055827084D5D006EACC3 /* LZ4+Compress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LZ4+Compress.swift"; sourceTree = "<group>"; };
 		E631055A27086132006EACC3 /* SWCompression.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = SWCompression.xctestplan; path = SWCompression.xcodeproj/SWCompression.xctestplan; sourceTree = SOURCE_ROOT; };
+		E6421E8E271B54C6000359B6 /* test_7z_lz4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_7z_lz4.7z; sourceTree = "<group>"; };
 		E648151C26A889B8009261F0 /* TarHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarHeader.swift; sourceTree = "<group>"; };
 		E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Tar.swift"; sourceTree = "<group>"; };
 		E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.bz2; sourceTree = "<group>"; };
@@ -984,6 +986,7 @@
 				06F065FE1FFB763300312A82 /* test_encrypted_header.7z */,
 				06F066011FFB763300312A82 /* test_7z_bzip2.7z */,
 				06F066021FFB763300312A82 /* test_7z_deflate.7z */,
+				E6421E8E271B54C6000359B6 /* test_7z_lz4.7z */,
 				06F066041FFB763300312A82 /* test_empty_file.7z */,
 				06F066051FFB763300312A82 /* test_empty_dir.7z */,
 				06F066061FFB763300312A82 /* test_win.7z */,
@@ -1217,6 +1220,7 @@
 				06F066491FFB763400312A82 /* test_zip64.zip in Resources */,
 				06F066761FFB763400312A82 /* test9.bz2 in Resources */,
 				06F0662A1FFB763400312A82 /* test4.gz in Resources */,
+				E6421E8F271B54C6000359B6 /* test_7z_lz4.7z in Resources */,
 				06F066301FFB763400312A82 /* test_multi.gz in Resources */,
 				06F066371FFB763400312A82 /* test_multi_pad.xz in Resources */,
 				06F066651FFB763400312A82 /* test_encrypted_header.7z in Resources */,
