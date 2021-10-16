@@ -111,4 +111,54 @@ class LZ4CompressionTests: XCTestCase {
         }
     }
 
+    func testDictionary() throws {
+        let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
+        let dictData = try Constants.data(forTest: "lz4_dict", withType: "")
+
+        var compressedData = LZ4.compress(data: answerData, independentBlocks: true, blockChecksums: Bool.random(),
+                                              contentChecksum: Bool.random(), contentSize: Bool.random(),
+                                              blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
+        var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
+        XCTAssertEqual(redecompressedData, answerData)
+        var compressionRatio = Double(answerData.count) / Double(compressedData.count)
+        print("LZ4.dict.compressionRatio = \(compressionRatio)")
+
+        compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: Bool.random(),
+                                              contentChecksum: Bool.random(), contentSize: Bool.random(),
+                                              blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
+        redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
+        XCTAssertEqual(redecompressedData, answerData)
+        compressionRatio = Double(answerData.count) / Double(compressedData.count)
+        print("LZ4.dict_BD.compressionRatio = \(compressionRatio)")
+
+        compressedData = LZ4.compress(data: answerData, independentBlocks: true, blockChecksums: Bool.random(),
+                                              contentChecksum: Bool.random(), contentSize: Bool.random(),
+                                              blockSize: 256 * 1024, dictionary: dictData, dictionaryID: 20000)
+        redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData, dictionaryID: 20000)
+        XCTAssertEqual(redecompressedData, answerData)
+        // If the wrong dictionary ID is specified the decompression should fail.
+        XCTAssertThrowsError(try LZ4.decompress(data: compressedData, dictionary: dictData, dictionaryID: 12345))
+    }
+
+    func testSmallDictionary() throws {
+        let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
+        let dictData = try Constants.data(forTest: "lz4_small_dict", withType: "")
+
+        var compressedData = LZ4.compress(data: answerData, independentBlocks: true, blockChecksums: Bool.random(),
+                                              contentChecksum: Bool.random(), contentSize: Bool.random(),
+                                              blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
+        var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
+        XCTAssertEqual(redecompressedData, answerData)
+        var compressionRatio = Double(answerData.count) / Double(compressedData.count)
+        print("LZ4.small_dict.compressionRatio = \(compressionRatio)")
+
+        compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: Bool.random(),
+                                              contentChecksum: Bool.random(), contentSize: Bool.random(),
+                                              blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
+        redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
+        XCTAssertEqual(redecompressedData, answerData)
+        compressionRatio = Double(answerData.count) / Double(compressedData.count)
+        print("LZ4.small_dict_BD.compressionRatio = \(compressionRatio)")
+    }
+
 }
