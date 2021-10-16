@@ -142,7 +142,10 @@ extension LZ4: CompressionAlgorithm {
 
         // Match searching algorithm is mostly the same as the one that we use for Deflate.
 
-        while i < blockBytes.endIndex - 5 {
+        // The last five bytes must be encoded as literals AND the last match must end before them. Non-minimal matches
+        // are checked for this condition in the match-searching while-loop, but minmatches (4-bytes long) are verified
+        // here (hence -9).
+        while i < blockBytes.endIndex - 9 {
             let matchCrc = CheckSums.crc32(Data(blockBytes[i..<i + 4]))
             guard let matchStartIndex = matchStorage[matchCrc] else {
                 // No match found.
