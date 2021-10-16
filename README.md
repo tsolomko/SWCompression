@@ -265,3 +265,6 @@ completely in Swift without Objective-C, it can also be used on __Linux__.
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 - [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
 - [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)
+- [LZ4 Frame Format Description](https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md)
+- [LZ4 Block Format Description](https://github.com/lz4/lz4/blob/dev/doc/lz4_Block_format.md)
+- [xxHash specification](https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md)
