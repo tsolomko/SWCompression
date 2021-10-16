@@ -232,23 +232,22 @@ extension LZ4: CompressionAlgorithm {
             }
         }
 
-        // It may happen that we haven't found any matches, so no sequences have been written to the output yet.
-        // In this case we need to write a sequence into the output that contains the entire input as literals.
-        if currentLiterals.count > 0 {
-            out.append(UInt8(truncatingIfNeeded: min(15, currentLiterals.count)) << 4)
-            var literalsCount = currentLiterals.count - 15
-            while literalsCount >= 0 {
-                // TODO: Maybe this can be simplified with some fancy math expression.
-                if literalsCount > 255 {
-                    out.append(255)
-                } else {
-                    out.append(UInt8(truncatingIfNeeded: literalsCount))
-                }
-                literalsCount -= 255
+        // The block must end with a sequence that contains only literals, though the length of this sequence depends
+        // on various circumstances.
+        assert(currentLiterals.count > 0)
+        out.append(UInt8(truncatingIfNeeded: min(15, currentLiterals.count)) << 4)
+        var literalsCount = currentLiterals.count - 15
+        while literalsCount >= 0 {
+            // TODO: Maybe this can be simplified with some fancy math expression.
+            if literalsCount > 255 {
+                out.append(255)
+            } else {
+                out.append(UInt8(truncatingIfNeeded: literalsCount))
             }
-            for literal in currentLiterals {
-                out.append(literal)
-            }
+            literalsCount -= 255
+        }
+        for literal in currentLiterals {
+            out.append(literal)
         }
 
         return Array(out[outStartIndex...])
