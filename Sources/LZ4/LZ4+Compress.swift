@@ -86,6 +86,13 @@ extension LZ4: CompressionAlgorithm {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
                 }
                 out.append(contentsOf: blockData)
+
+                if blockChecksums {
+                    let blockChecksum = XxHash32.hash(data: blockData)
+                    for i: UInt32 in 0..<4 {
+                        out.append(UInt8(truncatingIfNeeded: (blockChecksum & (0xFF << (i * 8))) >> (i * 8)))
+                    }
+                }
             } else {
                 if compressedBlock.count > 0x7FFFFFFF {
                     // TODO: In this case we cannot properly store uncompressed block, since either the highest bit of
@@ -97,12 +104,12 @@ extension LZ4: CompressionAlgorithm {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
                 }
                 out.append(contentsOf: compressedBlock)
-            }
 
-            if blockChecksums {
-                let blockChecksum = XxHash32.hash(data: Data(compressedBlock))
-                for i: UInt32 in 0..<4 {
-                    out.append(UInt8(truncatingIfNeeded: (blockChecksum & (0xFF << (i * 8))) >> (i * 8)))
+                if blockChecksums {
+                    let blockChecksum = XxHash32.hash(data: Data(compressedBlock))
+                    for i: UInt32 in 0..<4 {
+                        out.append(UInt8(truncatingIfNeeded: (blockChecksum & (0xFF << (i * 8))) >> (i * 8)))
+                    }
                 }
             }
         }
