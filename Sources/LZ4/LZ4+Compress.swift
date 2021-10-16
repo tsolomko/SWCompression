@@ -74,7 +74,7 @@ extension LZ4: CompressionAlgorithm {
                 dict = blockData[max(blockData.endIndex - 64 * 1024, 0)...]
             }
 
-            if compressedBlock.count >= blockData.count { // TODO: > or >=? (right now >= to make trivial impl for compress(block:))
+            if compressedBlock.count > blockData.count {
                 // In this case the data is non-compressible, so we write the block as uncompressed.
                 if blockData.count > 0x7FFFFFFF {
                     // TODO: In this case we cannot properly store uncompressed block, since either the highest bit of
