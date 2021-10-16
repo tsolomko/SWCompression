@@ -11,14 +11,12 @@ class LZ4CompressionTests: XCTestCase {
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
         let compressedData = LZ4.compress(data: answerData)
+        let redecompressedData = try LZ4.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
         if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print("LZ4.\(testName).compressionRatio = \(compressionRatio)")
-        } else {
-            print("No compression ratio for empty data.")
         }
-        let redecompressedData = try LZ4.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
     }
 
     func stringTest(_ string: String) throws {

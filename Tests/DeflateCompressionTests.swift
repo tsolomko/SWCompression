@@ -10,18 +10,13 @@ class DeflateCompressionTests: XCTestCase {
 
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
-
         let compressedData = Deflate.compress(data: answerData)
-
-        if testName != "test5" { // Compression ratio is always bad for empty file.
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+        if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print("Deflate.\(testName).compressionRatio = \(compressionRatio)")
-        } else {
-            print("No compression ratio for test5.")
         }
-
-        let reUncompData = try Deflate.decompress(data: compressedData)
-        XCTAssertEqual(answerData, reUncompData)
     }
 
     func testDeflate1() throws {
