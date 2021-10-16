@@ -156,6 +156,20 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(decompressedData, answerData)
     }
 
+    func testSmallDictionary() throws {
+        // Here we test decompression with a small dictionary, i.e. smaller than standard "lookback window" of 64 KB.
+        let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
+        let dictData = try Constants.data(forTest: "lz4_small_dict", withType: "")
+
+        var testData = try Constants.data(forTest: "test_small_dict_B5", withType: LZ4Tests.testType)
+        var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
+        XCTAssertEqual(decompressedData, answerData)
+
+        testData = try Constants.data(forTest: "test_small_dict_B5_BD", withType: LZ4Tests.testType)
+        decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
+        XCTAssertEqual(decompressedData, answerData)
+    }
+
     func testMultiFrameDecompress() throws {
         // The test file contains three frames:
         // - Legacy frame format, compressed test1.answer,
