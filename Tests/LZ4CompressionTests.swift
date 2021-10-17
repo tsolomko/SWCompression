@@ -92,8 +92,7 @@ class LZ4CompressionTests: XCTestCase {
             let answerData = try Constants.data(forAnswer: "test\(i)")
             let compressedData = LZ4.compress(data: answerData, independentBlocks: independentBlocks,
                                               blockChecksums: blockChecksums, contentChecksum: contentChecksum,
-                                              contentSize: contentSize, blockSize: blockSize, dictionary: nil,
-                                              dictionaryID: nil)
+                                              contentSize: contentSize, blockSize: blockSize)
             do {
                 let redecompressedData = try LZ4.decompress(data: compressedData)
                 XCTAssertEqual(redecompressedData, answerData, "Test #\(i) failed (result mismatch) with the following " +

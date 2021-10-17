@@ -14,8 +14,8 @@ extension LZ4: CompressionAlgorithm {
     }
 
     public static func compress(data: Data, independentBlocks: Bool, blockChecksums: Bool,
-                                 contentChecksum: Bool, contentSize: Bool, blockSize: Int,
-                                 dictionary: Data?, dictionaryID: UInt32? = nil) -> Data {
+                                 contentChecksum: Bool, contentSize: Bool, blockSize: Int = 4 * 1024 * 1024,
+                                 dictionary: Data? = nil, dictionaryID: UInt32? = nil) -> Data {
         var out = [UInt8]()
 
         // Magic number.
