@@ -158,4 +158,14 @@ class LZ4CompressionTests: XCTestCase {
         print("LZ4.small_dict_BD.compressionRatio = \(compressionRatio)")
     }
 
+    func testTrickySequence() throws {
+        // This test helped us find an issue with implementation (match index was wrongly used as cyclical index).
+        let answerData = Data([0x61, 0x6C, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x2D, 0x01, 0x02, 0x03, 0x04,
+                              0x05, 0x06, 0x07, 0x08, 0x09, 0x00])
+        let compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: true,
+                                              contentChecksum: true, contentSize: true)
+        let redecompressedData = try LZ4.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+    }
+
 }
