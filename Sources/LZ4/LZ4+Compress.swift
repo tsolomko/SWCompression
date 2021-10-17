@@ -151,7 +151,11 @@ extension LZ4: CompressionAlgorithm {
         /// If the array isn't empty this indicates that there is an in-progress sequence.
         var currentLiterals = [UInt8]()
 
-        // Match searching algorithm is mostly the same as the one that we use for Deflate.
+        // Match searching algorithm is mostly the same as the one that we use for Deflate. This algorithm prioritizes
+        // the closest mathches (minimizes the distance). However, this is not important for LZ4, so in the future we
+        // may investigate the posibility of removing this restriction, which may improve compression ratio (though,
+        // we need to be careful to not to decrease compression speed disproportionally).
+        // TODO: Maybe we should update match storage inside match-length-loop as well?
 
         // The last five bytes must be encoded as literals AND the last match must end before them. Non-minimal matches
         // are checked for this condition in the match-searching while-loop, but minmatches (4-bytes long) are verified
@@ -171,8 +175,8 @@ extension LZ4: CompressionAlgorithm {
 
             // Minimum match length equals to four.
             var matchLength = 4
-            /// Cyclic index which is used to compare bytes in match and in input.
-            var repeatIndex = matchStartIndex + matchLength
+            // The index which points to the match from the past bytes. We use it to compare previous and current matches.
+            var matchIndex = matchStartIndex + matchLength
             let distance = i - matchStartIndex
             // Maximum allowed distance equals to 65535.
             guard distance <= 65535 else {
@@ -184,14 +188,9 @@ extension LZ4: CompressionAlgorithm {
             // TODO: While theoretically match length is not limited, we still have a practical limit of Int.max.
             // We exclude the last 5 bytes from the potential match since we need them for the separate
             // end-of-block sequence which contains only literals.
-            while i + matchLength < blockBytes.endIndex - 5 &&
-                    blockBytes[i + matchLength] == blockBytes[repeatIndex] {
+            while i + matchLength < blockBytes.endIndex - 5 && blockBytes[i + matchLength] == blockBytes[matchIndex] {
                 matchLength += 1
-                repeatIndex += 1
-                // TODO: Maybe this can be simplified with modulo division? (Performance?)
-                if repeatIndex > i {
-                    repeatIndex = matchStartIndex + 1
-                }
+                matchIndex += 1
             }
 
             if blockBytes.endIndex - distance < 12 {
