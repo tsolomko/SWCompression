@@ -159,46 +159,46 @@ extension Deflate: CompressionAlgorithm {
 
             let threeByteCrc = CheckSums.crc32(data[inputIndex..<inputIndex + 3])
 
-            if let matchStartIndex = dictionary[threeByteCrc] {
-                // We need to update position of this match to keep distances as small as possible.
-                dictionary[threeByteCrc] = inputIndex
-
-                /// - Note: Minimum match length equals to three.
-                var matchLength = 3
-                /// Cyclic index which is used to compare bytes in match and in input.
-                var repeatIndex = matchStartIndex + matchLength
-
-                /// - Note: Maximum allowed distance equals to 32768.
-                let distance = inputIndex - matchStartIndex
-
-                // Again, the distance cannot be greater than 32768.
-                if distance <= 32768 {
-                    while inputIndex + matchLength < data.count &&
-                        data[inputIndex + matchLength] == data[repeatIndex] && matchLength < 258 {
-                            matchLength += 1
-                            repeatIndex += 1
-                            if repeatIndex > inputIndex {
-                                repeatIndex = matchStartIndex + 1
-                            }
-                    }
-                    buffer.append(BLDCode.lengthDistance(UInt16(truncatingIfNeeded: matchLength),
-                                                         UInt16(truncatingIfNeeded: distance)))
-                    stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
-                    stats[286 + ((Constants.distanceBase.firstIndex { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
-                    inputIndex += matchLength
-                } else {
-                    buffer.append(BLDCode.byte(byte))
-                    stats[byte.toInt()] += 1
-                    inputIndex += 1
-                }
-            } else {
-                // We need to remember where we met this three-byte sequence.
+            guard let matchStartIndex = dictionary[threeByteCrc] else {
+                // No match found.
+                // We need to save where we met this three-byte sequence.
                 dictionary[threeByteCrc] = inputIndex
 
                 buffer.append(BLDCode.byte(byte))
                 stats[byte.toInt()] += 1
                 inputIndex += 1
+                continue
             }
+            // We need to update position of this match to keep distances as small as possible.
+            dictionary[threeByteCrc] = inputIndex
+
+            // Minimum match length equals to three.
+            var matchLength = 3
+            /// Cyclic index which is used to compare bytes in match and in input.
+            var repeatIndex = matchStartIndex + matchLength
+
+            // Maximum allowed distance equals to 32768.
+            let distance = inputIndex - matchStartIndex
+            guard distance <= 32768 else {
+                buffer.append(BLDCode.byte(byte))
+                stats[byte.toInt()] += 1
+                inputIndex += 1
+                continue
+            }
+
+            while inputIndex + matchLength < data.count &&
+                    data[inputIndex + matchLength] == data[repeatIndex] && matchLength < 258 {
+                matchLength += 1
+                repeatIndex += 1
+                if repeatIndex > inputIndex {
+                    repeatIndex = matchStartIndex + 1
+                }
+            }
+            buffer.append(BLDCode.lengthDistance(UInt16(truncatingIfNeeded: matchLength),
+                                                 UInt16(truncatingIfNeeded: distance)))
+            stats[Constants.lengthCode[matchLength - 3]] += 1 // Length symbol.
+            stats[286 + ((Constants.distanceBase.firstIndex { $0 > distance }) ?? 30) - 1] += 1 // Distance symbol.
+            inputIndex += matchLength
         }
 
         // For last two bytes there certainly will be no match.
