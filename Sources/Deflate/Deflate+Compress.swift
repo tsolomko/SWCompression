@@ -146,7 +146,7 @@ extension Deflate: CompressionAlgorithm {
 
     private static func lengthEncode(_ data: Data) -> (codes: [BLDCode], stats: [Int]) {
         var buffer: [BLDCode] = []
-        var inputIndex = 0
+        var inputIndex = data.startIndex
         /// Keys --- three-byte crc32, values --- positions in `data`.
         var dictionary = [UInt32: Int]()
 
@@ -154,7 +154,7 @@ extension Deflate: CompressionAlgorithm {
 
         // Last two bytes of input will be considered separately.
         // This also allows to use length encoding for arrays with size less than 3.
-        while inputIndex < data.count - 2 {
+        while inputIndex < data.endIndex - 2 {
             let byte = data[inputIndex]
 
             let threeByteCrc = CheckSums.crc32(data[inputIndex..<inputIndex + 3])
@@ -203,7 +203,7 @@ extension Deflate: CompressionAlgorithm {
 
         // For last two bytes there certainly will be no match.
         // Moreover, `threeByteCrc` cannot be computed, so we need to put them in as `.byte`s.
-        while inputIndex < data.count {
+        while inputIndex < data.endIndex {
             let byte = data[inputIndex]
             buffer.append(BLDCode.byte(byte))
             stats[byte.toInt()] += 1
