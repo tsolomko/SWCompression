@@ -23,6 +23,10 @@ protocol BenchmarkCommand: Command {
 
     var benchmarkFunction: (InputType) throws -> Any { get }
 
+    // Compression ratio is calculated only if the InputType and the type of output is Data, and the size of the input
+    // is greater than zero.
+    var calculateCompressionRatio: Bool { get }
+
 }
 
 extension BenchmarkCommand where InputType == Data {
@@ -38,6 +42,10 @@ extension BenchmarkCommand where InputType == Data {
 }
 
 extension BenchmarkCommand {
+
+    var calculateCompressionRatio: Bool {
+        return false
+    }
 
     func execute() throws {
         let title = "\(benchmarkName) Benchmark\n"
@@ -60,7 +68,7 @@ extension BenchmarkCommand {
             #endif
             // Zeroth (excluded) iteration.
             let startTime = CFAbsoluteTimeGetCurrent()
-            _ = try benchmarkFunction(loadedInput)
+            let warmupOutput = try benchmarkFunction(loadedInput)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             let speed = inputSize / timeElapsed
             print("(\(SpeedFormat(speed).format())), ", terminator: "")
@@ -88,7 +96,14 @@ extension BenchmarkCommand {
             let avgSpeed = totalSpeed / 10
             let avgSpeedFormat = SpeedFormat(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
-            print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))\n")
+            print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))")
+
+            if let inputData = loadedInput as? Data, let outputData = warmupOutput as? Data, calculateCompressionRatio,
+                inputData.count > 0 {
+                let compressionRatio = Double(inputData.count) / Double(outputData.count)
+                print(String(format: "Compression ratio: %.3f", compressionRatio))
+            }
+            print()
         }
     }
 

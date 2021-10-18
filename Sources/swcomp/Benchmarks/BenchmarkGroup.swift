@@ -31,6 +31,8 @@ class CompBz2: BenchmarkCommand {
     let benchmarkName = "BZip2 Compression"
     let benchmarkFunction: (Data) throws -> Any = BZip2.compress
 
+    let calculateCompressionRatio = true
+
 }
 
 class CompDeflate: BenchmarkCommand {
@@ -43,6 +45,8 @@ class CompDeflate: BenchmarkCommand {
     let benchmarkName = "Deflate Compression"
     let benchmarkFunction: (Data) throws -> Any = Deflate.compress
 
+    let calculateCompressionRatio = true
+
 }
 
 class CompLZ4: BenchmarkCommand {
@@ -54,6 +58,8 @@ class CompLZ4: BenchmarkCommand {
 
     let benchmarkName = "LZ4 Compression with independent blocks"
     let benchmarkFunction: (Data) throws -> Any = LZ4.compress
+
+    let calculateCompressionRatio = true
 
 }
 
@@ -69,6 +75,8 @@ class CompLZ4BD: BenchmarkCommand {
         LZ4.compress(data: $0, independentBlocks: false, blockChecksums: false, contentChecksum: true,
         contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
     }
+
+    let calculateCompressionRatio = true
 
 }
 
