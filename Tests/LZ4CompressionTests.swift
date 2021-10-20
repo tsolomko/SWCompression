@@ -27,6 +27,7 @@ class LZ4CompressionTests: XCTestCase {
     }
 
     func testLZ4CompressStrings() throws {
+        try stringTest("ban")
         try stringTest("banana")
         try stringTest("abaaba")
         try stringTest("abracadabra")
@@ -160,6 +161,7 @@ class LZ4CompressionTests: XCTestCase {
 
     func testTrickySequence() throws {
         // This test helped us find an issue with implementation (match index was wrongly used as cyclical index).
+        // The last 10 bytes (0x01 - 0x00) are only here to allow creation of a sequence with a match.
         let answerData = Data([0x61, 0x6C, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x2D, 0x01, 0x02, 0x03, 0x04,
                               0x05, 0x06, 0x07, 0x08, 0x09, 0x00])
         let compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: true,
