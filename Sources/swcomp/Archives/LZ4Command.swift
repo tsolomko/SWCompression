@@ -17,7 +17,7 @@ class LZ4Command: Command {
 
     let dependentBlocks = Flag("--dependent-blocks", description: "(Compression only) Use dependent blocks")
     let blockChecksums = Flag("--block-checksums", description: "(Compression only) Save checksums for compressed blocks")
-    let noContentChecksum = Flag("--no-content-checksums", description: "(Compression only) Don't save the checksum of the uncompressed data")
+    let noContentChecksum = Flag("--no-content-checksum", description: "(Compression only) Don't save the checksum of the uncompressed data")
     let contentSize = Flag("--content-size", description: "(Compression only) Save the size of the uncompressed data")
     
     let blockSize = Key<Int>("--block-size", description: "(Compression only) Use specified block size (in bytes; default: 4194304, max: 2147483647)")
