@@ -320,11 +320,14 @@ public enum LZ4: DecompressionAlgorithm {
                 }
             }
 
+            // We record the start index of the last encountered match to verify it against end-of-block restrictions.
+            // Note, that this refers to the bytes that we have found a match for, and not to the bytes that we're
+            // matching to.
+            lastMatchStartIndex = out.endIndex
             let matchStartIndex = out.endIndex - offset
             for i in 0..<matchLength {
                 out.append(out[matchStartIndex + i])
             }
-            lastMatchStartIndex = matchStartIndex
         }
 
         if let dict = dict {

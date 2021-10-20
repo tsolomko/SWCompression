@@ -193,8 +193,9 @@ extension LZ4: CompressionAlgorithm {
                 matchIndex += 1
             }
 
-            if blockBytes.endIndex - distance < 12 {
-                // The last match must start at least 12 bytes before the end of block.
+            if blockBytes.endIndex - i < 12 {
+                // The last match must start at least 12 bytes before the end of block. Note, that this refers to the
+                // bytes that we have found a match for, and not to the bytes that we're matching to.
                 break
             }
 
