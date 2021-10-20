@@ -15,7 +15,7 @@ class LZ4CompressionTests: XCTestCase {
         XCTAssertEqual(redecompressedData, answerData)
         if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("LZ4.\(testName).compressionRatio = \(compressionRatio)")
+            print(String(format: "LZ4.\(testName).compressionRatio = %.3f", compressionRatio))
         }
     }
 
@@ -119,7 +119,7 @@ class LZ4CompressionTests: XCTestCase {
         var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
         XCTAssertEqual(redecompressedData, answerData)
         var compressionRatio = Double(answerData.count) / Double(compressedData.count)
-        print("LZ4.dict.compressionRatio = \(compressionRatio)")
+        print(String(format: "LZ4.dict.compressionRatio = %.3f", compressionRatio))
 
         compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: Bool.random(),
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
@@ -127,7 +127,7 @@ class LZ4CompressionTests: XCTestCase {
         redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
         XCTAssertEqual(redecompressedData, answerData)
         compressionRatio = Double(answerData.count) / Double(compressedData.count)
-        print("LZ4.dict_BD.compressionRatio = \(compressionRatio)")
+        print(String(format: "LZ4.dict_BD.compressionRatio = %.3f", compressionRatio))
 
         compressedData = LZ4.compress(data: answerData, independentBlocks: true, blockChecksums: Bool.random(),
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
@@ -148,7 +148,7 @@ class LZ4CompressionTests: XCTestCase {
         var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
         XCTAssertEqual(redecompressedData, answerData)
         var compressionRatio = Double(answerData.count) / Double(compressedData.count)
-        print("LZ4.small_dict.compressionRatio = \(compressionRatio)")
+        print(String(format: "LZ4.small_dict.compressionRatio = %.3f", compressionRatio))
 
         compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: Bool.random(),
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
@@ -156,7 +156,7 @@ class LZ4CompressionTests: XCTestCase {
         redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
         XCTAssertEqual(redecompressedData, answerData)
         compressionRatio = Double(answerData.count) / Double(compressedData.count)
-        print("LZ4.small_dict_BD.compressionRatio = \(compressionRatio)")
+        print(String(format: "LZ4.small_dict_BD.compressionRatio = %.3f", compressionRatio))
     }
 
     func testTrickySequence() throws {

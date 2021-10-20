@@ -15,7 +15,7 @@ class BZip2CompressionTests: XCTestCase {
         XCTAssertEqual(redecompressedData, answerData)
         if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("BZip2.\(testName).compressionRatio = \(compressionRatio)")
+            print(String(format: "BZip2.\(testName).compressionRatio = %.3f", compressionRatio))
         }
     }
 
