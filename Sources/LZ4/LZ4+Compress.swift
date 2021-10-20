@@ -237,13 +237,11 @@ extension LZ4: CompressionAlgorithm {
             currentLiterals = [UInt8]()
         }
 
-        // The last 5 bytes should be processed as literals. They will be either included in the unfinished sequence,
+        // The remaining bytes should be processed as literals. They will be either included in the unfinished sequence,
         // or they will form a new sequence. This also covers the case when the size of input is less than 5 bytes.
-        if blockBytes.endIndex - i >= 5 {
-            while i < blockBytes.endIndex {
-                currentLiterals.append(blockBytes[i])
-                i += 1
-            }
+        while i < blockBytes.endIndex {
+            currentLiterals.append(blockBytes[i])
+            i += 1
         }
 
         // The block must end with a sequence that contains only literals, though the length of this sequence depends
