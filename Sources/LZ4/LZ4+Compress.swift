@@ -161,17 +161,17 @@ extension LZ4: CompressionAlgorithm {
         // are checked for this condition in the match-searching while-loop, but minmatches (4-bytes long) are verified
         // here (hence -9).
         while i < blockBytes.endIndex - 9 {
-            let matchCrc = CheckSums.crc32(Data(blockBytes[i..<i + 4]))
-            guard let matchStartIndex = matchStorage[matchCrc] else {
+            let matchId = LZ4.combine(blockBytes, in: i..<i + 4)
+            guard let matchStartIndex = matchStorage[matchId] else {
                 // No match found.
                 // We need to save where we met this four-byte sequence.
-                matchStorage[matchCrc] = i
+                matchStorage[matchId] = i
                 currentLiterals.append(blockBytes[i])
                 i += 1
                 continue
             }
             // We need to update position of this match to keep distances as small as possible.
-            matchStorage[matchCrc] = i
+            matchStorage[matchId] = i
 
             // Minimum match length equals to four.
             var matchLength = 4
@@ -270,10 +270,20 @@ extension LZ4: CompressionAlgorithm {
             else { return [:] }
         var matchStorage = [UInt32: Int]()
         for i in dict.startIndex..<dict.endIndex - 4 {
-            let matchCrc = CheckSums.crc32(Data(dict[i..<i + 4]))
-            matchStorage[matchCrc] = i
+            let matchId = LZ4.combine(dict, in: i..<i + 4)
+            matchStorage[matchId] = i
         }
         return matchStorage
+    }
+
+    @inline(__always)
+    private static func combine(_ bytes: [UInt8], in range: CountableRange<Int>) -> UInt32 {
+        var result = 0 as UInt32
+        for i in range {
+            result <<= 8
+            result |= UInt32(truncatingIfNeeded: bytes[i])
+        }
+        return result
     }
 
 }
