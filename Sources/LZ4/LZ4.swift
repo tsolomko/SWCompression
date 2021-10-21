@@ -248,6 +248,7 @@ public enum LZ4: DecompressionAlgorithm {
     private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
         let reader = LittleEndianByteReader(data: data)
         var out = dict ?? Data()
+        let outStartIndex = out.endIndex
 
         // These two variables are used in verifying the end of block restrictions.
         var sequenceCount = 0
@@ -330,10 +331,7 @@ public enum LZ4: DecompressionAlgorithm {
             }
         }
 
-        if let dict = dict {
-            return out[dict.endIndex...]
-        }
-        return out
+        return Data(out[outStartIndex...])
     }
 
 }
