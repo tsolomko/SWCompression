@@ -155,20 +155,20 @@ extension Deflate: CompressionAlgorithm {
         // size less than 3.
         while i < data.endIndex - 2 {
             let byte = data[i]
-            let threeByteCrc = CheckSums.crc32(data[i..<i + 3])
-
-            guard let matchStartIndex = matchStorage[threeByteCrc] else {
+            var matchId = UInt32(truncatingIfNeeded: data[i])
+            matchId = (matchId << 8) | UInt32(truncatingIfNeeded: data[i + 1])
+            matchId = (matchId << 8) | UInt32(truncatingIfNeeded: data[i + 2])
+            guard let matchStartIndex = matchStorage[matchId] else {
                 // No match found.
                 // We need to save where we met this three-byte sequence.
-                matchStorage[threeByteCrc] = i
-
+                matchStorage[matchId] = i
                 buffer.append(BLDCode.byte(byte))
                 stats[byte.toInt()] += 1
                 i += 1
                 continue
             }
             // We need to update position of this match to keep distances as small as possible.
-            matchStorage[threeByteCrc] = i
+            matchStorage[matchId] = i
 
             // Minimum match length equals to three.
             var matchLength = 3
