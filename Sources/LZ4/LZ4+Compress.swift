@@ -61,13 +61,12 @@ extension LZ4: CompressionAlgorithm {
         let headerChecksum = XxHash32.hash(data: Data(out[4...]))
         out.append(UInt8(truncatingIfNeeded: (headerChecksum >> 8) & 0xFF))
 
-        // TODO: Maybe we can use Data() instead of optional?
-        var dict: Data?
+        var dict: Data
         if let dictionary = dictionary {
-            // Provided dictionary can be smaller than the standard size of 64 KB.
+            // The size of the provided dictionary may not match the standard size of 64 KB.
             dict = dictionary[max(dictionary.endIndex - 64 * 1024, dictionary.startIndex)...]
         } else {
-            dict = nil
+            dict = Data()
         }
 
         for i in stride(from: data.startIndex, to: data.endIndex, by: blockSize) {
@@ -125,16 +124,16 @@ extension LZ4: CompressionAlgorithm {
         return Data(out)
     }
 
-    private static func compress(block: Data, _ dict: Data?) -> [UInt8] {
+    private static func compress(block: Data, _ dict: Data) -> [UInt8] {
         var out = [UInt8]()
 
-        var blockBytes = dict?.withUnsafeBytes { $0.map { $0 } } ?? [UInt8]()
+        var blockBytes = dict.withUnsafeBytes { $0.map { $0 } }
         var matchStorage = LZ4.populateMatchStorage(blockBytes)
         var i = blockBytes.endIndex
         block.withUnsafeBytes { $0.forEach { blockBytes.append($0) } }
 
-        /// Literals of the currently constructed sequence.
-        /// If the array isn't empty this indicates that there is an in-progress sequence.
+        // Literals of the currently constructed sequence.
+        // If the array isn't empty this indicates that there is an in-progress sequence.
         var currentLiterals = [UInt8]()
 
         // Match searching algorithm is mostly the same as the one that we use for Deflate. This algorithm prioritizes
