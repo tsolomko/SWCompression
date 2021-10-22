@@ -16,6 +16,8 @@ extension LZ4: CompressionAlgorithm {
     public static func compress(data: Data, independentBlocks: Bool, blockChecksums: Bool,
                                  contentChecksum: Bool, contentSize: Bool, blockSize: Int = 4 * 1024 * 1024,
                                  dictionary: Data? = nil, dictionaryID: UInt32? = nil) -> Data {
+        // The reference implementation rejects blocks with size greater than 4 MB.
+        precondition(blockSize <= 4 * 1024 * 1024 && blockSize > 0, "Invalid block size")
         var out = [UInt8]()
 
         // Magic number.
@@ -31,19 +33,13 @@ extension LZ4: CompressionAlgorithm {
 
         // BD byte.
         let bd: UInt8
-        let maxBlockSize: Int
         if blockSize <= 64 * 1024 {
-            maxBlockSize = 64 * 1024
             bd = 0x40
         } else if blockSize <= 256 * 1024 {
-            maxBlockSize = 256 * 1024
             bd = 0x50
         } else if blockSize <= 1024 * 1024 {
-            maxBlockSize = 1024 * 1024
             bd = 0x60
         } else {
-            // Reference implementation sets maximum block size to 4 MB even if the requested block size is bigger.
-            maxBlockSize = 4 * 1024 * 1024
             bd = 0x70
         }
         out.append(bd)
@@ -87,11 +83,6 @@ extension LZ4: CompressionAlgorithm {
 
             if compressedBlock.count > blockData.count {
                 // In this case the data is non-compressible, so we write the block as uncompressed.
-                if blockData.count > 0x7FFFFFFF {
-                    // TODO: In this case we cannot properly store uncompressed block, since either the highest bit of
-                    // TODO: 4-bytes is already taken, or the block size is to big to fit into 4-bytes.
-                    fatalError("Patalogical size of non-compressible block.")
-                }
                 let blockSize = (0x80000000 as UInt32) | UInt32(truncatingIfNeeded: blockData.count)
                 for i: UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
@@ -105,11 +96,6 @@ extension LZ4: CompressionAlgorithm {
                     }
                 }
             } else {
-                if compressedBlock.count > 0x7FFFFFFF {
-                    // TODO: In this case we cannot properly store uncompressed block, since either the highest bit of
-                    // TODO: 4-bytes is already taken, or the block size is to big to fit into 4-bytes.
-                    fatalError("Patalogical size of compressed block.")
-                }
                 let blockSize = UInt32(truncatingIfNeeded: compressedBlock.count)
                 for i: UInt32 in 0..<4 {
                     out.append(UInt8(truncatingIfNeeded: (blockSize & (0xFF << (i * 8))) >> (i * 8)))
