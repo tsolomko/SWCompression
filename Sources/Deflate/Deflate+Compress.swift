@@ -172,7 +172,7 @@ extension Deflate: CompressionAlgorithm {
 
             // Minimum match length equals to three.
             var matchLength = 3
-            /// Cyclic index which is used to compare bytes in match and in input.
+            // Cyclic index which is used to compare bytes in match and in input.
             var matchIndex = matchStartIndex + matchLength
             // Maximum allowed distance equals to 32768.
             let distance = i - matchStartIndex

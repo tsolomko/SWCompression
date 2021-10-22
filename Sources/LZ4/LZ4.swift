@@ -83,7 +83,6 @@ public enum LZ4: DecompressionAlgorithm {
         var out = Data()
         // The end of a frame is determined by either end-of-file or by encountering a valid frame magic number.
         while !reader.isFinished {
-            // TODO: test truncated
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
             let rawBlockSize = reader.uint32()
@@ -96,7 +95,6 @@ public enum LZ4: DecompressionAlgorithm {
                 else { throw DataError.unsupportedFeature }
             let blockSize = Int(truncatingIfNeeded: rawBlockSize)
 
-            // TODO: test truncated
             guard reader.bytesLeft >= blockSize
                 else { throw DataError.truncated }
 
@@ -154,7 +152,6 @@ public enum LZ4: DecompressionAlgorithm {
         if contentSizePresent {
             // At this point valid LZ4 frame must have at least 13 bytes remaining for: content size (8 bytes), header
             // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
-            // TODO: test truncated
             guard reader.bytesLeft >= 13
                 else { throw DataError.truncated }
             // Since Data is indexed by the Int type, the maximum size of the uncompressed data that we can decode is
@@ -175,7 +172,6 @@ public enum LZ4: DecompressionAlgorithm {
                 else { throw DataError.corrupted }
             // At this point valid LZ4 frame must have at least 9 bytes remaining for: dictionary ID (4 bytes), header
             // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
-            // TODO: test truncated
             guard reader.bytesLeft >= 9
                 else { throw DataError.truncated }
 
@@ -201,7 +197,6 @@ public enum LZ4: DecompressionAlgorithm {
 
         var out = Data()
         while true {
-            // TODO: test truncated
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
             // Either the size of the block, or the EndMark.
@@ -218,7 +213,6 @@ public enum LZ4: DecompressionAlgorithm {
             guard blockSize <= maxBlockSize
                 else { throw DataError.corrupted }
 
-            // TODO: test truncated
             guard reader.bytesLeft >= blockSize + (blockChecksumPresent ? 4 : 0) + 4
                 else { throw DataError.truncated }
 
@@ -248,7 +242,6 @@ public enum LZ4: DecompressionAlgorithm {
                 else { throw DataError.corrupted }
         }
         if contentChecksumPresent {
-            // TODO: test truncated
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
             guard XxHash32.hash(data: out) == reader.uint32()
@@ -268,7 +261,6 @@ public enum LZ4: DecompressionAlgorithm {
 
         while true {
             sequenceCount += 1
-            // TODO: test truncated
             guard data.endIndex - reader.offset >= 1
                 else { throw DataError.truncated }
             let token = reader.byte()
@@ -276,7 +268,6 @@ public enum LZ4: DecompressionAlgorithm {
             var literalCount = (token >> 4).toInt()
             if literalCount == 15 {
                 while true {
-                    // TODO: test truncated
                     guard data.endIndex - reader.offset >= 1
                         else { throw DataError.truncated }
                     let byte = reader.byte()
@@ -291,7 +282,6 @@ public enum LZ4: DecompressionAlgorithm {
                     }
                 }
             }
-            // TODO: test truncated
             guard data.endIndex - reader.offset >= literalCount
                 else { throw DataError.truncated }
             out.append(contentsOf: reader.bytes(count: literalCount))
@@ -306,7 +296,6 @@ public enum LZ4: DecompressionAlgorithm {
                 break
             }
 
-            // TODO: test truncated
             guard data.endIndex - reader.offset >= 2
                 else { throw DataError.truncated }
             let offset = reader.uint16().toInt()
@@ -317,7 +306,6 @@ public enum LZ4: DecompressionAlgorithm {
             var matchLength = 4 + (token & 0xF).toInt()
             if matchLength == 19 {
                 while true {
-                    // TODO: test truncated
                     guard data.endIndex - reader.offset >= 1
                         else { throw DataError.truncated }
                     let byte = reader.byte()

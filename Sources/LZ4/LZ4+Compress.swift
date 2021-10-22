@@ -70,13 +70,11 @@ extension LZ4: CompressionAlgorithm {
         }
 
         for i in stride(from: data.startIndex, to: data.endIndex, by: blockSize) {
-            // TODO: Which block size should we use here: the arbitrary (requested by the user) or the maxBlockSize?
             let blockData = data[i..<min(i + blockSize, data.endIndex)]
             let compressedBlock = LZ4.compress(block: blockData, dict)
             if !independentBlocks {
                 // If the blocks are dependent then we need to update the dictionary with the uncompressed data
                 // from the current block.
-                // TODO: Probably fails for dependent blocks with block size less than 64 KB.
                 dict = blockData[max(blockData.endIndex - 64 * 1024, blockData.startIndex)...]
             }
 
@@ -140,7 +138,6 @@ extension LZ4: CompressionAlgorithm {
         // the closest mathches (minimizes the distance). However, this is not important for LZ4, so in the future we
         // may investigate the posibility of removing this restriction, which may improve compression ratio (though,
         // we need to be careful to not to decrease compression speed disproportionally).
-        // TODO: Maybe we should update match storage inside match-length-loop as well?
 
         // The last five bytes must be encoded as literals AND the last match must end before them. Non-minimal matches
         // are checked for this condition in the match-searching while-loop, but minmatches (4-bytes long) are verified
