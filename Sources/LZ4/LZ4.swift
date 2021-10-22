@@ -103,7 +103,7 @@ public enum LZ4: DecompressionAlgorithm {
             let blockData = data[reader.offset..<reader.offset + blockSize]
             reader.offset += blockSize
 
-            out.append(try LZ4.process(block: blockData))
+            out.append(Data(try LZ4.process(block: blockData)))
         }
         return (out, reader.offset)
     }
@@ -217,14 +217,14 @@ public enum LZ4: DecompressionAlgorithm {
 
             if compressed {
                 if independentBlocks {
-                    out.append(try LZ4.process(block: blockData, dictionary))
+                    out.append(Data(try LZ4.process(block: blockData, dictionary)))
                 } else {
                     if out.isEmpty, let dictionary = dictionary {
-                        out.append(try LZ4.process(block: blockData,
-                                                   dictionary[max(dictionary.endIndex - 64 * 1024, dictionary.startIndex)...]))
+                        out.append(Data(try LZ4.process(block: blockData,
+                                                   dictionary[max(dictionary.endIndex - 64 * 1024, dictionary.startIndex)...])))
                     } else {
-                        out.append(try LZ4.process(block: blockData,
-                                                   out[max(out.endIndex - 64 * 1024, out.startIndex)...]))
+                        out.append(Data(try LZ4.process(block: blockData,
+                                                   out[max(out.endIndex - 64 * 1024, out.startIndex)...])))
                     }
                 }
             } else {
@@ -245,9 +245,9 @@ public enum LZ4: DecompressionAlgorithm {
         return (out, reader.offset)
     }
 
-    private static func process(block data: Data, _ dict: Data? = nil) throws -> Data {
+    private static func process(block data: Data, _ dict: Data? = nil) throws -> [UInt8] {
         let reader = LittleEndianByteReader(data: data)
-        var out = dict ?? Data()
+        var out = dict?.withUnsafeBytes { $0.map { $0 } } ?? [UInt8]()
         let outStartIndex = out.endIndex
 
         // These two variables are used in verifying the end of block restrictions.
@@ -331,7 +331,7 @@ public enum LZ4: DecompressionAlgorithm {
             }
         }
 
-        return Data(out[outStartIndex...])
+        return Array(out[outStartIndex...])
     }
 
 }
