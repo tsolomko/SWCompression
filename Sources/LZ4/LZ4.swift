@@ -135,10 +135,20 @@ public enum LZ4: DecompressionAlgorithm {
         let dictIdPresent = flg & 1 == 1
 
         let bd = reader.byte()
-        // Reserved bits check.
-        guard bd & 0x8F == 0
-            else { throw DataError.corrupted }
-        // Since we don't do manual memory allocation, we don't need to decode the block maximum size from `bd`.
+        let maxBlockSize: Int
+        switch bd {
+        case 0x40:
+            maxBlockSize = 64 * 1024
+        case 0x50:
+            maxBlockSize = 256 * 1024
+        case 0x60:
+            maxBlockSize = 1024 * 1024
+        case 0x70:
+            maxBlockSize = 4 * 1024 * 1024
+        default:
+            // This case corresponds to the reserved bits check.
+            throw DataError.corrupted
+        }
 
         let contentSize: Int?
         if contentSizePresent {
@@ -194,7 +204,7 @@ public enum LZ4: DecompressionAlgorithm {
             // TODO: test truncated
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
-            /// Either the size of the block, or the EndMark.
+            // Either the size of the block, or the EndMark.
             let blockMark = reader.uint32()
             // Check for the EndMark.
             if blockMark == 0 {
@@ -203,8 +213,10 @@ public enum LZ4: DecompressionAlgorithm {
             // The highest bit indicates if the block is compressed.
             let compressed = blockMark & 0x80000000 == 0
             let blockSize = (blockMark & 0x7FFFFFFF).toInt()
-            // TODO: "Block_Size shall never be larger than Block_Maximum_Size". Should we verify this condition?
-            // TODO: Check how reference implementation reacts to violation of this condition (during decompression).
+            // Since we don't do manual memory allocation we don't have to constraint the block size. Nevertheless, we
+            // follow the reference implementation here and reject blocks with sizes greater than maximum block size.
+            guard blockSize <= maxBlockSize
+                else { throw DataError.corrupted }
 
             // TODO: test truncated
             guard reader.bytesLeft >= blockSize + (blockChecksumPresent ? 4 : 0) + 4
