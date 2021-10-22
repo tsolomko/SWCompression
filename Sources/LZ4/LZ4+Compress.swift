@@ -259,7 +259,7 @@ extension LZ4: CompressionAlgorithm {
     }
 
     @inline(__always)
-    private static func combine(_ bytes: [UInt8], from index: Array.Index) -> UInt32 {
+    private static func combine(_ bytes: [UInt8], from index: Array<UInt8>.Index) -> UInt32 {
         var result = 0 as UInt32
         for i in index..<index + 4 {
             result <<= 8
