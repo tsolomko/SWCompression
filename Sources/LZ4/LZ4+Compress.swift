@@ -167,9 +167,10 @@ extension LZ4: CompressionAlgorithm {
                 continue
             }
 
-            // TODO: While theoretically match length is not limited, we still have a practical limit of Int.max.
             // We exclude the last 5 bytes from the potential match since we need them for the separate
             // end-of-block sequence which contains only literals.
+            // The matchLength can't overflow since that would mean that blockBytes.endIndex > Int.max + 5 which is not
+            // possible.
             while i + matchLength < blockBytes.endIndex - 5 && blockBytes[i + matchLength] == blockBytes[matchIndex] {
                 matchLength += 1
                 matchIndex += 1
@@ -189,7 +190,6 @@ extension LZ4: CompressionAlgorithm {
             // Then we output additional bytes of the literals count.
             var literalsCount = currentLiterals.count - 15
             while literalsCount >= 0 {
-                // TODO: Maybe this can be simplified with some fancy math expression.
                 if literalsCount > 255 {
                     out.append(255)
                 } else {
@@ -208,7 +208,6 @@ extension LZ4: CompressionAlgorithm {
             i += matchLength
             matchLength -= 19 // 4 (min match length) + 15 (token value)
             while matchLength >= 0 {
-                // TODO: Maybe this can be simplified with some fancy math expression.
                 if matchLength > 255 {
                     out.append(255)
                 } else {
@@ -232,7 +231,6 @@ extension LZ4: CompressionAlgorithm {
         out.append(UInt8(truncatingIfNeeded: min(15, currentLiterals.count)) << 4)
         var literalsCount = currentLiterals.count - 15
         while literalsCount >= 0 {
-            // TODO: Maybe this can be simplified with some fancy math expression.
             if literalsCount > 255 {
                 out.append(255)
             } else {
