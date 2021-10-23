@@ -8,7 +8,26 @@ import BitByteData
 
 public enum LZ4: DecompressionAlgorithm {
 
-    // TODO: Tests for data truncated at various places.
+    // Notes about implementation and performance.
+    // -------------------------------------------
+    // 1. Whenever feasible we try to use [UInt8] instead of Data instances. The reason for this is that most functions
+    //    of Data are much slower than their Array counterparts. In particular, this concerns append(_:) function and
+    //    various subscripts. At the moment, we only use [UInt8] as the type of the output of the process(block:_:)
+    //    function, but in the future we should consider changing outputs of other internal functions to [UInt8] as well
+    //    in order to achieve better performance.
+    //
+    // 2. This implementation has been programmed extremely defensively. This means, that it checks constantly that
+    //    every access to the input data will be within bounds. However, in some cases it may be unnecessary, so in the
+    //    future if we are able to prove that certain operations can never be out of bounds (based on algorithm logic),
+    //    we should remove corresponding checks to increase performance (or perhaps retain them only as assertions,
+    //    which are eliminated in Release mode).
+    //
+    // 3. Compared to the implementations of other algorithms, this implementation features significantly reduced usage
+    //    of types from BitByteData, such as LittleEndianByteReader. The reason for this is that currently they are a
+    //    big source of sloweness, due to the effect of exclusivity checks on the property access of classes. Because
+    //    of this we try to avoid accessing the properties of the LittleEndianByteReader whenever possible.
+    //    For example, in the process(block:_:) function we compute the remaining bytes directly by using data.endIndex
+    //    and reader.offset instead of relying on the reader.bytesLeft computed property.
 
     public static func decompress(data: Data) throws -> Data {
         return try LZ4.decompress(data: data, dictionary: nil)
