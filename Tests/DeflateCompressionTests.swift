@@ -55,4 +55,14 @@ class DeflateCompressionTests: XCTestCase {
         try self.answerTest("test9")
     }
 
+    func testTrickySequence() throws {
+        // This test helped us find an issue with implementation (match index was wrongly used as cyclical index).
+        // This test may become useless in the future if the encoder starts preferring creation of an uncompressed block
+        // for this input due to changes to the compression logic.
+        let answerData = Data([0x2E, 0x20, 0x2E, 0x20, 0x2E, 0x20, 0x20])
+        let compressedData = Deflate.compress(data: answerData)
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+    }
+
 }
