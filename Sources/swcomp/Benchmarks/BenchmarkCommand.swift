@@ -15,7 +15,7 @@ protocol BenchmarkCommand: Command {
 
     associatedtype InputType
 
-    var inputs: CollectedParameter { get }
+    var inputs: [String] { get }
 
     var benchmarkName: String { get }
 
@@ -52,7 +52,7 @@ extension BenchmarkCommand {
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        for input in self.inputs.value {
+        for input in self.inputs {
             print("Input: \(input)")
 
             let (loadedInput, inputSize) = try self.loadInput(input)

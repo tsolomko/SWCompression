@@ -12,27 +12,31 @@ class GZipCommand: Command {
     let name = "gz"
     let shortDescription = "Creates or extracts a GZip archive"
 
-    let compress = Flag("-c", "--compress", description: "Compress an input file into a GZip archive")
-    let decompress = Flag("-d", "--decompress", description: "Decompress a GZip archive")
-    let info = Flag("-i", "--info", description: "Print information from a GZip header")
+    @Flag("-c", "--compress", description: "Compress an input file into a GZip archive")
+    var compress: Bool
 
-    let useGZipName = Flag("-n", "--use-gzip-name",
-                           description: "Use the name saved inside a GZip archive as an output path, if possible")
+    @Flag("-d", "--decompress", description: "Decompress a GZip archive")
+    var decompress: Bool
+    
+    @Flag("-i", "--info", description: "Print information from a GZip header")
+    var info: Bool
+
+    @Flag("-n", "--use-gzip-name", description: "Use the name saved inside a GZip archive as an output path, if possible")
+    var useGZipName: Bool
 
     var optionGroups: [OptionGroup] {
-        let actions = OptionGroup(options: [compress, decompress, info], restriction: .exactlyOne)
-        return [actions]
+        return [.exactlyOne($compress, $decompress, $info)]
     }
 
-    let input = Parameter()
-    let output = OptionalParameter()
+    @Param var input: String
+    @Param var output: String?
 
     func execute() throws {
-        if decompress.value {
-            let inputURL = URL(fileURLWithPath: self.input.value)
+        if decompress {
+            let inputURL = URL(fileURLWithPath: self.input)
 
             var outputURL: URL?
-            if let outputPath = output.value {
+            if let outputPath = output {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else if inputURL.pathExtension == "gz" {
                 outputURL = inputURL.deletingPathExtension()
@@ -40,7 +44,7 @@ class GZipCommand: Command {
 
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
 
-            if useGZipName.value {
+            if useGZipName {
                 let header = try GzipHeader(archive: fileData)
                 if let fileName = header.fileName {
                     outputURL = inputURL.deletingLastPathComponent()
@@ -59,12 +63,12 @@ class GZipCommand: Command {
 
             let decompressedData = try GzipArchive.unarchive(archive: fileData)
             try decompressedData.write(to: outputURL!)
-        } else if compress.value {
-            let inputURL = URL(fileURLWithPath: self.input.value)
+        } else if compress {
+            let inputURL = URL(fileURLWithPath: self.input)
             let fileName = inputURL.lastPathComponent
 
             let outputURL: URL
-            if let outputPath = output.value {
+            if let outputPath = output {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else {
                 outputURL = inputURL.appendingPathExtension("gz")
@@ -75,8 +79,8 @@ class GZipCommand: Command {
                                                         fileName: fileName.isEmpty ? nil : fileName,
                                                         writeHeaderCRC: true)
             try compressedData.write(to: outputURL)
-        } else if info.value {
-            let inputURL = URL(fileURLWithPath: self.input.value)
+        } else if info {
+            let inputURL = URL(fileURLWithPath: self.input)
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
 
             let header = try GzipHeader(archive: fileData)

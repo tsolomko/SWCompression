@@ -12,14 +12,14 @@ class XZCommand: Command {
     let name = "xz"
     let shortDescription = "Extracts a XZ archive"
 
-    let archive = Parameter()
-    let outputPath = OptionalParameter()
+    @Param var input: String
+    @Param var output: String?
 
     func execute() throws {
-        let inputURL = URL(fileURLWithPath: self.archive.value)
+        let inputURL = URL(fileURLWithPath: self.input)
 
         let outputURL: URL
-        if let outputPath = self.outputPath.value {
+        if let outputPath = self.output {
             outputURL = URL(fileURLWithPath: outputPath)
         } else if inputURL.pathExtension == "xz" {
             outputURL = inputURL.deletingPathExtension()

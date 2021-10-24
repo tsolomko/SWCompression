@@ -26,7 +26,7 @@ class CompBz2: BenchmarkCommand {
     let name = "comp-bz2"
     let shortDescription = "BZip2 compression"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Compression"
     let benchmarkFunction: (Data) throws -> Any = BZip2.compress
@@ -40,7 +40,7 @@ class CompDeflate: BenchmarkCommand {
     let name = "comp-deflate"
     let shortDescription = "Deflate compression"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "Deflate Compression"
     let benchmarkFunction: (Data) throws -> Any = Deflate.compress
@@ -54,7 +54,7 @@ class CompLZ4: BenchmarkCommand {
     let name = "comp-lz4"
     let shortDescription = "LZ4 compression (independent blocks)"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with independent blocks"
     let benchmarkFunction: (Data) throws -> Any = LZ4.compress
@@ -68,7 +68,7 @@ class CompLZ4BD: BenchmarkCommand {
     let name = "comp-lz4-bd"
     let shortDescription = "LZ4 compression (dependent blocks)"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with dependent blocks"
     let benchmarkFunction: (Data) throws -> Any = {
@@ -85,7 +85,7 @@ class Info7z: BenchmarkCommand {
     let name = "info-7z"
     let shortDescription = "7-Zip info function"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "7-Zip info function"
     let benchmarkFunction: (Data) throws -> Any = SevenZipContainer.info
@@ -97,7 +97,7 @@ class InfoTar: BenchmarkCommand {
     let name = "info-tar"
     let shortDescription = "TAR info function"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "TAR info function"
     let benchmarkFunction: (Data) throws -> Any = TarContainer.info
@@ -109,7 +109,7 @@ class InfoZip: BenchmarkCommand {
     let name = "info-zip"
     let shortDescription = "ZIP info function"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "ZIP info function"
     let benchmarkFunction: (Data) throws -> Any = ZipContainer.info
@@ -121,7 +121,7 @@ class UnBz2: BenchmarkCommand {
     let name = "un-bz2"
     let shortDescription = "BZip2 unarchiving"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Unarchive"
     let benchmarkFunction: (Data) throws -> Any = BZip2.decompress
@@ -133,7 +133,7 @@ class UnGzip: BenchmarkCommand {
     let name = "un-gzip"
     let shortDescription = "GZip unarchiving"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "GZip Unarchive"
     let benchmarkFunction: (Data) throws -> Any = GzipArchive.unarchive
@@ -145,7 +145,7 @@ class UnLZ4: BenchmarkCommand {
     let name = "un-lz4"
     let shortDescription = "LZ4 unarchiving"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Unarchive"
     let benchmarkFunction: (Data) throws -> Any = LZ4.decompress
@@ -157,7 +157,7 @@ class UnXz: BenchmarkCommand {
     let name = "un-xz"
     let shortDescription = "XZ unarchiving"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "XZ Unarchive"
     let benchmarkFunction: (Data) throws -> Any = XZArchive.unarchive

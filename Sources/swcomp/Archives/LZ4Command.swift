@@ -12,30 +12,43 @@ class LZ4Command: Command {
     let name = "lz4"
     let shortDescription = "Creates or extracts a LZ4 archive"
 
-    let compress = Flag("-c", "--compress", description: "Compress an input file into a LZ4 archive")
-    let decompress = Flag("-d", "--decompress", description: "Decompress a LZ4 archive")
+    @Flag("-c", "--compress", description: "Compress an input file into a LZ4 archive")
+    var compress: Bool
 
-    let dependentBlocks = Flag("--dependent-blocks", description: "(Compression only) Use dependent blocks")
-    let blockChecksums = Flag("--block-checksums", description: "(Compression only) Save checksums for compressed blocks")
-    let noContentChecksum = Flag("--no-content-checksum", description: "(Compression only) Don't save the checksum of the uncompressed data")
-    let contentSize = Flag("--content-size", description: "(Compression only) Save the size of the uncompressed data")
+    @Flag("-d", "--decompress", description: "Decompress a LZ4 archive")
+    var decompress: Bool
+
+    @Flag("--dependent-blocks", description: "(Compression only) Use dependent blocks")
+    var dependentBlocks: Bool
+
+    @Flag("--block-checksums", description: "(Compression only) Save checksums for compressed blocks")
+    var blockChecksums: Bool
+
+    @Flag("--no-content-checksum", description: "(Compression only) Don't save the checksum of the uncompressed data")
+    var noContentChecksum: Bool
+
+    @Flag("--content-size", description: "(Compression only) Save the size of the uncompressed data")
+    var contentSize: Bool
     
-    let blockSize = Key<Int>("--block-size", description: "(Compression only) Use specified block size (in bytes; default and max: 4194304)")
+    @Key("--block-size", description: "(Compression only) Use specified block size (in bytes; default and max: 4194304)")
+    var blockSize: Int?
 
-    let dictionary = Key<String>("-D", "--dict", description: "Path to a dictionary to use in decompression or compression")
-    let dictionaryID = Key<Int>("--dictID", description: "Optional dictionary ID (max: 4294967295)")
+    @Key("-D", "--dict", description: "Path to a dictionary to use in decompression or compression")
+    var dictionary: String?
+
+    @Key("--dictID", description: "Optional dictionary ID (max: 4294967295)")
+    var dictionaryID: Int?
 
     var optionGroups: [OptionGroup] {
-        let actions = OptionGroup(options: [compress, decompress], restriction: .exactlyOne)
-        return [actions]
+        return [.exactlyOne($compress, $decompress)]
     }
 
-    let input = Parameter()
-    let output = OptionalParameter()
+    @Param var input: String
+    @Param var output: String?
 
     func execute() throws {
         let dictID: UInt32?
-        if let dictionaryID = dictionaryID.value {
+        if let dictionaryID = dictionaryID {
             guard dictionaryID <= UInt32.max
                 else { print("ERROR: Too large dictionary ID."); exit(1) }
             dictID = UInt32(truncatingIfNeeded: dictionaryID)
@@ -44,7 +57,7 @@ class LZ4Command: Command {
         }
 
         let dictData: Data?
-        if let dictionary = dictionary.value {
+        if let dictionary = dictionary {
             dictData = try Data(contentsOf: URL(fileURLWithPath: dictionary), options: .mappedIfSafe)
         } else {
             dictData = nil
@@ -55,11 +68,11 @@ class LZ4Command: Command {
             exit(1)
         }
 
-        if decompress.value {
-            let inputURL = URL(fileURLWithPath: self.input.value)
+        if decompress {
+            let inputURL = URL(fileURLWithPath: self.input)
 
             let outputURL: URL
-            if let outputPath = output.value {
+            if let outputPath = output {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else if inputURL.pathExtension == "lz4" {
                 outputURL = inputURL.deletingPathExtension()
@@ -75,19 +88,18 @@ class LZ4Command: Command {
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             let decompressedData = try LZ4.decompress(data: fileData, dictionary: dictData, dictionaryID: dictID)
             try decompressedData.write(to: outputURL)
-        } else if compress.value {
-            let inputURL = URL(fileURLWithPath: self.input.value)
-            let fileName = inputURL.lastPathComponent
+        } else if compress {
+            let inputURL = URL(fileURLWithPath: self.input)
 
             let outputURL: URL
-            if let outputPath = output.value {
+            if let outputPath = output {
                 outputURL = URL(fileURLWithPath: outputPath)
             } else {
                 outputURL = inputURL.appendingPathExtension("lz4")
             }
 
             let bs: Int
-            if let blockSize = blockSize.value {
+            if let blockSize = blockSize {
                 if blockSize >= 4194304 {
                     print("ERROR: Too big block size.")
                     exit(1)
@@ -98,9 +110,9 @@ class LZ4Command: Command {
             }
 
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-            let compressedData = try LZ4.compress(data: fileData, independentBlocks: !dependentBlocks.value,
-                blockChecksums: blockChecksums.value, contentChecksum: !noContentChecksum.value,
-                contentSize: contentSize.value, blockSize: bs, dictionary: dictData, dictionaryID: dictID)
+            let compressedData = LZ4.compress(data: fileData, independentBlocks: !dependentBlocks,
+                blockChecksums: blockChecksums, contentChecksum: !noContentChecksum,
+                contentSize: contentSize, blockSize: bs, dictionary: dictData, dictionaryID: dictID)
             try compressedData.write(to: outputURL)
         }
     }

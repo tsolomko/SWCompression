@@ -11,35 +11,29 @@ protocol ContainerCommand: Command {
 
     associatedtype ContainerType: Container
 
-    var info: Flag { get }
-    var extract: Key<String> { get }
-    var verbose: Flag { get }
-
-    var archive: Parameter { get }
+    var info: Bool { get }
+    var extract: String? { get }
+    var verbose: Bool { get }
+    var input: String { get }
 
 }
 
 extension ContainerCommand {
 
-    var optionGroups: [OptionGroup] {
-        let actions = OptionGroup(options: [info, extract], restriction: .exactlyOne)
-        return [actions]
-    }
-
     func execute() throws {
-        let fileData = try Data(contentsOf: URL(fileURLWithPath: self.archive.value),
+        let fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
                                 options: .mappedIfSafe)
-        if info.value {
+        if info {
             let entries = try ContainerType.info(container: fileData)
             swcomp.printInfo(entries)
-        } else if let outputPath = self.extract.value {
+        } else if let outputPath = self.extract {
             if try !isValidOutputDirectory(outputPath, create: true) {
                 print("ERROR: Specified path already exists and is not a directory.")
                 exit(1)
             }
 
             let entries = try ContainerType.open(container: fileData)
-            try swcomp.write(entries, outputPath, verbose.value)
+            try swcomp.write(entries, outputPath, verbose)
         }
     }
 
