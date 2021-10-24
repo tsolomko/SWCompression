@@ -12,13 +12,13 @@ class TarCommand: Command {
     let name = "tar"
     let shortDescription = "Extracts a TAR container"
 
-    @Flag("-z", "--gz", description: "Decompress with GZip first")
+    @Flag("-z", "--gz", description: "With -e: decompress with GZip first; with -c: compress container with GZip")
     var gz: Bool
 
-    @Flag("-j", "--bz2", description: "Decompress with BZip2 first")
+    @Flag("-j", "--bz2", description: "With -e: decompress with BZip2 first; with -c: compress container with BZip2")
     var bz2: Bool
 
-    @Flag("-x", "--xz", description: "Decompress with XZ first")
+    @Flag("-x", "--xz", description: "With -e: decompress with XZ first; with -c: not supported")
     var xz: Bool
 
     @Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
@@ -83,15 +83,16 @@ class TarCommand: Command {
                 print("TAR format: PAX")
             }
         } else if let inputPath = self.create {
+            guard !xz else {
+                print("ERROR: XZ compression is not supported when creating a container.")
+                exit(1)
+            }
+
             let fileManager = FileManager.default
 
             guard !fileManager.fileExists(atPath: self.input) else {
                 print("ERROR: Output path already exists.")
                 exit(1)
-            }
-
-            if gz || bz2 || xz {
-                print("Warning: compression options are unsupported and ignored when creating new container.")
             }
 
             guard fileManager.fileExists(atPath: inputPath) else {
@@ -103,8 +104,16 @@ class TarCommand: Command {
                 print("d = directory, f = file, l = symbolic link")
             }
             let entries = try TarEntry.createEntries(inputPath, verbose)
-            let containerData = TarContainer.create(from: entries)
-            try containerData.write(to: URL(fileURLWithPath: self.input))
+            var outData = TarContainer.create(from: entries)
+            let outputURL = URL(fileURLWithPath: self.input)
+            if gz {
+                let fileName = outputURL.lastPathComponent
+                outData = try GzipArchive.archive(data: outData, fileName: fileName.isEmpty ? nil : fileName,
+                                                  writeHeaderCRC: true)
+            } else if bz2 {
+                outData = BZip2.compress(data: outData)
+            } 
+            try outData.write(to: outputURL)
         }
     }
 
