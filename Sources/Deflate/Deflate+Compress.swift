@@ -186,9 +186,6 @@ extension Deflate: CompressionAlgorithm {
             while i + matchLength < data.count && data[i + matchLength] == data[matchIndex] && matchLength < 258 {
                 matchLength += 1
                 matchIndex += 1
-                if matchIndex > i {
-                    matchIndex = matchStartIndex + 1
-                }
             }
             buffer.append(BLDCode.lengthDistance(UInt16(truncatingIfNeeded: matchLength),
                                                  UInt16(truncatingIfNeeded: distance)))
