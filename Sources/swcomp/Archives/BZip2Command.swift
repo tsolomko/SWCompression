@@ -7,6 +7,11 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
+// This extension allows to use BZip2.BlockSize as a Key option.
+// The extension is empty because there is a default implementation for a ConvertibleFromString when the RawValue type
+// of the enum (Int, in this case) is ConvertibleFromString itself.
+extension BZip2.BlockSize: ConvertibleFromString {}
+
 class BZip2Command: Command {
 
     let name = "bz2"
