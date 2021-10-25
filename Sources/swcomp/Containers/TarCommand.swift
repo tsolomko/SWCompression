@@ -33,6 +33,9 @@ class TarCommand: Command {
     @Key("-c", "--create", description: "Create a new container containing the specified file/directory (recursively)")
     var create: String?
 
+    @Key("--use-format", description: "Use specified TAR format when creating a container; available options: prePosix, ustar, gnu, pax")
+    var useFormat: TarContainer.Format?
+
     @Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
     var verbose: Bool
 
@@ -43,6 +46,10 @@ class TarCommand: Command {
     @Param var input: String
 
     func execute() throws {
+        if self.useFormat != nil && self.create == nil {
+            print("WARNING: --use-format option is ignored without -c/--create option")
+        }
+
         var fileData: Data
         if self.create == nil {
             fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
@@ -104,7 +111,7 @@ class TarCommand: Command {
                 print("d = directory, f = file, l = symbolic link")
             }
             let entries = try TarEntry.createEntries(inputPath, verbose)
-            var outData = TarContainer.create(from: entries)
+            var outData = TarContainer.create(from: entries, force: self.useFormat ?? .pax)
             let outputURL = URL(fileURLWithPath: self.input)
             if gz {
                 let fileName = outputURL.lastPathComponent
