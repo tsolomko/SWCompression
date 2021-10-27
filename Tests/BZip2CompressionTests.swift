@@ -29,6 +29,7 @@ class BZip2CompressionTests: XCTestCase {
     }
 
     func testBZip2CompressStrings() throws {
+        try stringTest("ban")
         try stringTest("banana")
         try stringTest("abaaba")
         try stringTest("abracadabra")

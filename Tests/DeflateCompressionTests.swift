@@ -19,6 +19,25 @@ class DeflateCompressionTests: XCTestCase {
         }
     }
 
+    func stringTest(_ string: String) throws {
+        let answerData = Data(string.utf8)
+        let compressedData = Deflate.compress(data: answerData)
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+    }
+
+    func testDeflateCompressStrings() throws {
+        try stringTest("ban")
+        try stringTest("banana")
+        try stringTest("abaaba")
+        try stringTest("abracadabra")
+        try stringTest("cabbage")
+        try stringTest("baabaabac")
+        try stringTest("AAAAAAABBBBCCCD")
+        try stringTest("AAAAAAA")
+        try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
+    }
+
     func testDeflate1() throws {
         try self.answerTest("test1")
     }
