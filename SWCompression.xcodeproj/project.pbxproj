@@ -263,6 +263,7 @@
 		E6791E1B26FD0094003852A9 /* LZ4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1A26FD0094003852A9 /* LZ4.swift */; };
 		E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E3226FD05EC003852A9 /* LZ4Tests.swift */; };
 		E6974C5B2701AC2600E06C60 /* test_dict_B5_dictID.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */; };
+		E69FAC922729ACD900D3C406 /* test_dos_latin_us.zip in Resources */ = {isa = PBXBuildFile; fileRef = E69FAC912729ACD900D3C406 /* test_dos_latin_us.zip */; };
 		E6B18E85270884E300F9AB99 /* LZ4CompressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */; };
 		E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C4150626FE230A00F9D36F /* XxHash32.swift */; };
 		E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */; };
@@ -541,6 +542,7 @@
 		E6791E1A26FD0094003852A9 /* LZ4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4.swift; sourceTree = "<group>"; };
 		E6791E3226FD05EC003852A9 /* LZ4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4Tests.swift; sourceTree = "<group>"; };
 		E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5_dictID.lz4; sourceTree = "<group>"; };
+		E69FAC912729ACD900D3C406 /* test_dos_latin_us.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_dos_latin_us.zip; sourceTree = "<group>"; };
 		E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4CompressionTests.swift; sourceTree = "<group>"; };
 		E6C4150626FE230A00F9D36F /* XxHash32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32.swift; sourceTree = "<group>"; };
 		E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32Tests.swift; sourceTree = "<group>"; };
@@ -910,6 +912,7 @@
 				06F065DD1FFB763300312A82 /* test_zip64.zip */,
 				06D42DA42067B46800C1A98B /* test_custom_extra_field.zip */,
 				064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */,
+				E69FAC912729ACD900D3C406 /* test_dos_latin_us.zip */,
 			);
 			path = ZIP;
 			sourceTree = "<group>";
@@ -1247,6 +1250,7 @@
 				06F066391FFB763400312A82 /* test8.xz in Resources */,
 				06F0662F1FFB763400312A82 /* test9.gz in Resources */,
 				064DF453245618A300D285F3 /* bad_cd_ext_ts.zip in Resources */,
+				E69FAC922729ACD900D3C406 /* test_dos_latin_us.zip in Resources */,
 				E66F36242538726E00076A6E /* test_empty.lzma in Resources */,
 				06F066751FFB763400312A82 /* test1.bz2 in Resources */,
 				064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */,
