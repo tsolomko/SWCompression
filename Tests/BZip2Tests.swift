@@ -71,4 +71,22 @@ class BZip2Tests: XCTestCase {
         XCTAssertThrowsError(try BZip2.decompress(data: Data()))
     }
 
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)
+        // The checksum is the last 4 bytes.
+        testData[testData.endIndex - 2] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try BZip2.decompress(data: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is BZip2Error, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCRC(decompressedData)) = thrownError as? BZip2Error {
+            let answerData = try Constants.data(forAnswer: "test1")
+            XCTAssertEqual(decompressedData, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

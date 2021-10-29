@@ -155,4 +155,44 @@ class GzipTests: XCTestCase {
         XCTAssertThrowsError(try GzipArchive.unarchive(archive: Data()))
     }
 
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test1", withType: GzipTests.testType)
+        // Here we modify the stored value of crc32.
+        testData[41] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is GzipError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCRC(members)) = thrownError as? GzipError {
+            XCTAssertEqual(members.count, 1)
+            let answerData = try Constants.data(forAnswer: "test1")
+            XCTAssertEqual(members.first?.data, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
+    func testMultiUnarchiveChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test_multi", withType: GzipTests.testType)
+        // Here we modify the stored value of crc32.
+        testData[2289] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try GzipArchive.multiUnarchive(archive: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is GzipError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCRC(members)) = thrownError as? GzipError {
+            XCTAssertEqual(members.count, 2)
+            var answerData = try Constants.data(forAnswer: "test1")
+            XCTAssertEqual(members[0].data, answerData)
+            answerData = try Constants.data(forAnswer: "test2")
+            XCTAssertEqual(members[1].data, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

@@ -183,4 +183,23 @@ class LZ4Tests: XCTestCase {
         XCTAssertEqual(result[1], try Constants.data(forAnswer: "test4"))
     }
 
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test1", withType: LZ4Tests.testType)
+        // The content checksum is the last 4 bytes.
+        testData[testData.endIndex - 2] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try LZ4.decompress(data: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.checksumMismatch(decompressedData)) = thrownError as? DataError {
+            XCTAssertEqual(decompressedData.count, 1)
+            let answerData = try Constants.data(forAnswer: "test1")
+            XCTAssertEqual(decompressedData.first, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

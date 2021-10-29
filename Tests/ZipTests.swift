@@ -316,4 +316,38 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[0].data, answerData)
     }
 
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test_unicode", withType: ZipTests.testType)
+        // Here we modify the stored value of crc32.
+        testData[16] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try ZipContainer.open(container: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is ZipError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCRC(entries)) = thrownError as? ZipError {
+            XCTAssertEqual(entries.count, 1)
+            XCTAssertEqual(entries[0].info.name, "текстовый файл")
+            XCTAssertEqual(entries[0].info.type, .regular)
+            XCTAssertEqual(entries[0].info.fileSystemType, .unix)
+            XCTAssertEqual(entries[0].info.compressionMethod, .deflate)
+            XCTAssertTrue(entries[0].info.isTextFile)
+            XCTAssertEqual(entries[0].info.ownerID, 501)
+            XCTAssertEqual(entries[0].info.groupID, 20)
+            XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+            XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0))
+            XCTAssertEqual(entries[0].info.comment, "")
+            // Checking times' values is a bit difficult since they are extremely precise.
+            XCTAssertNotNil(entries[0].info.modificationTime)
+            XCTAssertNotNil(entries[0].info.accessTime)
+            XCTAssertNil(entries[0].info.creationTime)
+
+            let answerData = try Constants.data(forAnswer: "текстовый файл")
+            XCTAssertEqual(entries[0].data, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

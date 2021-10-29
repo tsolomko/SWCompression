@@ -58,9 +58,8 @@ class XZTests: XCTestCase {
     func testMultiStreamNoPadding() throws {
         // Doesn't contain any padding.
         let testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
-
-        let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
+        XCTAssertEqual(splitDecompressedData.count, 4)
 
         var answerData = Data()
         for i in 1...4 {
@@ -69,6 +68,7 @@ class XZTests: XCTestCase {
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
 
+        let decompressedData = try XZArchive.unarchive(archive: testData)
         XCTAssertEqual(decompressedData, answerData)
     }
 
@@ -77,11 +77,9 @@ class XZTests: XCTestCase {
         // After second - 4 bytes of padding.
         // Third - 8 bytes.
         // At the end - 4 bytes.
-
         let testData = try Constants.data(forTest: "test_multi_pad", withType: XZTests.testType)
-
-        let decompressedData = try XZArchive.unarchive(archive: testData)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
+        XCTAssertEqual(splitDecompressedData.count, 4)
 
         var answerData = Data()
         for i in 1...4 {
@@ -91,6 +89,7 @@ class XZTests: XCTestCase {
             XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
         }
 
+        let decompressedData = try XZArchive.unarchive(archive: testData)
         XCTAssertEqual(decompressedData, answerData)
     }
 
@@ -118,6 +117,45 @@ class XZTests: XCTestCase {
     func testBadFile_invalid() throws {
         let testData = try Constants.data(forAnswer: "test6")
         XCTAssertThrowsError(try XZArchive.unarchive(archive: testData))
+    }
+
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test1", withType: XZTests.testType)
+        // Here we modify the stored value of crc64.
+        testData[46] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try XZArchive.unarchive(archive: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is XZError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCheck(decompressedData)) = thrownError as? XZError {
+            XCTAssertEqual(decompressedData.count, 1)
+            let answerData = try Constants.data(forAnswer: "test1")
+            XCTAssertEqual(decompressedData.first, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
+    func testMultiStreamChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
+        // Here we modify the stored value of crc64.
+        testData[2346] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try XZArchive.splitUnarchive(archive: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is XZError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCheck(decompressedData)) = thrownError as? XZError {
+            XCTAssertEqual(decompressedData.count, 2)
+            var answerData = [try Constants.data(forAnswer: "test1")]
+            answerData.append(try Constants.data(forAnswer: "test2"))
+            XCTAssertEqual(decompressedData, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
     }
 
 }
