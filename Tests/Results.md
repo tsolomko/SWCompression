@@ -6,9 +6,12 @@ version.
 
 ## Changelog
 
-__September 2021.__ The results are now listed in terms of speed (e.g. MB/s); the benchmarks for Deflate, BZip2 compression and
-TAR container creation have been added; all previous results have been removed since newer hardware is now used; added
-results for the `-Ounchecked` compiler option; the macOS version is now listed for results.
+__October 2021.__ Added uncertainties for the results where they were missing; added LZ4 compression and decompression
+sections; compression results now also list compression ratio in brackets.
+
+__September 2021.__ The results are now listed in terms of speed (e.g. MB/s); the benchmarks for Deflate, BZip2
+compression and TAR container creation have been added; all previous results have been removed since newer hardware is
+now used; added results for the `-Ounchecked` compiler option; the macOS version is now listed for results.
 
 __April 2018.__ The first (zeroth, actually) iteration is now excluded from averages calculation since this iteration
 has abnormally longer execution time than any of the following iterations. This exclusion led not only to (artificially)
@@ -35,48 +38,87 @@ using "Release" configuration.
 
 __Note:__ External commands used to create compressed files were run using their default sets of options.
 
-__Note:__ All results are averages over 10 iterations. If the uncertainty is not listed it means that it is less than
-10% in terms of the units listed.
+__Note:__ All results are averages over 10 iterations. 
 
 ## BZip2 Decompress
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|2.764 MB/s|2.973 MB/s|2.410 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|2.552 ± 0.080 MB/s|2.894 ± 0.052 MB/s|2.391 ± 0.062 MB/s|
+|4.6.0|2.0.1|11.5.2|5.4.2|2.764 ± 0.037 MB/s|2.973 ± 0.088 MB/s|2.410 ± 0.088 MB/s|
 |4.6.0-unchecked|2.0.1|11.5.2|5.4.2|3.279 ± 0.429 MB/s|4.361 ± 0.306 MB/s|3.169 ± 0.180 MB/s|
 
 ## XZ Unarchive (LZMA/LZMA2 Decompress)
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|5.246 ± 0.279 MB/s|5.543 ± 0.143 MB/s|5.322 ± 0.26 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|5.210 ± 0.198 MB/s|5.436 ± 0.124 MB/s|5.224 ± 0.176 MB/s|
+|4.6.0|2.0.1|11.5.2|5.4.2|5.246 ± 0.279 MB/s|5.543 ± 0.143 MB/s|5.322 ± 0.260 MB/s|
 |4.6.0-unchecked|2.0.1|11.5.2|5.4.2|6.015 ± 0.319 MB/s|6.374 ± 0.143 MB/s|5.841 ± 0.212 MB/s|
 
 ## GZip Unarchive (Deflate Decompress)
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|5.946 ± 0.432 MB/s|6.034 ± 0.175 MB/s|6.071 ± 0.25 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|5.912 ± 0.232 MB/s|5.997 ± 0.100 MB/s|6.004 ± 0.259 MB/s|
+|4.6.0|2.0.1|11.5.2|5.4.2|5.946 ± 0.432 MB/s|6.034 ± 0.175 MB/s|6.071 ± 0.250 MB/s|
 |4.6.0-unchecked|2.0.1|11.5.2|5.4.2|8.562 ± 0.388 MB/s|9.908 ± 0.204 MB/s|8.286 ± 0.250 MB/s|
+
+## LZ4 Decompress
+
+For LZ4 decompression we report results both for independent and dependent blocks, since
+this setting may significantly affect performance.
+
+### Independent blocks
+
+|SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
+|:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|17.496 ± 0.817 MB/s|22.480 ± 0.524 MB/s|16.751 ± 0.902 MB/s|
+
+### Dependent blocks
+
+|SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
+|:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|17.065 ± 1.109 MB/s|22.508 ± 0.568 MB/s|16.735 ± 0.605 MB/s|
 
 ## BZip2 Compress
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|3.540 MB/s|2.862 MB/s|4.253 MB/s|
-|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|3.816 MB/s|3.060 MB/s|4.647 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|3.466 ± 0.048 MB/s (3.493)|2.767 ± 0.013 MB/s (2.635)|4.077 ± 0.069 MB/s (3.875)|
+|4.6.0|2.0.1|11.5.2|5.4.2|3.540 ± 0.055 MB/s|2.862 ± 0.013 MB/s|4.253 ± 0.077 MB/s|
+|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|3.816 ± 0.078 MB/s|3.060 ± 0.028 MB/s|4.647 ± 0.085 MB/s|
 
 ## Deflate Compress
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|12.177 ± 0.259 MB/s|8.809 MB/s|13.594 ± 0.355 MB/s|
-|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|12.914 ± 0.355 MB/s|9.361 MB/s|15.020 ± 0.277 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|15.703 ± 0.538 MB/s (2.540)|11.592 ± 0.219 MB/s (2.266)|17.547 ± 0.731 MB/s (2.831)|
+|4.6.0|2.0.1|11.5.2|5.4.2|12.177 ± 0.259 MB/s|8.809 ± 0.088 MB/s|13.594 ± 0.355 MB/s|
+|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|12.914 ± 0.355 MB/s|9.361 ± 0.078 MB/s|15.020 ± 0.277 MB/s|
+
+## LZ4 Compress
+
+For LZ4 compression we report results both for independent and dependent blocks, since
+this setting may significantly affect performance.
+
+### Independent blocks
+
+|SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
+|:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|32.692 ± 1.990 MB/s (2.620)|22.702 ± 0.423 MB/s (2.278)|35.405 ± 2.119 MB/s (2.981)|
+
+### Dependent blocks
+
+|SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
+|:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|32.234 ± 1.673 MB/s (2.622)|21.960 ± 0.531 MB/s (2.280)|34.729 ± 1.996 MB/s (2.983)|
 
 ## 7-Zip Info Function
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|86.216 ± 11.562 MB/s|135.372 ± 12.394 MB/s|43.499 ± 1.771 MB/s|
 |4.6.0|2.0.1|11.5.2|5.4.2|77.072 ± 6.625 MB/s|111.246 ± 4.855 MB/s|38.721 ± 2.681 MB/s|
 |4.6.0-unchecked|2.0.1|11.5.2|5.4.2|82.367 ± 7.381 MB/s|116.923 ± 3.812 MB/s|38.519 ± 2.988 MB/s|
 
@@ -84,19 +126,22 @@ __Note:__ All results are averages over 10 iterations. If the uncertainty is not
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
-|4.6.0|2.0.1|11.5.2|5.4.2|967.792 ± 58.436 MB/s|1.006 GB/s|217.082 ± 19.783 MB/s|
-|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|1.073 ± 0.115 GB/s|1.053 GB/s|246.854 ± 6.763 MB/s|
+|4.7.0|2.0.1|12.0.1|5.5.1|963.424 ± 107.448 MB/s|1.035 ± 0.078 GB/s|224.862 ± 8.902 MB/s|
+|4.6.0|2.0.1|11.5.2|5.4.2|967.792 ± 58.436 MB/s|1.006 ± 0.069 GB/s|217.082 ± 19.783 MB/s|
+|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|1.073 ± 0.115 GB/s|1.053 ± 0.071 GB/s|246.854 ± 6.763 MB/s|
 
 ## ZIP Info Function
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|587.776 ± 159.763 MB/s|2.150 ± 0.148 GB/s|389.327 ± 104.806 MB/s|
 |4.6.0|2.0.1|11.5.2|5.4.2|597.002 ± 75.017 MB/s|1.941 ± 0.135 GB/s|389.626 ± 22.006 MB/s|
-|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|685.266 ± 53.895 MB/s|2.147 GB/s|420.461 ± 15.156 MB/s|
+|4.6.0-unchecked|2.0.1|11.5.2|5.4.2|685.266 ± 53.895 MB/s|2.147 ± 0.097 GB/s|420.461 ± 15.156 MB/s|
 
 ## TAR Create Function
 
 |SWCompression<br>version|BitByteData<br>version|macOS<br>version|Swift<br>version|Test 1|Test 2|Test 3|
 |:---:|:---:|:---:|:---:|---|---|---|
+|4.7.0|2.0.1|12.0.1|5.5.1|143.668 ± 9.892 MB/s|476.701 ± 26.328 MB/s|233.040 ± 14.406 MB/s|
 |4.6.0|2.0.1|11.5.2|5.4.2|139.649 ± 8.310 MB/s|446.101 ± 21.476 MB/s|215.556 ± 17.5 MB/s|
 |4.6.0-unchecked|2.0.1|11.5.2|5.4.2|142.681 ± 5.664 MB/s|459.403 ± 17.862 MB/s|220.238 ± 3.476 MB/s|
