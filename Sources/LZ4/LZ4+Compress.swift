@@ -11,8 +11,8 @@ extension LZ4: CompressionAlgorithm {
     /**
      Compresses `data` using LZ4 algortihm with default format and algorithm options.
 
-     The default options include: independent blocks, do not save checksums for compressed blocks, save checksum for the
-     uncompressed data, do not save the size of the uncompressed data, use 4 MB block size, no dictionary.
+     The default options include: independent blocks, do not save checksums for compressed blocks, save the checksum of
+     the uncompressed data, do not save the size of the uncompressed data, use 4 MB block size, no dictionary.
      */
     public static func compress(data: Data) -> Data {
         return LZ4.compress(data: data, independentBlocks: true, blockChecksums: false, contentChecksum: true,

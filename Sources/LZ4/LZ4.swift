@@ -6,6 +6,7 @@
 import Foundation
 import BitByteData
 
+/// Provides functions for compression and decompression for LZ4 algorithm.
 public enum LZ4: DecompressionAlgorithm {
 
     // Notes about implementation and performance.
