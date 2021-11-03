@@ -18,10 +18,10 @@ It also works on Apple platforms, Linux, __and Windows__.
 
 All features are listed in the tables below. "TBD" means that feature is planned but not implemented (yet).
 
-|               | Deflate | BZip2 | LZMA/LZMA2 |
-| ------------- | ------- | ----- | ---------- |
-| Decompression | ✅      | ✅     | ✅         |
-| Compression   | ✅      | ✅     | TBD        |
+|               | Deflate | BZip2 | LZMA/LZMA2 | LZ4 |
+| ------------- | ------- | ----- | ---------- | --- | 
+| Decompression | ✅      | ✅     | ✅         | ✅  |
+| Compression   | ✅      | ✅     | TBD        | ✅  |
 
 |       | Zlib | GZip | XZ  | ZIP | TAR | 7-Zip |
 | ----- | ---- | ---- | --- | --- | --- | ----- |
@@ -45,7 +45,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.6.0")
+                 from: "4.7.0")
     ],
     targets: [
         .target(
@@ -60,7 +60,7 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.6'` and `use_frameworks!` lines to your Podfile.
+Add `pod 'SWCompression', '~> 4.7'` and `use_frameworks!` lines to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -71,6 +71,7 @@ If you need only some parts of framework, you can install only them using sub-po
 - SWCompression/Gzip
 - SWCompression/LZMA
 - SWCompression/LZMA2
+- SWCompression/LZ4
 - SWCompression/SevenZip
 - SWCompression/TAR
 - SWCompression/XZ
@@ -97,13 +98,14 @@ List of "optional dependecies":
 - For SWCompression/SevenZip:
     - SWCompression/BZip2
     - SWCompression/Deflate
+    - SWCompression/LZ4
 
 __Note:__ If you use Swift Package Manager or Carthage you always have everything (ZIP and 7-Zip are built with Deflate,
-BZip2 and LZMA/LZMA2 support).
+BZip2, LZMA/LZMA2 and LZ4 support).
 
 ### Carthage
 
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.6`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.7`.
 
 Then:
 
