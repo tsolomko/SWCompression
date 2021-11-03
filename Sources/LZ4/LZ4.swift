@@ -29,10 +29,46 @@ public enum LZ4: DecompressionAlgorithm {
     //    For example, in the process(block:_:) function we compute the remaining bytes directly by using data.endIndex
     //    and reader.offset instead of relying on the reader.bytesLeft computed property.
 
+    /**
+     Decompresses `data` using LZ4 algortihm.
+
+     Use `LZ4.decompress(data:dictionary:dictionaryID:)` instead, if the data was compressed with an external dictionary.
+     Otherwise, the decompression will result in an error or incorrect output.
+
+     - Parameter data: Data compressed with LZ4. If `data` represents several concatenated LZ4 frames, only the first
+     frame will be processed; use `LZ4.multiDecompress(data:dictionary:dictionaryID:)` instead to decompress all the
+     frames.
+
+     - Throws: `DataError.corrupted` or `DataError.truncated` if the data is corrupted or truncated.
+     `DataError.checksumMismatch` is thrown with uncompressed data as its associated value if the computed checksum of
+     the uncompressed data does not match the stored checksum. `DataError.unsupportedFeature` is thrown when the value
+     of a field inside the frame, such as uncompressed data size, is incompatible with the maximum integer size of the
+     current platform.
+     */
     public static func decompress(data: Data) throws -> Data {
         return try LZ4.decompress(data: data, dictionary: nil)
     }
 
+    /**
+     Decompresses `data` using LZ4 algortihm and provided external dictionary.
+
+     - Parameter data: Data compressed with LZ4. If `data` represents several concatenated LZ4 frames, only the first
+     frame will be processed; use `LZ4.multiDecompress(data:dictionary:dictionaryID:)` instead to decompress all the
+     frames.
+
+     - Parameter dictionary: External dictionary which will be used during decompression. Providing incorrect dictionary
+     (not the one that was used for compression), no dictionary at all (if one was used for compression), or providing a
+     dictionary when no dictionary was used for compression will result in an error or incorrect output.
+
+     - Parameter dictionaryID: Optional dictionary ID, which must match the one stored in the frame. If no dictionary
+     ID is present in the frame, then this argument is ignored.
+
+     - Throws: `DataError.corrupted` or `DataError.truncated` if the data is corrupted or truncated.
+     `DataError.checksumMismatch` is thrown with uncompressed data as its associated value if the computed checksum of
+     the uncompressed data does not match the stored checksum. `DataError.unsupportedFeature` is thrown when the value
+     of a field inside the frame, such as uncompressed data size, is incompatible with the maximum integer size of the
+     current platform.
+     */
     public static func decompress(data: Data, dictionary: Data?, dictionaryID: UInt32? = nil) throws -> Data {
         // Valid LZ4 frame must contain at least a magic number (4 bytes).
         guard data.count >= 4
@@ -53,6 +89,29 @@ public enum LZ4: DecompressionAlgorithm {
         }
     }
 
+    /**
+     Decompresses `data`, which may represent several concatenated LZ4 frames, using LZ4 algortihm and provided external
+     dictionary.
+
+     - Parameter data: Data compressed with LZ4. If `data` represents several concatenated LZ4 frames, all of them will
+     be processed.
+
+     - Parameter dictionary: External dictionary which will be used during decompression of all encountered frames.
+     Providing incorrect dictionary (not the one that was used for compression), no dictionary at all (if one was used
+     for compression), or providing a dictionary when no dictionary was used for compression will result in an error or
+     incorrect output.
+
+     - Parameter dictionaryID: Optional dictionary ID, which must match the one stored in all frames. If no dictionary
+     ID is present in a frame, then this argument is ignored for that frame.
+
+     - Throws: `DataError.corrupted` or `DataError.truncated` if the data is corrupted or truncated.
+     `DataError.checksumMismatch` is thrown if the computed checksum of the uncompressed data does not match the stored
+     checksum. The associated value in this case contains uncompressed data from all the frames up to and including the
+     one that caused this error. `DataError.unsupportedFeature` is thrown when the value of a field inside a frame, such
+     as uncompressed data size, is incompatible with the maximum integer size of the current platform.
+
+     - Returns: An array with uncompressed data from each processed non-skippable LZ4 frame as its elements.
+     */
     public static func multiDecompress(data: Data, dictionary: Data? = nil, dictionaryID: UInt32? = nil) throws -> [Data] {
         var result = [Data]()
         var nextFrameOffset = data.startIndex
