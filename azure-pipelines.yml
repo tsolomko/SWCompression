@@ -13,14 +13,8 @@ stages:
   displayName: 'Build & Test'
   jobs:
   - job: macos
-    # TODO: Add Xcode 12.5/Swift 5.4. It requires macOS 11 which is currently unavailable on AZP. For Xcode 12.5 we can also enable testing on watchos.
     strategy:
       matrix:
-        macosSwift50:
-          imageName: 'macOS-10.14'
-          DEVELOPER_DIR: '/Applications/Xcode_10.3.app'
-          WATCHOS_ACTIONS: 'clean build'
-          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift51:
           imageName: 'macOS-10.15'
           DEVELOPER_DIR: '/Applications/Xcode_11.3.1.app'
@@ -45,20 +39,44 @@ stages:
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift55:
           imageName: 'macOS-11'
-          DEVELOPER_DIR: '/Applications/Xcode_13.0.app'
+          DEVELOPER_DIR: '/Applications/Xcode_13.1.app'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
+    variables:
+      GIT_LFS_SKIP_SMUDGE: 1
     steps:
     - script: |
         set -e -o xtrace
         brew update
-        ./utils.py ci install-macos
-      displayName: 'Install'
-    - script: ./utils.py prepare-workspace macos $UTILS_PW_XCF_FLAG
-      displayName: 'Prepare Workspace'
+        ./utils.py ci install-git-lfs-macos
+        ls -a "Tests/Test Files"
+      displayName: 'Install Git LFS'
+    - script: |
+        set -e -o xtrace
+        git submodule update --init --recursive
+        cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
+      displayName: 'Update submodules'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        git lfs ls-files -l | cut -d' ' -f1 | sort > ../../.assets-id
+      displayName: 'Generate assets-id'
+    - task: Cache@2
+      inputs:
+        key: '"swc_test_files_v3_" | .assets-id'
+        path: '.git/modules/Tests/Test Files/lfs'
+      displayName: 'Cache lfs of test files'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        git lfs pull
+        git lfs checkout
+      displayName: 'Download or update test files'
+    - script: ./utils.py download-bbd-macos $UTILS_PW_XCF_FLAG
+      displayName: 'Download BitByteData'
     - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
     - script: swift build -c release
@@ -66,9 +84,6 @@ stages:
   - job: linux
     strategy:
       matrix:
-        linuxSwift50:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.0.3-bionic'
         linuxSwift51:
           imageName: 'ubuntu-18.04'
           containerImage: 'swift:5.1.5-bionic'
@@ -83,7 +98,7 @@ stages:
           containerImage: 'swift:5.4.3-bionic'
         linuxSwift55:
           imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.5-bionic'
+          containerImage: 'swift:5.5.1-bionic'
     pool:
       vmImage: $(imageName)
     container: $[ variables['containerImage'] ]
@@ -102,7 +117,7 @@ stages:
           SWIFT_VERSION: '5.4.3'
         windowsSwift55:
           imageName: 'windows-2019'
-          SWIFT_VERSION: '5.5'
+          SWIFT_VERSION: '5.5.1'
     pool:
       vmImage: $(imageName)
     variables:

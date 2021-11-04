@@ -8,9 +8,9 @@ import Foundation
 infix operator >>>
 
 @inline(__always)
-private func >>> (num: UInt32, count: Int) -> UInt32 {
+fileprivate func >>> (num: UInt32, count: Int) -> UInt32 {
     // This implementation assumes without checking that `count` is in the 1...31 range.
-    return (num >> UInt32(truncatingIfNeeded: count)) | (num << UInt32(truncatingIfNeeded: 32 - count))
+    return (num >> count) | (num << (32 - count))
 }
 
 struct Sha256 {

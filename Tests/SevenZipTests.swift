@@ -232,6 +232,31 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].data, answerData)
     }
 
+    func test7zLZ4() throws {
+        // File in container compressed with LZ4.
+        let testData = try Constants.data(forTest: "test_7z_lz4", withType: SevenZipTests.testType)
+        let entries = try SevenZipContainer.open(container: testData)
+
+        let answerData = try Constants.data(forAnswer: "test4")
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "test4.answer")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, answerData.count)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+        XCTAssertEqual(entries[0].info.hasStream, true)
+        XCTAssertEqual(entries[0].info.isEmpty, false)
+        XCTAssertEqual(entries[0].info.isAnti, false)
+        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
     func test7zCopy() throws {
         // File in container is explicitly uncompressed.
         let testData = try Constants.data(forTest: "test_7z_copy", withType: SevenZipTests.testType)

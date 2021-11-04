@@ -14,10 +14,19 @@ class SevenZipCommand: ContainerCommand {
     let name = "7z"
     let shortDescription = "Extracts a 7-Zip container"
 
-    let info = Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
-    let extract = Key<String>("-e", "--extract", description: "Extract a container into the specified directory")
-    let verbose = Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
+    @Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
+    var info: Bool
 
-    let archive = Parameter()
+    @Key("-e", "--extract", description: "Extract a container into the specified directory")
+    var extract: String?
+
+    @Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
+    var verbose: Bool
+
+    @Param var input: String
+
+    var optionGroups: [OptionGroup] {
+        return [.exactlyOne($info, $extract)]
+    }
 
 }

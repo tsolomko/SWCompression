@@ -19,7 +19,7 @@ def _ci_before_deploy():
     docs_json_file.close()
     _sprun(["jazzy"])
 
-def _ci_install_macos():
+def _ci_install_git_lfs_macos():
     script = """if brew ls --versions "git-lfs" >/dev/null; then
                     HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade "git-lfs"
                 else
@@ -45,8 +45,8 @@ def _ci_script_macos():
 def action_ci(args):
     if args.cmd == "before-deploy":
         _ci_before_deploy()
-    elif args.cmd == "install-macos":
-        _ci_install_macos()
+    elif args.cmd == "install-git-lfs-macos":
+        _ci_install_git_lfs_macos()
     elif args.cmd == "script-macos":
         _ci_script_macos()
     else:
@@ -62,29 +62,15 @@ def action_cw(args):
     _sprun(["rm", "-f", "docs.json"])
     _sprun(["rm", "-f", "Package.resolved"])
     _sprun(["rm", "-f", "SWCompression.framework.zip"])
-
-def _pw_macos(debug, xcf):
-    print("=> Downloading dependency (BitByteData) using Carthage")
+        
+def action_dbm(args):
+    print("=> Downloading BitByteData dependency using Carthage")
     script = ["carthage", "bootstrap", "--no-use-binaries"]
-    if debug:
+    if args.debug:
         script += ["--configuration", "Debug"]
-    if xcf:
+    if args.xcf:
         script += ["--use-xcframeworks"]
     _sprun(script)
-        
-def action_pw(args):
-    if args.os == "macos":
-        _pw_macos(args.debug, args.xcf)
-    elif args.os == "other":
-        pass
-    else:
-        raise Exception("Unknown OS")
-    if not args.no_test_files:
-        print("=> Downloading files used for testing")
-        _sprun(["git", "submodule", "update", "--init", "--recursive"])
-        _sprun(["cp", "Tests/Test Files/gitattributes-copy", "Tests/Test Files/.gitattributes"])
-        _sprun(["git", "lfs", "pull"], cwd="Tests/Test Files/")
-        _sprun(["git", "lfs", "checkout"], cwd="Tests/Test Files/")
 
 parser = argparse.ArgumentParser(description="A tool with useful commands for developing SWCompression")
 subparsers = parser.add_subparsers(title="commands", help="a command to perform", metavar="CMD")
@@ -92,7 +78,7 @@ subparsers = parser.add_subparsers(title="commands", help="a command to perform"
 # Parser for 'ci' command.
 parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
-parser_ci.add_argument("cmd", choices=["before-deploy", "install-macos", "script-macos"],
+parser_ci.add_argument("cmd", choices=["before-deploy", "install-git-lfs-macos", "script-macos"],
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.set_defaults(func=action_ci)
 
@@ -101,17 +87,14 @@ parser_cw = subparsers.add_parser("cleanup-workspace", help="cleanup workspace",
                             description="cleans workspace from files produced by various build systems")
 parser_cw.set_defaults(func=action_cw)
 
-# Parser for 'prepare-workspace' command.
-parser_pw = subparsers.add_parser("prepare-workspace", help="prepare workspace",
-                            description="prepares workspace for developing SWCompression")
-parser_pw.add_argument("os", choices=["macos", "other"], help="development operating system", metavar="OS")
-parser_pw.add_argument("--no-test-files", "-T", action="store_true", dest="no_test_files",
-                        help="don't download example files used for testing")
-parser_pw.add_argument("--debug", "-d", action="store_true", dest="debug",
+# Parser for 'download-bbd-macos' command.
+parser_dbm = subparsers.add_parser("download-bbd-macos", help="download BitByteData",
+                            description="downloads BitByteData dependency using Carthage (macOS only)")
+parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
                         help="build BitByteData in Debug configuration")
-parser_pw.add_argument("--xcf", action="store_true", dest="xcf",
+parser_dbm.add_argument("--xcf", action="store_true", dest="xcf",
                         help="build BitByteData as a XCFramework")
-parser_pw.set_defaults(func=action_pw)
+parser_dbm.set_defaults(func=action_dbm)
 
 args = parser.parse_args()
 args.func(args)

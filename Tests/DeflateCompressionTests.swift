@@ -10,18 +10,32 @@ class DeflateCompressionTests: XCTestCase {
 
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
-
         let compressedData = Deflate.compress(data: answerData)
-
-        if testName != "test5" { // Compression ratio is always bad for empty file.
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+        if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
-            print("Deflate.\(testName).compressionRatio = \(compressionRatio)")
-        } else {
-            print("No compression ratio for test5.")
+            print(String(format: "Deflate.\(testName).compressionRatio = %.3f", compressionRatio))
         }
+    }
 
-        let reUncompData = try Deflate.decompress(data: compressedData)
-        XCTAssertEqual(answerData, reUncompData)
+    func stringTest(_ string: String) throws {
+        let answerData = Data(string.utf8)
+        let compressedData = Deflate.compress(data: answerData)
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
+    }
+
+    func testDeflateCompressStrings() throws {
+        try stringTest("ban")
+        try stringTest("banana")
+        try stringTest("abaaba")
+        try stringTest("abracadabra")
+        try stringTest("cabbage")
+        try stringTest("baabaabac")
+        try stringTest("AAAAAAABBBBCCCD")
+        try stringTest("AAAAAAA")
+        try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
     }
 
     func testDeflate1() throws {
@@ -58,6 +72,16 @@ class DeflateCompressionTests: XCTestCase {
 
     func testDeflate9() throws {
         try self.answerTest("test9")
+    }
+
+    func testTrickySequence() throws {
+        // This test helped us find an issue with implementation (match index was wrongly used as cyclical index).
+        // This test may become useless in the future if the encoder starts preferring creation of an uncompressed block
+        // for this input due to changes to the compression logic.
+        let answerData = Data([0x2E, 0x20, 0x2E, 0x20, 0x2E, 0x20, 0x20])
+        let compressedData = Deflate.compress(data: answerData)
+        let redecompressedData = try Deflate.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, answerData)
     }
 
 }

@@ -288,4 +288,66 @@ class ZipTests: XCTestCase {
         XCTAssertEqual(entries[1].data, answerData)
     }
 
+    func testDosLatinUS() throws {
+        // This test checks that CP437 encoding is correctly used when there is no indication the file name is in UTF-8.
+        // We introduced several CP437-specific characters from the 0x80-0xFF range into "test1.answer" to test this.
+        // Note, that we didn't used normal characters from the 0x00-0x7F range that don't match the characters from
+        // UTF-8 with the same codes, since they are interpreted as control characters by Foundation.
+        let testData = try Constants.data(forTest: "test_dos_latin_us", withType: ZipTests.testType)
+        let entries = try ZipContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "teüë1.½n█wΩ±")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.fileSystemType, .unix)
+        XCTAssertFalse(entries[0].info.isTextFile)
+        XCTAssertEqual(entries[0].info.compressionMethod, .copy)
+        XCTAssertEqual(entries[0].info.ownerID, 501)
+        XCTAssertEqual(entries[0].info.groupID, 20)
+        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0))
+        XCTAssertEqual(entries[0].info.comment, "")
+        // Checking times' values is a bit difficult since they are extremely precise.
+        XCTAssertNotNil(entries[0].info.modificationTime)
+        XCTAssertNotNil(entries[0].info.accessTime)
+        XCTAssertNil(entries[0].info.creationTime)
+
+        let answerData = try Constants.data(forAnswer: "test1")
+        XCTAssertEqual(entries[0].data, answerData)
+    }
+
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "test_unicode", withType: ZipTests.testType)
+        // Here we modify the stored value of crc32.
+        testData[16] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try ZipContainer.open(container: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is ZipError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongCRC(entries)) = thrownError as? ZipError {
+            XCTAssertEqual(entries.count, 1)
+            XCTAssertEqual(entries[0].info.name, "текстовый файл")
+            XCTAssertEqual(entries[0].info.type, .regular)
+            XCTAssertEqual(entries[0].info.fileSystemType, .unix)
+            XCTAssertEqual(entries[0].info.compressionMethod, .deflate)
+            XCTAssertTrue(entries[0].info.isTextFile)
+            XCTAssertEqual(entries[0].info.ownerID, 501)
+            XCTAssertEqual(entries[0].info.groupID, 20)
+            XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
+            XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0))
+            XCTAssertEqual(entries[0].info.comment, "")
+            // Checking times' values is a bit difficult since they are extremely precise.
+            XCTAssertNotNil(entries[0].info.modificationTime)
+            XCTAssertNotNil(entries[0].info.accessTime)
+            XCTAssertNil(entries[0].info.creationTime)
+
+            let answerData = try Constants.data(forAnswer: "текстовый файл")
+            XCTAssertEqual(entries[0].data, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

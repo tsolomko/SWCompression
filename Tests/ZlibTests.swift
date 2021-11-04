@@ -56,4 +56,22 @@ class ZlibTests: XCTestCase {
         XCTAssertThrowsError(try ZlibArchive.unarchive(archive: Data()))
     }
 
+    func testChecksumMismatch() throws {
+        // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
+        // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
+        // which makes it incorrect.
+        var testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
+        // Here we modify the stored value of adler32.
+        testData[10249] &+= 1
+        var thrownError: Error? = nil
+        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: testData)) { thrownError = $0 }
+        XCTAssertTrue(thrownError is ZlibError, "Unexpected error type: \(type(of: thrownError))")
+        if case let .some(.wrongAdler32(decompressedData)) = thrownError as? ZlibError {
+            let answerData = try Constants.data(forAnswer: "test9")
+            XCTAssertEqual(decompressedData, answerData)
+        } else {
+            XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
 }

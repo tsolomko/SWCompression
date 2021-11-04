@@ -1,6 +1,6 @@
 # SWCompression
 
-[![Swift 5.X](https://img.shields.io/badge/Swift-5.X-blue.svg)](https://developer.apple.com/swift/)
+[![Swift 5.1+](https://img.shields.io/badge/Swift-5.1+-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://dev.azure.com/tsolomko/SWCompression/_apis/build/status/tsolomko.SWCompression?branchName=develop)](https://dev.azure.com/tsolomko/SWCompression/_build/latest?definitionId=3&branchName=develop)
 
@@ -18,10 +18,10 @@ It also works on Apple platforms, Linux, __and Windows__.
 
 All features are listed in the tables below. "TBD" means that feature is planned but not implemented (yet).
 
-|               | Deflate | BZip2 | LZMA/LZMA2 |
-| ------------- | ------- | ----- | ---------- |
-| Decompression | ✅      | ✅     | ✅         |
-| Compression   | ✅      | ✅     | TBD        |
+|               | Deflate | BZip2 | LZMA/LZMA2 | LZ4 |
+| ------------- | ------- | ----- | ---------- | --- | 
+| Decompression | ✅      | ✅     | ✅         | ✅  |
+| Compression   | ✅      | ✅     | TBD        | ✅  |
 
 |       | Zlib | GZip | XZ  | ZIP | TAR | 7-Zip |
 | ----- | ---- | ---- | --- | --- | --- | ----- |
@@ -45,7 +45,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.6.0")
+                 from: "4.7.0")
     ],
     targets: [
         .target(
@@ -60,7 +60,7 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.6'` and `use_frameworks!` lines to your Podfile.
+Add `pod 'SWCompression', '~> 4.7'` and `use_frameworks!` lines to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -71,6 +71,7 @@ If you need only some parts of framework, you can install only them using sub-po
 - SWCompression/Gzip
 - SWCompression/LZMA
 - SWCompression/LZMA2
+- SWCompression/LZ4
 - SWCompression/SevenZip
 - SWCompression/TAR
 - SWCompression/XZ
@@ -97,13 +98,14 @@ List of "optional dependecies":
 - For SWCompression/SevenZip:
     - SWCompression/BZip2
     - SWCompression/Deflate
+    - SWCompression/LZ4
 
 __Note:__ If you use Swift Package Manager or Carthage you always have everything (ZIP and 7-Zip are built with Deflate,
-BZip2 and LZMA/LZMA2 support).
+BZip2, LZMA/LZMA2 and LZ4 support).
 
 ### Carthage
 
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.6`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.7`.
 
 Then:
 
@@ -184,30 +186,39 @@ was created manually and you shouldn't use `swift package generate-xcodeproj` co
 
 ### Executing tests locally
 
-If you want to run tests on your computer, you need to do an additional step after cloning the repository:
+If you want to run tests on your computer, you need to do a couple of additional steps after cloning the repository:
 
 ```bash
-./utils.py prepare-workspace {macos|other}
+./utils.py download-bbd-macos
+git submodule update --init --recursive
+cd "Tests/Test Files"
+cp gitattributes-copy .gitattributes
+git lfs pull
+git lfs checkout
 ```
 
-The argument of this function is an operating system that you're using. This command will download files used in tests,
-and on macOS it will also try to download BitByteData dependency, which requires having Carthage installed. When using
-Xcode 12 or later, you should also pass the `--xcf` option, or use the
-[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
-Please also note that when working on SWCompression in Xcode when building the project you may see ld warnings about a
-directory not being found. These are expected and harmless. Finally, you should keep in mind that support for non-xcframework
-method of installing dependencies is likely to be dropped in the future major update.
+The first command will download the BitByteData dependency, which requires having Carthage installed. When using Xcode
+12 or later, you should also pass the `--xcf` option, or use the
+[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md). Please note
+that when building SWCompression's Xcode project you may see ld warnings about a directory not being found. These are
+expected and harmless. Finally, you should keep in mind that support for non-xcframework method of installing
+dependencies is likely to be dropped in the future major update.
 
-Test files are stored in a [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS.
-There are two reasons for this complicated setup. Firstly, some of these files can be quite big, and it would be
-unfortunate if the users of SWCompression had to download them every time during the installation. Secondly, Swift
-Package Manager and contemporary versions of Xcode don't always work well with git-lfs-enabled repositories. To prevent
-any potential problems test files were moved into another repository. Additionaly, the custom command line tool `utils.py`
-is used to work around issues occuring on certain user systems (see, for example, [#9](https://github.com/tsolomko/SWCompression/issues/9)).
+The remaining commands will download the files used in tests. These files are stored in a
+[separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS. There are two reasons for
+this complicated setup. Firstly, some of these files can be quite big, and it would be unfortunate if the users of
+SWCompression had to download them during the installation. Secondly, Swift Package Manager and contemporary versions of
+Xcode don't always work well with git-lfs-enabled repositories. To prevent any potential problems test files were moved
+into another repository.
 
 Please note, that if you want to add a new _type_ of test files, in addition to running `git lfs track`, you have to
 also copy into the "Tests/Test Files/gitattributes-copy" file a line this command adds to the "Tests/Test Files/.gitattributes"
 file. __Do not commit the ".gitattributes" file to the git history. It is git-ignored for a reason!__
+
+Please also be mindful of Git LFS bandwidth quota on GitHub: try to limit downloading lfs'd files using `git lfs pull`.
+In CI we use some caching techniques to help with the quota, so if you're going to add new tests that require several
+new test files you should try to submit them all together to reduce the amount of times CI needs to recreate the cache
+(recreating the cache requires to do `git lfs pull` for all test files).
 
 ## Performance
 
@@ -256,3 +267,6 @@ completely in Swift without Objective-C, it can also be used on __Linux__.
 - [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 - [A walk through the SA-IS Suffix Array Construction Algorithm](http://zork.net/~st/jottings/sais.html)
 - [Wikipedia article about BZip2](https://en.wikipedia.org/wiki/Bzip2)
+- [LZ4 Frame Format Description](https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md)
+- [LZ4 Block Format Description](https://github.com/lz4/lz4/blob/dev/doc/lz4_Block_format.md)
+- [xxHash specification](https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md)

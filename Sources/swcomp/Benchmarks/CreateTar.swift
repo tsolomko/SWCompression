@@ -12,7 +12,7 @@ class CreateTar: BenchmarkCommand {
     let name = "create-tar"
     let shortDescription = "Tar container creation"
 
-    let inputs = CollectedParameter()
+    @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "TAR Create"
     let benchmarkFunction: ([TarEntry]) throws -> Any = TarContainer.create
