@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.7.0
+
+- Added full-featured support for LZ4 compression and decompression by introducing 5 new functions inside `LZ4` enum.
+    - This enum conforms to the `DecompressionAlgorithm` and `CompressionAlgorithm` protocols.
+    - Added SWCompression/LZ4 subspec for CocoaPods users.
+    - Added support for LZ4 algorithm used in 7-Zip containers.
+- Added `DataError` enum which conforms to `Error` and `Equatable` protocols.
+- Swift 5.0 is no longer supported.
+- Fixed an issue where in some cases Deflate compression would produce incorrect output.
+- Optimized performance of Deflate compression.
+- swcomp changes:
+    - Increased the lowest required version of SwiftCLI dependency to 6.0.0.
+    - Added `lz4` command with many options to support all LZ4 features (both compression and decompression).
+    - Added `--use-format` option to the `tar` command which when used with the `-c` option allows to force usage of a
+    selected TAR format when creating a TAR container.
+    - The `-j` and `-z` options of the `tar` command can now be used together with the `-c` option to create compressed
+    TAR containers.
+    - Added `un-lz4`, `comp-lz4`, and `comp-lz4-bd` subcommands to the `benchmark` command.
+    - Benchmark commands for compression now report compression ratio.
+    
 ## 4.6.1
 
 - Fixed a crash in LZMA2 when trying to process an empty `Data`.
