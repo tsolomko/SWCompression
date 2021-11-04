@@ -8,11 +8,43 @@ import BitByteData
 
 extension LZ4: CompressionAlgorithm {
 
+    /**
+     Compresses `data` using LZ4 algortihm with default format and algorithm options.
+
+     The default options include: independent blocks, do not save checksums for compressed blocks, save the checksum of
+     the uncompressed data, do not save the size of the uncompressed data, use 4 MB block size, no dictionary.
+     */
     public static func compress(data: Data) -> Data {
         return LZ4.compress(data: data, independentBlocks: true, blockChecksums: false, contentChecksum: true,
                             contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
     }
 
+    /**
+     Compresses `data` using LZ4 algortihm.
+
+     This function allows to customize format and alogrithm options or use an external dictionary to compress the data.
+
+     - Parameter data: Data to compress.
+
+     - Parameter independentBlocks: True, if compressed blocks should be independent of each other. Setting this to
+     `false` may improve compression ratio at the cost of decompression speed.
+
+     - Parameter blockChecksums: True, if the checksums of the compressed blocks should be stored in the output.
+
+     - Parameter contentChecksum: True, if the checksum of the uncompressed data should be stored in the output.
+
+     - Parameter contentSize: True, if the size of the uncompressed data should be stored in the output.
+
+     - Parameter blockSize: Size of uncompressed blocks in bytes. The default and maximum value is 4194304 (4 MB).
+
+     - Parameter dictionary: External dictionary which will be used during compression. The same dictionary then must
+     be used for successful decompression.
+
+     - Parameter dictionaryID: Optional dictionary ID which will be stored in the output. The same dictionary ID then
+     is likely to be required for successful decompression.
+
+     - Precondition: `blockSize` must be greater than zero and less than or equal to 4194304 (4 MB).
+     */
     public static func compress(data: Data, independentBlocks: Bool, blockChecksums: Bool,
                                  contentChecksum: Bool, contentSize: Bool, blockSize: Int = 4 * 1024 * 1024,
                                  dictionary: Data? = nil, dictionaryID: UInt32? = nil) -> Data {

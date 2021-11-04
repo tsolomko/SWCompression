@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct CheckSums {
+enum CheckSums {
 
     // MARK: Functions
 

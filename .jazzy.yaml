@@ -3,11 +3,11 @@ sourcekitten_sourcefile: docs.json
 clean: false
 author: Timofey Solomko
 module: SWCompression
-module_version: 4.6.1
+module_version: 4.7.0
 copyright: '© 2021 Timofey Solomko'
 readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
-github_file_prefix: https://github.com/tsolomko/SWCompression/tree/4.6.1
+github_file_prefix: https://github.com/tsolomko/SWCompression/tree/4.7.0
 theme: fullwidth
 
 custom_categories:
@@ -18,6 +18,7 @@ custom_categories:
       - LZMA
       - LZMAProperties
       - LZMA2
+      - LZ4
     - name: Archives
       children:
       - GzipArchive
@@ -41,6 +42,7 @@ custom_categories:
     - name: Errors
       children:
       - BZip2Error
+      - DataError
       - DeflateError
       - GzipError
       - LZMAError
