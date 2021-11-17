@@ -42,6 +42,10 @@ class Constants {
         return testBundle.url(forResource: name, withExtension: "answer")!
     }
 
-    private static let testBundle: Bundle = Bundle(for: Constants.self)
+    #if SWIFT_PACKAGE
+        private static let testBundle: Bundle = Bundle.module
+    #else
+        private static let testBundle: Bundle = Bundle(for: Constants.self)
+    #endif
 
 }
