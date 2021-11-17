@@ -138,5 +138,9 @@ parser_pr = subparsers.add_parser("prepare-release", help="prepare next release"
 parser_pr.add_argument("version", metavar="VERSION", help="next version number")
 parser_pr.set_defaults(func=action_pr)
 
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit(1)
+
 args = parser.parse_args()
 args.func(args)
