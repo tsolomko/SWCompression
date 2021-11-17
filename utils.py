@@ -108,6 +108,50 @@ def action_pr(args):
         f.write(line)
     f.close()
 
+def action_gstt(args):
+    def process_sub_dir(dir: str):
+        files = []
+        for f in os.listdir(dir):
+            if os.path.isfile(os.path.join(dir, f)):
+                if f == ".DS_Store":
+                    continue
+                files.append(os.path.join(dir, f))
+            else:
+                files += process_sub_dir(os.path.join(dir, f))
+        return files
+
+    source_files = []
+    for f in os.listdir("Tests/"):
+        if os.path.isfile(os.path.join("Tests", f)) and f[-6:] == ".swift":
+            source_files.append(f)
+
+    test_root = "Tests/Test Files/"
+    test_dirs = list(os.walk(test_root))[0][1]
+    test_files = []
+    for subdir in test_dirs:
+        test_files += process_sub_dir(os.path.join(test_root, subdir))
+
+    out = ".testTarget(\n"
+    out += "    name: \"TestSWCompression\",\n"
+    out += "    dependencies: [\"SWCompression\"],\n"
+    out += "    path: \"Tests\",\n"
+
+    out += "    exclude: [\n"
+    for excluded_file in ["Results.md", "Test Files/gitattributes-copy", "Test Files/README.md"]:
+        out += "        \"" + excluded_file + "\",\n"
+    out += "    ],\n"
+
+    out += "    sources: [\n"
+    for source_file in source_files:
+        out += "        \"" + source_file + "\",\n"
+    out += "    ],\n"
+
+    out += "    resources: [\n"
+    for test_file in test_files:
+        out += "        .copy(\"" + test_file[6:] + "\"),\n"
+    out += "    ]),"
+    print(out)
+
 parser = argparse.ArgumentParser(description="A tool with useful commands for developing SWCompression")
 subparsers = parser.add_subparsers(title="commands", help="a command to perform", metavar="CMD")
 
@@ -137,6 +181,11 @@ parser_pr = subparsers.add_parser("prepare-release", help="prepare next release"
                                 description="prepare next release of SWCompression")
 parser_pr.add_argument("version", metavar="VERSION", help="next version number")
 parser_pr.set_defaults(func=action_pr)
+
+# Parser for 'gen-spm-test-target' command.
+parser_gstt = subparsers.add_parser("gen-spm-test-target", help="Generate SPM test target",
+                            description="generates the declaration of the test target for inclusion in the Package.swift")
+parser_gstt.set_defaults(func=action_gstt)
 
 if len(sys.argv) == 1:
     parser.print_help()
