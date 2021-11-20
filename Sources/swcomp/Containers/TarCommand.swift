@@ -39,6 +39,9 @@ class TarCommand: Command {
     @Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
     var verbose: Bool
 
+    @Flag("--use-rw-api", description: "Use TarReader/TarWriter APIs (may reduce RAM consumption)")
+    var useRwApi: Bool
+
     var optionGroups: [OptionGroup] {
         return [.atMostOne($gz, $bz2, $xz), .exactlyOne($info, $extract, $format, $create)]
     }
@@ -67,8 +70,31 @@ class TarCommand: Command {
         }
 
         if info {
-            let entries = try TarContainer.info(container: fileData)
-            swcomp.printInfo(entries)
+            if useRwApi {
+                guard let handle = FileHandle(forReadingAtPath: self.input) else {
+                    print("ERROR: Unable to open input file.")
+                    exit(1)
+                }
+                var reader = TarReader(fileHandle: handle)
+                while true {
+                    guard let entry = try reader.next()
+                        else { break }
+                    print(entry)
+                    print("------------------\n")
+                }
+                #if compiler(<5.2)
+                    handle.closeFile()
+                #else
+                    if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+                        try handle.close()
+                    } else {
+                        handle.closeFile()
+                    }
+                #endif
+            } else {
+                let entries = try TarContainer.info(container: fileData)
+                swcomp.printInfo(entries)
+            }
         } else if let outputPath = self.extract {
             if try !isValidOutputDirectory(outputPath, create: true) {
                 print("ERROR: Specified path already exists and is not a directory.")
