@@ -24,6 +24,11 @@ class Constants {
         return try Data(contentsOf: url, options: .mappedIfSafe)
     }
 
+    static func handle(forTest name: String, withType ext: String) throws -> FileHandle {
+        let url = Constants.url(forTest: name, withType: ext)
+        return try FileHandle(forReadingFrom: url)
+    }
+
     private static func url(forTest name: String, withType ext: String) -> URL {
         return testBundle.url(forResource: name, withExtension: ext)!
     }
