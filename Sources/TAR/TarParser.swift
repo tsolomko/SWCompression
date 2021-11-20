@@ -26,6 +26,10 @@ struct TarParser {
 
     init(_ data: Data) {
         self.reader = LittleEndianByteReader(data: data)
+        self.lastGlobalExtendedHeader = nil
+        self.lastLocalExtendedHeader = nil
+        self.longLinkName = nil
+        self.longName = nil
     }
 
     mutating func next() throws -> ParsingResult {

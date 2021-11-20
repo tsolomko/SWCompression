@@ -16,6 +16,10 @@ public struct TarReader {
 
     public init(fileHandle: FileHandle) {
         self.handle = fileHandle
+        self.lastGlobalExtendedHeader = nil
+        self.lastLocalExtendedHeader = nil
+        self.longLinkName = nil
+        self.longName = nil
     }
 
     public mutating func next() throws -> TarEntry? {
