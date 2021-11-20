@@ -19,25 +19,16 @@ public struct TarReader {
     }
 
     public mutating func next() throws -> TarEntry? {
-        let headerData = try getChunk()
+        let headerData = try getData(size: 512)
         if headerData.count == 0 {
             return nil
         } else if headerData == Data(count: 512) {
             // EOF marker case.
-            let offset: UInt64
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                offset = try handle.offset()
-            } else {
-                offset = handle.offsetInFile
-            }
-            if try getChunk() == Data(count: 512) {
+            let offset = try getOffset()
+            if try getData(size: 512) == Data(count: 512) {
                 return nil
             } else {
-                if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                    try handle.seek(toOffset: offset)
-                } else {
-                    handle.seek(toFileOffset: offset)
-                }
+                try set(offset: offset)
             }
         } else if headerData.count < 512 {
             throw DataError.truncated
@@ -45,12 +36,13 @@ public struct TarReader {
         assert(headerData.count == 512)
 
         let header = try TarHeader(LittleEndianByteReader(data: headerData))
-        // Since we read input in 512 bytes-long chunks, we don't have to check that we processed at most 512 bytes.
+        // Since we explicitly initialize the header from 512 bytes-long Data, we don't have to check that we processed
+        // at most 512 bytes.
         // Check, just in case, since we use blockStartIndex = -1 when creating TAR containers.
         assert(header.blockStartIndex >= 0)
+        let dataStartOffset = try getOffset()
 
         let entryData = try getData(size: header.size)
-        // Since we read input in 512 bytes-long chunks we don't have to round up the size as we do in TarParser.
         if case .special(let specialEntryType) = header.type {
             switch specialEntryType {
             case .globalExtendedHeader:
@@ -64,9 +56,11 @@ public struct TarReader {
             case .longName:
                 longName = LittleEndianByteReader(data: entryData).tarCString(maxLength: header.size)
             }
+            try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
             return try next()
         } else {
             let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
+            try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
@@ -74,30 +68,38 @@ public struct TarReader {
         }
     }
 
-    private func getChunk() throws -> Data {
-        let chunk: Data
+    private func getOffset() throws -> UInt64 {
+        let offset: UInt64
         if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            guard let chunkData = try handle.read(upToCount: 512)
-                else { throw DataError.truncated }
-            chunk = chunkData
+            offset = try handle.offset()
         } else {
-            // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
-            chunk = handle.readData(ofLength: 512)
+            offset = handle.offsetInFile
         }
-        return chunk
+        return offset
+    }
+
+    private func set(offset: UInt64) throws {
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            try handle.seek(toOffset: offset)
+        } else {
+            handle.seek(toFileOffset: offset)
+        }
     }
 
     private func getData(size: Int) throws -> Data {
-        var out = Data()
-        var remainingSize = size
-        while remainingSize > 0 {
-            let chunk = try getChunk()
-            guard chunk.count > 0
+        assert(size >= 0, "TarReader.getData(size:): negative size.")
+        guard size > 0
+            else { return Data() }
+        let out: Data
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            guard let chunkData = try handle.read(upToCount: size)
                 else { throw DataError.truncated }
-            out.append(chunk)
-            remainingSize -= chunk.count
+            out = chunkData
+        } else {
+            // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
+            out = handle.readData(ofLength: size)
         }
-        return out.dropLast(max(out.count - size, 0))
+        return out
     }
 
 }
