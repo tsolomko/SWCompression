@@ -49,6 +49,10 @@ class TarCommand: Command {
     @Param var input: String
 
     func execute() throws {
+        if useRwApi {
+            try executeUseRwApi()
+            return
+        }
         if self.useFormat != nil && self.create == nil {
             print("WARNING: --use-format option is ignored without -c/--create option")
         }
@@ -70,31 +74,8 @@ class TarCommand: Command {
         }
 
         if info {
-            if useRwApi {
-                guard let handle = FileHandle(forReadingAtPath: self.input) else {
-                    print("ERROR: Unable to open input file.")
-                    exit(1)
-                }
-                var reader = TarReader(fileHandle: handle)
-                while true {
-                    guard let entry = try reader.next()
-                        else { break }
-                    print(entry)
-                    print("------------------\n")
-                }
-                #if compiler(<5.2)
-                    handle.closeFile()
-                #else
-                    if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                        try handle.close()
-                    } else {
-                        handle.closeFile()
-                    }
-                #endif
-            } else {
-                let entries = try TarContainer.info(container: fileData)
-                swcomp.printInfo(entries)
-            }
+            let entries = try TarContainer.info(container: fileData)
+            swcomp.printInfo(entries)
         } else if let outputPath = self.extract {
             if try !isValidOutputDirectory(outputPath, create: true) {
                 print("ERROR: Specified output path already exists and is not a directory.")
@@ -148,6 +129,112 @@ class TarCommand: Command {
             } 
             try outData.write(to: outputURL)
         }
+    }
+
+    private func executeUseRwApi() throws {
+        if self.useFormat != nil && self.create == nil {
+            print("WARNING: --use-format option is ignored without -c/--create option")
+        }
+        
+        if gz {
+            print("ERROR: -z is unsupported with the --use-rw-api options.")
+            exit(1)
+        } else if bz2 {
+            print("ERROR: -j is unsupported with the --use-rw-api options.")
+            exit(1)
+        } else if xz {
+            print("ERROR: -x is unsupported with the --use-rw-api options.")
+            exit(1)
+        } else if format {
+            print("ERROR: -f is unsupported with the --use-rw-api options.")
+            exit(1)
+        }
+
+        if info {
+            guard let handle = FileHandle(forReadingAtPath: self.input) else {
+                print("ERROR: Unable to open input file.")
+                exit(1)
+            }
+            var reader = TarReader(fileHandle: handle)
+            while true {
+                guard let entry = try reader.next()
+                    else { break }
+                print(entry)
+                print("------------------\n")
+            }
+            try handle.closeHandleCompat()
+        } else if let outputPath = self.extract {
+            if try !isValidOutputDirectory(outputPath, create: true) {
+                print("ERROR: Specified output path already exists and is not a directory.")
+                exit(1)
+            }
+            if verbose {
+                print("d = directory, f = file, l = symbolic link")
+            }
+
+            guard let handle = FileHandle(forReadingAtPath: self.input) else {
+                print("ERROR: Unable to open input file.")
+                exit(1)
+            }
+            var reader = TarReader(fileHandle: handle)
+            let fileManager = FileManager.default
+            let outputURL = URL(fileURLWithPath: outputPath)
+            var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
+            while true {
+                guard let entry = try reader.next()
+                    else { break }
+                if entry.info.type == .directory {
+                    directoryAttributes.append(try writeDirectory(entry, outputURL, verbose))
+                } else {
+                    try writeFile(entry, outputURL, verbose)
+                }
+            }
+            try handle.closeHandleCompat()
+
+            for tuple in directoryAttributes {
+                try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
+            }
+        } else if let inputPath = self.create {
+            let fileManager = FileManager.default
+
+            guard !fileManager.fileExists(atPath: self.input) else {
+                print("ERROR: Output path already exists.")
+                exit(1)
+            }
+
+            guard fileManager.fileExists(atPath: inputPath) else {
+                print("ERROR: Specified input path doesn't exist.")
+                exit(1)
+            }
+            if verbose {
+                print("Creating new container at \"\(self.input)\" from \"\(inputPath)\"")
+                print("d = directory, f = file, l = symbolic link")
+            }
+
+            let outputURL = URL(fileURLWithPath: self.input)
+            try "".write(to: outputURL, atomically: true, encoding: .utf8)
+            let handle = try FileHandle(forWritingTo: outputURL)
+            var writer = TarWriter(fileHandle: handle, format: self.useFormat ?? .pax)
+            try TarEntry.generateEntries(&writer, inputPath, verbose)
+            try writer.finalize()
+            try handle.closeHandleCompat()
+        }
+    }
+
+}
+
+fileprivate extension FileHandle {
+
+    func closeHandleCompat() throws {
+        #if compiler(<5.2)
+            self.closeFile()
+        #else
+            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+                try self.close()
+            } else {
+                self.closeFile()
+            }
+        #endif
     }
 
 }
