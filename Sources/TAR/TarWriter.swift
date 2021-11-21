@@ -21,7 +21,7 @@ public struct TarWriter {
         self.localPaxHeaderCounter = 0
     }
 
-    public mutating func append(entry: TarEntry) throws {
+    public mutating func append(_ entry: TarEntry) throws {
         var out = Data()
         if format == .gnu {
             if entry.info.name.utf8.count > 100 {

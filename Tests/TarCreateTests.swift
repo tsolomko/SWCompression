@@ -66,7 +66,7 @@ class TarCreateTests: XCTestCase {
         try "".write(to: tempFileUrl, atomically: true, encoding: .utf8)
         let handle = try FileHandle(forWritingTo: tempFileUrl)
         var writer = TarWriter(fileHandle: handle)
-        try writer.append(entry: entry)
+        try writer.append(entry)
         try writer.finalize()
         let containerData = try Data(contentsOf: tempFileUrl)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
