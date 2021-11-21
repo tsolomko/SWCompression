@@ -28,7 +28,7 @@ extension ContainerCommand {
             swcomp.printInfo(entries)
         } else if let outputPath = self.extract {
             if try !isValidOutputDirectory(outputPath, create: true) {
-                print("ERROR: Specified path already exists and is not a directory.")
+                print("ERROR: Specified output path already exists and is not a directory.")
                 exit(1)
             }
 

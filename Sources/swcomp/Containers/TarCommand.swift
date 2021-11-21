@@ -97,7 +97,7 @@ class TarCommand: Command {
             }
         } else if let outputPath = self.extract {
             if try !isValidOutputDirectory(outputPath, create: true) {
-                print("ERROR: Specified path already exists and is not a directory.")
+                print("ERROR: Specified output path already exists and is not a directory.")
                 exit(1)
             }
 
@@ -129,7 +129,7 @@ class TarCommand: Command {
             }
 
             guard fileManager.fileExists(atPath: inputPath) else {
-                print("ERROR: Specified path doesn't exist.")
+                print("ERROR: Specified input path doesn't exist.")
                 exit(1)
             }
             if verbose {
