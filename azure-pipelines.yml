@@ -43,8 +43,7 @@ stages:
     - script: |
         set -e -o xtrace
         cd "Tests/Test Files"
-        git lfs pull
-        git lfs checkout
+        GIT_TRACE=1 git lfs pull
       displayName: 'Download or update test files'
 - stage: test
   displayName: 'Build & Test'
@@ -127,6 +126,11 @@ stages:
         key: '"swc_test_files_v3_" | .assets-id'
         path: '.git/modules/Tests/Test Files/lfs'
       displayName: 'Cache lfs of test files'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        GIT_TRACE=1 git lfs pull
+      displayName: 'Download or update test files'
     - script: ./utils.py download-bbd-macos $UTILS_PW_XCF_FLAG
       displayName: 'Download BitByteData'
     - script: ./utils.py ci script-macos
