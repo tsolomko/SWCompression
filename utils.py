@@ -120,11 +120,6 @@ def action_gstt(args):
                 files += process_sub_dir(os.path.join(dir, f))
         return files
 
-    source_files = []
-    for f in os.listdir("Tests/"):
-        if os.path.isfile(os.path.join("Tests", f)) and f[-6:] == ".swift":
-            source_files.append(f)
-
     test_root = "Tests/Test Files/"
     test_dirs = list(os.walk(test_root))[0][1]
     test_files = []
@@ -141,10 +136,7 @@ def action_gstt(args):
         out += "        \"" + excluded_file + "\",\n"
     out += "    ],\n"
 
-    out += "    sources: [\n"
-    for source_file in source_files:
-        out += "        \"" + source_file + "\",\n"
-    out += "    ],\n"
+    out += "    sources: [\"TestSWCompression\"],\n"
 
     out += "    resources: [\n"
     for test_file in test_files:
