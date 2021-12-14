@@ -143,9 +143,12 @@ stages:
     steps:
     - script: |
         swift.exe --version
-        swift.exe build
+        swift.exe test
+      displayName: 'SPM Test'
+    - script: |
+        swift.exe --version
         swift.exe build -c release
-      displayName: 'Build SPM Debug & Release'
+      displayName: 'SPM Build Release'
 - stage: deploy
   displayName: Deploy
   dependsOn: test
