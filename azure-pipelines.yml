@@ -217,9 +217,9 @@ stages:
     - script: |
         set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;%SWIFT_DEV_PATH%;%ICU_PATH%;%PATH%
         swift.exe --version
-        swift.exe build --target SWCompression %SWIFTFLAGS%
+        swift.exe test %SWIFTFLAGS% %SWIFTTESTFLAGS%
         swift.exe build -c release --target SWCompression %SWIFTFLAGS%
-      displayName: 'Build SPM Debug & Release'
+      displayName: 'SPM Test & Build Release'
 - stage: deploy
   displayName: Deploy
   dependsOn: test
