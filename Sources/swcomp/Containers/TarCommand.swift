@@ -180,13 +180,17 @@ class TarCommand: Command {
             let fileManager = FileManager.default
             let outputURL = URL(fileURLWithPath: outputPath)
             var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
-            while true {
-                guard let entry = try reader.next()
-                    else { break }
-                if entry.info.type == .directory {
-                    directoryAttributes.append(try writeDirectory(entry, outputURL, verbose))
-                } else {
-                    try writeFile(entry, outputURL, verbose)
+            var hasData = true
+            while hasData {
+                hasData = try autoreleasepool {
+                    guard let entry = try reader.next()
+                    else { return false }
+                    if entry.info.type == .directory {
+                        directoryAttributes.append(try writeDirectory(entry, outputURL, verbose))
+                    } else {
+                        try writeFile(entry, outputURL, verbose)
+                    }
+                    return true
                 }
             }
             try handle.closeHandleCompat()
