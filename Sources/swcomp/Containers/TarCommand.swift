@@ -156,11 +156,15 @@ class TarCommand: Command {
                 exit(1)
             }
             var reader = TarReader(fileHandle: handle)
-            while true {
-                guard let entry = try reader.read()
-                    else { break }
-                print(entry)
-                print("------------------\n")
+            var isFinished = false
+            while !isFinished {
+                isFinished = try reader.process { (entry: TarEntry?) -> Bool in
+                    guard entry != nil
+                        else { return true }
+                    print(entry!)
+                    print("------------------\n")
+                    return false
+                }
             }
             try handle.closeHandleCompat()
         } else if let outputPath = self.extract {
@@ -180,17 +184,17 @@ class TarCommand: Command {
             let fileManager = FileManager.default
             let outputURL = URL(fileURLWithPath: outputPath)
             var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
-            var hasData = true
-            while hasData {
-                hasData = try autoreleasepool {
-                    guard let entry = try reader.read()
-                        else { return false }
-                    if entry.info.type == .directory {
-                        directoryAttributes.append(try writeDirectory(entry, outputURL, verbose))
+            var isFinished = false
+            while !isFinished {
+                isFinished = try reader.process { (entry: TarEntry?) -> Bool in
+                    guard entry != nil
+                        else { return true }
+                    if entry!.info.type == .directory {
+                        directoryAttributes.append(try writeDirectory(entry!, outputURL, verbose))
                     } else {
-                        try writeFile(entry, outputURL, verbose)
+                        try writeFile(entry!, outputURL, verbose)
                     }
-                    return true
+                    return false
                 }
             }
             try handle.closeHandleCompat()
