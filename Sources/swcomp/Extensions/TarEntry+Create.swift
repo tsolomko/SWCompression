@@ -136,11 +136,15 @@ extension TarEntry {
             info.permissions = Permissions(rawValue: UInt32(truncatingIfNeeded: posixPermissions))
         }
 
-        var entryData = Data()
-        if entryType == .symbolicLink {
-            info.linkName = try fileManager.destinationOfSymbolicLink(atPath: inputPath)
-        } else if entryType != .directory {
-            entryData = try Data(contentsOf: URL(fileURLWithPath: inputPath))
+        try autoreleasepool {
+            var entryData = Data()
+            if entryType == .symbolicLink {
+                info.linkName = try fileManager.destinationOfSymbolicLink(atPath: inputPath)
+            } else if entryType != .directory {
+                entryData = try Data(contentsOf: URL(fileURLWithPath: inputPath))
+            }
+            let entry = TarEntry(info: info, data: entryData)
+            try writer.append(entry)
         }
 
         if verbose {
@@ -162,8 +166,6 @@ extension TarEntry {
             print(log)
         }
 
-        let entry = TarEntry(info: info, data: entryData)
-        try writer.append(entry)
 
         if entryType == .directory {
             for subPath in try fileManager.contentsOfDirectory(atPath: inputPath) {
