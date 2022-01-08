@@ -161,7 +161,7 @@ class TarCommand: Command {
                 isFinished = try reader.process { (entry: TarEntry?) -> Bool in
                     guard entry != nil
                         else { return true }
-                    print(entry!)
+                    print(entry!.info)
                     print("------------------\n")
                     return false
                 }
