@@ -75,7 +75,14 @@ public struct TarReader {
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
-            return TarEntry(info: info, data: entryData)
+            if info.type == .directory {
+                // For directories TarEntry.data is set to nil.
+                var entry = TarEntry(info: info, data: nil)
+                entry.info.size = 0
+                return entry
+            } else {
+                return TarEntry(info: info, data: entryData)
+            }
         }
     }
 
