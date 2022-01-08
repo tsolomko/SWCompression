@@ -54,6 +54,9 @@ public struct TarReader {
         let dataStartOffset = try getOffset()
 
         let entryData = try getData(size: header.size)
+        guard entryData.count == header.size
+            else { throw DataError.truncated }
+
         if case .special(let specialEntryType) = header.type {
             switch specialEntryType {
             case .globalExtendedHeader:
