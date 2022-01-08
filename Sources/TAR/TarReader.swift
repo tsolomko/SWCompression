@@ -22,6 +22,13 @@ public struct TarReader {
         self.longName = nil
     }
 
+    public mutating func process<T>(_ transform: (TarEntry?) throws -> T) throws -> T {
+        return try autoreleasepool {
+            let entry = try read()
+            return try transform(entry)
+        }
+    }
+
     public mutating func read() throws -> TarEntry? {
         let headerData = try getData(size: 512)
         if headerData.count == 0 {
