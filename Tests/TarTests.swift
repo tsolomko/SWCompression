@@ -210,7 +210,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
         XCTAssertNil(entries[0].info.comment)
-        XCTAssertEqual(entries[0].data, nil)
+        XCTAssertNil(entries[0].data)
     }
 
     func testEmptyContainer() throws {
