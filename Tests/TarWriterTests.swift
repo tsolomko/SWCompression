@@ -31,6 +31,7 @@ class TarWriterTests: XCTestCase {
         var writer = TarWriter(fileHandle: handle)
         try writer.append(entry)
         try writer.finalize()
+        try handle.closeCompat()
         let containerData = try Data(contentsOf: tempFileUrl)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newEntries = try TarContainer.open(container: containerData)

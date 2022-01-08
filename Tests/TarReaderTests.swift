@@ -14,11 +14,7 @@ class TarReaderTests: XCTestCase {
         let testHandle = try Constants.handle(forTest: "test", withType: TarReaderTests.testType)
         var reader = TarReader(fileHandle: testHandle)
         let entries = [try reader.read()!]
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            try testHandle.close()
-        } else {
-            testHandle.closeFile()
-        }
+        try testHandle.closeCompat()
 
         XCTAssertEqual(entries.count, 1)
         XCTAssertEqual(entries[0].info.name, "test5.answer")
