@@ -39,9 +39,6 @@ class TarCommand: Command {
     @Flag("-v", "--verbose", description: "Print the list of extracted files and directories.")
     var verbose: Bool
 
-    @Flag("--use-rw-api", description: "Use TarReader/TarWriter APIs (may reduce RAM consumption)")
-    var useRwApi: Bool
-
     var optionGroups: [OptionGroup] {
         return [.atMostOne($gz, $bz2, $xz), .exactlyOne($info, $extract, $format, $create)]
     }
@@ -49,10 +46,6 @@ class TarCommand: Command {
     @Param var input: String
 
     func execute() throws {
-        if useRwApi {
-            try executeUseRwApi()
-            return
-        }
         if self.useFormat != nil && self.create == nil {
             print("WARNING: --use-format option is ignored without -c/--create option")
         }
@@ -74,16 +67,98 @@ class TarCommand: Command {
         }
 
         if info {
-            let entries = try TarContainer.info(container: fileData)
-            swcomp.printInfo(entries)
+            if gz {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try GzipArchive.unarchive(archive: fileData)
+                let entries = try TarContainer.info(container: fileData)
+                swcomp.printInfo(entries)
+            } else if bz2 {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try BZip2.decompress(data: fileData)
+                let entries = try TarContainer.info(container: fileData)
+                swcomp.printInfo(entries)
+            } else if xz {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try XZArchive.unarchive(archive: fileData)
+                let entries = try TarContainer.info(container: fileData)
+                swcomp.printInfo(entries)
+            } else {
+                guard let handle = FileHandle(forReadingAtPath: self.input) else {
+                    print("ERROR: Unable to open input file.")
+                    exit(1)
+                }
+                var reader = TarReader(fileHandle: handle)
+                var isFinished = false
+                while !isFinished {
+                    isFinished = try reader.process { (entry: TarEntry?) -> Bool in
+                        guard entry != nil
+                            else { return true }
+                        print(entry!.info)
+                        print("------------------\n")
+                        return false
+                    }
+                }
+                try handle.closeHandleCompat()
+            }
         } else if let outputPath = self.extract {
-            if try !isValidOutputDirectory(outputPath, create: true) {
+            guard try isValidOutputDirectory(outputPath, create: true) else {
                 print("ERROR: Specified output path already exists and is not a directory.")
                 exit(1)
             }
 
-            let entries = try TarContainer.open(container: fileData)
-            try swcomp.write(entries, outputPath, verbose)
+            if gz {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try GzipArchive.unarchive(archive: fileData)
+                let entries = try TarContainer.open(container: fileData)
+                try swcomp.write(entries, outputPath, verbose)
+            } else if bz2 {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try BZip2.decompress(data: fileData)
+                let entries = try TarContainer.open(container: fileData)
+                try swcomp.write(entries, outputPath, verbose)
+            } else if xz {
+                fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
+                                    options: .mappedIfSafe)
+                fileData = try XZArchive.unarchive(archive: fileData)
+                let entries = try TarContainer.open(container: fileData)
+                try swcomp.write(entries, outputPath, verbose)
+            } else {
+                if verbose {
+                    print("d = directory, f = file, l = symbolic link")
+                }
+
+                guard let handle = FileHandle(forReadingAtPath: self.input) else {
+                    print("ERROR: Unable to open input file.")
+                    exit(1)
+                }
+                var reader = TarReader(fileHandle: handle)
+                let fileManager = FileManager.default
+                let outputURL = URL(fileURLWithPath: outputPath)
+                var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
+                var isFinished = false
+                while !isFinished {
+                    isFinished = try reader.process { (entry: TarEntry?) -> Bool in
+                        guard entry != nil
+                            else { return true }
+                        if entry!.info.type == .directory {
+                            directoryAttributes.append(try writeDirectory(entry!, outputURL, verbose))
+                        } else {
+                            try writeFile(entry!, outputURL, verbose)
+                        }
+                        return false
+                    }
+                }
+                try handle.closeHandleCompat()
+
+                for tuple in directoryAttributes {
+                    try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
+                }
+            }
         } else if format {
             let format = try TarContainer.formatOf(container: fileData)
             switch format {
@@ -117,115 +192,29 @@ class TarCommand: Command {
                 print("Creating new container at \"\(self.input)\" from \"\(inputPath)\"")
                 print("d = directory, f = file, l = symbolic link")
             }
-            let entries = try TarEntry.createEntries(inputPath, verbose)
-            var outData = TarContainer.create(from: entries, force: self.useFormat ?? .pax)
-            let outputURL = URL(fileURLWithPath: self.input)
             if gz {
+                let entries = try TarEntry.createEntries(inputPath, verbose)
+                var outData = TarContainer.create(from: entries, force: self.useFormat ?? .pax)
+                let outputURL = URL(fileURLWithPath: self.input)
                 let fileName = outputURL.lastPathComponent
                 outData = try GzipArchive.archive(data: outData, fileName: fileName.isEmpty ? nil : fileName,
                                                   writeHeaderCRC: true)
+                try outData.write(to: outputURL)
             } else if bz2 {
+                let entries = try TarEntry.createEntries(inputPath, verbose)
+                var outData = TarContainer.create(from: entries, force: self.useFormat ?? .pax)
+                let outputURL = URL(fileURLWithPath: self.input)
                 outData = BZip2.compress(data: outData)
+                try outData.write(to: outputURL)
+            } else {
+                let outputURL = URL(fileURLWithPath: self.input)
+                try "".write(to: outputURL, atomically: true, encoding: .utf8)
+                let handle = try FileHandle(forWritingTo: outputURL)
+                var writer = TarWriter(fileHandle: handle, format: self.useFormat ?? .pax)
+                try TarEntry.generateEntries(&writer, inputPath, verbose)
+                try writer.finalize()
+                try handle.closeHandleCompat()
             }
-            try outData.write(to: outputURL)
-        }
-    }
-
-    private func executeUseRwApi() throws {
-        if self.useFormat != nil && self.create == nil {
-            print("WARNING: --use-format option is ignored without -c/--create option")
-        }
-
-        if gz {
-            print("ERROR: -z is unsupported with the --use-rw-api options.")
-            exit(1)
-        } else if bz2 {
-            print("ERROR: -j is unsupported with the --use-rw-api options.")
-            exit(1)
-        } else if xz {
-            print("ERROR: -x is unsupported with the --use-rw-api options.")
-            exit(1)
-        } else if format {
-            print("ERROR: -f is unsupported with the --use-rw-api options.")
-            exit(1)
-        }
-
-        if info {
-            guard let handle = FileHandle(forReadingAtPath: self.input) else {
-                print("ERROR: Unable to open input file.")
-                exit(1)
-            }
-            var reader = TarReader(fileHandle: handle)
-            var isFinished = false
-            while !isFinished {
-                isFinished = try reader.process { (entry: TarEntry?) -> Bool in
-                    guard entry != nil
-                        else { return true }
-                    print(entry!.info)
-                    print("------------------\n")
-                    return false
-                }
-            }
-            try handle.closeHandleCompat()
-        } else if let outputPath = self.extract {
-            if try !isValidOutputDirectory(outputPath, create: true) {
-                print("ERROR: Specified output path already exists and is not a directory.")
-                exit(1)
-            }
-            if verbose {
-                print("d = directory, f = file, l = symbolic link")
-            }
-
-            guard let handle = FileHandle(forReadingAtPath: self.input) else {
-                print("ERROR: Unable to open input file.")
-                exit(1)
-            }
-            var reader = TarReader(fileHandle: handle)
-            let fileManager = FileManager.default
-            let outputURL = URL(fileURLWithPath: outputPath)
-            var directoryAttributes = [(attributes: [FileAttributeKey: Any], path: String)]()
-            var isFinished = false
-            while !isFinished {
-                isFinished = try reader.process { (entry: TarEntry?) -> Bool in
-                    guard entry != nil
-                        else { return true }
-                    if entry!.info.type == .directory {
-                        directoryAttributes.append(try writeDirectory(entry!, outputURL, verbose))
-                    } else {
-                        try writeFile(entry!, outputURL, verbose)
-                    }
-                    return false
-                }
-            }
-            try handle.closeHandleCompat()
-
-            for tuple in directoryAttributes {
-                try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
-            }
-        } else if let inputPath = self.create {
-            let fileManager = FileManager.default
-
-            guard !fileManager.fileExists(atPath: self.input) else {
-                print("ERROR: Output path already exists.")
-                exit(1)
-            }
-
-            guard fileManager.fileExists(atPath: inputPath) else {
-                print("ERROR: Specified input path doesn't exist.")
-                exit(1)
-            }
-            if verbose {
-                print("Creating new container at \"\(self.input)\" from \"\(inputPath)\"")
-                print("d = directory, f = file, l = symbolic link")
-            }
-
-            let outputURL = URL(fileURLWithPath: self.input)
-            try "".write(to: outputURL, atomically: true, encoding: .utf8)
-            let handle = try FileHandle(forWritingTo: outputURL)
-            var writer = TarWriter(fileHandle: handle, format: self.useFormat ?? .pax)
-            try TarEntry.generateEntries(&writer, inputPath, verbose)
-            try writer.finalize()
-            try handle.closeHandleCompat()
         }
     }
 
