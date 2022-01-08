@@ -44,7 +44,7 @@ class TarTests: XCTestCase {
     func testHandle() throws {
         let testHandle = try Constants.handle(forTest: "test", withType: TarTests.testType)
         var reader = TarReader(fileHandle: testHandle)
-        let entries = [try reader.next()!]
+        let entries = [try reader.read()!]
         if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             try testHandle.close()
         } else {

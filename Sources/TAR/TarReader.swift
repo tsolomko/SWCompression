@@ -22,7 +22,7 @@ public struct TarReader {
         self.longName = nil
     }
 
-    public mutating func next() throws -> TarEntry? {
+    public mutating func read() throws -> TarEntry? {
         let headerData = try getData(size: 512)
         if headerData.count == 0 {
             return nil
@@ -61,7 +61,7 @@ public struct TarReader {
                 longName = LittleEndianByteReader(data: entryData).tarCString(maxLength: header.size)
             }
             try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
-            return try next()
+            return try read()
         } else {
             let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
             try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))

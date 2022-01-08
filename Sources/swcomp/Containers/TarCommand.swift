@@ -126,7 +126,7 @@ class TarCommand: Command {
                                                   writeHeaderCRC: true)
             } else if bz2 {
                 outData = BZip2.compress(data: outData)
-            } 
+            }
             try outData.write(to: outputURL)
         }
     }
@@ -135,7 +135,7 @@ class TarCommand: Command {
         if self.useFormat != nil && self.create == nil {
             print("WARNING: --use-format option is ignored without -c/--create option")
         }
-        
+
         if gz {
             print("ERROR: -z is unsupported with the --use-rw-api options.")
             exit(1)
@@ -157,7 +157,7 @@ class TarCommand: Command {
             }
             var reader = TarReader(fileHandle: handle)
             while true {
-                guard let entry = try reader.next()
+                guard let entry = try reader.read()
                     else { break }
                 print(entry)
                 print("------------------\n")
@@ -183,8 +183,8 @@ class TarCommand: Command {
             var hasData = true
             while hasData {
                 hasData = try autoreleasepool {
-                    guard let entry = try reader.next()
-                    else { return false }
+                    guard let entry = try reader.read()
+                        else { return false }
                     if entry.info.type == .directory {
                         directoryAttributes.append(try writeDirectory(entry, outputURL, verbose))
                     } else {
