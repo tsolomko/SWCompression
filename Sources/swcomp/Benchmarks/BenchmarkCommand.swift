@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -38,7 +38,7 @@ extension BenchmarkCommand where InputType == Data {
         let inputSize = Double(attr[.size] as! UInt64)
         return (inputData, inputSize)
     }
-            
+
 }
 
 extension BenchmarkCommand {
@@ -75,7 +75,7 @@ extension BenchmarkCommand {
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
-            
+
             for _ in 1...10 {
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = try benchmarkFunction(loadedInput)
