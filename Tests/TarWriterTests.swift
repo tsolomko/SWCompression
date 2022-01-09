@@ -31,7 +31,7 @@ class TarWriterTests: XCTestCase {
         let tempFileUrl = tempDir.appendingPathComponent(UUID().uuidString, isDirectory: false)
         try "".write(to: tempFileUrl, atomically: true, encoding: .utf8)
         let handle = try FileHandle(forWritingTo: tempFileUrl)
-        var writer = TarWriter(fileHandle: handle, format: format)
+        var writer = TarWriter(fileHandle: handle, force: format)
         for entry in entries {
             try writer.append(entry)
         }

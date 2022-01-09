@@ -210,7 +210,7 @@ class TarCommand: Command {
                 let outputURL = URL(fileURLWithPath: self.input)
                 try "".write(to: outputURL, atomically: true, encoding: .utf8)
                 let handle = try FileHandle(forWritingTo: outputURL)
-                var writer = TarWriter(fileHandle: handle, format: self.useFormat ?? .pax)
+                var writer = TarWriter(fileHandle: handle, force: self.useFormat ?? .pax)
                 try TarEntry.generateEntries(&writer, inputPath, verbose)
                 try writer.finalize()
                 try handle.closeHandleCompat()

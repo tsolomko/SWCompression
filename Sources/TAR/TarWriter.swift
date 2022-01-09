@@ -13,7 +13,7 @@ public struct TarWriter {
     private var longLinkNameCounter: UInt
     private var localPaxHeaderCounter: UInt
 
-    public init(fileHandle: FileHandle, format: TarContainer.Format = .pax) {
+    public init(fileHandle: FileHandle, force format: TarContainer.Format = .pax) {
         self.handle = fileHandle
         self.format = format
         self.longNameCounter = 0
