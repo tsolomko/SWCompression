@@ -16,7 +16,7 @@ class BenchmarkGroup: CommandGroup {
         UnGzip(), UnXz(), UnBz2(), UnLZ4(),
         InfoTar(), InfoZip(), Info7z(),
         CompDeflate(), CompBz2(), CompLZ4(), CompLZ4BD(),
-        CreateTar()
+        CreateTar(), WriterTar()
     ]
 
 }
@@ -161,5 +161,60 @@ class UnXz: BenchmarkCommand {
 
     let benchmarkName = "XZ Unarchive"
     let benchmarkFunction: (Data) throws -> Any = XZArchive.unarchive
+
+}
+
+class CreateTar: BenchmarkCommand {
+
+    let name = "create-tar"
+    let shortDescription = "Tar container creation using TarContainer"
+
+    @CollectedParam(minCount: 1) var inputs: [String]
+
+    let benchmarkName = "TAR Create"
+    let benchmarkFunction: ([TarEntry]) throws -> Any = TarContainer.create
+
+    func loadInput(_ input: String) throws -> ([TarEntry], Double) {
+        return try (TarEntry.createEntries(input, false), Double(URL(fileURLWithPath: input).directorySize()))
+    }
+
+}
+
+class WriterTar: BenchmarkCommand {
+
+    let name = "writer-tar"
+    let shortDescription = "Tar container creation using TarWriter"
+
+    @CollectedParam(minCount: 1) var inputs: [String]
+
+    let benchmarkName = "TAR Writer"
+    let benchmarkFunction: ([TarEntry]) throws -> Any = { (entries: [TarEntry]) throws -> Data? in
+        let outputURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString, isDirectory: false)
+        try "".write(to: outputURL, atomically: true, encoding: .utf8)
+        let handle = try FileHandle(forWritingTo: outputURL)
+        var writer = TarWriter(fileHandle: handle)
+        for entry in entries {
+            try writer.append(entry)
+        }
+        try writer.finalize()
+        try handle.closeCompat()
+        try FileManager.default.removeItem(at: outputURL)
+        return nil
+    }
+
+    func loadInput(_ input: String) throws -> ([TarEntry], Double) {
+        return try (TarEntry.createEntries(input, false), Double(URL(fileURLWithPath: input).directorySize()))
+    }
+
+}
+
+fileprivate extension URL {
+
+    func directorySize() throws -> Int {
+        let urls = FileManager.default.enumerator(at: self, includingPropertiesForKeys: nil)?.allObjects as! [URL]
+        return try urls.lazy.reduce(0) {
+                (try $1.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize ?? 0) + $0
+        }
+    }
 
 }
