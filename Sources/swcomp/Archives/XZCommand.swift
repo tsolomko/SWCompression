@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class XZCommand: Command {
+final class XZCommand: Command {
 
     let name = "xz"
     let shortDescription = "Extracts a XZ archive"

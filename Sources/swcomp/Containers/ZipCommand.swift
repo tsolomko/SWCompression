@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class ZipCommand: ContainerCommand {
+final class ZipCommand: ContainerCommand {
 
     typealias ContainerType = ZipContainer
 

@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class LZMACommand: Command {
+final class LZMACommand: Command {
 
     let name = "lzma"
     let shortDescription = "Extracts a LZMA archive"

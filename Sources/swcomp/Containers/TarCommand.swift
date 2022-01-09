@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class TarCommand: Command {
+final class TarCommand: Command {
 
     let name = "tar"
     let shortDescription = "Extracts a TAR container"

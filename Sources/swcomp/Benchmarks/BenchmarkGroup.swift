@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class BenchmarkGroup: CommandGroup {
+final class BenchmarkGroup: CommandGroup {
 
     let name = "benchmark"
     let shortDescription = "Run the specified benchmark using external files"
@@ -21,7 +21,7 @@ class BenchmarkGroup: CommandGroup {
 
 }
 
-class CompBz2: BenchmarkCommand {
+final class CompBz2: BenchmarkCommand {
 
     let name = "comp-bz2"
     let shortDescription = "BZip2 compression"
@@ -35,7 +35,7 @@ class CompBz2: BenchmarkCommand {
 
 }
 
-class CompDeflate: BenchmarkCommand {
+final class CompDeflate: BenchmarkCommand {
 
     let name = "comp-deflate"
     let shortDescription = "Deflate compression"
@@ -49,7 +49,7 @@ class CompDeflate: BenchmarkCommand {
 
 }
 
-class CompLZ4: BenchmarkCommand {
+final class CompLZ4: BenchmarkCommand {
 
     let name = "comp-lz4"
     let shortDescription = "LZ4 compression (independent blocks)"
@@ -63,7 +63,7 @@ class CompLZ4: BenchmarkCommand {
 
 }
 
-class CompLZ4BD: BenchmarkCommand {
+final class CompLZ4BD: BenchmarkCommand {
 
     let name = "comp-lz4-bd"
     let shortDescription = "LZ4 compression (dependent blocks)"
@@ -80,7 +80,7 @@ class CompLZ4BD: BenchmarkCommand {
 
 }
 
-class Info7z: BenchmarkCommand {
+final class Info7z: BenchmarkCommand {
 
     let name = "info-7z"
     let shortDescription = "7-Zip info function"
@@ -92,7 +92,7 @@ class Info7z: BenchmarkCommand {
 
 }
 
-class InfoTar: BenchmarkCommand {
+final class InfoTar: BenchmarkCommand {
 
     let name = "info-tar"
     let shortDescription = "TAR info function"
@@ -104,7 +104,7 @@ class InfoTar: BenchmarkCommand {
 
 }
 
-class InfoZip: BenchmarkCommand {
+final class InfoZip: BenchmarkCommand {
 
     let name = "info-zip"
     let shortDescription = "ZIP info function"
@@ -116,7 +116,7 @@ class InfoZip: BenchmarkCommand {
 
 }
 
-class UnBz2: BenchmarkCommand {
+final class UnBz2: BenchmarkCommand {
 
     let name = "un-bz2"
     let shortDescription = "BZip2 unarchiving"
@@ -128,7 +128,7 @@ class UnBz2: BenchmarkCommand {
 
 }
 
-class UnGzip: BenchmarkCommand {
+final class UnGzip: BenchmarkCommand {
 
     let name = "un-gzip"
     let shortDescription = "GZip unarchiving"
@@ -140,7 +140,7 @@ class UnGzip: BenchmarkCommand {
 
 }
 
-class UnLZ4: BenchmarkCommand {
+final class UnLZ4: BenchmarkCommand {
 
     let name = "un-lz4"
     let shortDescription = "LZ4 unarchiving"
@@ -152,7 +152,7 @@ class UnLZ4: BenchmarkCommand {
 
 }
 
-class UnXz: BenchmarkCommand {
+final class UnXz: BenchmarkCommand {
 
     let name = "un-xz"
     let shortDescription = "XZ unarchiving"
@@ -164,7 +164,7 @@ class UnXz: BenchmarkCommand {
 
 }
 
-class CreateTar: BenchmarkCommand {
+final class CreateTar: BenchmarkCommand {
 
     let name = "create-tar"
     let shortDescription = "Tar container creation using TarContainer"
@@ -180,7 +180,7 @@ class CreateTar: BenchmarkCommand {
 
 }
 
-class WriterTar: BenchmarkCommand {
+final class WriterTar: BenchmarkCommand {
 
     let name = "writer-tar"
     let shortDescription = "Tar container creation using TarWriter"

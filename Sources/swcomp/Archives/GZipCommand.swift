@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class GZipCommand: Command {
+final class GZipCommand: Command {
 
     let name = "gz"
     let shortDescription = "Creates or extracts a GZip archive"

@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class LZ4Command: Command {
+final class LZ4Command: Command {
 
     let name = "lz4"
     let shortDescription = "Creates or extracts a LZ4 archive"
