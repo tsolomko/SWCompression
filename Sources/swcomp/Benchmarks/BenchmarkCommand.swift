@@ -3,25 +3,36 @@
 //
 // See LICENSE for license information
 
-import Foundation
-import SWCompression
-import SwiftCLI
-
 #if os(Linux)
     import CoreFoundation
 #endif
 
+import Foundation
+import SWCompression
+import SwiftCLI
+
 protocol BenchmarkCommand: Command {
 
     associatedtype InputType
+    associatedtype OutputType
 
     var inputs: [String] { get }
 
     var benchmarkName: String { get }
 
-    func loadInput(_ input: String) throws -> (InputType, Double)
+    var benchmarkInput: InputType? { get set }
 
-    var benchmarkFunction: (InputType) throws -> Any { get }
+    var benchmarkInputSize: Double? { get set }
+
+    func benchmarkSetUp(_ input: String)
+
+    func iterationSetUp()
+
+    func benchmark() -> OutputType
+
+    func iterationTearDown()
+
+    func benchmarkTearDown()
 
     // Compression ratio is calculated only if the InputType and the type of output is Data, and the size of the input
     // is greater than zero.
@@ -29,14 +40,32 @@ protocol BenchmarkCommand: Command {
 
 }
 
+extension BenchmarkCommand {
+
+    func benchmarkSetUp() { }
+
+    func benchmarkTearDown() {
+        benchmarkInput = nil
+        benchmarkInputSize = nil
+     }
+
+    func iterationSetUp() { }
+
+    func iterationTearDown() { }
+
+}
+
 extension BenchmarkCommand where InputType == Data {
 
-    func loadInput(_ input: String) throws -> (Data, Double) {
-        let inputURL = URL(fileURLWithPath: input)
-        let inputData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-        let attr = try FileManager.default.attributesOfItem(atPath: input)
-        let inputSize = Double(attr[.size] as! UInt64)
-        return (inputData, inputSize)
+    func benchmarkSetUp(_ input: String) {
+        do {
+            let inputURL = URL(fileURLWithPath: input)
+            benchmarkInput = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            benchmarkInputSize = Double(benchmarkInput!.count)
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark: input=\(input), error=\(error).")
+            exit(1)
+        }
     }
 
 }
@@ -47,17 +76,16 @@ extension BenchmarkCommand {
         return false
     }
 
-    func execute() throws {
+    func execute() {
         let title = "\(benchmarkName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
 
         for input in self.inputs {
+            self.benchmarkSetUp(input)
             print("Input: \(input)")
 
-            let (loadedInput, inputSize) = try self.loadInput(input)
-
-            var totalSpeed: Double = 0
+            var totalSpeed = 0.0
 
             var maxSpeed = Double(Int.min)
             var minSpeed = Double(Int.max)
@@ -67,20 +95,23 @@ extension BenchmarkCommand {
                 fflush(__stdoutp)
             #endif
             // Zeroth (excluded) iteration.
+            self.iterationSetUp()
             let startTime = CFAbsoluteTimeGetCurrent()
-            let warmupOutput = try benchmarkFunction(loadedInput)
+            let warmupOutput = self.benchmark()
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            let speed = inputSize / timeElapsed
+            let speed = benchmarkInputSize! / timeElapsed
             print("(\(SpeedFormat(speed).format())), ", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
+            self.iterationTearDown()
 
             for _ in 1...10 {
+                self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = try benchmarkFunction(loadedInput)
+                _ = self.benchmark()
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                let speed = inputSize / timeElapsed
+                let speed = benchmarkInputSize! / timeElapsed
                 print(SpeedFormat(speed).format() + ", ", terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
@@ -92,18 +123,20 @@ extension BenchmarkCommand {
                 if speed < minSpeed {
                     minSpeed = speed
                 }
+                self.iterationTearDown()
             }
             let avgSpeed = totalSpeed / 10
             let avgSpeedFormat = SpeedFormat(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
             print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))")
 
-            if let inputData = loadedInput as? Data, let outputData = warmupOutput as? Data, calculateCompressionRatio,
+            if let inputData = benchmarkInput! as? Data, let outputData = warmupOutput as? Data, calculateCompressionRatio,
                 inputData.count > 0 {
                 let compressionRatio = Double(inputData.count) / Double(outputData.count)
                 print(String(format: "Compression ratio: %.3f", compressionRatio))
             }
             print()
+            self.benchmarkTearDown()
         }
     }
 

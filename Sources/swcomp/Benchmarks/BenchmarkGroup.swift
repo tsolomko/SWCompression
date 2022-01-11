@@ -16,7 +16,7 @@ final class BenchmarkGroup: CommandGroup {
         UnGzip(), UnXz(), UnBz2(), UnLZ4(),
         InfoTar(), InfoZip(), Info7z(),
         CompDeflate(), CompBz2(), CompLZ4(), CompLZ4BD(),
-        CreateTar(), WriterTar()
+        CreateTar(), ReaderTar(), WriterTar()
     ]
 
 }
@@ -29,9 +29,15 @@ final class CompBz2: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Compression"
-    let benchmarkFunction: (Data) throws -> Any = BZip2.compress
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
 
     let calculateCompressionRatio = true
+
+    func benchmark() -> Data {
+        return BZip2.compress(data: benchmarkInput!)
+    }
 
 }
 
@@ -43,9 +49,15 @@ final class CompDeflate: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "Deflate Compression"
-    let benchmarkFunction: (Data) throws -> Any = Deflate.compress
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
 
     let calculateCompressionRatio = true
+
+    func benchmark() -> Data {
+        return Deflate.compress(data: benchmarkInput!)
+    }
 
 }
 
@@ -57,9 +69,15 @@ final class CompLZ4: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with independent blocks"
-    let benchmarkFunction: (Data) throws -> Any = LZ4.compress
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
 
     let calculateCompressionRatio = true
+
+    func benchmark() -> Data {
+        return LZ4.compress(data: benchmarkInput!)
+    }
 
 }
 
@@ -71,12 +89,19 @@ final class CompLZ4BD: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with dependent blocks"
-    let benchmarkFunction: (Data) throws -> Any = {
-        LZ4.compress(data: $0, independentBlocks: false, blockChecksums: false, contentChecksum: true,
-        contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
-    }
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
 
     let calculateCompressionRatio = true
+
+    func benchmark() -> Data {
+        return LZ4.compress(
+            data: benchmarkInput!, independentBlocks: false, blockChecksums: false,
+            contentChecksum: true, contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil,
+            dictionaryID: nil
+        )
+    }
 
 }
 
@@ -88,7 +113,18 @@ final class Info7z: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "7-Zip info function"
-    let benchmarkFunction: (Data) throws -> Any = SevenZipContainer.info
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> [SevenZipEntryInfo] {
+        do {
+            return try SevenZipContainer.info(container: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -100,7 +136,18 @@ final class InfoTar: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "TAR info function"
-    let benchmarkFunction: (Data) throws -> Any = TarContainer.info
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> [TarEntryInfo] {
+        do {
+            return try TarContainer.info(container: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -112,7 +159,18 @@ final class InfoZip: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "ZIP info function"
-    let benchmarkFunction: (Data) throws -> Any = ZipContainer.info
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> [ZipEntryInfo] {
+        do {
+            return try ZipContainer.info(container: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -124,7 +182,18 @@ final class UnBz2: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Unarchive"
-    let benchmarkFunction: (Data) throws -> Any = BZip2.decompress
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> Data {
+        do {
+            return try BZip2.decompress(data: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -136,7 +205,18 @@ final class UnGzip: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "GZip Unarchive"
-    let benchmarkFunction: (Data) throws -> Any = GzipArchive.unarchive
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> Data {
+        do {
+            return try GzipArchive.unarchive(archive: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -148,7 +228,18 @@ final class UnLZ4: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Unarchive"
-    let benchmarkFunction: (Data) throws -> Any = LZ4.decompress
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> Data {
+        do {
+            return try LZ4.decompress(data: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -160,7 +251,18 @@ final class UnXz: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "XZ Unarchive"
-    let benchmarkFunction: (Data) throws -> Any = XZArchive.unarchive
+
+    var benchmarkInput: Data? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmark() -> Data {
+        do {
+            return try XZArchive.unarchive(archive: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
 
 }
 
@@ -172,10 +274,94 @@ final class CreateTar: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "TAR Create"
-    let benchmarkFunction: ([TarEntry]) throws -> Any = TarContainer.create
 
-    func loadInput(_ input: String) throws -> ([TarEntry], Double) {
-        return try (TarEntry.createEntries(input, false), Double(URL(fileURLWithPath: input).directorySize()))
+    var benchmarkInput: [TarEntry]? = nil
+    var benchmarkInputSize: Double? = nil
+
+    func benchmarkSetUp(_ input: String) {
+        do {
+            benchmarkInput = try TarEntry.createEntries(input, false)
+            benchmarkInputSize = try Double(URL(fileURLWithPath: input).directorySize())
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark: input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func benchmark() -> Data {
+        return TarContainer.create(from: benchmarkInput!)
+    }
+
+}
+
+final class ReaderTar: BenchmarkCommand {
+
+    let name = "reader-tar"
+    let shortDescription = "Tar container reading using TarReader"
+
+    @CollectedParam(minCount: 1) var inputs: [String]
+
+    let benchmarkName = "TAR Reader"
+
+    var benchmarkInput: URL? = nil
+    var benchmarkInputSize: Double? = nil
+
+    private var handle: FileHandle? = nil
+
+    func benchmarkSetUp(_ input: String) {
+        benchmarkInput = URL(fileURLWithPath: input)
+        do {
+            let resourceValues = try benchmarkInput!.resourceValues(forKeys: [.fileSizeKey])
+            if let fileSize = resourceValues.fileSize {
+                benchmarkInputSize = Double(fileSize)
+            } else {
+                print("\nERROR: ReaderTAR.benchmarkSetUp(): file size is not available for input=\(input).")
+                exit(1)
+            }
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark: input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func iterationSetUp() {
+        do {
+            handle = try FileHandle(forReadingFrom: benchmarkInput!)
+        } catch let error {
+            print("\nERROR: Unable to set up iteration: \(error).")
+            exit(1)
+        }
+    }
+
+    func benchmark() -> [TarEntryInfo] {
+        do {
+            var reader = TarReader(fileHandle: handle!)
+            var isFinished = false
+            var infos = [TarEntryInfo]()
+            while !isFinished {
+                isFinished = try reader.process { (entry: TarEntry?) -> Bool in
+                    guard entry != nil
+                        else { return true }
+                    infos.append(entry!.info)
+                    return false
+                }
+            }
+            try handle!.closeCompat()
+            return infos
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
+
+    func iterationTearDown() {
+        do {
+            try handle!.closeCompat()
+            handle = nil
+        } catch let error {
+            print("\nERROR: Unable to tear down iteration: \(error).")
+            exit(1)
+        }
     }
 
 }
@@ -188,22 +374,57 @@ final class WriterTar: BenchmarkCommand {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "TAR Writer"
-    let benchmarkFunction: ([TarEntry]) throws -> Any = { (entries: [TarEntry]) throws -> Data? in
-        let outputURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString, isDirectory: false)
-        try "".write(to: outputURL, atomically: true, encoding: .utf8)
-        let handle = try FileHandle(forWritingTo: outputURL)
-        var writer = TarWriter(fileHandle: handle)
-        for entry in entries {
-            try writer.append(entry)
+
+    var benchmarkInput: [TarEntry]? = nil
+    var benchmarkInputSize: Double? = nil
+
+    private var handle: FileHandle? = nil
+    private var outputURL: URL? = nil
+
+    func benchmarkSetUp(_ input: String) {
+        do {
+            benchmarkInput = try TarEntry.createEntries(input, false)
+            benchmarkInputSize = try Double(URL(fileURLWithPath: input).directorySize())
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark: input=\(input), error=\(error).")
+            exit(1)
         }
-        try writer.finalize()
-        try handle.closeCompat()
-        try FileManager.default.removeItem(at: outputURL)
-        return nil
     }
 
-    func loadInput(_ input: String) throws -> ([TarEntry], Double) {
-        return try (TarEntry.createEntries(input, false), Double(URL(fileURLWithPath: input).directorySize()))
+    func iterationSetUp() {
+        do {
+            outputURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString, isDirectory: false)
+            try "".write(to: outputURL!, atomically: true, encoding: .utf8)
+            handle = try FileHandle(forWritingTo: outputURL!)
+        } catch let error {
+            print("\nERROR: Unable to set up iteration: \(error).")
+            exit(1)
+        }
+    }
+
+    func benchmark() {
+        do {
+            var writer = TarWriter(fileHandle: handle!)
+            for entry in benchmarkInput! {
+                try writer.append(entry)
+            }
+            try writer.finalize()
+        } catch let error {
+            print("\nERROR: Unable to perform benchmark: error=\(error).")
+            exit(1)
+        }
+    }
+
+    func iterationTearDown() {
+        do {
+            try handle!.closeCompat()
+            try FileManager.default.removeItem(at: outputURL!)
+            handle = nil
+            outputURL = nil
+        } catch let error {
+            print("\nERROR: Unable to tear down iteration: \(error).")
+            exit(1)
+        }
     }
 
 }
