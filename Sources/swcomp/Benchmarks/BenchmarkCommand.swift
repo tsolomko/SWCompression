@@ -81,6 +81,9 @@ extension BenchmarkCommand {
         print(String(repeating: "=", count: title.count))
         print(title)
 
+        let formatter = ByteCountFormatter()
+        formatter.zeroPadsFractionDigits = true
+
         for input in self.inputs {
             self.benchmarkSetUp(input)
             print("Input: \(input)")
@@ -100,19 +103,20 @@ extension BenchmarkCommand {
             let warmupOutput = self.benchmark()
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             let speed = benchmarkInputSize! / timeElapsed
-            print("(\(SpeedFormat(speed).format())), ", terminator: "")
+            print("(\(formatter.string(fromByteCount: Int64(speed))))/s", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
             self.iterationTearDown()
 
             for _ in 1...10 {
+                print("  ", terminator: "")
                 self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
                 _ = self.benchmark()
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 let speed = benchmarkInputSize! / timeElapsed
-                print(SpeedFormat(speed).format() + ", ", terminator: "")
+                print("\(formatter.string(fromByteCount: Int64(speed)))/s", terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
@@ -126,9 +130,8 @@ extension BenchmarkCommand {
                 self.iterationTearDown()
             }
             let avgSpeed = totalSpeed / 10
-            let avgSpeedFormat = SpeedFormat(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
-            print("\nAverage: \(avgSpeedFormat.format().prefix { $0 != " " }) \u{B1} \(avgSpeedFormat.format(speedUncertainty))")
+            print("\nAverage: \(formatter.string(fromByteCount: Int64(avgSpeed)))/s \u{B1} \(formatter.string(fromByteCount: Int64(speedUncertainty)))/s")
 
             if let inputData = benchmarkInput! as? Data, let outputData = warmupOutput as? Data, calculateCompressionRatio,
                 inputData.count > 0 {
