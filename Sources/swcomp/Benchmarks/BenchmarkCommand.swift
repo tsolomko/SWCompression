@@ -28,6 +28,7 @@ protocol BenchmarkCommand: Command {
 
     func iterationSetUp()
 
+    @discardableResult
     func benchmark() -> OutputType
 
     func iterationTearDown()
@@ -113,7 +114,7 @@ extension BenchmarkCommand {
                 print("  ", terminator: "")
                 self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
-                _ = self.benchmark()
+                self.benchmark()
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 let speed = benchmarkInputSize! / timeElapsed
                 print("\(formatter.string(fromByteCount: Int64(speed)))/s", terminator: "")
