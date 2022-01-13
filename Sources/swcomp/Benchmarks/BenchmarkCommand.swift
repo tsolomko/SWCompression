@@ -35,8 +35,7 @@ protocol BenchmarkCommand: Command {
 
     func benchmarkTearDown()
 
-    // Compression ratio is calculated only if the InputType and the type of output is Data, and the size of the input
-    // is greater than zero.
+    // Compression ratio is calculated only if the OutputType is Data, and the size of the output is greater than zero.
     var calculateCompressionRatio: Bool { get }
 
 }
@@ -134,9 +133,8 @@ extension BenchmarkCommand {
             let speedUncertainty = (maxSpeed - minSpeed) / 2
             print("\nAverage: \(formatter.string(fromByteCount: Int64(avgSpeed)))/s \u{B1} \(formatter.string(fromByteCount: Int64(speedUncertainty)))/s")
 
-            if let inputData = benchmarkInput! as? Data, let outputData = warmupOutput as? Data, calculateCompressionRatio,
-                inputData.count > 0 {
-                let compressionRatio = Double(inputData.count) / Double(outputData.count)
+            if let outputData = warmupOutput as? Data, calculateCompressionRatio, outputData.count > 0 {
+                let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
                 print(String(format: "Compression ratio: %.3f", compressionRatio))
             }
             print()
