@@ -35,16 +35,19 @@ final class DecodingTree {
     }
 
     func findNextSymbol() -> Int {
+        var bitsLeft = bitReader.bitsLeft
         var index = 0
-        while true {
+        while bitsLeft > 0 {
             let bit = bitReader.bit()
             index = bit == 0 ? 2 * index + 1 : 2 * index + 2
+            bitsLeft -= 1
             guard index < self.leafCount
                 else { return -1 }
             if self.tree[index] > -1 {
                 return self.tree[index]
             }
         }
+        return -1
     }
 
 }
