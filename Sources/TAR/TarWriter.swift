@@ -73,20 +73,13 @@ public struct TarWriter {
     public func finalize() throws {
         // First, we append two 512-byte blocks consisting of zeros as an EOF marker.
         try write(Data(count: 1024))
-        #if compiler(<5.2)
-            handle.synchronizeFile()
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                try handle.synchronize()
-            } else {
-                handle.synchronizeFile()
-            }
-        #endif
+        // The synchronization is performed by the write(_:) function automatically.
     }
 
     private func write(_ data: Data) throws {
         #if compiler(<5.2)
             handle.write(data)
+            handle.synchronizeFile()
         #else
             if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
                 try handle.write(contentsOf: data)
