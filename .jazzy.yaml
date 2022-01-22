@@ -26,16 +26,20 @@ custom_categories:
       - XZArchive
       - ZlibArchive
       - ZlibHeader
-    - name: Containers
+    - name: 7-Zip
       children:
       - SevenZipContainer
       - SevenZipEntry
       - SevenZipEntryInfo
+    - name: TAR
+      children:
       - TarContainer
       - TarReader
       - TarWriter
       - TarEntry
       - TarEntryInfo
+    - name: ZIP
+      children:
       - ZipContainer
       - ZipEntry
       - ZipEntryInfo
