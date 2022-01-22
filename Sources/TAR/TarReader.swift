@@ -25,9 +25,11 @@ import BitByteData
  Note that closing the `FileHandle` remains the responsibility of the caller.
 
  - Important: Due to the API availability limitations of Foundation's `FileHandle`, on certain platforms errors in
- `FileHandle` operations may result in unrecoverable runtime failures. As such, it is not recommended to use `TarWriter`
- on those platforms. The following platforms are _unaffected_ by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+,
- tvOS 13.4+.
+ `FileHandle` operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
+ impossible to correctly handle in Swift code). As such, it is not recommended to use `TarReader` on those platforms.
+ The following platforms are _unaffected_ by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+, tvOS 13.4+, and any
+ other platforms without Objective-C runtime (however, it still can be encountered if using the Swift version older than
+ 5.2).
  */
 public struct TarReader {
 
