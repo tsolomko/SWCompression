@@ -32,6 +32,8 @@ custom_categories:
       - SevenZipEntry
       - SevenZipEntryInfo
       - TarContainer
+      - TarReader
+      - TarWriter
       - TarEntry
       - TarEntryInfo
       - ZipContainer
