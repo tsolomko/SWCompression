@@ -166,7 +166,6 @@ extension TarEntry {
             print(log)
         }
 
-
         if entryType == .directory {
             for subPath in try fileManager.contentsOfDirectory(atPath: inputPath) {
                 try self.generateEntries(&writer, inputURL.appendingPathComponent(subPath).relativePath, verbose)
