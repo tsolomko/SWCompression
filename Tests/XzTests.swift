@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -113,7 +113,7 @@ class XZTests: XCTestCase {
         XCTAssertThrowsError(try XZArchive.unarchive(archive: Data([0, 1, 2])))
         XCTAssertThrowsError(try XZArchive.splitUnarchive(archive: Data([0, 1, 2])))
     }
-    
+
     func testBadFile_invalid() throws {
         let testData = try Constants.data(forAnswer: "test6")
         XCTAssertThrowsError(try XZArchive.unarchive(archive: testData))

@@ -38,7 +38,7 @@ using "Release" configuration.
 
 __Note:__ External commands used to create compressed files were run using their default sets of options.
 
-__Note:__ All results are averages over 10 iterations. 
+__Note:__ All results are averages over 10 iterations.
 
 ## BZip2 Decompress
 

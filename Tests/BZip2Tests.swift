@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -61,9 +61,16 @@ class BZip2Tests: XCTestCase {
     func testBadFile_short() {
         XCTAssertThrowsError(try BZip2.decompress(data: Data([0])))
     }
-    
+
     func testBadFile_invalid() throws {
         let testData = try Constants.data(forAnswer: "test6")
+        XCTAssertThrowsError(try BZip2.decompress(data: testData))
+    }
+
+    func testBadFile_truncated() throws {
+        // This tests that encountering data truncated in the middle of a Huffman symbol correctly throws an error
+        // (and doesn't crash).
+        let testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)[0...40]
         XCTAssertThrowsError(try BZip2.decompress(data: testData))
     }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -22,6 +22,11 @@ class Constants {
     static func data(forTest name: String, withType ext: String) throws -> Data {
         let url = Constants.url(forTest: name, withType: ext)
         return try Data(contentsOf: url, options: .mappedIfSafe)
+    }
+
+    static func handle(forTest name: String, withType ext: String) throws -> FileHandle {
+        let url = Constants.url(forTest: name, withType: ext)
+        return try FileHandle(forReadingFrom: url)
     }
 
     private static func url(forTest name: String, withType ext: String) -> URL {

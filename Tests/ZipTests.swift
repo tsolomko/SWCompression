@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -13,7 +13,7 @@ class ZipTests: XCTestCase {
     func testBadFile_short() {
         XCTAssertThrowsError(try ZipContainer.open(container: Data([0, 1, 2, 3, 4, 5, 6, 7])))
     }
-    
+
     func testBadFile_invalid() throws {
         let testData = try Constants.data(forAnswer: "test6")
         XCTAssertThrowsError(try ZipContainer.open(container: testData))
@@ -23,7 +23,7 @@ class ZipTests: XCTestCase {
         XCTAssertThrowsError(try ZipContainer.info(container: Data()))
         XCTAssertThrowsError(try ZipContainer.open(container: Data()))
     }
-    
+
     func testBigContainer() throws {
         let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType)
 

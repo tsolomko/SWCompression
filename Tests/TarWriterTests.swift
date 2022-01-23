@@ -6,7 +6,39 @@
 import XCTest
 import SWCompression
 
-class TarCreateTests: XCTestCase {
+class TarWriterTests: XCTestCase {
+
+    private static let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("TestSWCompression-" + UUID().uuidString, isDirectory: true)
+
+    class override func setUp() {
+        do {
+            try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true, attributes: nil)
+        } catch let error {
+            fatalError("TarWriterTests.setUp(): unable to create temporary directory: \(error)")
+        }
+    }
+
+    class override func tearDown() {
+        do {
+            try FileManager.default.removeItem(at: tempDir)
+        } catch let error {
+            fatalError("TarWriterTests.tearDown(): unable to remove temporary directory: \(error)")
+        }
+    }
+
+    private static func generateContainerData(_ entries: [TarEntry], format: TarContainer.Format = .pax) throws -> Data {
+        let tempFileUrl = tempDir.appendingPathComponent(UUID().uuidString, isDirectory: false)
+        try "".write(to: tempFileUrl, atomically: true, encoding: .utf8)
+        let handle = try FileHandle(forWritingTo: tempFileUrl)
+        var writer = TarWriter(fileHandle: handle, force: format)
+        for entry in entries {
+            try writer.append(entry)
+        }
+        try writer.finalize()
+        try handle.closeCompat()
+        return try Data(contentsOf: tempFileUrl)
+    }
 
     func test1() throws {
         var info = TarEntryInfo(name: "file.txt", type: .regular)
@@ -22,10 +54,10 @@ class TarCreateTests: XCTestCase {
         info.creationTime = date
         info.accessTime = date
         info.comment = "comment"
-
         let data = Data("Hello, World!\n".utf8)
         let entry = TarEntry(info: info, data: data)
-        let containerData = TarContainer.create(from: [entry])
+
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newEntries = try TarContainer.open(container: containerData)
 
@@ -67,8 +99,9 @@ class TarCreateTests: XCTestCase {
         info.comment = "some comment..."
         info.linkName = "file"
         info.unknownExtendedHeaderRecords = dict
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -96,8 +129,9 @@ class TarCreateTests: XCTestCase {
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 15))
         info.name.append("readme.txt")
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -110,8 +144,9 @@ class TarCreateTests: XCTestCase {
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 25))
         info.name.append("readme.txt")
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -123,8 +158,9 @@ class TarCreateTests: XCTestCase {
         var info = TarEntryInfo(name: "", type: .regular)
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 15))
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -146,8 +182,9 @@ class TarCreateTests: XCTestCase {
         info.deviceMinorNumber = 2
         info.comment = "комментарий"
         info.linkName = "путь/к/файлу"
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -174,8 +211,9 @@ class TarCreateTests: XCTestCase {
         info.ownerID = 501
         info.groupID = 20
         info.modificationTime = date
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .ustar)
+        let containerData = try TarWriterTests.generateContainerData([entry], format: .ustar)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .ustar)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -198,8 +236,9 @@ class TarCreateTests: XCTestCase {
         let date = Date(timeIntervalSince1970: -1300000)
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.modificationTime = date
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+        let containerData = try TarWriterTests.generateContainerData([entry])
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -223,8 +262,9 @@ class TarCreateTests: XCTestCase {
         for uid in [(1 << 32) - 1, Int.max] {
             var info = TarEntryInfo(name: "file.txt", type: .regular)
             info.ownerID = uid
+            let entry = TarEntry(info: info, data: Data())
 
-            let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())])
+            let containerData = try TarWriterTests.generateContainerData([entry])
             XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
             let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -249,8 +289,9 @@ class TarCreateTests: XCTestCase {
         info.name = "path/to/"
         info.name.append(String(repeating: "name/", count: 25))
         info.name.append("name.txt")
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -263,8 +304,9 @@ class TarCreateTests: XCTestCase {
         info.linkName = "path/to/"
         info.linkName.append(String(repeating: "name/", count: 25))
         info.linkName.append("name.txt")
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -279,8 +321,9 @@ class TarCreateTests: XCTestCase {
         info.linkName = "path/to/"
         info.linkName.append(String(repeating: "link/", count: 25))
         info.linkName.append("link.txt")
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
@@ -300,8 +343,9 @@ class TarCreateTests: XCTestCase {
         info.modificationTime = date
         info.creationTime = date
         info.accessTime = date
+        let entry = TarEntry(info: info, data: Data())
 
-        let containerData = TarContainer.create(from: [TarEntry(info: info, data: Data())], force: .gnu)
+        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
         XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
         let newEntries = try TarContainer.open(container: containerData)
 

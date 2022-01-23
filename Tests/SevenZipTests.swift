@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -13,7 +13,7 @@ class SevenZipTests: XCTestCase {
     func testBadFile_short() {
         XCTAssertThrowsError(try SevenZipContainer.open(container: Data([0, 1, 2])))
     }
-    
+
     func testBadFile_invalid() throws {
         let testData = try Constants.data(forAnswer: "test6")
         XCTAssertThrowsError(try SevenZipContainer.open(container: testData))

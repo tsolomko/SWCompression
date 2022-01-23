@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -13,7 +13,7 @@ class TarTests: XCTestCase {
     func testBadFile_short() {
         XCTAssertThrowsError(try TarContainer.open(container: Data([0, 1, 2])))
     }
-    
+
     func testBadFile_invalid() throws {
         // This is potentially a misleading test, since there is no way to guarantee that a file is not a TAR container.
         // We use randomly generated data, since the 0-filled data is processed as an empty container.
@@ -210,7 +210,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
         XCTAssertNil(entries[0].info.comment)
-        XCTAssertEqual(entries[0].data, nil)
+        XCTAssertNil(entries[0].data)
     }
 
     func testEmptyContainer() throws {

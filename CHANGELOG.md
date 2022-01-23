@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.8.0
+
+- Added `TarReader` and `TarWriter` structs which allow more iterative work with TAR containers while helping with
+reducing memory usage.
+- Fixed a crash that could happen when decompressing Deflate and BZip2 inputs truncated in a certain way.
+- In API reference documentation the Container category has been split into separate categories for each container type.
+- swcomp changes:
+    - Certain error messages were made a bit clearer.
+    - Added `reader-tar` and `writer-tar` subcommands to the `benchmark` command.
+    - Changed the printing format of the benchmark speed.
+
 ## 4.7.0
 
 - Added full-featured support for LZ4 compression and decompression by introducing 5 new functions inside `LZ4` enum.
@@ -19,7 +30,7 @@
     TAR containers.
     - Added `un-lz4`, `comp-lz4`, and `comp-lz4-bd` subcommands to the `benchmark` command.
     - Benchmark commands for compression now report compression ratio.
-    
+
 ## 4.6.1
 
 - Fixed a crash in LZMA2 when trying to process an empty `Data`.

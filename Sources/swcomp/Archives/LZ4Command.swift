@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class LZ4Command: Command {
+final class LZ4Command: Command {
 
     let name = "lz4"
     let shortDescription = "Creates or extracts a LZ4 archive"
@@ -29,7 +29,7 @@ class LZ4Command: Command {
 
     @Flag("--content-size", description: "(Compression only) Save the size of the uncompressed data")
     var contentSize: Bool
-    
+
     @Key("--block-size", description: "(Compression only) Use specified block size (in bytes; default and max: 4194304)")
     var blockSize: Int?
 

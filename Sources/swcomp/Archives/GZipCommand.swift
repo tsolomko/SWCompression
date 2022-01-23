@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Timofey Solomko
+// Copyright (c) 2022 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-class GZipCommand: Command {
+final class GZipCommand: Command {
 
     let name = "gz"
     let shortDescription = "Creates or extracts a GZip archive"
@@ -17,7 +17,7 @@ class GZipCommand: Command {
 
     @Flag("-d", "--decompress", description: "Decompress a GZip archive")
     var decompress: Bool
-    
+
     @Flag("-i", "--info", description: "Print information from a GZip header")
     var info: Bool
 
