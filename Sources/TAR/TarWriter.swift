@@ -24,8 +24,8 @@ import Foundation
     try writer.finalize()
     try handle.close()
  ```
- Note that `TarWriter.finalize()` must be called after finishing appending entries to the container. However, closing
- the `FileHandle` remains the responsibility of the caller.
+ Note that `TarWriter.finalize()` must be called after finishing appending entries to the container. In addition,
+ closing the `FileHandle` remains the responsibility of the caller.
 
  - Important: Due to the API availability limitations of Foundation's `FileHandle`, on certain platforms errors in
  `FileHandle` operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
