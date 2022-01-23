@@ -81,8 +81,7 @@ extension BenchmarkCommand {
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        let formatter = ByteCountFormatter()
-        formatter.zeroPadsFractionDigits = true
+        let formatter = SpeedFormatter()
 
         for input in self.inputs {
             self.benchmarkSetUp(input)
@@ -103,20 +102,20 @@ extension BenchmarkCommand {
             let warmupOutput = self.benchmark()
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             let speed = benchmarkInputSize! / timeElapsed
-            print("(\(formatter.string(fromByteCount: Int64(speed))))/s", terminator: "")
+            print("(\(formatter.string(from: speed)))", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
             self.iterationTearDown()
 
             for _ in 1...10 {
-                print("  ", terminator: "")
+                print(", ", terminator: "")
                 self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
                 self.benchmark()
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
                 let speed = benchmarkInputSize! / timeElapsed
-                print("\(formatter.string(fromByteCount: Int64(speed)))/s", terminator: "")
+                print(formatter.string(from: speed), terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
@@ -130,8 +129,13 @@ extension BenchmarkCommand {
                 self.iterationTearDown()
             }
             let avgSpeed = totalSpeed / 10
+            let avgSpeedUnits = SpeedFormatter.Units(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
-            print("\nAverage: \(formatter.string(fromByteCount: Int64(avgSpeed)))/s \u{B1} \(formatter.string(fromByteCount: Int64(speedUncertainty)))/s")
+            var avgString = "\nAverage: "
+            avgString += formatter.string(from: avgSpeed, units: avgSpeedUnits, hideUnits: true)
+            avgString += " \u{B1} "
+            avgString += formatter.string(from: speedUncertainty, units: avgSpeedUnits)
+            print(avgString)
 
             if let outputData = warmupOutput as? Data, calculateCompressionRatio, outputData.count > 0 {
                 let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
