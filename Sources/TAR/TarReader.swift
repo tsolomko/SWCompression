@@ -6,6 +6,31 @@
 import Foundation
 import BitByteData
 
+/**
+ A type that allows to iteratively read TAR entries from a container provided by a `FileHandle`.
+
+ The `TarReader` may be helpful in reducing the peak memory usage on certain platforms. However, to achieve this either
+ the `TarReader.process(_:)` function should be used or both the call to `TarReader.read()` and the processing of the
+ returned entry should be wrapped inside the `autoreleasepool`. Since the `autoreleasepool` is available only on Darwin
+ platforms, the memory reducing effect may be not as significant on non-Darwin platforms (such as Linux or Windows).
+
+ The following code demonstrates an example usage of the `TarReader`:
+ ```swift
+    let handle: FileHandle = ...
+    let reader = TarReader(fileHandle: handle)
+    try reader.process { ... }
+    ...
+    try handle.close()
+ ```
+ Note that closing the `FileHandle` remains the responsibility of the caller.
+
+ - Important: Due to the API availability limitations of Foundation's `FileHandle`, on certain platforms errors in
+ `FileHandle` operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
+ impossible to correctly handle in Swift code). As such, it is not recommended to use `TarReader` on those platforms.
+ The following platforms are _unaffected_ by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+, tvOS 13.4+, and any
+ other platforms without Objective-C runtime (however, it still can be encountered if using the Swift version older than
+ 5.2).
+ */
 public struct TarReader {
 
     private let handle: FileHandle
@@ -14,6 +39,12 @@ public struct TarReader {
     private var longLinkName: String?
     private var longName: String?
 
+    /**
+     Creates a new instance for reading TAR entries from the provided `fileHandle`.
+
+     - Parameter fileHandle: A handle from which the entries will be read. Note that the `TarReader` does not close the
+     `fileHandle` and this remains the responsibility of the caller.
+     */
     public init(fileHandle: FileHandle) {
         self.handle = fileHandle
         self.lastGlobalExtendedHeader = nil
@@ -22,6 +53,19 @@ public struct TarReader {
         self.longName = nil
     }
 
+    /**
+     Processes the next TAR entry by reading it from the container and calling the provided closure on the result.
+
+     On Darwin platforms both the reading and the call to the closure are performed inside the `autoreleasepool` which
+     allows to reduce the peak memory usage.
+
+     If the argument supplied to the closure is `nil` this indicates that the end of the input was reached. After that
+     the repeated `TarReader.process(_:)` or `TarReader.read()` calls will result in the `DataError.truncated` being
+     thrown.
+
+     - Throws: `DataError.truncated` if the input is truncated. `TarError` is thrown in case of malformed input. Errors
+     thrown by `FileHandle` operations are also propagated.
+     */
     public mutating func process<T>(_ transform: (TarEntry?) throws -> T) throws -> T {
         return try autoreleasepool {
             let entry = try read()
@@ -29,6 +73,18 @@ public struct TarReader {
         }
     }
 
+    /**
+     Reads the next TAR entry from the container.
+
+     On Darwin platforms it is recommended to wrap both the call to this function and the follow-up processing inside
+     the `autoreleasepool` in order to reduce the peak memory usage.
+
+     - Throws: `DataError.truncated` if the input is truncated. `TarError` is thrown in case of malformed input. Errors
+     thrown by `FileHandle` operations are also propagated.
+
+     - Returns: The next entry from the container or `nil` if the end of the input has been reached. After that the
+     repeated `TarReader.process(_:)` or `TarReader.read()` calls will result in the `DataError.truncated` being thrown.
+     */
     public mutating func read() throws -> TarEntry? {
         let headerData = try getData(size: 512)
         if headerData.count == 0 {
