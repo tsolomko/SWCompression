@@ -29,6 +29,9 @@ final class CompBz2: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Compression"
@@ -51,6 +54,9 @@ final class CompDeflate: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -75,6 +81,9 @@ final class CompLZ4: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with independent blocks"
@@ -97,6 +106,9 @@ final class CompLZ4BD: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -125,6 +137,9 @@ final class Info7z: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "7-Zip info function"
@@ -150,6 +165,9 @@ final class InfoTar: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -177,6 +195,9 @@ final class InfoZip: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "ZIP info function"
@@ -202,6 +223,9 @@ final class UnBz2: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -229,6 +253,9 @@ final class UnGzip: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "GZip Unarchive"
@@ -254,6 +281,9 @@ final class UnLZ4: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -281,6 +311,9 @@ final class UnXz: BenchmarkCommand {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
 
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "XZ Unarchive"
@@ -306,6 +339,9 @@ final class CreateTar: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -337,6 +373,9 @@ final class ReaderTar: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -412,6 +451,9 @@ final class WriterTar: BenchmarkCommand {
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
     var iterationCount: Int?
+
+    @Flag("--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
     @CollectedParam(minCount: 1) var inputs: [String]
 

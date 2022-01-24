@@ -17,6 +17,7 @@ protocol BenchmarkCommand: Command {
     associatedtype OutputType
 
     var iterationCount: Int? { get }
+    var noWarmup: Bool { get }
 
     var inputs: [String] { get }
 
@@ -102,20 +103,25 @@ extension BenchmarkCommand {
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
-            // Zeroth (excluded) iteration.
-            self.iterationSetUp()
-            let startTime = CFAbsoluteTimeGetCurrent()
-            let warmupOutput = self.benchmark()
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            let speed = benchmarkInputSize! / timeElapsed
-            print("(\(formatter.string(from: speed)))", terminator: "")
-            #if !os(Linux)
-                fflush(__stdoutp)
-            #endif
-            self.iterationTearDown()
+            var warmupOutput: OutputType? = nil
+            if !self.noWarmup {
+                // Zeroth (excluded) iteration.
+                self.iterationSetUp()
+                let startTime = CFAbsoluteTimeGetCurrent()
+                warmupOutput = self.benchmark()
+                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+                let speed = benchmarkInputSize! / timeElapsed
+                print("(\(formatter.string(from: speed)))", terminator: "")
+                #if !os(Linux)
+                    fflush(__stdoutp)
+                #endif
+                self.iterationTearDown()
+            }
 
-            for _ in 1...(self.iterationCount ?? 10) {
-                print(", ", terminator: "")
+            for i in 1...(self.iterationCount ?? 10) {
+                if i > 1 || !noWarmup {
+                    print(", ", terminator: "")
+                }
                 self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
                 self.benchmark()
@@ -143,9 +149,15 @@ extension BenchmarkCommand {
             avgString += formatter.string(from: speedUncertainty, units: avgSpeedUnits)
             print(avgString)
 
-            if let outputData = warmupOutput as? Data, calculateCompressionRatio, outputData.count > 0 {
-                let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
-                print(String(format: "Compression ratio: %.3f", compressionRatio))
+            if calculateCompressionRatio {
+                if warmupOutput == nil {
+                    print("WARNING: Unable to calculate compression ratio without a warmup iteration.")
+                } else if let outputData = warmupOutput as? Data, outputData.count > 0 {
+                    let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
+                    print(String(format: "Compression ratio: %.3f", compressionRatio))
+                } else {
+                    print("WARNING: Unable to calculate compression ratio.")
+                }
             }
             print()
             self.benchmarkTearDown()
