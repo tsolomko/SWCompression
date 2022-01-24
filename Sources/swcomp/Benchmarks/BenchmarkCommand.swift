@@ -16,6 +16,8 @@ protocol BenchmarkCommand: Command {
     associatedtype InputType
     associatedtype OutputType
 
+    var iterationCount: Int? { get }
+
     var inputs: [String] { get }
 
     var benchmarkName: String { get }
@@ -77,6 +79,10 @@ extension BenchmarkCommand {
     }
 
     func execute() {
+        guard self.iterationCount == nil || self.iterationCount! >= 1 else {
+            print("ERROR: Iteration count, if set, must be not less than 1.")
+            exit(1)
+        }
         let title = "\(benchmarkName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
@@ -108,7 +114,7 @@ extension BenchmarkCommand {
             #endif
             self.iterationTearDown()
 
-            for _ in 1...10 {
+            for _ in 1...(self.iterationCount ?? 10) {
                 print(", ", terminator: "")
                 self.iterationSetUp()
                 let startTime = CFAbsoluteTimeGetCurrent()
@@ -128,7 +134,7 @@ extension BenchmarkCommand {
                 }
                 self.iterationTearDown()
             }
-            let avgSpeed = totalSpeed / 10
+            let avgSpeed = totalSpeed / Double(self.iterationCount ?? 10)
             let avgSpeedUnits = SpeedFormatter.Units(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
             var avgString = "\nAverage: "

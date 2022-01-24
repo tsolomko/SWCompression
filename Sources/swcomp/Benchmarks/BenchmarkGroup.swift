@@ -26,6 +26,9 @@ final class CompBz2: BenchmarkCommand {
     let name = "comp-bz2"
     let shortDescription = "BZip2 compression"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "BZip2 Compression"
@@ -45,6 +48,9 @@ final class CompDeflate: BenchmarkCommand {
 
     let name = "comp-deflate"
     let shortDescription = "Deflate compression"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -66,6 +72,9 @@ final class CompLZ4: BenchmarkCommand {
     let name = "comp-lz4"
     let shortDescription = "LZ4 compression (independent blocks)"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "LZ4 Compression with independent blocks"
@@ -85,6 +94,9 @@ final class CompLZ4BD: BenchmarkCommand {
 
     let name = "comp-lz4-bd"
     let shortDescription = "LZ4 compression (dependent blocks)"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -110,6 +122,9 @@ final class Info7z: BenchmarkCommand {
     let name = "info-7z"
     let shortDescription = "7-Zip info function"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "7-Zip info function"
@@ -132,6 +147,9 @@ final class InfoTar: BenchmarkCommand {
 
     let name = "info-tar"
     let shortDescription = "TAR info function"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -156,6 +174,9 @@ final class InfoZip: BenchmarkCommand {
     let name = "info-zip"
     let shortDescription = "ZIP info function"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "ZIP info function"
@@ -178,6 +199,9 @@ final class UnBz2: BenchmarkCommand {
 
     let name = "un-bz2"
     let shortDescription = "BZip2 unarchiving"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -202,6 +226,9 @@ final class UnGzip: BenchmarkCommand {
     let name = "un-gzip"
     let shortDescription = "GZip unarchiving"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "GZip Unarchive"
@@ -224,6 +251,9 @@ final class UnLZ4: BenchmarkCommand {
 
     let name = "un-lz4"
     let shortDescription = "LZ4 unarchiving"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -248,6 +278,9 @@ final class UnXz: BenchmarkCommand {
     let name = "un-xz"
     let shortDescription = "XZ unarchiving"
 
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
+
     @CollectedParam(minCount: 1) var inputs: [String]
 
     let benchmarkName = "XZ Unarchive"
@@ -270,6 +303,9 @@ final class CreateTar: BenchmarkCommand {
 
     let name = "create-tar"
     let shortDescription = "Tar container creation using TarContainer"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -298,6 +334,9 @@ final class ReaderTar: BenchmarkCommand {
 
     let name = "reader-tar"
     let shortDescription = "Tar container reading using TarReader"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 
@@ -370,6 +409,9 @@ final class WriterTar: BenchmarkCommand {
 
     let name = "writer-tar"
     let shortDescription = "Tar container creation using TarWriter"
+
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    var iterationCount: Int?
 
     @CollectedParam(minCount: 1) var inputs: [String]
 

@@ -12,6 +12,7 @@ let cli = CLI(name: "swcomp", version: "4.8.0",
                            swcomp - a small command-line client for SWCompression framework.
                            Serves as an example of SWCompression usage.
                            """)
+cli.parser.parseOptionsAfterCollectedParameter = true
 cli.commands = [XZCommand(),
                 LZ4Command(),
                 LZMACommand(),
