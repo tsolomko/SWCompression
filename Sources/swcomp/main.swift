@@ -21,5 +21,5 @@ cli.commands = [XZCommand(),
                 ZipCommand(),
                 TarCommand(),
                 SevenZipCommand(),
-                BenchmarkGroup()]
+                BenchmarkCommand()]
 cli.goAndExit()
