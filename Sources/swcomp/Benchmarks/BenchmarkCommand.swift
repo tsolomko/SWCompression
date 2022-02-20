@@ -16,7 +16,7 @@ final class BenchmarkCommand: Command {
     let name = "benchmark"
     let shortDescription = "Perform the specified benchmark using external files, available benchmarks: \(Benchmarks.allBenchmarks)"
 
-    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations (default: 10)")
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
     var iterationCount: Int?
 
     @Flag("--no-warmup", description: "Disables warmup iteration")
@@ -30,7 +30,6 @@ final class BenchmarkCommand: Command {
             print("ERROR: Iteration count, if set, must be not less than 1.")
             exit(1)
         }
-        let iterationCount = self.iterationCount ?? 10
 
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
@@ -41,6 +40,7 @@ final class BenchmarkCommand: Command {
         for input in self.inputs {
             print("Input: \(input)")
             let benchmark = self.selectedBenchmark.initialized(input)
+            let iterationCount = self.iterationCount ?? type(of: benchmark).defaultIterationCount
 
             if !self.noWarmup {
                 print("Warmup iteration...")
@@ -74,7 +74,7 @@ final class BenchmarkCommand: Command {
                 }
             }
 
-            let avgSpeed = totalSpeed / Double(self.iterationCount ?? 10)
+            let avgSpeed = totalSpeed / Double(iterationCount)
             let avgSpeedUnits = SpeedFormatter.Units(avgSpeed)
             let speedUncertainty = (maxSpeed - minSpeed) / 2
             var avgString = "\nAverage: "

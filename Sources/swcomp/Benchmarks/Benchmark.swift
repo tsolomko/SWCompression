@@ -5,6 +5,8 @@
 
 protocol Benchmark {
 
+    static var defaultIterationCount: Int { get }
+
     init(_ input: String)
 
     func warmupIteration()
@@ -14,6 +16,10 @@ protocol Benchmark {
 }
 
 extension Benchmark {
+
+    static var defaultIterationCount: Int {
+        return 10
+    }
 
     func warmupIteration() {
         _ = measure()
