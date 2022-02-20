@@ -17,9 +17,13 @@ enum Benchmarks: String, CaseIterable, ConvertibleFromString {
     case unLz4 = "un-lz4"
     case unXz = "un-xz"
     case compDeflate = "comp-deflate"
+    case compRatioDeflate = "comp-ratio-deflate"
     case compBz2 = "comp-bz2"
+    case compRatioBz2 = "comp-ratio-bz2"
     case compLz4 = "comp-lz4"
+    case compRatioLz4 = "comp-ratio-lz4"
     case compLz4Bd = "comp-lz4-bd"
+    case compRatioLz4Bd = "comp-ratio-lz4-bd"
     case info7z = "info-7z"
     case infoTar = "info-tar"
     case infoZip = "info-zip"
@@ -39,12 +43,20 @@ enum Benchmarks: String, CaseIterable, ConvertibleFromString {
             return "XZ Unarchive"
         case .compDeflate:
             return "Deflate Compress"
+        case .compRatioDeflate:
+            return "Deflate Compression Ratio"
         case .compBz2:
             return "BZip2 Compress"
+        case .compRatioBz2:
+            return "BZip2 Compression Ratio"
         case .compLz4:
             return "LZ4 Compress"
+        case .compRatioLz4:
+            return "LZ4 Compression Ratio"
         case .compLz4Bd:
             return "LZ4 Compress (dependent blocks)"
+        case .compRatioLz4Bd:
+            return "LZ4 Compression Ratio (dependent blocks)"
         case .info7z:
             return "7-Zip Info"
         case .infoTar:
@@ -72,12 +84,20 @@ enum Benchmarks: String, CaseIterable, ConvertibleFromString {
             return UnXz(input)
         case .compDeflate:
             return CompDeflate(input)
+        case .compRatioDeflate:
+            return CompRatioDeflate(input)
         case .compBz2:
             return CompBz2(input)
+        case .compRatioBz2:
+            return CompRatioBz2(input)
         case .compLz4:
             return CompLz4(input)
+        case .compRatioLz4:
+            return CompRatioLz4(input)
         case .compLz4Bd:
             return CompLz4Bd(input)
+        case .compRatioLz4Bd:
+            return CompRatioLz4Bd(input)
         case .info7z:
             return Info7z(input)
         case .infoTar:
@@ -243,6 +263,38 @@ struct CompDeflate: Benchmark {
 
 }
 
+struct CompRatioDeflate: Benchmark {
+
+    static let defaultIterationCount: Int = 1
+    static let useSpeedFormatter: Bool = false
+
+    private let data: Data
+    private let size: Double
+
+    init(_ input: String) {
+        do {
+            let inputURL = URL(fileURLWithPath: input)
+            self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            self.size = Double(self.data.count)
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func warmupIteration() { }
+
+    func measure() -> Double {
+        let outputData = Deflate.compress(data: self.data)
+        guard outputData.count > 0 else {
+            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
+            exit(1)
+        }
+        return Double(self.size) / Double(outputData.count)
+    }
+
+}
+
 struct CompBz2: Benchmark {
 
     private let data: Data
@@ -264,6 +316,38 @@ struct CompBz2: Benchmark {
         _ = BZip2.compress(data: self.data)
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         return self.size / timeElapsed
+    }
+
+}
+
+struct CompRatioBz2: Benchmark {
+
+    static let defaultIterationCount: Int = 1
+    static let useSpeedFormatter: Bool = false
+
+    private let data: Data
+    private let size: Double
+
+    init(_ input: String) {
+        do {
+            let inputURL = URL(fileURLWithPath: input)
+            self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            self.size = Double(self.data.count)
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func warmupIteration() { }
+
+    func measure() -> Double {
+        let outputData = BZip2.compress(data: self.data)
+        guard outputData.count > 0 else {
+            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
+            exit(1)
+        }
+        return Double(self.size) / Double(outputData.count)
     }
 
 }
@@ -293,6 +377,38 @@ struct CompLz4: Benchmark {
 
 }
 
+struct CompRatioLz4: Benchmark {
+
+    static let defaultIterationCount: Int = 1
+    static let useSpeedFormatter: Bool = false
+
+    private let data: Data
+    private let size: Double
+
+    init(_ input: String) {
+        do {
+            let inputURL = URL(fileURLWithPath: input)
+            self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            self.size = Double(self.data.count)
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func warmupIteration() { }
+
+    func measure() -> Double {
+        let outputData = LZ4.compress(data: self.data)
+        guard outputData.count > 0 else {
+            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
+            exit(1)
+        }
+        return Double(self.size) / Double(outputData.count)
+    }
+
+}
+
 struct CompLz4Bd: Benchmark {
 
     private let data: Data
@@ -315,6 +431,39 @@ struct CompLz4Bd: Benchmark {
             contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         return self.size / timeElapsed
+    }
+
+}
+
+struct CompRatioLz4Bd: Benchmark {
+
+    static let defaultIterationCount: Int = 1
+    static let useSpeedFormatter: Bool = false
+
+    private let data: Data
+    private let size: Double
+
+    init(_ input: String) {
+        do {
+            let inputURL = URL(fileURLWithPath: input)
+            self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            self.size = Double(self.data.count)
+        } catch let error {
+            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
+            exit(1)
+        }
+    }
+
+    func warmupIteration() { }
+
+    func measure() -> Double {
+        let outputData = LZ4.compress(data: self.data, independentBlocks: false, blockChecksums: false,
+            contentChecksum: true, contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
+        guard outputData.count > 0 else {
+            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
+            exit(1)
+        }
+        return Double(self.size) / Double(outputData.count)
     }
 
 }

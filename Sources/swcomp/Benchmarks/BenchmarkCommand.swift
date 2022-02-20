@@ -86,17 +86,6 @@ final class BenchmarkCommand: Command {
                 print("Standard deviation: " + String(format: "%.3f", std))
             }
 
-            // if calculateCompressionRatio {
-            //     if warmupOutput == nil {
-            //         print("WARNING: Unable to calculate compression ratio without a warmup iteration.")
-            //     } else if let outputData = warmupOutput as? Data, outputData.count > 0 {
-            //         let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
-            //         print(String(format: "Compression ratio: %.3f", compressionRatio))
-            //     } else {
-            //         print("WARNING: Unable to calculate compression ratio.")
-            //     }
-            // }
-
             print()
         }
     }
