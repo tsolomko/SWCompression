@@ -35,13 +35,10 @@ final class BenchmarkCommand: Command {
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        let formatter = SpeedFormatter()
-
         for input in self.inputs {
             print("Input: \(input)")
             let benchmark = self.selectedBenchmark.initialized(input)
             let iterationCount = self.iterationCount ?? benchmark.defaultIterationCount
-            let useSpeedFormatter = type(of: benchmark).useSpeedFormatter
 
             if !self.noWarmup {
                 print("Warmup iteration...")
@@ -61,11 +58,7 @@ final class BenchmarkCommand: Command {
                     print(", ", terminator: "")
                 }
                 let speed = benchmark.measure()
-                if useSpeedFormatter {
-                    print(formatter.string(from: speed), terminator: "")
-                } else {
-                    print(String(format: "%.3f", speed), terminator: "")
-                }
+                print(benchmark.format(speed), terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
@@ -74,17 +67,9 @@ final class BenchmarkCommand: Command {
             }
 
             let avgSpeed = sum / Double(iterationCount)
-            if useSpeedFormatter {
-                print("\nAverage: " + formatter.string(from: avgSpeed))
-            } else {
-                print("\nAverage: " + String(format: "%.3f", avgSpeed))
-            }
+            print("\nAverage: " + benchmark.format(avgSpeed))
             let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
-            if useSpeedFormatter {
-                print("Standard deviation: " + formatter.string(from: std))
-            } else {
-                print("Standard deviation: " + String(format: "%.3f", std))
-            }
+            print("Standard deviation: " + benchmark.format(std))
 
             print()
         }

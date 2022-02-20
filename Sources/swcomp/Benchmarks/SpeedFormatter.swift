@@ -5,6 +5,8 @@
 
 struct SpeedFormatter {
 
+    static let `default`: SpeedFormatter = SpeedFormatter()
+
     enum Units {
         case bytes
         case kB

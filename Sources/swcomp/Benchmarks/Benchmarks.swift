@@ -265,8 +265,6 @@ struct CompDeflate: Benchmark {
 
 struct CompRatioDeflate: Benchmark {
 
-    static let useSpeedFormatter: Bool = false
-
     let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
@@ -291,6 +289,10 @@ struct CompRatioDeflate: Benchmark {
             exit(1)
         }
         return Double(self.size) / Double(outputData.count)
+    }
+
+    func format(_ value: Double) -> String {
+        return String(format: "%.3f", value)
     }
 
 }
@@ -322,8 +324,6 @@ struct CompBz2: Benchmark {
 
 struct CompRatioBz2: Benchmark {
 
-    static let useSpeedFormatter: Bool = false
-
     let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
@@ -348,6 +348,10 @@ struct CompRatioBz2: Benchmark {
             exit(1)
         }
         return Double(self.size) / Double(outputData.count)
+    }
+
+    func format(_ value: Double) -> String {
+        return String(format: "%.3f", value)
     }
 
 }
@@ -379,8 +383,6 @@ struct CompLz4: Benchmark {
 
 struct CompRatioLz4: Benchmark {
 
-    static let useSpeedFormatter: Bool = false
-
     let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
@@ -405,6 +407,10 @@ struct CompRatioLz4: Benchmark {
             exit(1)
         }
         return Double(self.size) / Double(outputData.count)
+    }
+
+    func format(_ value: Double) -> String {
+        return String(format: "%.3f", value)
     }
 
 }
@@ -437,8 +443,6 @@ struct CompLz4Bd: Benchmark {
 
 struct CompRatioLz4Bd: Benchmark {
 
-    static let useSpeedFormatter: Bool = false
-
     let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
@@ -464,6 +468,10 @@ struct CompRatioLz4Bd: Benchmark {
             exit(1)
         }
         return Double(self.size) / Double(outputData.count)
+    }
+
+    func format(_ value: Double) -> String {
+        return String(format: "%.3f", value)
     }
 
 }

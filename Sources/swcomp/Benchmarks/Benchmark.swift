@@ -6,7 +6,6 @@
 protocol Benchmark {
 
     var defaultIterationCount: Int { get }
-    static var useSpeedFormatter: Bool { get }
 
     init(_ input: String)
 
@@ -14,13 +13,11 @@ protocol Benchmark {
 
     func measure() -> Double
 
+    func format(_ value: Double) -> String
+
 }
 
 extension Benchmark {
-
-    static var useSpeedFormatter: Bool {
-        return true
-    }
 
     var defaultIterationCount: Int {
         return 10
@@ -28,6 +25,10 @@ extension Benchmark {
 
     func warmupIteration() {
         _ = measure()
+    }
+
+    func format(_ value: Double) -> String {
+        return SpeedFormatter.default.string(from: value)
     }
 
 }
