@@ -6,6 +6,7 @@
 protocol Benchmark {
 
     static var defaultIterationCount: Int { get }
+    static var useSpeedFormatter: Bool { get }
 
     init(_ input: String)
 
@@ -19,6 +20,10 @@ extension Benchmark {
 
     static var defaultIterationCount: Int {
         return 10
+    }
+
+    static var useSpeedFormatter: Bool {
+        return true
     }
 
     func warmupIteration() {
