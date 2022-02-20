@@ -48,9 +48,8 @@ final class BenchmarkCommand: Command {
                 benchmark.warmupIteration()
             }
 
-            var totalSpeed = 0.0
-            var maxSpeed = Double(Int.min)
-            var minSpeed = Double(Int.max)
+            var sum = 0.0
+            var squareSum = 0.0
 
             print("Iterations: ", terminator: "")
             #if !os(Linux)
@@ -65,23 +64,14 @@ final class BenchmarkCommand: Command {
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
-                totalSpeed += speed
-                if speed > maxSpeed {
-                    maxSpeed = speed
-                }
-                if speed < minSpeed {
-                    minSpeed = speed
-                }
+                sum += speed
+                squareSum += speed * speed
             }
 
-            let avgSpeed = totalSpeed / Double(iterationCount)
-            let avgSpeedUnits = SpeedFormatter.Units(avgSpeed)
-            let speedUncertainty = (maxSpeed - minSpeed) / 2
-            var avgString = "\nAverage: "
-            avgString += formatter.string(from: avgSpeed, units: avgSpeedUnits, hideUnits: true)
-            avgString += " \u{B1} "
-            avgString += formatter.string(from: speedUncertainty, units: avgSpeedUnits)
-            print(avgString)
+            let avgSpeed = sum / Double(iterationCount)
+            print("\nAverage: " + formatter.string(from: avgSpeed))
+            let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
+            print("Standard deviation: " + formatter.string(from: std))
 
             // if calculateCompressionRatio {
             //     if warmupOutput == nil {
