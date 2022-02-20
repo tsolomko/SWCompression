@@ -265,9 +265,9 @@ struct CompDeflate: Benchmark {
 
 struct CompRatioDeflate: Benchmark {
 
-    static let defaultIterationCount: Int = 1
     static let useSpeedFormatter: Bool = false
 
+    let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
 
@@ -322,9 +322,9 @@ struct CompBz2: Benchmark {
 
 struct CompRatioBz2: Benchmark {
 
-    static let defaultIterationCount: Int = 1
     static let useSpeedFormatter: Bool = false
 
+    let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
 
@@ -379,9 +379,9 @@ struct CompLz4: Benchmark {
 
 struct CompRatioLz4: Benchmark {
 
-    static let defaultIterationCount: Int = 1
     static let useSpeedFormatter: Bool = false
 
+    let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
 
@@ -437,9 +437,9 @@ struct CompLz4Bd: Benchmark {
 
 struct CompRatioLz4Bd: Benchmark {
 
-    static let defaultIterationCount: Int = 1
     static let useSpeedFormatter: Bool = false
 
+    let defaultIterationCount: Int = 1
     private let data: Data
     private let size: Double
 

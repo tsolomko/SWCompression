@@ -40,7 +40,7 @@ final class BenchmarkCommand: Command {
         for input in self.inputs {
             print("Input: \(input)")
             let benchmark = self.selectedBenchmark.initialized(input)
-            let iterationCount = self.iterationCount ?? type(of: benchmark).defaultIterationCount
+            let iterationCount = self.iterationCount ?? benchmark.defaultIterationCount
             let useSpeedFormatter = type(of: benchmark).useSpeedFormatter
 
             if !self.noWarmup {
