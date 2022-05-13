@@ -77,8 +77,8 @@ public class GzipArchive: Archive {
     }
 
     private static func processMember(_ bitReader: LsbBitReader) throws -> Member {
-        // Valid GZip archive must contain at least 33 bytes of data.
-        guard bitReader.bitsLeft >= 33 * 8
+        // Valid GZip archive must contain at least 18 bytes of data (10 for header and 8 for checksums).
+        guard bitReader.bitsLeft >= 18 * 8
             else { throw GzipError.wrongMagic }
 
         let header = try GzipHeader(bitReader)
