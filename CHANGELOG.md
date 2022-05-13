@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.8.1
+
+- Fix incorrect detection of truncated GZip archives.
+
 ## 4.8.0
 
 - Added `TarReader` and `TarWriter` structs which allow more iterative work with TAR containers while helping with
