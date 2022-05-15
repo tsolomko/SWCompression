@@ -19,13 +19,16 @@ final class BenchmarkCommand: Command {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
     var iterationCount: Int?
 
+    @Key("-s", "--save", description: "Saves the results into the specified file")
+    var savePath: String?
+
     @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
     var noWarmup: Bool
 
     @Param var selectedBenchmark: Benchmarks
     @CollectedParam(minCount: 1) var inputs: [String]
 
-    func execute() {
+    func execute() throws {
         guard self.iterationCount == nil || self.iterationCount! >= 1 else {
             print("ERROR: Iteration count, if set, must be not less than 1.")
             exit(1)
@@ -34,6 +37,8 @@ final class BenchmarkCommand: Command {
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
+
+        var results = [BenchmarkResult]()
 
         for input in self.inputs {
             print("Input: \(input)")
@@ -71,7 +76,18 @@ final class BenchmarkCommand: Command {
             let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
             print("Standard deviation: " + benchmark.format(std))
 
+            results.append(BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
+                                           avg: avgSpeed, std: std))
+
             print()
+        }
+
+        if let savePath = self.savePath {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+
+            let data = try encoder.encode(results)
+            try data.write(to: URL(fileURLWithPath: savePath))
         }
     }
 
