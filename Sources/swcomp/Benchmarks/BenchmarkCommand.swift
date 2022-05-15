@@ -19,7 +19,7 @@ final class BenchmarkCommand: Command {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
     var iterationCount: Int?
 
-    @Flag("--no-warmup", description: "Disables warmup iteration")
+    @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
     var noWarmup: Bool
 
     @Param var selectedBenchmark: Benchmarks
