@@ -195,4 +195,23 @@ class GzipTests: XCTestCase {
         }
     }
 
+    func testMinimal() throws {
+        // In this test we test several things:
+        // - that the archive consisting only of the minimal header is successfully processed,
+        // - that the mtime field with the value 0 correctly results in a `GzipHeader.modificationTime == nil`,
+        // - that the `GzipArchive.multiUnarchive(archive:)` works on a single member archive.
+        let testData = try Constants.data(forTest: "minimal", withType: GzipTests.testType)
+        let members = try GzipArchive.multiUnarchive(archive: testData)
+        XCTAssertEqual(members.count, 1)
+        if let member = members.first {
+            XCTAssertEqual(member.header.compressionMethod, .deflate)
+            XCTAssertNil(member.header.modificationTime)
+            XCTAssertEqual(member.header.osType, .unix)
+            XCTAssertNil(member.header.fileName)
+            XCTAssertNil(member.header.comment)
+            XCTAssertFalse(member.header.isTextFile)
+            XCTAssertEqual(member.data, Data())
+        }
+    }
+
 }
