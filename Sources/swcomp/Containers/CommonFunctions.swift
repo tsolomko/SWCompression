@@ -90,16 +90,12 @@ func writeFile<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: Bool)
         if let tarEntry = entry as? TarEntry {
             destinationPath = tarEntry.info.linkName
         } else {
-            guard let entryData = entry.data else {
-                print("ERROR: Unable to get destination path for symbolic link \(entryName).")
-                exit(1)
-            }
+            guard let entryData = entry.data
+                else { swcompExit(.containerSymLinkDestPath(entryName)) }
             destinationPath = String(data: entryData, encoding: .utf8)
         }
-        guard destinationPath != nil else {
-            print("ERROR: Unable to get destination path for symbolic link \(entryName).")
-            exit(1)
-        }
+        guard destinationPath != nil
+            else { swcompExit(.containerSymLinkDestPath(entryName)) }
         let endURL = entryFullURL.deletingLastPathComponent().appendingPathComponent(destinationPath!)
         if verbose {
             print("l: \(entryName) -> \(endURL.path)")
@@ -111,10 +107,8 @@ func writeFile<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: Bool)
         if verbose {
             print("f: \(entryName)")
         }
-        guard let entryData = entry.data else {
-            print("ERROR: Unable to get data for the entry \(entryName).")
-            exit(1)
-        }
+        guard let entryData = entry.data
+            else { swcompExit(.containerNoEntryData(entryName)) }
         try entryData.write(to: entryFullURL)
     } else {
         print("WARNING: Unknown file type \(entry.info.type) for entry \(entryName). Skipping this entry.")

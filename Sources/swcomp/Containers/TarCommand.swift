@@ -86,10 +86,9 @@ final class TarCommand: Command {
                 let entries = try TarContainer.info(container: fileData)
                 swcomp.printInfo(entries)
             } else {
-                guard let handle = FileHandle(forReadingAtPath: self.input) else {
-                    print("ERROR: Unable to open input file.")
-                    exit(1)
-                }
+                guard let handle = FileHandle(forReadingAtPath: self.input)
+                    else { swcompExit(.fileHandleCannotOpen) }
+
                 var reader = TarReader(fileHandle: handle)
                 var isFinished = false
                 while !isFinished {
@@ -104,10 +103,8 @@ final class TarCommand: Command {
                 try handle.closeCompat()
             }
         } else if let outputPath = self.extract {
-            guard try isValidOutputDirectory(outputPath, create: true) else {
-                print("ERROR: Specified output path already exists and is not a directory.")
-                exit(1)
-            }
+            guard try isValidOutputDirectory(outputPath, create: true)
+                else { swcompExit(.containerOutPathExistsNotDir) }
 
             if gz {
                 fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
@@ -132,10 +129,8 @@ final class TarCommand: Command {
                     print("d = directory, f = file, l = symbolic link")
                 }
 
-                guard let handle = FileHandle(forReadingAtPath: self.input) else {
-                    print("ERROR: Unable to open input file.")
-                    exit(1)
-                }
+                guard let handle = FileHandle(forReadingAtPath: self.input)
+                    else { swcompExit(.fileHandleCannotOpen) }
                 var reader = TarReader(fileHandle: handle)
                 let fileManager = FileManager.default
                 let outputURL = URL(fileURLWithPath: outputPath)
@@ -172,22 +167,17 @@ final class TarCommand: Command {
                 print("TAR format: PAX")
             }
         } else if let inputPath = self.create {
-            guard !xz else {
-                print("ERROR: XZ compression is not supported when creating a container.")
-                exit(1)
-            }
+            guard !xz
+                else { swcompExit(.tarCreateXzNotSupported) }
 
             let fileManager = FileManager.default
 
-            guard !fileManager.fileExists(atPath: self.input) else {
-                print("ERROR: Output path already exists.")
-                exit(1)
-            }
+            guard !fileManager.fileExists(atPath: self.input)
+                else { swcompExit(.tarCreateOutPathExists) }
 
-            guard fileManager.fileExists(atPath: inputPath) else {
-                print("ERROR: Specified input path doesn't exist.")
-                exit(1)
-            }
+            guard fileManager.fileExists(atPath: inputPath)
+                else { swcompExit(.tarCreateInPathDoesNotExist) }
+
             if verbose {
                 print("Creating new container at \"\(self.input)\" from \"\(inputPath)\"")
                 print("d = directory, f = file, l = symbolic link")

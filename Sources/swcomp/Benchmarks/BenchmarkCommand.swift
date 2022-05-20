@@ -32,10 +32,8 @@ final class BenchmarkCommand: Command {
     @CollectedParam(minCount: 1) var inputs: [String]
 
     func execute() throws {
-        guard self.iterationCount == nil || self.iterationCount! >= 1 else {
-            print("ERROR: Iteration count, if set, must be not less than 1.")
-            exit(1)
-        }
+        guard self.iterationCount == nil || self.iterationCount! >= 1
+            else { swcompExit(.benchmarkSmallIterCount) }
 
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
@@ -101,8 +99,7 @@ final class BenchmarkCommand: Command {
                     case 0:
                         print(String(format: "REG %f%% (p-value = 0.05)", diff))
                     default:
-                        print("ERROR: Unknown comparison result.")
-                        exit(1)
+                        swcompExit(.benchmarkUnknownCompResult)
                     }
                 }
                 else if diff > 0 {
@@ -116,8 +113,7 @@ final class BenchmarkCommand: Command {
                     case 0:
                         print(String(format: "IMP %f%% (p-value = 0.05)", diff))
                     default:
-                        print("ERROR: Unknown comparison result.")
-                        exit(1)
+                        swcompExit(.benchmarkUnknownCompResult)
                     }
                 } else {
                     print("OK (exact match of averages)")

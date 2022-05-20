@@ -27,10 +27,8 @@ extension ContainerCommand {
             let entries = try ContainerType.info(container: fileData)
             swcomp.printInfo(entries)
         } else if let outputPath = self.extract {
-            if try !isValidOutputDirectory(outputPath, create: true) {
-                print("ERROR: Specified output path already exists and is not a directory.")
-                exit(1)
-            }
+            guard try isValidOutputDirectory(outputPath, create: true)
+                else { swcompExit(.containerOutPathExistsNotDir) }
 
             let entries = try ContainerType.open(container: fileData)
             try swcomp.write(entries, outputPath, verbose)

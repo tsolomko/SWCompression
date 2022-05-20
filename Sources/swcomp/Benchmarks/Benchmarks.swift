@@ -129,8 +129,7 @@ struct UnGzip: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -141,8 +140,7 @@ struct UnGzip: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -159,8 +157,7 @@ struct UnBz2: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -171,8 +168,7 @@ struct UnBz2: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -189,8 +185,7 @@ struct UnLz4: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -201,8 +196,7 @@ struct UnLz4: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -219,8 +213,7 @@ struct UnXz: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -231,8 +224,7 @@ struct UnXz: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -249,8 +241,7 @@ struct CompDeflate: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -275,8 +266,7 @@ struct CompRatioDeflate: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -284,10 +274,8 @@ struct CompRatioDeflate: Benchmark {
 
     func measure() -> Double {
         let outputData = Deflate.compress(data: self.data)
-        guard outputData.count > 0 else {
-            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
-            exit(1)
-        }
+        guard outputData.count > 0
+            else { swcompExit(.benchmarkCannotMeasureBadOutSize(Self.self)) }
         return Double(self.size) / Double(outputData.count)
     }
 
@@ -308,8 +296,7 @@ struct CompBz2: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -334,8 +321,7 @@ struct CompRatioBz2: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -343,10 +329,8 @@ struct CompRatioBz2: Benchmark {
 
     func measure() -> Double {
         let outputData = BZip2.compress(data: self.data)
-        guard outputData.count > 0 else {
-            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
-            exit(1)
-        }
+        guard outputData.count > 0
+            else { swcompExit(.benchmarkCannotMeasureBadOutSize(Self.self)) }
         return Double(self.size) / Double(outputData.count)
     }
 
@@ -367,8 +351,7 @@ struct CompLz4: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -393,8 +376,7 @@ struct CompRatioLz4: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -402,10 +384,8 @@ struct CompRatioLz4: Benchmark {
 
     func measure() -> Double {
         let outputData = LZ4.compress(data: self.data)
-        guard outputData.count > 0 else {
-            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
-            exit(1)
-        }
+        guard outputData.count > 0
+            else { swcompExit(.benchmarkCannotMeasureBadOutSize(Self.self)) }
         return Double(self.size) / Double(outputData.count)
     }
 
@@ -426,8 +406,7 @@ struct CompLz4Bd: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -453,8 +432,7 @@ struct CompRatioLz4Bd: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -463,10 +441,8 @@ struct CompRatioLz4Bd: Benchmark {
     func measure() -> Double {
         let outputData = LZ4.compress(data: self.data, independentBlocks: false, blockChecksums: false,
             contentChecksum: true, contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
-        guard outputData.count > 0 else {
-            print("\nERROR: Unable to measure benchmark \(Self.self): outputData.count is not greater than zero.")
-            exit(1)
-        }
+        guard outputData.count > 0
+            else { swcompExit(.benchmarkCannotMeasureBadOutSize(Self.self)) }
         return Double(self.size) / Double(outputData.count)
     }
 
@@ -487,8 +463,7 @@ struct Info7z: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -499,8 +474,7 @@ struct Info7z: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -517,8 +491,7 @@ struct InfoTar: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -529,8 +502,7 @@ struct InfoTar: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -547,8 +519,7 @@ struct InfoZip: Benchmark {
             self.data = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             self.size = Double(self.data.count)
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -559,8 +530,7 @@ struct InfoZip: Benchmark {
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -576,8 +546,7 @@ struct CreateTar: Benchmark {
             self.entries = try TarEntry.createEntries(input, false)
             self.size = try Double(URL(fileURLWithPath: input).directorySize())
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -602,12 +571,10 @@ struct ReaderTar: Benchmark {
             if let fileSize = resourceValues.fileSize {
                 self.size = Double(fileSize)
             } else {
-                print("\nERROR: ReaderTAR.benchmarkSetUp(): file size is not available for input=\(input).")
-                exit(1)
+                swcompExit(.benchmarkReaderTarNoInputSize(input))
             }
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -630,8 +597,7 @@ struct ReaderTar: Benchmark {
             try handle.closeCompat()
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
@@ -647,8 +613,7 @@ struct WriterTar: Benchmark {
             self.entries = try TarEntry.createEntries(input, false)
             self.size = try Double(URL(fileURLWithPath: input).directorySize())
         } catch let error {
-            print("\nERROR: Unable to set up benchmark \(Self.self): input=\(input), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
 
@@ -668,8 +633,7 @@ struct WriterTar: Benchmark {
             try FileManager.default.removeItem(at: url)
             return self.size / timeElapsed
         } catch let error {
-            print("\nERROR: Unable to measure benchmark \(Self.self), error=\(error).")
-            exit(1)
+            swcompExit(.benchmarkCannotMeasure(Self.self, error))
         }
     }
 
