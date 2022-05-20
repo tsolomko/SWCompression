@@ -25,6 +25,12 @@ func printInfo(_ entries: [ContainerEntryInfo]) {
     }
 }
 
+func printList(_ entries: [ContainerEntryInfo]) {
+    for entry in entries {
+        print(entry.name)
+    }
+}
+
 func write<T: ContainerEntry>(_ entries: [T], _ outputPath: String, _ verbose: Bool) throws {
     let fileManager = FileManager.default
     let outputURL = URL(fileURLWithPath: outputPath)

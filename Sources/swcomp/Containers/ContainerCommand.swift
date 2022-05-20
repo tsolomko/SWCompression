@@ -12,6 +12,7 @@ protocol ContainerCommand: Command {
     associatedtype ContainerType: Container
 
     var info: Bool { get }
+    var list: Bool { get }
     var extract: String? { get }
     var verbose: Bool { get }
     var input: String { get }
@@ -26,6 +27,9 @@ extension ContainerCommand {
         if info {
             let entries = try ContainerType.info(container: fileData)
             swcomp.printInfo(entries)
+        } else if list {
+            let entries = try ContainerType.info(container: fileData)
+            swcomp.printList(entries)
         } else if let outputPath = self.extract {
             guard try isValidOutputDirectory(outputPath, create: true)
                 else { swcompExit(.containerOutPathExistsNotDir) }

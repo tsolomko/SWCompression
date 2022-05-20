@@ -21,8 +21,11 @@ final class TarCommand: Command {
     @Flag("-x", "--xz", description: "With -e: decompress with XZ first; with -c: not supported")
     var xz: Bool
 
-    @Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
+    @Flag("-i", "--info", description: "Print the information about of the entries in the container including their attributes")
     var info: Bool
+
+    @Flag("-l", "--list", description: "Print the list of names of the entries in the container")
+    var list: Bool
 
     @Key("-e", "--extract", description: "Extract a container into specified directory")
     var extract: String?
@@ -40,7 +43,7 @@ final class TarCommand: Command {
     var verbose: Bool
 
     var optionGroups: [OptionGroup] {
-        return [.atMostOne($gz, $bz2, $xz), .exactlyOne($info, $extract, $format, $create)]
+        return [.atMostOne($gz, $bz2, $xz), .exactlyOne($info, $list, $extract, $format, $create)]
     }
 
     @Param var input: String
@@ -66,25 +69,37 @@ final class TarCommand: Command {
             fileData = Data()
         }
 
-        if info {
+        if info || list {
             if gz {
                 fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
                                     options: .mappedIfSafe)
                 fileData = try GzipArchive.unarchive(archive: fileData)
                 let entries = try TarContainer.info(container: fileData)
-                swcomp.printInfo(entries)
+                if info {
+                    swcomp.printInfo(entries)
+                } else {
+                    swcomp.printList(entries)
+                }
             } else if bz2 {
                 fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
                                     options: .mappedIfSafe)
                 fileData = try BZip2.decompress(data: fileData)
                 let entries = try TarContainer.info(container: fileData)
-                swcomp.printInfo(entries)
+                if info {
+                    swcomp.printInfo(entries)
+                } else {
+                    swcomp.printList(entries)
+                }
             } else if xz {
                 fileData = try Data(contentsOf: URL(fileURLWithPath: self.input),
                                     options: .mappedIfSafe)
                 fileData = try XZArchive.unarchive(archive: fileData)
                 let entries = try TarContainer.info(container: fileData)
-                swcomp.printInfo(entries)
+                if info {
+                    swcomp.printInfo(entries)
+                } else {
+                    swcomp.printList(entries)
+                }
             } else {
                 guard let handle = FileHandle(forReadingAtPath: self.input)
                     else { swcompExit(.fileHandleCannotOpen) }
@@ -95,8 +110,12 @@ final class TarCommand: Command {
                     isFinished = try reader.process { (entry: TarEntry?) -> Bool in
                         guard entry != nil
                             else { return true }
-                        print(entry!.info)
-                        print("------------------\n")
+                        if info {
+                            print(entry!.info)
+                            print("------------------\n")
+                        } else {
+                            print(entry!.info.name)
+                        }
                         return false
                     }
                 }
