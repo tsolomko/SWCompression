@@ -226,8 +226,10 @@ class GzipTests: XCTestCase {
         for _ in 0..<100 {
             let truncationIndex = Int.random(in: 23..<testData.count - 8)
             var thrownError: Error? = nil
-            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex])) { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError))")
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test9, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test9, truncationIndex=\(truncationIndex)")
         }
 
         // This test file contains static Huffman Deflate block.
@@ -235,8 +237,10 @@ class GzipTests: XCTestCase {
         for _ in 0..<10 {
             let truncationIndex = Int.random(in: 23..<testData.count - 8)
             var thrownError: Error? = nil
-            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex])) { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError))")
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test8, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test8, truncationIndex=\(truncationIndex)")
         }
 
         // This test file contains dynamic Huffman Deflate block.
@@ -244,8 +248,10 @@ class GzipTests: XCTestCase {
         for _ in 0..<10 {
             let truncationIndex = Int.random(in: 23..<testData.count - 8)
             var thrownError: Error? = nil
-            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex])) { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError))")
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test6, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test6, truncationIndex=\(truncationIndex)")
         }
     }
 
