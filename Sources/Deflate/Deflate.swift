@@ -77,10 +77,8 @@ public class Deflate: DecompressionAlgorithm {
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
                     // Initialize trees from bootstraps.
-                    mainLiterals = DecodingTree(codes: Constants.staticHuffmanBootstrap.codes,
-                                                maxBits: Constants.staticHuffmanBootstrap.maxBits, bitReader)
-                    mainDistances = DecodingTree(codes: Constants.staticHuffmanDistancesBootstrap.codes,
-                                                 maxBits: Constants.staticHuffmanDistancesBootstrap.maxBits, bitReader)
+                    mainLiterals = DecodingTree(codes: Constants.staticHuffmanLiteralCodes, maxBits: 9, bitReader)
+                    mainDistances = DecodingTree(codes: Constants.staticHuffmanDistanceCodes, maxBits: 5, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
