@@ -125,15 +125,19 @@ stages:
         windowsSwift54:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.4.3'
+          ICU_VERSION: '67'
         windowsSwift55:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.5.3'
+          ICU_VERSION: '67'
         windowsSwift56:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.6.3'
+          ICU_VERSION: '69.1'
         windowsSwift57:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.7'
+          ICU_VERSION: ''
     pool:
       vmImage: $(imageName)
     variables:
@@ -150,7 +154,7 @@ stages:
         modifyEnvironment: true
       displayName: 'Install Swift'
     - script: |
-        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-*\usr\bin;%PATH%
+        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-%ICU_VERSION%\usr\bin;%PATH%
         swift.exe --version
         swift.exe build %SWIFTFLAGS%
         swift.exe build -c release %SWIFTFLAGS%
