@@ -150,7 +150,7 @@ stages:
         modifyEnvironment: true
       displayName: 'Install Swift'
     - script: |
-        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-67\usr\bin;%PATH%
+        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-*\usr\bin;%PATH%
         swift.exe --version
         swift.exe build %SWIFTFLAGS%
         swift.exe build -c release %SWIFTFLAGS%
