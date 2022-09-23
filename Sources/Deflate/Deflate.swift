@@ -44,8 +44,8 @@ public class Deflate: DecompressionAlgorithm {
 
             if blockType == 0 { // Uncompressed block.
                 bitReader.align()
-                // The uncompressed block consists at the very least of 32 bits or 2 bytes since they are byte-aligned.
-                guard bitReader.bytesLeft >= 2
+                // The uncompressed block consists at the very least of 32 bits or 4 bytes since they are byte-aligned.
+                guard bitReader.bytesLeft >= 4
                     else { throw DeflateError.wrongUncompressedBlockLengths }
 
                 /// Length of the uncompressed data.
