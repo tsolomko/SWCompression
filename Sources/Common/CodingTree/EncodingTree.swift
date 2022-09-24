@@ -31,7 +31,6 @@ final class EncodingTree {
             codingIndices[code.symbol] = CodingIndex(treeCode: treeCode, bitSize: code.bits)
         }
         self.codingIndices = codingIndices
-
     }
 
     func code(symbol: Int) {

@@ -195,4 +195,64 @@ class GzipTests: XCTestCase {
         }
     }
 
+    func testMinimal() throws {
+        // In this test we test several things:
+        // - that the archive consisting only of the minimal header is successfully processed,
+        // - that the mtime field with the value 0 correctly results in a `GzipHeader.modificationTime == nil`,
+        // - that the `GzipArchive.multiUnarchive(archive:)` works on a single member archive.
+        let testData = try Constants.data(forTest: "minimal", withType: GzipTests.testType)
+        let members = try GzipArchive.multiUnarchive(archive: testData)
+        XCTAssertEqual(members.count, 1)
+        if let member = members.first {
+            XCTAssertEqual(member.header.compressionMethod, .deflate)
+            XCTAssertNil(member.header.modificationTime)
+            XCTAssertEqual(member.header.osType, .unix)
+            XCTAssertNil(member.header.fileName)
+            XCTAssertNil(member.header.comment)
+            XCTAssertFalse(member.header.isTextFile)
+            XCTAssertEqual(member.data, Data())
+        }
+    }
+
+    func testDeflateTruncation() throws {
+        // In this test we check that there is no crash when dealing with the truncation in the middle of the Deflate
+        // compressed data. The idea is to take three different types of Deflate blocks (uncompressed, static Huffman,
+        // and dynamic Huffman), truncate the input data manually at a random point inside it, and then test if an
+        // appropriate error is thrown. To make test a bit more sophisticated we generate a number of random truncations
+        // for each tested file.
+
+        // This test file contains uncompressed Deflate block.
+        var testData = try Constants.data(forTest: "test9", withType: GzipTests.testType)
+        for _ in 0..<100 {
+            let truncationIndex = Int.random(in: 23..<testData.count - 8)
+            var thrownError: Error? = nil
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test9, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test9, truncationIndex=\(truncationIndex)")
+        }
+
+        // This test file contains static Huffman Deflate block.
+        testData = try Constants.data(forTest: "test8", withType: GzipTests.testType)
+        for _ in 0..<10 {
+            let truncationIndex = Int.random(in: 23..<testData.count - 8)
+            var thrownError: Error? = nil
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test8, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test8, truncationIndex=\(truncationIndex)")
+        }
+
+        // This test file contains dynamic Huffman Deflate block.
+        testData = try Constants.data(forTest: "test6", withType: GzipTests.testType)
+        for _ in 0..<10 {
+            let truncationIndex = Int.random(in: 23..<testData.count - 8)
+            var thrownError: Error? = nil
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "No error thrown, test6, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                          "test6, truncationIndex=\(truncationIndex)")
+        }
+    }
+
 }

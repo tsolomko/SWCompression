@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.8.2
+
+- Swift 5.1 is no longer supported.
+- Increased minimum deployment versions (when installed via CocoaPods or Carthage) for Darwin platforms: macOS from 10.10
+to 10.13, iOS from 9.0 to 11.0, tvOS from 9.0 to 11.0, and watchOS from 2.0 to 4.0.
+- Fixed issues when building for iOS either directly or via Carthage on systems with Xcode 14.
+- Fixed potential crashes that could occur when decompressing truncated Deflate inputs.
+- swcomp changes:
+    - swcomp is now enabled by default in Swift Package Manager manifest.
+    - Added `-l`, `--list` option to container commands (`7z`, `tar`, and `zip`).
+    - Systematized error exit codes and messages.
+    - Added `-s`, `--save` option to the `benchmark` command.
+    - Added `-c`, `--compare` option to the `benchmark` command.
+    - Added `-i`, `--iteration-count` option to the `benchmark` command.
+    - Added `-W`, `--no-warmup` option to the `benchmark` command.
+    - Benchmarks now output standard deviation instead of speed uncertainty.
+
 ## 4.8.1
 
 - Fix incorrect detection of truncated GZip archives.

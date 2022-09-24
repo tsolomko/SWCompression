@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SWCompression"
-  s.version      = "4.8.1"
+  s.version      = "4.8.2"
   s.summary      = "A framework with functions for working with compression, archives and containers."
 
   s.description  = "A framework with (de)compression algorithms and functions for processing various archives and containers."
@@ -15,10 +15,10 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/tsolomko/SWCompression.git", :tag => "#{s.version}" }
 
-  s.ios.deployment_target = "9.0"
-  s.osx.deployment_target = "10.10"
-  s.tvos.deployment_target = "9.0"
-  s.watchos.deployment_target = "2.0"
+  s.ios.deployment_target = "11.0"
+  s.osx.deployment_target = "10.13"
+  s.tvos.deployment_target = "11.0"
+  s.watchos.deployment_target = "4.0"
 
   s.swift_versions = ["5"]
 

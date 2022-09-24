@@ -15,18 +15,13 @@ stages:
   - job: macos
     strategy:
       matrix:
-        macosSwift51:
-          imageName: 'macOS-10.15'
-          DEVELOPER_DIR: '/Applications/Xcode_11.3.1.app'
-          WATCHOS_ACTIONS: 'clean build'
-          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift52:
-          imageName: 'macOS-10.15'
-          DEVELOPER_DIR: '/Applications/Xcode_11.4.1.app'
+          imageName: 'macOS-11'
+          DEVELOPER_DIR: '/Applications/Xcode_11.7.app'
           WATCHOS_ACTIONS: 'clean build'
           WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift53:
-          imageName: 'macOS-10.15'
+          imageName: 'macOS-11'
           DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
           WATCHOS_ACTIONS: 'clean build'
           WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
@@ -39,9 +34,21 @@ stages:
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift55:
           imageName: 'macOS-11'
-          DEVELOPER_DIR: '/Applications/Xcode_13.2.app'
+          DEVELOPER_DIR: '/Applications/Xcode_13.2.1.app'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
+          UTILS_PW_XCF_FLAG: '--xcf'
+        macosSwift56:
+          imageName: 'macOS-12'
+          DEVELOPER_DIR: '/Applications/Xcode_13.4.1.app'
+          WATCHOS_ACTIONS: 'clean test'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
+          UTILS_PW_XCF_FLAG: '--xcf'
+        macosSwift57:
+          imageName: 'macOS-12'
+          DEVELOPER_DIR: '/Applications/Xcode_14.0.app'
+          WATCHOS_ACTIONS: 'clean test'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
           UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
@@ -79,26 +86,29 @@ stages:
       displayName: 'Download BitByteData'
     - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
-    - script: swift build -c release
+    - script: swift build -c release --target SWCompression
       displayName: 'Build SPM Release'
   - job: linux
     strategy:
       matrix:
-        linuxSwift51:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.1.5-bionic'
         linuxSwift52:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.2.5-bionic'
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.2.5-focal'
         linuxSwift53:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.3.3-bionic'
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.3.3-focal'
         linuxSwift54:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.4.3-bionic'
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.4.3-focal'
         linuxSwift55:
-          imageName: 'ubuntu-18.04'
-          containerImage: 'swift:5.5.2-bionic'
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.5.3-focal'
+        linuxSwift56:
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.6.3-focal'
+        linuxSwift57:
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.7-focal'
     pool:
       vmImage: $(imageName)
     container: $[ variables['containerImage'] ]
@@ -106,8 +116,8 @@ stages:
     - script: |
         set -e -o xtrace
         swift --version
-        swift build
-        swift build -c release # Check Release build just in case.
+        swift build --target SWCompression
+        swift build -c release --target SWCompression # Check Release build just in case.
       displayName: 'Build SPM Debug & Release'
   - job: windows
     strategy:
@@ -115,24 +125,30 @@ stages:
         windowsSwift54:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.4.3'
+          ICU_PATH: 'C:\Library\icu-67\usr\bin'
+          SWIFT_DEV_PATH: 'C:\Library\Swift-development\bin'
         windowsSwift55:
           imageName: 'windows-2019'
-          SWIFT_VERSION: '5.5.2'
+          SWIFT_VERSION: '5.5.3'
+          ICU_PATH: 'C:\Library\icu-67\usr\bin'
+          SWIFT_DEV_PATH: 'C:\Library\Swift-development\bin'
+        windowsSwift56:
+          imageName: 'windows-2019'
+          SWIFT_VERSION: '5.6.3'
+          ICU_PATH: 'C:\Library\icu-69.1\usr\bin'
+          SWIFT_DEV_PATH: 'C:\Library\Swift-development\bin'
+        windowsSwift57:
+          imageName: 'windows-2019'
+          SWIFT_VERSION: '5.7'
+          ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
+          SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
     pool:
       vmImage: $(imageName)
     variables:
       DEVELOPER_DIR: 'C:\Library\Developer'
       SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
-      XCTEST_DIR: 'C:\Library\Developer\Platforms\Windows.platform\Developer\Library\XCTest-development'
-      SWIFTFLAGS: '--sdk $(SDKROOT)'
-      SWIFTTESTFLAGS: '-Xswiftc -I -Xswiftc $(XCTEST_DIR)\usr\lib\swift\windows\x86_64 -Xswiftc -L -Xswiftc $(XCTEST_DIR)\usr\lib\swift\windows -Xswiftc -sdk -Xswiftc $(SDKROOT)'
+      SWIFTFLAGS: '--sdk $(SDKROOT) -Xswiftc -sdk -Xswiftc $(SDKROOT) -Xswiftc -resource-dir -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -I -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -L -Xswiftc $(SDKROOT)/usr/lib/swift/windows'
     steps:
-    - task: BatchScript@1
-      inputs:
-        filename: C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/Tools/VsDevCmd.bat
-        arguments: -no_logo -arch=x64 -host_arch=x64
-        modifyEnvironment: true
-      displayName: 'vsvarsall.bat'
     - pwsh: Invoke-WebRequest -Uri https://swift.org/builds/swift-$(SWIFT_VERSION)-release/windows10/swift-$(SWIFT_VERSION)-RELEASE/swift-$(SWIFT_VERSION)-RELEASE-windows10.exe -OutFile swift-install.exe
       displayName: 'Download Swift'
     - task: BatchScript@1
@@ -142,16 +158,10 @@ stages:
         modifyEnvironment: true
       displayName: 'Install Swift'
     - script: |
-        copy %SDKROOT%\usr\share\ucrt.modulemap "%UniversalCRTSdkDir%\Include\%UCRTVersion%\ucrt\module.modulemap"
-        copy %SDKROOT%\usr\share\visualc.modulemap "%VCToolsInstallDir%\include\module.modulemap"
-        copy %SDKROOT%\usr\share\visualc.apinotes "%VCToolsInstallDir%\include\visualc.apinotes"
-        copy %SDKROOT%\usr\share\winsdk.modulemap "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
-      displayName: 'Configure SDK'
-    - script: |
-        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-67\usr\bin;%PATH%
+        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;%SWIFT_DEV_PATH%;%ICU_PATH%;%PATH%
         swift.exe --version
-        swift.exe build %SWIFTFLAGS%
-        swift.exe build -c release %SWIFTFLAGS%
+        swift.exe build --target SWCompression %SWIFTFLAGS%
+        swift.exe build -c release --target SWCompression %SWIFTFLAGS%
       displayName: 'Build SPM Debug & Release'
 - stage: deploy
   displayName: Deploy
@@ -162,7 +172,7 @@ stages:
   - job: ghPages
     displayName: 'Publish API docs to GH Pages'
     pool:
-      vmImage: 'macOS-10.15'
+      vmImage: 'macOS-11'
     variables:
       DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
     steps:

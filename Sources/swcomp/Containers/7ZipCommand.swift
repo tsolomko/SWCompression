@@ -14,8 +14,11 @@ final class SevenZipCommand: ContainerCommand {
     let name = "7z"
     let shortDescription = "Extracts a 7-Zip container"
 
-    @Flag("-i", "--info", description: "Print the list of entries in a container and their attributes")
+    @Flag("-i", "--info", description: "Print the information about of the entries in the container including their attributes")
     var info: Bool
+
+    @Flag("-l", "--list", description: "Print the list of names of the entries in the container")
+    var list: Bool
 
     @Key("-e", "--extract", description: "Extract a container into the specified directory")
     var extract: String?
@@ -26,7 +29,7 @@ final class SevenZipCommand: ContainerCommand {
     @Param var input: String
 
     var optionGroups: [OptionGroup] {
-        return [.exactlyOne($info, $extract)]
+        return [.exactlyOne($info, $list, $extract)]
     }
 
 }

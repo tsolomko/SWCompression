@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -222,6 +222,7 @@
 		E60CBA8A26AF379200A20130 /* test_only_dir_header.tar in Resources */ = {isa = PBXBuildFile; fileRef = E60CBA8926AF379200A20130 /* test_only_dir_header.tar */; };
 		E631055927084D5D006EACC3 /* LZ4+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E631055827084D5D006EACC3 /* LZ4+Compress.swift */; };
 		E6421E8F271B54C6000359B6 /* test_7z_lz4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6421E8E271B54C6000359B6 /* test_7z_lz4.7z */; };
+		E644E11E2833AB2400EEFBAD /* minimal.gz in Resources */ = {isa = PBXBuildFile; fileRef = E644E11D2833AB2400EEFBAD /* minimal.gz */; };
 		E648151D26A889B8009261F0 /* TarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E648151C26A889B8009261F0 /* TarHeader.swift */; };
 		E64F71BC26AAFD6A008BB308 /* Data+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */; };
 		E6522FB42789AF9600026B56 /* TarReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FB32789AF9600026B56 /* TarReaderTests.swift */; };
@@ -506,6 +507,7 @@
 		E631055827084D5D006EACC3 /* LZ4+Compress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LZ4+Compress.swift"; sourceTree = "<group>"; };
 		E631055A27086132006EACC3 /* SWCompression.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = SWCompression.xctestplan; path = SWCompression.xcodeproj/SWCompression.xctestplan; sourceTree = SOURCE_ROOT; };
 		E6421E8E271B54C6000359B6 /* test_7z_lz4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_7z_lz4.7z; sourceTree = "<group>"; };
+		E644E11D2833AB2400EEFBAD /* minimal.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = minimal.gz; sourceTree = "<group>"; };
 		E648151C26A889B8009261F0 /* TarHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarHeader.swift; sourceTree = "<group>"; };
 		E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Tar.swift"; sourceTree = "<group>"; };
 		E6522FB32789AF9600026B56 /* TarReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarReaderTests.swift; sourceTree = "<group>"; };
@@ -868,6 +870,7 @@
 		06F065B81FFB763300312A82 /* GZip */ = {
 			isa = PBXGroup;
 			children = (
+				E644E11D2833AB2400EEFBAD /* minimal.gz */,
 				06F065BA1FFB763300312A82 /* test1.gz */,
 				06F065BF1FFB763300312A82 /* test2.gz */,
 				06F065BC1FFB763300312A82 /* test3.gz */,
@@ -1135,7 +1138,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = "Timofey Solomko";
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
@@ -1149,7 +1152,7 @@
 				};
 			};
 			buildConfigurationList = 06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */;
-			compatibilityVersion = "Xcode 11.0";
+			compatibilityVersion = "Xcode 11.4";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1283,6 +1286,7 @@
 				069864CA21403CE700755D9B /* test_sha256.xz in Resources */,
 				E652D8F3263D670900FC229B /* test_nonstandard_runlength.bz2 in Resources */,
 				06F0663D1FFB763400312A82 /* test2.xz in Resources */,
+				E644E11E2833AB2400EEFBAD /* minimal.gz in Resources */,
 				06F066351FFB763400312A82 /* test5.xz in Resources */,
 				06F066631FFB763400312A82 /* test_complicated_coding_scheme.7z in Resources */,
 				E652FECE27007E79006BC312 /* test8.lz4 in Resources */,
@@ -1338,7 +1342,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == iphonesimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/iOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == appletvsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-arm64/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/tvOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == watchsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n            cp -a ${PROJECT_DIR}/Carthage/Build/watchOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/macos-*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/Mac/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}\n";
+			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == iphonesimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-arm64*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/iOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == appletvsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-arm64/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/tvOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == watchsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n            cp -a ${PROJECT_DIR}/Carthage/Build/watchOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/macos-*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/Mac/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1512,8 +1516,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
@@ -1527,10 +1533,12 @@
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
+					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
+					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
 					"\"$(SRCROOT)/Carthage/Build/Mac\"",
@@ -1552,8 +1560,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_LDFLAGS = (
@@ -1564,9 +1572,9 @@
 				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VERSIONING_SYSTEM = "apple-generic";
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
 			name = Debug;
 		};
@@ -1593,8 +1601,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
 					"\"$(SRCROOT)/Carthage/Build/tvOS\"",
@@ -1607,10 +1617,12 @@
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
+					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
+					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
 					"\"$(SRCROOT)/Carthage/Build/Mac\"",
@@ -1631,8 +1643,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1642,9 +1654,9 @@
 				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VERSIONING_SYSTEM = "apple-generic";
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
 			name = Release;
 		};
@@ -1654,7 +1666,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 86;
+				DYLIB_CURRENT_VERSION = 87;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1681,7 +1693,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 86;
+				DYLIB_CURRENT_VERSION = 87;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

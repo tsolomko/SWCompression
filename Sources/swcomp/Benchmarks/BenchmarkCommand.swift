@@ -11,134 +11,125 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-protocol BenchmarkCommand: Command {
+final class BenchmarkCommand: Command {
 
-    associatedtype InputType
-    associatedtype OutputType
+    let name = "benchmark"
+    let shortDescription = "Perform the specified benchmark using external files, available benchmarks: \(Benchmarks.allBenchmarks)"
 
-    var inputs: [String] { get }
+    @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
+    var iterationCount: Int?
 
-    var benchmarkName: String { get }
+    @Key("-s", "--save", description: "Saves the results into the specified file")
+    var savePath: String?
 
-    var benchmarkInput: InputType? { get set }
+    @Key("-c", "--compare", description: "Compares the results with the results saved in the specified file")
+    var comparePath: String?
 
-    var benchmarkInputSize: Double? { get set }
+    @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
+    var noWarmup: Bool
 
-    func benchmarkSetUp(_ input: String)
+    @Param var selectedBenchmark: Benchmarks
+    @CollectedParam(minCount: 1) var inputs: [String]
 
-    func iterationSetUp()
+    func execute() throws {
+        guard self.iterationCount == nil || self.iterationCount! >= 1
+            else { swcompExit(.benchmarkSmallIterCount) }
 
-    @discardableResult
-    func benchmark() -> OutputType
-
-    func iterationTearDown()
-
-    func benchmarkTearDown()
-
-    // Compression ratio is calculated only if the OutputType is Data, and the size of the output is greater than zero.
-    var calculateCompressionRatio: Bool { get }
-
-}
-
-extension BenchmarkCommand {
-
-    func benchmarkSetUp() { }
-
-    func benchmarkTearDown() {
-        benchmarkInput = nil
-        benchmarkInputSize = nil
-     }
-
-    func iterationSetUp() { }
-
-    func iterationTearDown() { }
-
-}
-
-extension BenchmarkCommand where InputType == Data {
-
-    func benchmarkSetUp(_ input: String) {
-        do {
-            let inputURL = URL(fileURLWithPath: input)
-            benchmarkInput = try Data(contentsOf: inputURL, options: .mappedIfSafe)
-            benchmarkInputSize = Double(benchmarkInput!.count)
-        } catch let error {
-            print("\nERROR: Unable to set up benchmark: input=\(input), error=\(error).")
-            exit(1)
-        }
-    }
-
-}
-
-extension BenchmarkCommand {
-
-    var calculateCompressionRatio: Bool {
-        return false
-    }
-
-    func execute() {
-        let title = "\(benchmarkName) Benchmark\n"
+        let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
 
-        let formatter = ByteCountFormatter()
-        formatter.zeroPadsFractionDigits = true
+        var results = [BenchmarkResult]()
+        var otherResults: [BenchmarkResult]? = nil
+        if let comparePath = comparePath {
+            let data = try Data(contentsOf: URL(fileURLWithPath: comparePath))
+            let decoder = JSONDecoder()
+            otherResults = try decoder.decode(Array<BenchmarkResult>.self, from: data)
+        }
 
         for input in self.inputs {
-            self.benchmarkSetUp(input)
             print("Input: \(input)")
+            let benchmark = self.selectedBenchmark.initialized(input)
+            let iterationCount = self.iterationCount ?? benchmark.defaultIterationCount
 
-            var totalSpeed = 0.0
+            if !self.noWarmup {
+                print("Warmup iteration...")
+                // Zeroth (excluded) iteration.
+                benchmark.warmupIteration()
+            }
 
-            var maxSpeed = Double(Int.min)
-            var minSpeed = Double(Int.max)
+            var sum = 0.0
+            var squareSum = 0.0
 
             print("Iterations: ", terminator: "")
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
-            // Zeroth (excluded) iteration.
-            self.iterationSetUp()
-            let startTime = CFAbsoluteTimeGetCurrent()
-            let warmupOutput = self.benchmark()
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            let speed = benchmarkInputSize! / timeElapsed
-            print("(\(formatter.string(fromByteCount: Int64(speed))))/s", terminator: "")
-            #if !os(Linux)
-                fflush(__stdoutp)
-            #endif
-            self.iterationTearDown()
-
-            for _ in 1...10 {
-                print("  ", terminator: "")
-                self.iterationSetUp()
-                let startTime = CFAbsoluteTimeGetCurrent()
-                self.benchmark()
-                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                let speed = benchmarkInputSize! / timeElapsed
-                print("\(formatter.string(fromByteCount: Int64(speed)))/s", terminator: "")
+            for i in 1...iterationCount {
+                if i > 1 {
+                    print(", ", terminator: "")
+                }
+                let speed = benchmark.measure()
+                print(benchmark.format(speed), terminator: "")
                 #if !os(Linux)
                     fflush(__stdoutp)
                 #endif
-                totalSpeed += speed
-                if speed > maxSpeed {
-                    maxSpeed = speed
-                }
-                if speed < minSpeed {
-                    minSpeed = speed
-                }
-                self.iterationTearDown()
+                sum += speed
+                squareSum += speed * speed
             }
-            let avgSpeed = totalSpeed / 10
-            let speedUncertainty = (maxSpeed - minSpeed) / 2
-            print("\nAverage: \(formatter.string(fromByteCount: Int64(avgSpeed)))/s \u{B1} \(formatter.string(fromByteCount: Int64(speedUncertainty)))/s")
 
-            if let outputData = warmupOutput as? Data, calculateCompressionRatio, outputData.count > 0 {
-                let compressionRatio = Double(benchmarkInputSize!) / Double(outputData.count)
-                print(String(format: "Compression ratio: %.3f", compressionRatio))
+            let avgSpeed = sum / Double(iterationCount)
+            print("\nAverage: " + benchmark.format(avgSpeed))
+            let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
+            print("Standard deviation: " + benchmark.format(std))
+
+            let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
+                                         avg: avgSpeed, std: std)
+            if let other = otherResults?.first(where: { $0.name == result.name && $0.input == result.input }) {
+                let comparison = result.compare(with: other)
+                let diff = (result.avg / other.avg - 1) * 100
+                if diff < 0 {
+                    switch comparison {
+                    case 1:
+                        print(String(format: "OK  %f%% (p-value > 0.05)", diff))
+                    case nil:
+                        print("Cannot compare due to unsupported iteration count.")
+                    case -1:
+                        print(String(format: "REG %f%% (p-value < 0.05)", diff))
+                    case 0:
+                        print(String(format: "REG %f%% (p-value = 0.05)", diff))
+                    default:
+                        swcompExit(.benchmarkUnknownCompResult)
+                    }
+                }
+                else if diff > 0 {
+                    switch comparison {
+                    case 1:
+                        print(String(format: "OK  %f%% (p-value > 0.05)", diff))
+                    case nil:
+                        print("Cannot compare due to unsupported iteration count.")
+                    case -1:
+                        print(String(format: "IMP %f%% (p-value < 0.05)", diff))
+                    case 0:
+                        print(String(format: "IMP %f%% (p-value = 0.05)", diff))
+                    default:
+                        swcompExit(.benchmarkUnknownCompResult)
+                    }
+                } else {
+                    print("OK (exact match of averages)")
+                }
             }
+            results.append(result)
+
             print()
-            self.benchmarkTearDown()
+        }
+
+        if let savePath = self.savePath {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+
+            let data = try encoder.encode(results)
+            try data.write(to: URL(fileURLWithPath: savePath))
         }
     }
 

@@ -8,15 +8,11 @@ import Foundation
 extension FileHandle {
 
     func closeCompat() throws {
-        #if compiler(<5.2)
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            try self.close()
+        } else {
             self.closeFile()
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                try self.close()
-            } else {
-                self.closeFile()
-            }
-        #endif
+        }
     }
 
 }

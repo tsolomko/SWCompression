@@ -1,6 +1,6 @@
 # SWCompression
 
-[![Swift 5.1+](https://img.shields.io/badge/Swift-5.1+-blue.svg)](https://developer.apple.com/swift/)
+[![Swift 5.2+](https://img.shields.io/badge/Swift-5.2+-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://dev.azure.com/tsolomko/SWCompression/_apis/build/status/tsolomko.SWCompression?branchName=develop)](https://dev.azure.com/tsolomko/SWCompression/_build/latest?definitionId=3&branchName=develop)
 
@@ -19,7 +19,7 @@ It also works on Apple platforms, Linux, __and Windows__.
 All features are listed in the tables below. "TBD" means that feature is planned but not implemented (yet).
 
 |               | Deflate | BZip2 | LZMA/LZMA2 | LZ4 |
-| ------------- | ------- | ----- | ---------- | --- | 
+| ------------- | ------- | ----- | ---------- | --- |
 | Decompression | ✅      | ✅     | ✅         | ✅  |
 | Compression   | ✅      | ✅     | TBD        | ✅  |
 
@@ -44,8 +44,8 @@ import PackageDescription
 let package = Package(
     name: "PackageName",
     dependencies: [
-        .package(url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.7.0")
+        .package(name: "SWCompression", url: "https://github.com/tsolomko/SWCompression.git",
+                 from: "4.8.0")
     ],
     targets: [
         .target(
@@ -60,7 +60,7 @@ More details you can find in [Swift Package Manager's Documentation](https://git
 
 ### CocoaPods
 
-Add `pod 'SWCompression', '~> 4.7'` and `use_frameworks!` lines to your Podfile.
+Add `pod 'SWCompression', '~> 4.8'` and `use_frameworks!` lines to your Podfile.
 
 To complete installation, run `pod install`.
 
@@ -105,7 +105,7 @@ BZip2, LZMA/LZMA2 and LZ4 support).
 
 ### Carthage
 
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.7`.
+Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.8`.
 
 Then:
 
@@ -168,8 +168,8 @@ Every function or type of SWCompression's public API is documented. This documen
 
 ### Sophisticated example
 
-There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp". To build it
-you need to uncomment several lines in "Package.swift" and run `swift build -c release`.
+There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp". It can be
+built using Swift Package Manager.
 
 ## Contributing
 
@@ -236,7 +236,7 @@ provide missing (and sometimes existing) functionality through the unified API w
 
 Secondly, in some cases it may be important to have a compression framework written entirely in Swift, without relying
 on either system libraries or solutions implemented in other languages. Additionaly, since SWCompression is written
-completely in Swift without Objective-C, it can also be used on __Linux__.
+completely in Swift without Objective-C, it can also be used on Linux, __and Windows__.
 
 ## Future plans
 
