@@ -146,45 +146,33 @@ public struct TarReader {
     }
 
     private func getOffset() throws -> UInt64 {
-        #if compiler(<5.2)
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            return try handle.offset()
+        } else {
             return handle.offsetInFile
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                return try handle.offset()
-            } else {
-                return handle.offsetInFile
-            }
-        #endif
+        }
     }
 
     private func set(offset: UInt64) throws {
-        #if compiler(<5.2)
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            try handle.seek(toOffset: offset)
+        } else {
             handle.seek(toFileOffset: offset)
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                try handle.seek(toOffset: offset)
-            } else {
-                handle.seek(toFileOffset: offset)
-            }
-        #endif
+        }
     }
 
     private func getData(size: Int) throws -> Data {
         assert(size >= 0, "TarReader.getData(size:): negative size.")
         guard size > 0
             else { return Data() }
-        #if compiler(<5.2)
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            guard let chunkData = try handle.read(upToCount: size)
+                else { throw DataError.truncated }
+            return chunkData
+        } else {
+            // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
             return handle.readData(ofLength: size)
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                guard let chunkData = try handle.read(upToCount: size)
-                    else { throw DataError.truncated }
-                return chunkData
-            } else {
-                // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
-                return handle.readData(ofLength: size)
-            }
-        #endif
+        }
     }
 
 }

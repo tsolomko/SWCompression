@@ -133,18 +133,13 @@ public struct TarWriter {
     }
 
     private func write(_ data: Data) throws {
-        #if compiler(<5.2)
+        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+            try handle.write(contentsOf: data)
+            try handle.synchronize()
+        } else {
             handle.write(data)
             handle.synchronizeFile()
-        #else
-            if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-                try handle.write(contentsOf: data)
-                try handle.synchronize()
-            } else {
-                handle.write(data)
-                handle.synchronizeFile()
-            }
-        #endif
+        }
     }
 
 }
