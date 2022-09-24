@@ -9,9 +9,9 @@ let package = Package(
             targets: ["SWCompression"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/tsolomko/BitByteData",
+        .package(name: "BitByteData", url: "https://github.com/tsolomko/BitByteData",
                  from: "2.0.0"),
-        .package(url: "https://github.com/jakeheis/SwiftCLI",
+        .package(name: "SwiftCLI", url: "https://github.com/jakeheis/SwiftCLI",
                  from: "6.0.0"),
     ],
     targets: [
