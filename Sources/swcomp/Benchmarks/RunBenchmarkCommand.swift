@@ -23,7 +23,7 @@ final class RunBenchmarkCommand: Command {
     @Key("-s", "--save", description: "Saves the results into the specified file")
     var savePath: String?
 
-    @Key("-c", "--compare", description: "Compares the results with the results saved in the specified file")
+    @Key("-c", "--compare", description: "Compares the results with other results saved in the specified file")
     var comparePath: String?
 
     @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
@@ -87,38 +87,7 @@ final class RunBenchmarkCommand: Command {
             let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
                                          avg: avgSpeed, std: std)
             if let other = otherResults?.first(where: { $0.name == result.name && $0.input == result.input }) {
-                let comparison = result.compare(with: other)
-                let diff = (result.avg / other.avg - 1) * 100
-                if diff < 0 {
-                    switch comparison {
-                    case 1:
-                        print(String(format: "OK  %f%% (p-value > 0.05)", diff))
-                    case nil:
-                        print("Cannot compare due to unsupported iteration count.")
-                    case -1:
-                        print(String(format: "REG %f%% (p-value < 0.05)", diff))
-                    case 0:
-                        print(String(format: "REG %f%% (p-value = 0.05)", diff))
-                    default:
-                        swcompExit(.benchmarkUnknownCompResult)
-                    }
-                }
-                else if diff > 0 {
-                    switch comparison {
-                    case 1:
-                        print(String(format: "OK  %f%% (p-value > 0.05)", diff))
-                    case nil:
-                        print("Cannot compare due to unsupported iteration count.")
-                    case -1:
-                        print(String(format: "IMP %f%% (p-value < 0.05)", diff))
-                    case 0:
-                        print(String(format: "IMP %f%% (p-value = 0.05)", diff))
-                    default:
-                        swcompExit(.benchmarkUnknownCompResult)
-                    }
-                } else {
-                    print("OK (exact match of averages)")
-                }
+                result.printComparison(with: other)
             }
             results.append(result)
 
