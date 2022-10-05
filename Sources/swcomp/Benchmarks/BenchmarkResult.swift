@@ -13,6 +13,17 @@ struct BenchmarkResult: Codable {
     var avg: Double
     var std: Double
 
+    var id: String {
+        return [self.name, self.input, String(self.iterCount)].joined(separator: "<#>")
+    }
+
+    static func load(from path: String) throws -> [String : [BenchmarkResult]] {
+        let decoder = JSONDecoder()
+        let data = try Data(contentsOf: URL(fileURLWithPath: path))
+        let decodedResults = try decoder.decode(Array<BenchmarkResult>.self, from: data)
+        return Dictionary(grouping: decodedResults, by: { $0.id })
+    }
+
     func printComparison(with other: BenchmarkResult) {
         let diff = (self.avg / other.avg - 1) * 100
         let comparison = self.compare(with: other)

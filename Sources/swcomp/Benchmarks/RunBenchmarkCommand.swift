@@ -41,11 +41,9 @@ final class RunBenchmarkCommand: Command {
         print(title)
 
         var results = [BenchmarkResult]()
-        var otherResults: [BenchmarkResult]? = nil
+        var otherResults: [String : [BenchmarkResult]]? = nil
         if let comparePath = comparePath {
-            let data = try Data(contentsOf: URL(fileURLWithPath: comparePath))
-            let decoder = JSONDecoder()
-            otherResults = try decoder.decode(Array<BenchmarkResult>.self, from: data)
+            otherResults = try BenchmarkResult.load(from: comparePath)
         }
 
         for input in self.inputs {
@@ -79,15 +77,24 @@ final class RunBenchmarkCommand: Command {
                 squareSum += speed * speed
             }
 
-            let avgSpeed = sum / Double(iterationCount)
-            print("\nAverage: " + benchmark.format(avgSpeed))
+            let avg = sum / Double(iterationCount)
             let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
-            print("Standard deviation: " + benchmark.format(std))
-
             let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
-                                         avg: avgSpeed, std: std)
-            if let other = otherResults?.first(where: { $0.name == result.name && $0.input == result.input }) {
-                result.printComparison(with: other)
+                                         avg: avg, std: std)
+
+            if let otherResults = otherResults?[result.id] {
+                if otherResults.count > 1 {
+                    print("\nAverage = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
+                    print("WARNING: There is more than one result with the same id=\(result.id) in the file \(self.comparePath!)")
+                    print("Skipped comparison...\n")
+                } else {
+                    let other = otherResults.first!
+                    print("\nNEW:  average = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
+                    print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
+                    result.printComparison(with: other)
+                }
+            } else {
+                print("\nAverage = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
             }
             results.append(result)
 
