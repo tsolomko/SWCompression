@@ -11,10 +11,11 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-final class BenchmarkCommand: Command {
+final class RunBenchmarkCommand: Command {
 
-    let name = "benchmark"
-    let shortDescription = "Perform the specified benchmark using external files, available benchmarks: \(Benchmarks.allBenchmarks)"
+    let name = "run"
+    let shortDescription = "Run the specified benchmark"
+    let longDescription = "Runs the specified benchmark using external files.\nAvailable benchmarks: \(Benchmarks.allBenchmarks)"
 
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
     var iterationCount: Int?
