@@ -13,7 +13,8 @@ final class BenchmarkGroup: CommandGroup {
     let shortDescription = "Benchmark-related commands"
 
     let children: [Routable] = [
-        RunBenchmarkCommand()
+        RunBenchmarkCommand(),
+        ShowBenchmarkCommand()
     ]
 
 }
