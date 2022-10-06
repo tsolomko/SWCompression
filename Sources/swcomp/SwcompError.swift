@@ -17,6 +17,7 @@ enum SwcompError {
     case benchmarkCannotMeasure(Benchmark.Type, Error)
     case benchmarkCannotMeasureBadOutSize(Benchmark.Type)
     case benchmarkReaderTarNoInputSize(String)
+    case benchmarkCannotGetSubcommandPathWindows
     case containerSymLinkDestPath(String)
     case containerNoEntryData(String)
     case containerOutPathExistsNotDir
@@ -47,6 +48,8 @@ enum SwcompError {
             return 214
         case .benchmarkReaderTarNoInputSize:
             return 205
+        case .benchmarkCannotGetSubcommandPathWindows:
+            return 206
         case .containerSymLinkDestPath:
             return 301
         case .containerNoEntryData:
@@ -86,6 +89,8 @@ enum SwcompError {
             return "Unable to measure benchmark \(benchmark): outputData.count is not greater than zero."
         case .benchmarkReaderTarNoInputSize(let input):
             return "ReaderTAR.benchmarkSetUp(): file size is not available for input=\(input)."
+        case .benchmarkCannotGetSubcommandPathWindows:
+            return "Cannot get subcommand path on Windows. (This error should never be shown!)"
         case .containerSymLinkDestPath(let entryName):
             return "Unable to get destination path for symbolic link \(entryName)."
         case .containerNoEntryData(let entryName):
