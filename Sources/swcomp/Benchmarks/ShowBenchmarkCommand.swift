@@ -21,10 +21,10 @@ final class ShowBenchmarkCommand: Command {
     @Param var path: String
 
     func execute() throws {
-        let loadedResults = try BenchmarkResult.load(from: self.path)
+        let loadedResults = try SaveFile.loadResults(from: self.path)
         var otherResults: [String : [BenchmarkResult]]? = nil
         if let comparePath = comparePath {
-            otherResults = try BenchmarkResult.load(from: comparePath)
+            otherResults = try SaveFile.loadResults(from: comparePath)
         }
 
         for resultId in loadedResults.keys.sorted() {

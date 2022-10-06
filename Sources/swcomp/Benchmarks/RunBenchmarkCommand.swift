@@ -43,7 +43,7 @@ final class RunBenchmarkCommand: Command {
         var results = [BenchmarkResult]()
         var otherResults: [String : [BenchmarkResult]]? = nil
         if let comparePath = comparePath {
-            otherResults = try BenchmarkResult.load(from: comparePath)
+            otherResults = try SaveFile.loadResults(from: comparePath)
         }
 
         for input in self.inputs {
@@ -100,10 +100,11 @@ final class RunBenchmarkCommand: Command {
         }
 
         if let savePath = self.savePath {
+            let saveFile = try SaveFile(nil, results)
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
 
-            let data = try encoder.encode(results)
+            let data = try encoder.encode(saveFile)
             try data.write(to: URL(fileURLWithPath: savePath))
         }
     }
