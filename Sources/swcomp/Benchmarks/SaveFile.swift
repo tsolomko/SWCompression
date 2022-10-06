@@ -14,6 +14,10 @@ struct SaveFile: Codable {
     var description: String?
     var results: [BenchmarkResult]
 
+    var groupedResults: [String: [BenchmarkResult]] {
+        return Dictionary(grouping: self.results, by: { $0.id })
+    }
+
     private static func run(command: URL, arguments: [String] = []) throws -> String {
         let task = Process()
         let pipe = Pipe()
@@ -66,11 +70,23 @@ struct SaveFile: Codable {
         self.results = results
     }
 
-    static func loadResults(from path: String) throws -> [String : [BenchmarkResult]] {
+    func printMetadata() {
+        print("OS Info: \(self.osInfo)", terminator: "")
+        print("Swift version: \(self.swiftVersion)", terminator: "")
+        print("SWC version: \(self.swcVersion)")
+        print("Timestamp: " +
+            DateFormatter.localizedString(from: Date(timeIntervalSinceReferenceDate: self.timestamp),
+                                          dateStyle: .short, timeStyle: .short))
+        if let description = self.description {
+            print("Description: \(description)")
+        }
+        print()
+    }
+
+    static func load(from path: String) throws -> SaveFile {
         let decoder = JSONDecoder()
         let data = try Data(contentsOf: URL(fileURLWithPath: path))
-        let decodedResults = try decoder.decode(SaveFile.self, from: data).results
-        return Dictionary(grouping: decodedResults, by: { $0.id })
+        return try decoder.decode(SaveFile.self, from: data)
     }
 
 }

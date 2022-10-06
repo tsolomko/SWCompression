@@ -36,15 +36,19 @@ final class RunBenchmarkCommand: Command {
         guard self.iterationCount == nil || self.iterationCount! >= 1
             else { swcompExit(.benchmarkSmallIterCount) }
 
+        var results = [BenchmarkResult]()
+        var baseResults: [String: [BenchmarkResult]]? = nil
+        if let comparePath = comparePath {
+            let baseSaveFile = try SaveFile.load(from: comparePath)
+            print("BASE Metadata")
+            print("-------------")
+            baseSaveFile.printMetadata()
+            baseResults = baseSaveFile.groupedResults
+        }
+
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
-
-        var results = [BenchmarkResult]()
-        var otherResults: [String : [BenchmarkResult]]? = nil
-        if let comparePath = comparePath {
-            otherResults = try SaveFile.loadResults(from: comparePath)
-        }
 
         for input in self.inputs {
             print("Input: \(input)")
@@ -82,12 +86,12 @@ final class RunBenchmarkCommand: Command {
             let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
                                          avg: avg, std: std)
 
-            if let otherResults = otherResults?[result.id] {
-                if otherResults.count > 1 {
+            if let baseResults = baseResults?[result.id] {
+                if baseResults.count > 1 {
                     print("WARNING: There is more than one result with the same id=\(result.id) in the file \(self.comparePath!)")
                     print("Comparing with the first one...\n")
                 }
-                let other = otherResults.first!
+                let other = baseResults.first!
                 print("\nNEW:  average = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
                 print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
                 result.printComparison(with: other)
