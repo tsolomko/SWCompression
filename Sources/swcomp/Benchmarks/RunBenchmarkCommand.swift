@@ -26,6 +26,9 @@ final class RunBenchmarkCommand: Command {
     @Key("-c", "--compare", description: "Compares the results with other results saved in the specified file")
     var comparePath: String?
 
+    @Key("-d", "--description", description: "Add a custom description when saving results")
+    var description: String?
+
     @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
     var noWarmup: Bool
 
@@ -104,7 +107,7 @@ final class RunBenchmarkCommand: Command {
         }
 
         if let savePath = self.savePath {
-            let saveFile = try SaveFile(nil, results)
+            let saveFile = try SaveFile(self.description, results)
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
 
