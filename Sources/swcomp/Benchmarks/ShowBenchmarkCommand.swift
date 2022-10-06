@@ -42,15 +42,13 @@ final class ShowBenchmarkCommand: Command {
 
             if let otherResults = otherResults?[resultId] {
                 if otherResults.count > 1 {
-                    print("Average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                     print("WARNING: There is more than one result with the same id=\(resultId) in the file \(self.comparePath!)")
-                    print("Skipped comparison...\n")
-                } else {
-                    let other = otherResults.first!
-                    print("NEW:  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
-                    print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
-                    result.printComparison(with: other)
+                    print("Comparing with the first one...\n")
                 }
+                let other = otherResults.first!
+                print("NEW:  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
+                print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
+                result.printComparison(with: other)
             } else {
                 print("Average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
             }
