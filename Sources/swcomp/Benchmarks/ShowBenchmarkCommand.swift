@@ -22,46 +22,63 @@ final class ShowBenchmarkCommand: Command {
 
     func execute() throws {
         let newSaveFile = try SaveFile.load(from: self.path)
-        print("NEW Metadata")
-        print("------------")
-        newSaveFile.printMetadata()
-        let newResults = newSaveFile.groupedResults
-        var baseResults: [String: [BenchmarkResult]]? = nil
+        var newMetadatas = Dictionary(uniqueKeysWithValues: zip(newSaveFile.metadatas.keys, (1...newSaveFile.metadatas.count).map { String($0) }))
+        if newMetadatas.count == 1 {
+            newMetadatas[newMetadatas.first!.key] = ""
+        }
+        for (metadataUUID, index) in newMetadatas.sorted(by: { $0.value < $1.value }) {
+            print("NEW\(index) Metadata")
+            print("---------------")
+            newSaveFile.metadatas[metadataUUID]!.print()
+        }
+
+        var newResults = [String: [(BenchmarkResult, UUID)]]()
+        for newRun in newSaveFile.runs {
+            newResults.merge(Dictionary(grouping: newRun.results.map { ($0, newRun.metadataUUID) }, by: { $0.0.id }),
+                                  uniquingKeysWith: { $0 + $1 })
+        }
+
+        var baseResults = [String: [(BenchmarkResult, UUID)]]()
+        var baseMetadatas = [UUID: String]()
         if let comparePath = comparePath {
             let baseSaveFile = try SaveFile.load(from: comparePath)
-            print("BASE Metadata")
-            print("-------------")
-            baseSaveFile.printMetadata()
-            baseResults = baseSaveFile.groupedResults
+
+            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { String($0) }))
+            if baseMetadatas.count == 1 {
+                baseMetadatas[baseMetadatas.first!.key] = ""
+            }
+            // TODO: The order of printing is potentially non-stable between executions.
+            for (metadataUUID, index) in baseMetadatas {
+                print("BASE\(index) Metadata")
+                print("----------------")
+                baseSaveFile.metadatas[metadataUUID]!.print()
+            }
+
+            for baseRun in baseSaveFile.runs {
+                baseResults.merge(Dictionary(grouping: baseRun.results.map { ($0, baseRun.metadataUUID) }, by: { $0.0.id }),
+                                  uniquingKeysWith: { $0 + $1 })
+            }
         }
 
         for resultId in newResults.keys.sorted() {
             let results = newResults[resultId]!
-            if results.count > 1 {
-                print("WARNING: There is more than one result with the same id=\(resultId) in the file \(self.path)")
-                print("Skipped...\n")
-                continue
-            }
+            for (result, metadataUUID) in results {
+                let benchmark = Benchmarks(rawValue: result.name)?.initialized(result.input)
 
-            let result = results.first!
-            let benchmark = Benchmarks(rawValue: result.name)?.initialized(result.input)
+                print("\(result.name) => \(result.input), iterations = \(result.iterCount)")
 
-            print("\(result.name) => \(result.input), iterations = \(result.iterCount)")
-
-            if let baseResults = baseResults?[resultId] {
-                if baseResults.count > 1 {
-                    print("WARNING: There is more than one result with the same id=\(resultId) in the file \(self.comparePath!)")
-                    print("Comparing with the first one...\n")
+                if let baseResults = baseResults[resultId] {
+                    print("NEW\(newMetadatas[metadataUUID]!):  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
+                    for (other, baseUUID) in baseResults {
+                        print("BASE\(baseMetadatas[baseUUID]!): average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
+                        result.printComparison(with: other)
+                    }
+                } else {
+                    print("Average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                 }
-                let other = baseResults.first!
-                print("NEW:  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
-                print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
-                result.printComparison(with: other)
-            } else {
-                print("Average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
-            }
 
-            print()
+                print()
+            }
         }
     }
 

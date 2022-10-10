@@ -39,19 +39,32 @@ final class RunBenchmarkCommand: Command {
         guard self.iterationCount == nil || self.iterationCount! >= 1
             else { swcompExit(.benchmarkSmallIterCount) }
 
-        var results = [BenchmarkResult]()
-        var baseResults: [String: [BenchmarkResult]]? = nil
+        var baseResults = [String: [(BenchmarkResult, UUID)]]()
+        var baseMetadatas = [UUID: String]()
         if let comparePath = comparePath {
             let baseSaveFile = try SaveFile.load(from: comparePath)
-            print("BASE Metadata")
-            print("-------------")
-            baseSaveFile.printMetadata()
-            baseResults = baseSaveFile.groupedResults
+
+            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { String($0) }))
+            if baseMetadatas.count == 1 {
+                baseMetadatas[baseMetadatas.first!.key] = ""
+            }
+            for (metadataUUID, index) in baseMetadatas.sorted(by: { $0.value < $1.value }) {
+                print("BASE\(index) Metadata")
+                print("----------------")
+                baseSaveFile.metadatas[metadataUUID]!.print()
+            }
+
+            for baseRun in baseSaveFile.runs {
+                baseResults.merge(Dictionary(grouping: baseRun.results.map { ($0, baseRun.metadataUUID) }, by: { $0.0.id }),
+                                  uniquingKeysWith: { $0 + $1 })
+            }
         }
 
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
         print(title)
+
+        var newResults = [BenchmarkResult]()
 
         for input in self.inputs {
             print("Input: \(input)")
@@ -89,25 +102,25 @@ final class RunBenchmarkCommand: Command {
             let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
                                          avg: avg, std: std)
 
-            if let baseResults = baseResults?[result.id] {
-                if baseResults.count > 1 {
-                    print("WARNING: There is more than one result with the same id=\(result.id) in the file \(self.comparePath!)")
-                    print("Comparing with the first one...\n")
-                }
-                let other = baseResults.first!
+            if let baseResults = baseResults[result.id] {
                 print("\nNEW:  average = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
-                print("BASE: average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
-                result.printComparison(with: other)
+                for (other, baseUUID) in baseResults {
+                    print("BASE\(baseMetadatas[baseUUID]!): average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
+                    result.printComparison(with: other)
+                }
             } else {
                 print("\nAverage = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
             }
-            results.append(result)
+            newResults.append(result)
 
             print()
         }
 
         if let savePath = self.savePath {
-            let saveFile = try SaveFile(self.description, results)
+            let uuid = UUID()
+            let metadata = try BenchmarkMetadata(self.description)
+            let saveFile = SaveFile(metadatas: [uuid: metadata], runs: [SaveFile.Run(metadataUUID: uuid, results: newResults)])
+
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
 
