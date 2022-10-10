@@ -23,6 +23,9 @@ final class RunBenchmarkCommand: Command {
     @Key("-s", "--save", description: "Saves the results into the specified file")
     var savePath: String?
 
+    @Flag("-a", "--append", description: "Appends results to a file instead of overwriting it")
+    var append: Bool
+
     @Key("-c", "--compare", description: "Compares the results with other results saved in the specified file")
     var comparePath: String?
 
@@ -117,9 +120,27 @@ final class RunBenchmarkCommand: Command {
         }
 
         if let savePath = self.savePath {
-            let uuid = UUID()
             let metadata = try BenchmarkMetadata(self.description)
-            let saveFile = SaveFile(metadatas: [uuid: metadata], runs: [SaveFile.Run(metadataUUID: uuid, results: newResults)])
+            var saveFile: SaveFile
+
+            var isDir = ObjCBool(false)
+            let saveFileExists = FileManager.default.fileExists(atPath: savePath, isDirectory: &isDir)
+
+            if self.append && saveFileExists  {
+                if isDir.boolValue {
+                    swcompExit(.benchmarkCannotAppendToDirectory)
+                }
+                saveFile = try SaveFile.load(from: savePath)
+                var uuid: UUID
+                repeat {
+                    uuid = UUID()
+                } while saveFile.metadatas[uuid] != nil
+                saveFile.metadatas[uuid] = metadata
+                saveFile.runs.append(SaveFile.Run(metadataUUID: uuid, results: newResults))
+            } else {
+                let uuid = UUID()
+                saveFile = SaveFile(metadatas: [uuid: metadata], runs: [SaveFile.Run(metadataUUID: uuid, results: newResults)])
+            }
 
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
