@@ -44,7 +44,7 @@ final class RunBenchmarkCommand: Command {
         if let comparePath = comparePath {
             let baseSaveFile = try SaveFile.load(from: comparePath)
 
-            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { String($0) }))
+            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { "(\($0))" }))
             if baseMetadatas.count == 1 {
                 baseMetadatas[baseMetadatas.first!.key] = ""
             }

@@ -22,7 +22,7 @@ final class ShowBenchmarkCommand: Command {
 
     func execute() throws {
         let newSaveFile = try SaveFile.load(from: self.path)
-        var newMetadatas = Dictionary(uniqueKeysWithValues: zip(newSaveFile.metadatas.keys, (1...newSaveFile.metadatas.count).map { String($0) }))
+        var newMetadatas = Dictionary(uniqueKeysWithValues: zip(newSaveFile.metadatas.keys, (1...newSaveFile.metadatas.count).map { "(\($0))" }))
         if newMetadatas.count == 1 {
             newMetadatas[newMetadatas.first!.key] = ""
         }
@@ -43,12 +43,11 @@ final class ShowBenchmarkCommand: Command {
         if let comparePath = comparePath {
             let baseSaveFile = try SaveFile.load(from: comparePath)
 
-            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { String($0) }))
+            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { "(\($0))" }))
             if baseMetadatas.count == 1 {
                 baseMetadatas[baseMetadatas.first!.key] = ""
             }
-            // TODO: The order of printing is potentially non-stable between executions.
-            for (metadataUUID, index) in baseMetadatas {
+            for (metadataUUID, index) in baseMetadatas.sorted(by: { $0.value < $1.value }) {
                 print("BASE\(index) Metadata")
                 print("----------------")
                 baseSaveFile.metadatas[metadataUUID]!.print()
@@ -74,7 +73,7 @@ final class ShowBenchmarkCommand: Command {
                         result.printComparison(with: other)
                     }
                 } else {
-                    print("Average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
+                    print("NEW\(newMetadatas[metadataUUID]!): average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                 }
 
                 print()
