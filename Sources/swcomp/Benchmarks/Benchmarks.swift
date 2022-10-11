@@ -135,9 +135,9 @@ struct UnGzip: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try GzipArchive.unarchive(archive: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -163,9 +163,9 @@ struct UnBz2: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try BZip2.decompress(data: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -191,9 +191,9 @@ struct UnLz4: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try LZ4.decompress(data: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -219,9 +219,9 @@ struct UnXz: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try XZArchive.unarchive(archive: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -246,9 +246,9 @@ struct CompDeflate: Benchmark {
     }
 
     func measure() -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = DispatchTime.now().uptimeNanoseconds
         _ = Deflate.compress(data: self.data)
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
         return self.size / timeElapsed
     }
 
@@ -301,9 +301,9 @@ struct CompBz2: Benchmark {
     }
 
     func measure() -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = DispatchTime.now().uptimeNanoseconds
         _ = BZip2.compress(data: self.data)
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
         return self.size / timeElapsed
     }
 
@@ -356,9 +356,9 @@ struct CompLz4: Benchmark {
     }
 
     func measure() -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = DispatchTime.now().uptimeNanoseconds
         _ = LZ4.compress(data: self.data)
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
         return self.size / timeElapsed
     }
 
@@ -411,10 +411,10 @@ struct CompLz4Bd: Benchmark {
     }
 
     func measure() -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = DispatchTime.now().uptimeNanoseconds
         _ = LZ4.compress(data: self.data, independentBlocks: false, blockChecksums: false, contentChecksum: true,
             contentSize: false, blockSize: 4 * 1024 * 1024, dictionary: nil, dictionaryID: nil)
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
         return self.size / timeElapsed
     }
 
@@ -469,9 +469,9 @@ struct Info7z: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try SevenZipContainer.info(container: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -497,9 +497,9 @@ struct InfoTar: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try TarContainer.info(container: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -525,9 +525,9 @@ struct InfoZip: Benchmark {
 
     func measure() -> Double {
         do {
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             _ = try ZipContainer.info(container: self.data)
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -551,9 +551,9 @@ struct CreateTar: Benchmark {
     }
 
     func measure() -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let startTime = DispatchTime.now().uptimeNanoseconds
         _ = TarContainer.create(from: self.entries)
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
         return self.size / timeElapsed
     }
 
@@ -581,7 +581,7 @@ struct ReaderTar: Benchmark {
     func measure() -> Double {
         do {
             let handle = try FileHandle(forReadingFrom: self.url)
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             var reader = TarReader(fileHandle: handle)
             var isFinished = false
             var infos = [TarEntryInfo]()
@@ -593,7 +593,7 @@ struct ReaderTar: Benchmark {
                     return false
                 }
             }
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             try handle.closeCompat()
             return self.size / timeElapsed
         } catch let error {
@@ -622,13 +622,13 @@ struct WriterTar: Benchmark {
             let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString, isDirectory: false)
             try "".write(to: url, atomically: true, encoding: .utf8)
             let handle = try FileHandle(forWritingTo: url)
-            let startTime = CFAbsoluteTimeGetCurrent()
+            let startTime = DispatchTime.now().uptimeNanoseconds
             var writer = TarWriter(fileHandle: handle)
             for entry in self.entries {
                 try writer.append(entry)
             }
             try writer.finalize()
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
             try handle.closeCompat()
             try FileManager.default.removeItem(at: url)
             return self.size / timeElapsed
