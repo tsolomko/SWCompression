@@ -20,17 +20,20 @@ final class RunBenchmarkCommand: Command {
     @Key("-i", "--iteration-count", description: "Sets the amount of the benchmark iterations")
     var iterationCount: Int?
 
-    @Key("-s", "--save", description: "Saves the results into the specified file")
+    @Key("-s", "--save", description: "Saves results into the specified file")
     var savePath: String?
 
-    @Flag("-a", "--append", description: "Appends results to a file instead of overwriting it")
+    @Flag("-a", "--append", description: "Appends results to a file instead of overwriting it when saving results")
     var append: Bool
 
-    @Key("-c", "--compare", description: "Compares the results with other results saved in the specified file")
+    @Key("-c", "--compare", description: "Compares results with other results saved in the specified file")
     var comparePath: String?
 
-    @Key("-d", "--description", description: "Add a custom description when saving results")
+    @Key("-d", "--description", description: "Adds a custom description when saving results")
     var description: String?
+
+    @Flag("-t", "--preserve-timestamp", description: "Adds a timestamp when saving a result")
+    var preserveTimestamp: Bool
 
     @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
     var noWarmup: Bool
@@ -120,7 +123,7 @@ final class RunBenchmarkCommand: Command {
         }
 
         if let savePath = self.savePath {
-            let metadata = try BenchmarkMetadata(self.description)
+            let metadata = try BenchmarkMetadata(self.description, self.preserveTimestamp)
             var saveFile: SaveFile
 
             var isDir = ObjCBool(false)
