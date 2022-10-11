@@ -66,14 +66,12 @@ final class ShowBenchmarkCommand: Command {
 
                 print("\(result.name) => \(result.input), iterations = \(result.iterCount)")
 
+                print("NEW\(newMetadatas[metadataUUID]!):  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                 if let baseResults = baseResults[resultId] {
-                    print("NEW\(newMetadatas[metadataUUID]!):  average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                     for (other, baseUUID) in baseResults {
                         print("BASE\(baseMetadatas[baseUUID]!): average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
                         result.printComparison(with: other)
                     }
-                } else {
-                    print("NEW\(newMetadatas[metadataUUID]!): average = \(benchmark.format(result.avg)), standard deviation = \(benchmark.format(result.std))")
                 }
 
                 print()
