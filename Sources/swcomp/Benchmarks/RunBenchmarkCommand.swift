@@ -135,10 +135,14 @@ final class RunBenchmarkCommand: Command {
                 }
                 saveFile = try SaveFile.load(from: savePath)
                 var uuid: UUID
-                repeat {
-                    uuid = UUID()
-                } while saveFile.metadatas[uuid] != nil
-                saveFile.metadatas[uuid] = metadata
+                if let foundUUID = saveFile.metadatas.first(where: { $0.value == metadata })?.key {
+                    uuid = foundUUID
+                } else {
+                    repeat {
+                        uuid = UUID()
+                    } while saveFile.metadatas[uuid] != nil
+                    saveFile.metadatas[uuid] = metadata
+                }
                 saveFile.runs.append(SaveFile.Run(metadataUUID: uuid, results: newResults))
             } else {
                 let uuid = UUID()
