@@ -62,7 +62,7 @@ def action_cw(args):
     _sprun(["rm", "-f", "docs.json"])
     _sprun(["rm", "-f", "Package.resolved"])
     _sprun(["rm", "-f", "SWCompression.framework.zip"])
-        
+
 def action_dbm(args):
     print("=> Downloading BitByteData dependency using Carthage")
     script = ["carthage", "bootstrap", "--no-use-binaries"]
@@ -71,6 +71,42 @@ def action_dbm(args):
     if args.xcf:
         script += ["--use-xcframeworks"]
     _sprun(script)
+
+def action_pr(args):
+    _sprun(["agvtool", "next-version", "-all"])
+    _sprun(["agvtool", "new-marketing-version", args.version])
+
+    f = open("SWCompression.podspec", "r", encoding="utf-8")
+    lines = f.readlines()
+    f.close()
+    f = open("SWCompression.podspec", "w", encoding="utf-8")
+    for line in lines:
+        if line.startswith("  s.version      = "):
+            line = "  s.version      = \"" + args.version + "\"\n"
+        f.write(line)
+    f.close()
+
+    f = open(".jazzy.yaml", "r", encoding="utf-8")
+    lines = f.readlines()
+    f.close()
+    f = open(".jazzy.yaml", "w", encoding="utf-8")
+    for line in lines:
+        if line.startswith("module_version: "):
+            line = "module_version: " + args.version + "\n"
+        elif line.startswith("github_file_prefix: "):
+            line = "github_file_prefix: https://github.com/tsolomko/SWCompression/tree/" + args.version + "\n"
+        f.write(line)
+    f.close()
+
+    f = open("Sources/swcomp/main.swift", "r", encoding="utf-8")
+    lines = f.readlines()
+    f.close()
+    f = open("Sources/swcomp/main.swift", "w", encoding="utf-8")
+    for line in lines:
+        if line.startswith("let _SWC_VERSION = "):
+            line = "let _SWC_VERSION = \"" + args.version + "\"\n"
+        f.write(line)
+    f.close()
 
 parser = argparse.ArgumentParser(description="A tool with useful commands for developing SWCompression")
 subparsers = parser.add_subparsers(title="commands", help="a command to perform", metavar="CMD")
@@ -95,6 +131,12 @@ parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
 parser_dbm.add_argument("--xcf", action="store_true", dest="xcf",
                         help="build BitByteData as a XCFramework")
 parser_dbm.set_defaults(func=action_dbm)
+
+# Parser for 'prepare-release' command.
+parser_pr = subparsers.add_parser("prepare-release", help="prepare next release",
+                                description="prepare next release of SWCompression")
+parser_pr.add_argument("version", metavar="VERSION", help="next version number")
+parser_pr.set_defaults(func=action_pr)
 
 args = parser.parse_args()
 args.func(args)
