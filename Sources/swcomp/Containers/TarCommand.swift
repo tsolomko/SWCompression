@@ -228,10 +228,3 @@ final class TarCommand: Command {
     }
 
 }
-
-#if os(Linux) || os(Windows)
-    @discardableResult
-    fileprivate func autoreleasepool<T>(_ block: () throws -> T) rethrows -> T {
-        return try block()
-    }
-#endif
