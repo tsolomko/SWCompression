@@ -86,7 +86,7 @@ stages:
       displayName: 'Download BitByteData'
     - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
-    - script: swift build -c release --target SWCompression
+    - script: swift build -c release
       displayName: 'Build SPM Release'
   - job: linux
     strategy:
@@ -116,8 +116,8 @@ stages:
     - script: |
         set -e -o xtrace
         swift --version
-        swift build --target SWCompression
-        swift build -c release --target SWCompression # Check Release build just in case.
+        swift build
+        swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Debug & Release'
   - job: windows
     strategy:
