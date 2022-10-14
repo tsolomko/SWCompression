@@ -45,6 +45,14 @@ public struct GzipHeader {
     public var isTextFile: Bool
 
     /**
+     Extra fields present in the header.
+
+     - Note: This feature of the GZip format is extremely rarely used, so in vast majority of cases this property
+     contains an empty array.
+     */
+    public var extraFields: [ExtraField]
+
+    /**
      Initializes the structure with the values from the first 'member' of GZip `archive`.
 
      - Parameter archive: Data archived with GZip.
@@ -98,13 +106,40 @@ public struct GzipHeader {
 
         self.isTextFile = flags.contains(.ftext)
 
-        // Some archives may contain extra fields
+        // Some archives may contain extra fields.
+        self.extraFields = [ExtraField]()
         if flags.contains(.fextra) {
             var xlen = 0
             for i in 0..<2 {
                 let byte = reader.byte()
                 xlen |= byte.toInt() << (8 * i)
                 headerBytes.append(byte)
+            }
+            while xlen > 0 {
+                let si1 = reader.byte()
+                headerBytes.append(si1)
+
+                let si2 = reader.byte()
+                // IDs with zero in the second byte are reserved.
+                guard si2 != 0
+                    else { throw GzipError.wrongFlags }
+                headerBytes.append(si2)
+
+                var len = 0
+                for i in 0..<2 {
+                    let byte = reader.byte()
+                    len |= byte.toInt() << (8 * i)
+                    headerBytes.append(byte)
+                }
+                xlen -= 4
+                var extraFieldBytes = [UInt8]()
+                for _ in 0..<len {
+                    let byte = reader.byte()
+                    extraFieldBytes.append(byte)
+                    headerBytes.append(byte)
+                }
+                self.extraFields.append(ExtraField(si1, si2, extraFieldBytes))
+                xlen -= len
             }
             for _ in 0..<xlen {
                 headerBytes.append(reader.byte())
