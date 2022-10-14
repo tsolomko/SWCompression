@@ -37,13 +37,21 @@ class GzipTests: XCTestCase {
         let mtimeDate = Date(timeIntervalSinceNow: 0.0)
         let mtime = mtimeDate.timeIntervalSince1970.rounded(.towardZero)
 
+        // Random extra field.
+        let si1 = UInt8.random(in: 0...255)
+        let si2 = UInt8.random(in: 1...255) // 0 is a reserved value here.
+        let len = UInt16.random(in: 0...(UInt16.max - 4))
+        var extraFieldBytes = [UInt8]()
+        for _ in 0..<len {
+            extraFieldBytes.append(UInt8.random(in: 0...255))
+        }
+        let extraField = GzipHeader.ExtraField(si1, si2, extraFieldBytes)
+
         // Test GZip archiving.
         let archiveData = try GzipArchive.archive(data: answerData, comment: "some file comment",
-                                                  fileName: testName + ".answer",
-                                                  writeHeaderCRC: true,
-                                                  isTextFile: true,
-                                                  osType: .macintosh,
-                                                  modificationTime: mtimeDate)
+                                                  fileName: testName + ".answer", writeHeaderCRC: true,
+                                                  isTextFile: true, osType: .macintosh, modificationTime: mtimeDate,
+                                                  extraFields: [extraField])
 
         // Test output GZip header.
         let testGzipHeader = try GzipHeader(archive: archiveData)
@@ -54,7 +62,10 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer")
         XCTAssertEqual(testGzipHeader.comment, "some file comment")
         XCTAssertTrue(testGzipHeader.isTextFile)
-        XCTAssertTrue(testGzipHeader.extraFields.isEmpty)
+        XCTAssertEqual(testGzipHeader.extraFields.count, 1)
+        XCTAssertEqual(testGzipHeader.extraFields[0].si1, si1)
+        XCTAssertEqual(testGzipHeader.extraFields[0].si2, si2)
+        XCTAssertEqual(testGzipHeader.extraFields[0].bytes, extraFieldBytes)
 
         // Test output GZip archive content.
         let decompressedData = try GzipArchive.unarchive(archive: archiveData)
