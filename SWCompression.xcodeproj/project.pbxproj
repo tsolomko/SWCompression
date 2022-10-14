@@ -213,6 +213,7 @@
 		06F066771FFB763400312A82 /* test8.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06F066111FFB763300312A82 /* test8.bz2 */; };
 		06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F276DE1F2BAB4900E67335 /* 7zEntry.swift */; };
 		06FEAD921F54B9CD00AD016E /* EncodingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FEAD911F54B9CD00AD016E /* EncodingTree.swift */; };
+		E6023B1D28F9C92200D6F3DC /* GzipHeader+ExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */; };
 		E604F3C22700C75F004BD38A /* test_dict_B5.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E604F3BF2700C75F004BD38A /* test_dict_B5.lz4 */; };
 		E604F3C32700C75F004BD38A /* test_dict_B5_BD.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E604F3C02700C75F004BD38A /* test_dict_B5_BD.lz4 */; };
 		E604F3C42700C75F004BD38A /* lz4_dict in Resources */ = {isa = PBXBuildFile; fileRef = E604F3C12700C75F004BD38A /* lz4_dict */; };
@@ -497,6 +498,7 @@
 		06F276DE1F2BAB4900E67335 /* 7zEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntry.swift; sourceTree = "<group>"; };
 		06FEAD911F54B9CD00AD016E /* EncodingTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingTree.swift; path = Sources/Common/CodingTree/EncodingTree.swift; sourceTree = SOURCE_ROOT; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
+		E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GzipHeader+ExtraField.swift"; sourceTree = "<group>"; };
 		E604F3BF2700C75F004BD38A /* test_dict_B5.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5.lz4; sourceTree = "<group>"; };
 		E604F3C02700C75F004BD38A /* test_dict_B5_BD.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5_BD.lz4; sourceTree = "<group>"; };
 		E604F3C12700C75F004BD38A /* lz4_dict */ = {isa = PBXFileReference; lastKnownFileType = file; path = lz4_dict; sourceTree = "<group>"; };
@@ -714,6 +716,7 @@
 			children = (
 				063364E21DC52979007E313F /* GzipArchive.swift */,
 				061C062A1F0E8A1D00832F0C /* GzipHeader.swift */,
+				E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */,
 				061C06251F0E8A0300832F0C /* GzipError.swift */,
 				0686A63F1FA4C18800E89C9E /* FileSystemType+Gzip.swift */,
 			);
@@ -1406,6 +1409,7 @@
 				06A9606A1F1E7E0D0078E6D1 /* 7zSubstreamInfo.swift in Sources */,
 				E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */,
 				0694A74D1F7C0DF00023BC99 /* BurrowsWheeler.swift in Sources */,
+				E6023B1D28F9C92200D6F3DC /* GzipHeader+ExtraField.swift in Sources */,
 				06CC3FDD1F8AAE8B00BD576D /* MsbBitReader+7z.swift in Sources */,
 				06A3933B1DE0709300182E12 /* Deflate.swift in Sources */,
 				06092A1A1FA4CB0300DE9FD5 /* CompressionMethod.swift in Sources */,
