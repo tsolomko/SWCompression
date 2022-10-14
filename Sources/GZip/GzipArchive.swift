@@ -111,14 +111,20 @@ public class GzipArchive: Archive {
      - Parameter isTextFile: Set to true, if the file which will be archived is text file or ASCII-file.
      - Parameter osType: Type of the system on which this archive will be created.
      - Parameter modificationTime: Last time the file was modified.
+     - Parameter extraFields: Any extra fields. Note that no extra field is allowed to have second byte of the extra
+     field (subfield) ID equal to zero. In addition, the length of a field's binary content must be less than
+     `UInt16.max`, while the total sum of the binary content length of all extra fields plus 4 for each field must also
+     not exceed `UInt16.max`. See GZip format specification for more details.
 
-     - Throws: `GzipError.cannotEncodeISOLatin1` if file name of comment cannot be encoded with ISO-Latin-1 encoding.
+     - Throws: `GzipError.cannotEncodeISOLatin1` if a file name or a comment cannot be encoded with ISO-Latin-1 encoding
+     or if the total sum of the binary content length of all extra fields plus 4 for each field exceeds `UInt16.max`.
 
      - Returns: Resulting archive's data.
      */
     public static func archive(data: Data, comment: String? = nil, fileName: String? = nil,
                                writeHeaderCRC: Bool = false, isTextFile: Bool = false,
-                               osType: FileSystemType? = nil, modificationTime: Date? = nil) throws -> Data {
+                               osType: FileSystemType? = nil, modificationTime: Date? = nil,
+                               extraFields: [GzipHeader.ExtraField] = []) throws -> Data {
         var flags: UInt8 = 0
 
         var commentData = Data()
@@ -147,6 +153,10 @@ public class GzipArchive: Archive {
             }
         }
 
+        if !extraFields.isEmpty {
+            flags |= 1 << 2
+        }
+
         if writeHeaderCRC {
             flags |= 1 << 1
         }
@@ -168,13 +178,34 @@ public class GzipArchive: Archive {
         var headerBytes: [UInt8] = [
             0x1f, 0x8b, // 'magic' bytes.
             8, // Compression method (DEFLATE).
-            flags // Flags; currently no flags are set.
+            flags
         ]
         for i in 0..<4 {
             headerBytes.append(mtimeBytes[i])
         }
         headerBytes.append(2) // Extra flags; 2 means that DEFLATE used slowest algorithm.
         headerBytes.append(os)
+
+        if !extraFields.isEmpty {
+            let xlen = extraFields.reduce(0) { $0 + 4 + $1.bytes.count }
+            guard xlen <= UInt16.max
+                else { throw GzipError.cannotEncodeISOLatin1 }
+            headerBytes.append((xlen & 0xFF).toUInt8())
+            headerBytes.append(((xlen >> 8) & 0xFF).toUInt8())
+
+            for extraField in extraFields {
+                headerBytes.append(extraField.si1)
+                headerBytes.append(extraField.si2)
+
+                let len = extraField.bytes.count
+                headerBytes.append((len & 0xFF).toUInt8())
+                headerBytes.append(((len >> 8) & 0xFF).toUInt8())
+
+                for byte in extraField.bytes {
+                    headerBytes.append(byte)
+                }
+            }
+        }
 
         var outData = Data(headerBytes)
 
