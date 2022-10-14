@@ -24,25 +24,25 @@ public struct GzipHeader {
     }
 
     /// Compression method of archive. Always `.deflate` for GZip archives.
-    public let compressionMethod: CompressionMethod
+    public var compressionMethod: CompressionMethod
 
     /**
      The most recent modification time of the original file. If corresponding archive's field is set to 0, which means
      that no time was specified, then this property is `nil`.
      */
-    public let modificationTime: Date?
+    public var modificationTime: Date?
 
     /// Type of file system on which archivation took place.
-    public let osType: FileSystemType
+    public var osType: FileSystemType
 
     /// Name of the original file. If archive doesn't contain file's name, then `nil`.
-    public let fileName: String?
+    public var fileName: String?
 
     /// Comment stored in archive. If archive doesn't contain any comment, then `nil`.
-    public let comment: String?
+    public var comment: String?
 
     /// True, if file is likely to be text file or ASCII-file.
-    public let isTextFile: Bool
+    public var isTextFile: Bool
 
     /**
      Initializes the structure with the values from the first 'member' of GZip `archive`.
@@ -64,12 +64,14 @@ public struct GzipHeader {
 
         // First two bytes should be correct 'magic' bytes
         let magic = reader.uint16()
-        guard magic == 0x8b1f else { throw GzipError.wrongMagic }
+        guard magic == 0x8b1f
+            else { throw GzipError.wrongMagic }
         var headerBytes: [UInt8] = [0x1f, 0x8b]
 
         // Third byte is a method of compression. Only type 8 (DEFLATE) compression is supported for GZip archives.
         let method = reader.byte()
-        guard method == 8 else { throw GzipError.wrongCompressionMethod }
+        guard method == 8
+            else { throw GzipError.wrongCompressionMethod }
         headerBytes.append(method)
         self.compressionMethod = .deflate
 
@@ -109,7 +111,7 @@ public struct GzipHeader {
             }
         }
 
-        // Some archives may contain source file name (this part ends with zero byte)
+        // Some archives may contain source file name (this part ends with a zero byte)
         if flags.contains(.fname) {
             var fnameBytes: [UInt8] = []
             while true {
@@ -139,9 +141,10 @@ public struct GzipHeader {
 
         // Some archives may contain 2-bytes checksum
         if flags.contains(.fhcrc) {
-            // Note: it is not actual CRC-16, it is just two least significant bytes of CRC-32.
+            // It is not an actual CRC-16, it's just two least significant bytes of CRC-32.
             let crc16 = reader.uint16()
-            guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16 else { throw GzipError.wrongHeaderCRC }
+            guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16
+                else { throw GzipError.wrongHeaderCRC }
         }
     }
 
