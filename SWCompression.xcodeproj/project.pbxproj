@@ -213,6 +213,7 @@
 		06F066771FFB763400312A82 /* test8.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 06F066111FFB763300312A82 /* test8.bz2 */; };
 		06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F276DE1F2BAB4900E67335 /* 7zEntry.swift */; };
 		06FEAD921F54B9CD00AD016E /* EncodingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FEAD911F54B9CD00AD016E /* EncodingTree.swift */; };
+		E6023B1B28F9B60000D6F3DC /* test4_extra_field.gz in Resources */ = {isa = PBXBuildFile; fileRef = E6023B1A28F9B60000D6F3DC /* test4_extra_field.gz */; };
 		E6023B1D28F9C92200D6F3DC /* GzipHeader+ExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */; };
 		E604F3C22700C75F004BD38A /* test_dict_B5.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E604F3BF2700C75F004BD38A /* test_dict_B5.lz4 */; };
 		E604F3C32700C75F004BD38A /* test_dict_B5_BD.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E604F3C02700C75F004BD38A /* test_dict_B5_BD.lz4 */; };
@@ -498,6 +499,7 @@
 		06F276DE1F2BAB4900E67335 /* 7zEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntry.swift; sourceTree = "<group>"; };
 		06FEAD911F54B9CD00AD016E /* EncodingTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingTree.swift; path = Sources/Common/CodingTree/EncodingTree.swift; sourceTree = SOURCE_ROOT; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
+		E6023B1A28F9B60000D6F3DC /* test4_extra_field.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test4_extra_field.gz; sourceTree = "<group>"; };
 		E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GzipHeader+ExtraField.swift"; sourceTree = "<group>"; };
 		E604F3BF2700C75F004BD38A /* test_dict_B5.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5.lz4; sourceTree = "<group>"; };
 		E604F3C02700C75F004BD38A /* test_dict_B5_BD.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5_BD.lz4; sourceTree = "<group>"; };
@@ -878,6 +880,7 @@
 				06F065BF1FFB763300312A82 /* test2.gz */,
 				06F065BC1FFB763300312A82 /* test3.gz */,
 				06F065BB1FFB763300312A82 /* test4.gz */,
+				E6023B1A28F9B60000D6F3DC /* test4_extra_field.gz */,
 				06F065B91FFB763300312A82 /* test5.gz */,
 				06F065BE1FFB763300312A82 /* test6.gz */,
 				06F065BD1FFB763300312A82 /* test7.gz */,
@@ -1281,6 +1284,7 @@
 				E652FED6270091B6006BC312 /* test_skippable_frame.lz4 in Resources */,
 				06F0665A1FFB763400312A82 /* test11.lzma in Resources */,
 				E652FEE427009BDD006BC312 /* test3_legacy.lz4 in Resources */,
+				E6023B1B28F9B60000D6F3DC /* test4_extra_field.gz in Resources */,
 				06F066401FFB763400312A82 /* test_zip_bzip2.zip in Resources */,
 				06F066461FFB763400312A82 /* test_empty_file.zip in Resources */,
 				06F066331FFB763400312A82 /* random_file.zlib in Resources */,

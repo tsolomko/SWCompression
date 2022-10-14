@@ -19,6 +19,7 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.osType, .unix)
         XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer")
         XCTAssertEqual(testGzipHeader.comment, nil)
+        XCTAssertTrue(testGzipHeader.extraFields.isEmpty)
     }
 
     func unarchive(test testName: String) throws {
@@ -53,6 +54,7 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.fileName, "\(testName).answer")
         XCTAssertEqual(testGzipHeader.comment, "some file comment")
         XCTAssertTrue(testGzipHeader.isTextFile)
+        XCTAssertTrue(testGzipHeader.extraFields.isEmpty)
 
         // Test output GZip archive content.
         let decompressedData = try GzipArchive.unarchive(archive: archiveData)
@@ -78,6 +80,22 @@ class GzipTests: XCTestCase {
     func testGzip4() throws {
         try self.header(test: "test4", mtime: 1482698301)
         try self.unarchive(test: "test4")
+    }
+
+    func testGzip4ExtraField() throws {
+        let testData = try Constants.data(forTest: "test4_extra_field", withType: GzipTests.testType)
+        let testGzipHeader = try GzipHeader(archive: testData)
+
+        XCTAssertEqual(testGzipHeader.compressionMethod, .deflate)
+        XCTAssertEqual(testGzipHeader.modificationTime?.timeIntervalSince1970, 1665760462)
+        XCTAssertEqual(testGzipHeader.osType, .macintosh)
+        XCTAssertEqual(testGzipHeader.fileName, "test4.answer")
+        XCTAssertEqual(testGzipHeader.comment, "some file comment")
+        XCTAssertTrue(testGzipHeader.isTextFile)
+        XCTAssertEqual(testGzipHeader.extraFields.count, 1)
+        XCTAssertEqual(testGzipHeader.extraFields[0].si1, 0x54)
+        XCTAssertEqual(testGzipHeader.extraFields[0].si2, 0x53)
+        XCTAssertEqual(testGzipHeader.extraFields[0].bytes, [0x12, 0x34, 0x56, 0x78])
     }
 
     func testGzip5() throws {
