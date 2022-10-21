@@ -88,6 +88,8 @@ public class GzipArchive: Archive {
         let memberData = try Deflate.decompress(bitReader)
         bitReader.align()
 
+        guard bitReader.bytesLeft >= 8
+            else { throw GzipError.wrongMagic }
         let crc32 = bitReader.uint32()
         let isize = bitReader.uint64(fromBytes: 4)
         guard UInt64(truncatingIfNeeded: memberData.count) % (UInt64(truncatingIfNeeded: 1) << 32) == isize

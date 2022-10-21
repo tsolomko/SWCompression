@@ -109,13 +109,21 @@ public struct GzipHeader {
         // Some archives may contain extra fields.
         self.extraFields = [ExtraField]()
         if flags.contains(.fextra) {
+            guard reader.bytesLeft >= 2
+                else { throw GzipError.wrongMagic }
             var xlen = 0
             for i in 0..<2 {
                 let byte = reader.byte()
                 xlen |= byte.toInt() << (8 * i)
                 headerBytes.append(byte)
             }
+
             while xlen > 0 {
+                // There must be least four bytes of extra fields for SI1, SI2, and 2 bytes of the length parameter
+                // filled with zeros (minimal variant).
+                guard reader.bytesLeft >= xlen && xlen >= 4
+                    else { throw GzipError.wrongMagic }
+
                 let si1 = reader.byte()
                 headerBytes.append(si1)
 
@@ -132,6 +140,11 @@ public struct GzipHeader {
                     headerBytes.append(byte)
                 }
                 xlen -= 4
+
+                // Total remaining extra fields length must be larger than the length of the binary content of the
+                // current extra field.
+                guard xlen >= len
+                    else { throw GzipError.wrongMagic }
                 var extraFieldBytes = [UInt8]()
                 for _ in 0..<len {
                     let byte = reader.byte()
@@ -141,15 +154,14 @@ public struct GzipHeader {
                 self.extraFields.append(ExtraField(si1, si2, extraFieldBytes))
                 xlen -= len
             }
-            for _ in 0..<xlen {
-                headerBytes.append(reader.byte())
-            }
         }
 
         // Some archives may contain source file name (this part ends with a zero byte)
         if flags.contains(.fname) {
             var fnameBytes: [UInt8] = []
             while true {
+                guard !reader.isFinished
+                    else { throw GzipError.wrongMagic }
                 let byte = reader.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
@@ -164,6 +176,8 @@ public struct GzipHeader {
         if flags.contains(.fcomment) {
             var fcommentBytes: [UInt8] = []
             while true {
+                guard !reader.isFinished
+                    else { throw GzipError.wrongMagic }
                 let byte = reader.byte()
                 headerBytes.append(byte)
                 guard byte != 0 else { break }
@@ -177,6 +191,8 @@ public struct GzipHeader {
         // Some archives may contain 2-bytes checksum
         if flags.contains(.fhcrc) {
             // It is not an actual CRC-16, it's just two least significant bytes of CRC-32.
+            guard reader.bytesLeft >= 2
+                else { throw GzipError.wrongMagic }
             let crc16 = reader.uint16()
             guard CheckSums.crc32(headerBytes) & 0xFFFF == crc16
                 else { throw GzipError.wrongHeaderCRC }
