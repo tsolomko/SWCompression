@@ -246,6 +246,36 @@ class GzipTests: XCTestCase {
         }
     }
 
+    func testGzipTruncation() throws {
+        // In this test we check the handling of truncation inside the optional elements (name, comment, "extra field",
+        // crc) of a GZip header, as well as in the "checksum" information of the archive (last 8 bytes). The sample
+        // file used is "test4_extra_field" since it contains a header which utilizes all format features.
+        let testData = try Constants.data(forTest: "test4_extra_field", withType: GzipTests.testType)
+
+        // We test all possible truncation points since there are very few of them.
+        // The header takes first 79 bytes.
+        for truncationIndex in 1..<79 {
+            var thrownError: Error? = nil
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
+                                 "testGzipTruncation.header: no error thrown, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            if let error = thrownError {
+                XCTAssertTrue(error is GzipError, "testGzipTruncation.header: unexpected error type: \(type(of: thrownError)), " +
+                              "truncationIndex=\(truncationIndex)")
+            }
+        }
+
+        // The checksum information takes the last 8 bytes of the archive. Again, we test truncations in all of them.
+        for truncationIndex in 2..<9 {
+            var thrownError: Error? = nil
+            XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[...(testData.count - truncationIndex)]),
+                                 "testGzipTruncation.footer: no error thrown, truncationIndex=\(truncationIndex)") { thrownError = $0 }
+            if let error = thrownError {
+                XCTAssertTrue(error is GzipError, "testGzipTruncation.footer: unexpected error type: \(type(of: thrownError)), " +
+                              "truncationIndex=\(truncationIndex)")
+            }
+        }
+    }
+
     func testDeflateTruncation() throws {
         // In this test we check that there is no crash when dealing with the truncation in the middle of the Deflate
         // compressed data. The idea is to take three different types of Deflate blocks (uncompressed, static Huffman,
