@@ -63,9 +63,9 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.comment, "some file comment")
         XCTAssertTrue(testGzipHeader.isTextFile)
         XCTAssertEqual(testGzipHeader.extraFields.count, 1)
-        XCTAssertEqual(testGzipHeader.extraFields[0].si1, si1)
-        XCTAssertEqual(testGzipHeader.extraFields[0].si2, si2)
-        XCTAssertEqual(testGzipHeader.extraFields[0].bytes, extraFieldBytes)
+        XCTAssertEqual(testGzipHeader.extraFields.first?.si1, si1)
+        XCTAssertEqual(testGzipHeader.extraFields.first?.si2, si2)
+        XCTAssertEqual(testGzipHeader.extraFields.first?.bytes, extraFieldBytes)
 
         // Test output GZip archive content.
         let decompressedData = try GzipArchive.unarchive(archive: archiveData)
@@ -104,9 +104,12 @@ class GzipTests: XCTestCase {
         XCTAssertEqual(testGzipHeader.comment, "some file comment")
         XCTAssertTrue(testGzipHeader.isTextFile)
         XCTAssertEqual(testGzipHeader.extraFields.count, 1)
-        XCTAssertEqual(testGzipHeader.extraFields[0].si1, 0x54)
-        XCTAssertEqual(testGzipHeader.extraFields[0].si2, 0x53)
-        XCTAssertEqual(testGzipHeader.extraFields[0].bytes, [0x12, 0x34, 0x56, 0x78])
+        XCTAssertEqual(testGzipHeader.extraFields.first?.si1, 0x54)
+        XCTAssertEqual(testGzipHeader.extraFields.first?.si2, 0x53)
+        XCTAssertEqual(testGzipHeader.extraFields.first?.bytes, [0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99,
+                                                                 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x11, 0x22, 0x33,
+                                                                 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC,
+                                                                 0xDD, 0xEE, 0xFF])
     }
 
     func testGzip5() throws {
