@@ -102,11 +102,10 @@ func writeFile<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: Bool)
         }
         guard destinationPath != nil
             else { swcompExit(.containerSymLinkDestPath(entryName)) }
-        let endURL = entryFullURL.deletingLastPathComponent().appendingPathComponent(destinationPath!)
         if verbose {
-            print("l: \(entryName) -> \(endURL.path)")
+            print("l: \(entryName) -> \(destinationPath!)")
         }
-        try fileManager.createSymbolicLink(atPath: entryFullURL.path, withDestinationPath: endURL.path)
+        try fileManager.createSymbolicLink(atPath: entryFullURL.path, withDestinationPath: destinationPath!)
         // We cannot apply attributes to symbolic link.
         return
     } else if entry.info.type == .regular {
