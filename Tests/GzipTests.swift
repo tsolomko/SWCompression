@@ -290,8 +290,10 @@ class GzipTests: XCTestCase {
             var thrownError: Error? = nil
             XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
                                  "No error thrown, test9, truncationIndex=\(truncationIndex)") { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
-                          "test9, truncationIndex=\(truncationIndex)")
+            if let error = thrownError {
+                XCTAssertTrue(error is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                              "test9, truncationIndex=\(truncationIndex)")
+            }
         }
 
         // This test file contains static Huffman Deflate block.
@@ -301,8 +303,10 @@ class GzipTests: XCTestCase {
             var thrownError: Error? = nil
             XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
                                  "No error thrown, test8, truncationIndex=\(truncationIndex)") { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
-                          "test8, truncationIndex=\(truncationIndex)")
+            if let error = thrownError {
+                XCTAssertTrue(error is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                              "test8, truncationIndex=\(truncationIndex)")
+            }
         }
 
         // This test file contains dynamic Huffman Deflate block.
@@ -312,8 +316,10 @@ class GzipTests: XCTestCase {
             var thrownError: Error? = nil
             XCTAssertThrowsError(try GzipArchive.unarchive(archive: testData[..<truncationIndex]),
                                  "No error thrown, test6, truncationIndex=\(truncationIndex)") { thrownError = $0 }
-            XCTAssertTrue(thrownError is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
-                          "test6, truncationIndex=\(truncationIndex)")
+            if let error = thrownError {
+                XCTAssertTrue(error is DeflateError, "Unexpected error type: \(type(of: thrownError)), " +
+                              "test6, truncationIndex=\(truncationIndex)")
+            }
         }
     }
 
