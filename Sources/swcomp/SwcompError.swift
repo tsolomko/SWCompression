@@ -20,6 +20,7 @@ enum SwcompError {
     case benchmarkCannotGetSubcommandPathWindows
     case benchmarkCannotAppendToDirectory
     case containerSymLinkDestPath(String)
+    case containerHardLinkDestPath(String)
     case containerNoEntryData(String)
     case containerOutPathExistsNotDir
     case fileHandleCannotOpen
@@ -55,6 +56,8 @@ enum SwcompError {
             return 207
         case .containerSymLinkDestPath:
             return 301
+        case .containerHardLinkDestPath:
+            return 311
         case .containerNoEntryData:
             return 302
         case .containerOutPathExistsNotDir:
@@ -83,7 +86,7 @@ enum SwcompError {
         case .benchmarkSmallIterCount:
             return "Iteration count, if set, must be not less than 1."
         case .benchmarkUnknownCompResult:
-            return "Unknown comparison "
+            return "Unknown comparison."
         case .benchmarkCannotSetup(let benchmark, let input, let error):
             return "Unable to set up benchmark \(benchmark): input=\(input), error=\(error)."
         case .benchmarkCannotMeasure(let benchmark, let error):
@@ -98,6 +101,8 @@ enum SwcompError {
             return "Cannot append results to the save path since it is a directory."
         case .containerSymLinkDestPath(let entryName):
             return "Unable to get destination path for symbolic link \(entryName)."
+        case .containerHardLinkDestPath(let entryName):
+            return "Unable to get destination path for hard link \(entryName)."
         case .containerNoEntryData(let entryName):
             return "Unable to get data for the entry \(entryName)."
         case .containerOutPathExistsNotDir:

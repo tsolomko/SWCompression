@@ -106,7 +106,17 @@ func writeFile<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: Bool)
             print("l: \(entryName) -> \(destinationPath!)")
         }
         try fileManager.createSymbolicLink(atPath: entryFullURL.path, withDestinationPath: destinationPath!)
-        // We cannot apply attributes to symbolic link.
+        // We cannot apply attributes to symbolic links.
+        return
+    } else if entry.info.type == .hardLink {
+        guard let destinationPath = (entry as? TarEntry)?.info.linkName
+            else { swcompExit(.containerHardLinkDestPath(entryName)) }
+        if verbose {
+            print("hl: \(entryName) -> \(destinationPath)")
+        }
+        // Note that the order of parameters is inversed for hard links.
+        try fileManager.linkItem(atPath: destinationPath, toPath: entryFullURL.path)
+        // We cannot apply attributes to hard links.
         return
     } else if entry.info.type == .regular {
         if verbose {
