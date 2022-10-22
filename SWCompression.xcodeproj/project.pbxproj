@@ -268,6 +268,7 @@
 		E6791E1826FD001A003852A9 /* DataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1726FD001A003852A9 /* DataError.swift */; };
 		E6791E1B26FD0094003852A9 /* LZ4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1A26FD0094003852A9 /* LZ4.swift */; };
 		E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E3226FD05EC003852A9 /* LZ4Tests.swift */; };
+		E68DA766290420BC00259CB4 /* test_pax_record_newline.tar in Resources */ = {isa = PBXBuildFile; fileRef = E68DA765290420BC00259CB4 /* test_pax_record_newline.tar */; };
 		E694694327480EA6009C897A /* TarReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E694694227480EA6009C897A /* TarReader.swift */; };
 		E6974C5B2701AC2600E06C60 /* test_dict_B5_dictID.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */; };
 		E69FAC922729ACD900D3C406 /* test_dos_latin_us.zip in Resources */ = {isa = PBXBuildFile; fileRef = E69FAC912729ACD900D3C406 /* test_dos_latin_us.zip */; };
@@ -555,6 +556,7 @@
 		E6791E1726FD001A003852A9 /* DataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataError.swift; sourceTree = "<group>"; };
 		E6791E1A26FD0094003852A9 /* LZ4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4.swift; sourceTree = "<group>"; };
 		E6791E3226FD05EC003852A9 /* LZ4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZ4Tests.swift; sourceTree = "<group>"; };
+		E68DA765290420BC00259CB4 /* test_pax_record_newline.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_pax_record_newline.tar; sourceTree = "<group>"; };
 		E694694227480EA6009C897A /* TarReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarReader.swift; sourceTree = "<group>"; };
 		E6974C5A2701AC2600E06C60 /* test_dict_B5_dictID.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5_dictID.lz4; sourceTree = "<group>"; };
 		E69FAC912729ACD900D3C406 /* test_dos_latin_us.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test_dos_latin_us.zip; sourceTree = "<group>"; };
@@ -959,6 +961,7 @@
 				0698B10A2104E11200A7C551 /* test_gnu_inc_format.tar */,
 				0698B10C2106136500A7C551 /* test_big_num_field.tar */,
 				0698B10E2106344200A7C551 /* test_negative_mtime.tar */,
+				E68DA765290420BC00259CB4 /* test_pax_record_newline.tar */,
 			);
 			path = TAR;
 			sourceTree = "<group>";
@@ -1219,6 +1222,7 @@
 				E652FEE027009BDD006BC312 /* test5_legacy.lz4 in Resources */,
 				06F066721FFB763400312A82 /* test7.bz2 in Resources */,
 				06F0665B1FFB763400312A82 /* test10.lzma in Resources */,
+				E68DA766290420BC00259CB4 /* test_pax_record_newline.tar in Resources */,
 				E652FEFE2700A028006BC312 /* test_B7_BD.lz4 in Resources */,
 				06F0663C1FFB763400312A82 /* test3.xz in Resources */,
 				06F066591FFB763400312A82 /* test_win.tar in Resources */,
