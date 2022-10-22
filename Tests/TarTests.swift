@@ -69,6 +69,38 @@ class TarTests: XCTestCase {
         }
     }
 
+    func testPaxRecordNewline() throws {
+        // In this test we check the handling of a PAX header record with a newline character inside a record value.
+        let testData = try Constants.data(forTest: "test_pax_record_newline", withType: TarTests.testType)
+
+        XCTAssertEqual(try TarContainer.formatOf(container: testData), .pax)
+
+        let entries = try TarContainer.open(container: testData)
+
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries.first?.info.name, "test_file")
+        XCTAssertEqual(entries.first?.data, Data("Hello, weird pax record value!".utf8))
+        XCTAssertEqual(entries.first?.info.type, .regular)
+        XCTAssertEqual(entries.first?.info.size, 30)
+        XCTAssertNil(entries.first?.info.accessTime)
+        XCTAssertNil(entries.first?.info.creationTime)
+        XCTAssertEqual(entries.first?.info.modificationTime, Date(timeIntervalSince1970: 1666443016))
+        XCTAssertEqual(entries.first?.info.permissions, Permissions(rawValue: 420))
+        XCTAssertEqual(entries.first?.info.ownerID, 501)
+        XCTAssertEqual(entries.first?.info.groupID, 20)
+        XCTAssertEqual(entries.first?.info.ownerUserName, "tsolomko")
+        XCTAssertEqual(entries.first?.info.ownerGroupName, "staff")
+        XCTAssertEqual(entries.first?.info.deviceMajorNumber, 0)
+        XCTAssertEqual(entries.first?.info.deviceMinorNumber, 0)
+        XCTAssertNil(entries.first?.info.charset)
+        XCTAssertNil(entries.first?.info.comment)
+        XCTAssertEqual(entries.first?.info.linkName, "")
+        XCTAssertEqual(entries.first?.info.unknownExtendedHeaderRecords?.count, 3)
+        XCTAssertEqual(entries.first?.info.unknownExtendedHeaderRecords?["normal1"], "test_record_value1")
+        XCTAssertEqual(entries.first?.info.unknownExtendedHeaderRecords?["newline"], "test1\ntest2")
+        XCTAssertEqual(entries.first?.info.unknownExtendedHeaderRecords?["normal2"], "test_record_value2")
+    }
+
     func testFormats() throws {
         let formatTestNames = ["test_gnu", "test_oldgnu", "test_pax", "test_ustar", "test_v7"]
 

@@ -171,6 +171,8 @@ Every function or type of SWCompression's public API is documented. This documen
 There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp". It can be
 built using Swift Package Manager.
 
+__IMPORTANT:__ The "swcomp" command-line tool is NOT intended for general use.
+
 ## Contributing
 
 Whether you find a bug, have a suggestion, idea, feedback or something else, please

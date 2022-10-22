@@ -46,7 +46,7 @@ stages:
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift57:
           imageName: 'macOS-12'
-          DEVELOPER_DIR: '/Applications/Xcode_14.0.app'
+          DEVELOPER_DIR: '/Applications/Xcode_14.0.1.app'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
           UTILS_PW_XCF_FLAG: '--xcf'
@@ -86,7 +86,7 @@ stages:
       displayName: 'Download BitByteData'
     - script: ./utils.py ci script-macos
       displayName: 'Build & Test'
-    - script: swift build -c release --target SWCompression
+    - script: swift build -c release
       displayName: 'Build SPM Release'
   - job: linux
     strategy:
@@ -116,8 +116,8 @@ stages:
     - script: |
         set -e -o xtrace
         swift --version
-        swift build --target SWCompression
-        swift build -c release --target SWCompression # Check Release build just in case.
+        swift build
+        swift build -c release # Check Release build just in case.
       displayName: 'Build SPM Debug & Release'
   - job: windows
     strategy:
@@ -172,9 +172,9 @@ stages:
   - job: ghPages
     displayName: 'Publish API docs to GH Pages'
     pool:
-      vmImage: 'macOS-11'
+      vmImage: 'macOS-12'
     variables:
-      DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+      DEVELOPER_DIR: '/Applications/Xcode_14.0.1.app'
     steps:
     - script: |
         set -e -o xtrace
