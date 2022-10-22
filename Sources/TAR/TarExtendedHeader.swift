@@ -29,27 +29,40 @@ struct TarExtendedHeader {
     var comment: String?
 
     init(_ data: Data) throws {
-        // Split header data into entries with "\n" (0x0A) character as a separator.
-        let entriesData = data.split(separator: 0x0A)
-
         var unknownRecords = [String: String]()
-
-        for entryData in entriesData where !entryData.isEmpty {
-            let entryDataSplit = entryData.split(separator: 0x20, maxSplits: 1, omittingEmptySubsequences: false)
-
-            guard entryDataSplit.count == 2,
-                let lengthString = String(data: entryDataSplit[0], encoding: .utf8),
-                Int(lengthString) == entryData.count + 1
+        var i = data.startIndex
+        while i < data.endIndex {
+            let lengthStartIndex = i
+            while data[i] != 0x20 {
+                i += 1
+            }
+            guard let lengthString = String(data: data[lengthStartIndex..<i], encoding: .utf8),
+                  let length = Int(lengthString)
                 else { throw TarError.wrongPaxHeaderEntry }
 
-            // Split header entry into key-value pair with "=" (0x3D) character as a separator.
-            let keyValueDataPair = entryDataSplit[1].split(separator: 0x3D, maxSplits: 1,
-                                                            omittingEmptySubsequences: false)
+            i += 1
+            let keyStartIndex = i
+            while data[i] != 0x3D {
+                i += 1
+            }
+            guard let key = String(data: data[keyStartIndex..<i], encoding: .utf8)
+                else { throw TarError.wrongPaxHeaderEntry }
 
-            guard keyValueDataPair.count == 2,
-                let key = String(data: keyValueDataPair[0], encoding: .utf8),
-                let value = String(data: keyValueDataPair[1], encoding: .utf8)
-                else { throw TarError.wrongPaxHeaderEntry}
+            i += 1
+            var valueBytes = [UInt8]()
+            // Length includes the trailing newline character.
+            while i - lengthStartIndex + 1 < length {
+                valueBytes.append(data[i])
+                i += 1
+            }
+
+            // Check and skip trailing newline character.
+            guard data[i] == 0x0A
+                else { throw TarError.wrongPaxHeaderEntry }
+            i += 1
+
+            guard let value = String(data: Data(valueBytes), encoding: .utf8)
+                else { continue }
 
             switch key {
             case "uid":
@@ -80,6 +93,9 @@ struct TarExtendedHeader {
                 unknownRecords[key] = value
             }
         }
+        // The PAX header must end with a newline character since it's the end marker of the last (and all) record.
+        guard data.last == 0x0A || data.isEmpty
+            else { throw TarError.wrongPaxHeaderEntry }
 
         self.unknownRecords = unknownRecords
     }
