@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.8.3
+
+- There are now minimum deployment targets specified in Swift Package Manager manifest.
+- The properties of `GzipHeader` are now `var`-properties (instead of `let`).
+- GZip extra fields are now supported.
+    - Added `GzipHeader.ExtraField` struct.
+    - Added `GzipHeader.extraFields` property.
+    - Added a new `extraFields` argument to `GzipArchive.archive` function (with a default array empty value).
+- Fixed potential crashes that could occur when processing GZip archives truncated in a header or a "footer".
+- Some non-well-formed values of PAX extended header records no longer cause `TarError.wrongPaxHeaderEntry` to be thrown.
+    - The record values with newline characters are now fully processed.
+    - The record values that do not contain UTF-8 strings are now ignored.
+- swcomp changes:
+    - The symbolic links are now extracted with the values recorded in the containers.
+    - The hard links are now extracted from TAR containers instead of being ignored.
+    - Fixed build issues on Linux and Windows.
+    - `benchmark` is now a command group with two commands, `run` and `show`.
+    - Added `-a`, `--append` option to the `benchmark run` command.
+    - Added `-d`, `--description` option to the `benchmark run` command.
+    - Added `-t`, `--preserve-timestamp` option to the `benchmark run` command.
+    - The file format of saved results is now more flexible and allows multi-way comparisons.
+    - Improved precision of time measurements in benchmarks.
+
 ## 4.8.2
 
 - Swift 5.1 is no longer supported.
