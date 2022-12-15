@@ -12,6 +12,7 @@ enum BurrowsWheeler {
         let suffixArray = SuffixArray.make(from: doubleBytes, with: 256)
         var bwt = [Int]()
         bwt.reserveCapacity(bytes.count)
+        // Pointer is an index in the transformed array, `bwt`, where the EOF marker would have been if we had used it.
         var pointer = 0
         for i in 1..<suffixArray.count {
             if suffixArray[i] < bytes.count {
@@ -21,7 +22,7 @@ enum BurrowsWheeler {
                     bwt.append(bytes.last!)
                 }
             } else if suffixArray[i] == bytes.count {
-                pointer = (i - 1) / 2
+                pointer = bwt.count
             }
         }
         return (bwt, pointer)
