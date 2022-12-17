@@ -44,7 +44,6 @@ class TarReaderTests: XCTestCase {
             }
         }
         XCTAssertEqual(entriesCount, 1)
-
         try testHandle.closeCompat()
     }
 
@@ -104,6 +103,7 @@ class TarReaderTests: XCTestCase {
                 }
             }
             XCTAssertEqual(entriesCount, 1)
+            XCTAssertNil(try reader.read())
             try testHandle.closeCompat()
         }
     }
@@ -125,6 +125,7 @@ class TarReaderTests: XCTestCase {
                 }
             }
             XCTAssertEqual(entriesCount, 6)
+            XCTAssertNil(try reader.read())
             try testHandle.closeCompat()
         }
     }
@@ -158,6 +159,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertNil(entry!.info.comment)
             XCTAssertEqual(entry!.data, "Hello, Windows!".data(using: .utf8))
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -178,6 +180,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.data, Data())
 
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -197,6 +200,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertNil(entry!.info.comment)
             XCTAssertNil(entry!.data)
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -217,8 +221,8 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.info.permissions, Permissions(rawValue: 493))
             XCTAssertNil(entry!.info.comment)
             XCTAssertNil(entry!.data)
-
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -253,6 +257,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.data, answerData)
 
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -273,6 +278,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.data, answerData)
 
         }
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
@@ -297,6 +303,7 @@ class TarReaderTests: XCTestCase {
             }
         }
         XCTAssertEqual(entriesCount, 3)
+        XCTAssertNil(try reader.read())
         try testHandle.closeCompat()
     }
 
