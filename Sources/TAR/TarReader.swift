@@ -53,14 +53,11 @@ public struct TarReader {
     }
 
     /**
-     Processes the next TAR entry by reading it from the container and calling the provided closure on the result.
+     Processes the next TAR entry by reading it from the container and calling the provided closure on the result. If
+     the argument supplied to the closure is `nil` this indicates that the end of the input was reached.
 
      On Darwin platforms both the reading and the call to the closure are performed inside the `autoreleasepool` which
      allows to reduce the peak memory usage.
-
-     If the argument supplied to the closure is `nil` this indicates that the end of the input was reached. After that
-     the repeated `TarReader.process(_:)` or `TarReader.read()` calls will result in the `DataError.truncated` being
-     thrown.
 
      - Throws: `DataError.truncated` if the input is truncated. `TarError` is thrown in case of malformed input. Errors
      thrown by `FileHandle` operations are also propagated.
@@ -81,8 +78,7 @@ public struct TarReader {
      - Throws: `DataError.truncated` if the input is truncated. `TarError` is thrown in case of malformed input. Errors
      thrown by `FileHandle` operations are also propagated.
 
-     - Returns: The next entry from the container or `nil` if the end of the input has been reached. After that the
-     repeated `TarReader.process(_:)` or `TarReader.read()` calls will result in the `DataError.truncated` being thrown.
+     - Returns: The next entry from the container or `nil` if the end of the input has been reached.
      */
     public mutating func read() throws -> TarEntry? {
         let headerData = try getData(size: 512)
@@ -162,12 +158,18 @@ public struct TarReader {
 
     private func getData(size: Int) throws -> Data {
         assert(size >= 0, "TarReader.getData(size:): negative size.")
-        guard size > 0
-            else { return Data() }
         if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            guard let chunkData = try handle.read(upToCount: size)
-                else { throw DataError.truncated }
-            return chunkData
+            // The documentation for FileHandle.read(upToCount:) is a bit misleading. This method does "return the data
+            // obtained by reading length bytes starting at the current file pointer" even if the requested amount is
+            // larger than the available data. What is not clear is when the method returns nil. Apparently, there are
+            // (at least) two cases when it happens:
+            //  - the file pointer is at the EOF regardless of the argument value,
+            //  - the argument is zero.
+            // It is also unclear what happens when the argument is negative (it seems that it reads everything until
+            // the EOF), but the assertion above takes care of this. In any case, instead of returning nil we return
+            // empty data since both of these situations logically seem equivalent for our purposes. This also allows us
+            // to eliminate additional guard-check for the size parameter.
+            return try handle.read(upToCount: size) ?? Data()
         } else {
             // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
             return handle.readData(ofLength: size)
