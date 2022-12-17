@@ -17,7 +17,7 @@ extension GzipHeader {
         /// Binary content of the extra field.
         public var bytes: [UInt8]
 
-        /// Initializes and extra field with the specified extra field (subfield) ID bytes and its binary content.
+        /// Initializes an extra field with the specified extra field (subfield) ID bytes and its binary content.
         public init(_ si1: UInt8, _ si2: UInt8, _ bytes: [UInt8]) {
             self.si1 = si1
             self.si2 = si2

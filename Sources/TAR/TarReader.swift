@@ -90,6 +90,10 @@ public struct TarReader {
             if try getData(size: 512) == Data(count: 512) {
                 return nil
             } else {
+                // In this case we have a zero-filled block immediately followed by a non-zero-filled block which do not
+                // match the EOF marker signature. In practice, this indicates a malformed TAR container, since a
+                // zero-filled block is not a valid TAR header (and in fact the end result is an error being thrown in
+                // TarHeader initializer later down the line).
                 try set(offset: offset)
             }
         } else if headerData.count < 512 {
