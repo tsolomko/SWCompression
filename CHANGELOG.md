@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.8.4
+
+- Fixed an issue where in some cases BZip2 compression would produce incorrect output.
+- `TarReader` methods now always return `nil` after reaching the end of a TAR container.
+
 ## 4.8.3
 
 - There are now minimum deployment targets specified in Swift Package Manager manifest.

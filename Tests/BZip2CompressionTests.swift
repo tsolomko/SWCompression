@@ -84,4 +84,14 @@ class BZip2CompressionTests: XCTestCase {
         try answerTest("test9")
     }
 
+    func testBurrowsWheelerRoundtrip() throws {
+        // This test is inspired by the reported issue #38 that uncovered a mistake with a pointer variable in BWT.
+        // "1"s can be anything (except zero), but it must be the same byte value in all places.
+        // Two consecutive zeros in the middle seem to be crucial for some reason.
+        let testData = Data([0, 1, 0, 1, 0, 0, 1, 0, 1])
+        let compressedData = BZip2.compress(data: testData)
+        let redecompressedData = try BZip2.decompress(data: compressedData)
+        XCTAssertEqual(redecompressedData, testData)
+    }
+
 }
