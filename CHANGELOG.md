@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.8.5
+
+- Fixed an issue where in some cases LZMA2 decompression would fail with an incorrectly thrown error.
+
 ## 4.8.4
 
 - Fixed an issue where in some cases BZip2 compression would produce incorrect output.

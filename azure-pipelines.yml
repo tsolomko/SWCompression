@@ -108,7 +108,7 @@ stages:
           containerImage: 'swift:5.6.3-focal'
         linuxSwift57:
           imageName: 'ubuntu-20.04'
-          containerImage: 'swift:5.7.2-focal'
+          containerImage: 'swift:5.7.3-focal'
     pool:
       vmImage: $(imageName)
     container: $[ variables['containerImage'] ]
@@ -139,7 +139,7 @@ stages:
           SWIFT_DEV_PATH: 'C:\Library\Swift-development\bin'
         windowsSwift57:
           imageName: 'windows-2019'
-          SWIFT_VERSION: '5.7.2'
+          SWIFT_VERSION: '5.7.3'
           ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
           SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
     pool:

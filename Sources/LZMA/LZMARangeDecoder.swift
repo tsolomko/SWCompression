@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Timofey Solomko
+// Copyright (c) 2023 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -26,9 +26,7 @@ struct LZMARangeDecoder {
         self.byteReader = byteReader
 
         let byte = self.byteReader.byte()
-        for _ in 0..<4 {
-            self.code = (self.code << 8) | UInt32(self.byteReader.byte())
-        }
+        self.code = self.byteReader.uint32().byteSwapped
         guard byte == 0 && self.code != self.range
             else { throw LZMAError.rangeDecoderInitError }
     }
