@@ -18,44 +18,51 @@ stages:
         macosSwift52:
           imageName: 'macOS-11'
           DEVELOPER_DIR: '/Applications/Xcode_11.7.app'
+          IOS_SIMULATOR: 'iPhone 8'
           WATCHOS_ACTIONS: 'clean build'
           WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift53:
           imageName: 'macOS-11'
           DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
+          IOS_SIMULATOR: 'iPhone 8'
           WATCHOS_ACTIONS: 'clean build'
           WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift54:
           imageName: 'macOS-11'
           DEVELOPER_DIR: '/Applications/Xcode_12.5.1.app'
+          IOS_SIMULATOR: 'iPhone 8'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift55:
-          imageName: 'macOS-11'
+          imageName: 'macOS-12'
           DEVELOPER_DIR: '/Applications/Xcode_13.2.1.app'
+          IOS_SIMULATOR: 'iPhone 8'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift56:
           imageName: 'macOS-12'
           DEVELOPER_DIR: '/Applications/Xcode_13.4.1.app'
+          IOS_SIMULATOR: 'iPhone 8'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 - 44mm'
           UTILS_PW_XCF_FLAG: '--xcf'
         macosSwift57:
-          imageName: 'macOS-12'
+          imageName: 'macOS-13'
           DEVELOPER_DIR: '/Applications/Xcode_14.2.app'
+          IOS_SIMULATOR: 'iPhone 14'
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
           UTILS_PW_XCF_FLAG: '--xcf'
-        # macosSwift58:
-        #   imageName: 'macOS-13'
-        #   DEVELOPER_DIR: '/Applications/Xcode_14.3.app'
-        #   WATCHOS_ACTIONS: 'clean test'
-        #   WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
-        #   UTILS_PW_XCF_FLAG: '--xcf'
+        macosSwift58:
+          imageName: 'macOS-13'
+          DEVELOPER_DIR: '/Applications/Xcode_14.3.app'
+          IOS_SIMULATOR: 'iPhone 14'
+          WATCHOS_ACTIONS: 'clean test'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
+          UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
     variables:
