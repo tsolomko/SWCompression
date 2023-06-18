@@ -52,7 +52,7 @@ let package = Package(
                 .copy("Test Files/Answers/test8.answer"),
                 .copy("Test Files/Answers/test4.answer"),
                 .copy("Test Files/Answers/test6.answer"),
-                .copy("Test Files/Answers/текстовый файл.answer"),
+                // .copy("Test Files/Answers/текстовый файл.answer"),
                 .copy("Test Files/LZ4/test_B1234.lz4"),
                 .copy("Test Files/LZ4/test_small_dict_B5_BD.lz4"),
                 .copy("Test Files/LZ4/test1_legacy.lz4"),
