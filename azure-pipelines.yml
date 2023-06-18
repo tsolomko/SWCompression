@@ -217,6 +217,28 @@ stages:
         modifyEnvironment: true
       displayName: 'Install Swift'
     - script: |
+        git.exe submodule update --init --recursive
+        copy "Tests\Test Files\gitattributes-copy" "Tests\Test Files\.gitattributes"
+      displayName: 'Update submodules'
+    - script: |
+        cd "Tests\Test Files"
+        git.exe lfs ls-files -l > tmp
+        (for /f "tokens=1 delims= " %%a in (tmp) do echo %%a) > tmp2
+        sort tmp2  > ..\..\.assets-id
+        del tmp
+        del tmp2
+        type ..\..\.assets-id
+      displayName: 'Generate assets-id'
+    - task: Cache@2
+      inputs:
+        key: '"swc_test_files_v3_" | .assets-id'
+        path: '.git/modules/Tests/Test Files/lfs'
+      displayName: 'Cache lfs of test files'
+    - script: |
+        cd "Tests\Test Files"
+        git.exe lfs pull
+      displayName: 'Download or update test files'
+    - script: |
         set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;%SWIFT_DEV_PATH%;%ICU_PATH%;%PATH%
         swift.exe --version
         swift.exe test %SWIFTFLAGS% %SWIFTTESTFLAGS%
