@@ -236,14 +236,19 @@ stages:
       displayName: 'Cache lfs of test files'
     - script: |
         cd "Tests\Test Files"
+        set GIT_TRACE=1
         git.exe lfs pull
       displayName: 'Download or update test files'
     - script: |
         set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;%SWIFT_DEV_PATH%;%ICU_PATH%;%PATH%
         swift.exe --version
-        swift.exe test %SWIFTFLAGS% %SWIFTTESTFLAGS%
+        swift.exe test %SWIFTFLAGS%
+      displayName: 'Test SPM'
+    - script: |
+        set PATH=C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;%SWIFT_DEV_PATH%;%ICU_PATH%;%PATH%
+        swift.exe --version
         swift.exe build -c release --target SWCompression %SWIFTFLAGS%
-      displayName: 'SPM Test & Build Release'
+      displayName: 'Build SPM Release'
 - stage: deploy
   displayName: Deploy
   dependsOn: test
