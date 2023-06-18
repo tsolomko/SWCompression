@@ -17,8 +17,8 @@ let package = Package(
     dependencies: [
         .package(name: "BitByteData", url: "https://github.com/tsolomko/BitByteData",
                  from: "2.0.0"),
-        .package(name: "SwiftCLI", url: "https://github.com/jakeheis/SwiftCLI",
-                 from: "6.0.0"),
+        .package(name: "SwiftCLI", url: "https://github.com/tsolomko/SwiftCLI",
+                 .branch("develop")),
     ],
     targets: [
         .target(
