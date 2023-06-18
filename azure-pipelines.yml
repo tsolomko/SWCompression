@@ -142,6 +142,18 @@ stages:
     container: $[ variables['containerImage'] ]
     steps:
     - script: |
+        git.exe submodule update --init --recursive
+      displayName: 'Update submodules'
+    - powershell: |
+        cd "Tests\Test Files"
+        Write-Host "##vso[task.setvariable variable=lfsRev;]$(git.exe rev-parse --verify HEAD)"
+      displayName: 'Generate assets-id'
+    - task: Cache@2
+      inputs:
+        key: '"swc_test_files_v5_" | "$(lfsRev)"'
+        path: 'Tests/Test Files'
+      displayName: 'Cache test files'
+    - script: |
         swift.exe --version
         swift.exe test
       displayName: 'SPM Test'
