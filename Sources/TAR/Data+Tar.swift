@@ -6,6 +6,40 @@
 import Foundation
 
 extension Data {
+	
+	@inline(__always)
+	mutating func appendAsTarBlock(_ file: URL) throws {
+		do {
+			let input = InputStream(fileAtPath: file.path)!
+			input.open()
+			defer {
+				input.close()
+			}
+			var paddingSize = 0
+			let bufferSize = 1 << 14 //1024
+			let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
+			defer {
+				buffer.deallocate()
+			}
+			while input.hasBytesAvailable {
+				let read = input.read(buffer, maxLength: bufferSize)
+				if read < 0 {
+					// Stream error occured.
+					throw input.streamError!
+				} else if read == 0 {
+					// EOF.
+					break
+				}
+				paddingSize += read
+				self.append(buffer, count: read)
+			}
+			paddingSize = paddingSize.roundTo512() - paddingSize
+			self.append(Data(count: paddingSize))
+		}
+		catch {
+			throw error
+		}
+	}
 
     @inline(__always)
     mutating func appendAsTarBlock(_ data: Data) {

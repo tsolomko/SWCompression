@@ -79,8 +79,8 @@ public class TarContainer: Container {
      - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
      format used during container creation.
      */
-    public static func create(from entries: [TarEntry]) -> Data {
-        return create(from: entries, force: .pax)
+    public static func create(from entries: [TarEntry]) throws -> Data {
+        return try create(from: entries, force: .pax)
     }
 
     /**
@@ -100,7 +100,7 @@ public class TarContainer: Container {
      - SeeAlso: `TarEntryInfo` properties documenation to see how their values are connected with the specific TAR
      format used during container creation.
      */
-    public static func create(from entries: [TarEntry], force format: TarContainer.Format) -> Data {
+    public static func create(from entries: [TarEntry], force format: TarContainer.Format) throws -> Data {
         // The general strategy is as follows. For each entry we:
         //  1. Create special entries if required by the entry's info and if supported by the format.
         //  2. For each special entry we create a TarHeader.
@@ -166,6 +166,9 @@ public class TarContainer: Container {
             if let data = entry.data {
                 out.appendAsTarBlock(data)
             }
+			else if let file = entry.file {
+				try out.appendAsTarBlock(file)
+			}
         }
         // Two 512-byte blocks consisting of zeros as an EOF marker.
         out.append(Data(count: 1024))
