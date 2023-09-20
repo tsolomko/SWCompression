@@ -63,6 +63,13 @@ stages:
           WATCHOS_ACTIONS: 'clean test'
           WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
           UTILS_PW_XCF_FLAG: '--xcf'
+        macosSwift59:
+          imageName: 'macOS-13'
+          DEVELOPER_DIR: '/Applications/Xcode_15.1.app'
+          IOS_SIMULATOR: 'iPhone 14'
+          WATCHOS_ACTIONS: 'clean test'
+          WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
+          UTILS_PW_XCF_FLAG: '--xcf'
     pool:
       vmImage: $(imageName)
     variables:
@@ -125,6 +132,9 @@ stages:
         linuxSwift58:
           imageName: 'ubuntu-20.04'
           containerImage: 'swift:5.8.1-focal'
+        linuxSwift59:
+          imageName: 'ubuntu-20.04'
+          containerImage: 'swift:5.9.2-focal'
     pool:
       vmImage: $(imageName)
     container: $[ variables['containerImage'] ]
@@ -161,6 +171,11 @@ stages:
         windowsSwift58:
           imageName: 'windows-2019'
           SWIFT_VERSION: '5.8.1'
+          ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
+          SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
+        windowsSwift59:
+          imageName: 'windows-2019'
+          SWIFT_VERSION: '5.9.2'
           ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
           SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
     pool:
