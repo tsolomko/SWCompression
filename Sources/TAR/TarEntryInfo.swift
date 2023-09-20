@@ -121,7 +121,7 @@ public struct TarEntryInfo: ContainerEntryInfo {
     /**
      Device minor number (used when entry is either block or character special file).
 
-     - Note: When new TAR container is created, if `deviceMajorNumber` is bigger than 2097151 then base-256 encoding
+     - Note: When new TAR container is created, if `deviceMinorNumber` is bigger than 2097151 then base-256 encoding
      will be used to encode this value in ustar header.
      */
     public var deviceMinorNumber: Int?
