@@ -77,12 +77,6 @@ stages:
     steps:
     - script: |
         set -e -o xtrace
-        brew update
-        ./utils.py ci install-git-lfs-macos
-        ls -a "Tests/Test Files"
-      displayName: 'Install Git LFS'
-    - script: |
-        set -e -o xtrace
         git submodule update --init --recursive
         cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
       displayName: 'Update submodules'
