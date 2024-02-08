@@ -500,6 +500,7 @@
 		06F276DE1F2BAB4900E67335 /* 7zEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 7zEntry.swift; sourceTree = "<group>"; };
 		06FEAD911F54B9CD00AD016E /* EncodingTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EncodingTree.swift; path = Sources/Common/CodingTree/EncodingTree.swift; sourceTree = SOURCE_ROOT; };
 		06FED40B1DD7717E0013DFB2 /* BZip2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2.swift; sourceTree = "<group>"; };
+		586076822B753BE400041079 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6023B1A28F9B60000D6F3DC /* test4_extra_field.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test4_extra_field.gz; sourceTree = "<group>"; };
 		E6023B1C28F9C92200D6F3DC /* GzipHeader+ExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GzipHeader+ExtraField.swift"; sourceTree = "<group>"; };
 		E604F3BF2700C75F004BD38A /* test_dict_B5.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_dict_B5.lz4; sourceTree = "<group>"; };
@@ -711,6 +712,7 @@
 				06C936851F881A43008BBF0E /* ZIP */,
 				06C936861F881A57008BBF0E /* TAR */,
 				06C936871F881A68008BBF0E /* 7-Zip */,
+				586076822B753BE400041079 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
