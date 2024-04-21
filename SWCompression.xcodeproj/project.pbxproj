@@ -229,7 +229,6 @@
 		E64F71BC26AAFD6A008BB308 /* Data+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */; };
 		E6522FB42789AF9600026B56 /* TarReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FB32789AF9600026B56 /* TarReaderTests.swift */; };
 		E6522FB62789AFA600026B56 /* TarWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FB52789AFA600026B56 /* TarWriterTests.swift */; };
-		E6522FBD2789C4A300026B56 /* FileHandle+CloseCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */; };
 		E652D8F3263D670900FC229B /* test_nonstandard_runlength.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */; };
 		E652D8F5263D678000FC229B /* test_nonstandard_runlength.answer in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */; };
 		E652FECA27007E79006BC312 /* test3.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEC127007E78006BC312 /* test3.lz4 */; };
@@ -531,7 +530,6 @@
 		E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Tar.swift"; sourceTree = "<group>"; };
 		E6522FB32789AF9600026B56 /* TarReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarReaderTests.swift; sourceTree = "<group>"; };
 		E6522FB52789AFA600026B56 /* TarWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarWriterTests.swift; sourceTree = "<group>"; };
-		E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHandle+CloseCompat.swift"; sourceTree = "<group>"; };
 		E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.bz2; sourceTree = "<group>"; };
 		E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.answer; sourceTree = "<group>"; };
 		E652FEC127007E78006BC312 /* test3.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.lz4; sourceTree = "<group>"; };
@@ -844,7 +842,6 @@
 				E6522FB52789AFA600026B56 /* TarWriterTests.swift */,
 				06F065A61FFB763300312A82 /* TarTests.swift */,
 				E6522FB32789AF9600026B56 /* TarReaderTests.swift */,
-				E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */,
 				06F065A91FFB763300312A82 /* XzTests.swift */,
 				06F065A41FFB763300312A82 /* ZipTests.swift */,
 				06D42DA62067B71000C1A98B /* TestZipExtraField.swift */,
@@ -1506,7 +1503,6 @@
 				E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */,
 				06F0661B1FFB763300312A82 /* XzTests.swift in Sources */,
 				06F0661E1FFB763300312A82 /* BZip2CompressionTests.swift in Sources */,
-				E6522FBD2789C4A300026B56 /* FileHandle+CloseCompat.swift in Sources */,
 				06F066131FFB763300312A82 /* Constants.swift in Sources */,
 				06F0661C1FFB763300312A82 /* SevenZipTests.swift in Sources */,
 				06F066161FFB763300312A82 /* ZipTests.swift in Sources */,

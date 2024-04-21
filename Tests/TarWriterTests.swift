@@ -36,7 +36,7 @@ class TarWriterTests: XCTestCase {
             try writer.append(entry)
         }
         try writer.finalize()
-        try handle.closeCompat()
+        try handle.close()
         return try Data(contentsOf: tempFileUrl)
     }
 

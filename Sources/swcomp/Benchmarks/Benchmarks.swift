@@ -594,7 +594,7 @@ struct ReaderTar: Benchmark {
                 }
             }
             let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
-            try handle.closeCompat()
+            try handle.close()
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -629,7 +629,7 @@ struct WriterTar: Benchmark {
             }
             try writer.finalize()
             let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
-            try handle.closeCompat()
+            try handle.close()
             try FileManager.default.removeItem(at: url)
             return self.size / timeElapsed
         } catch let error {

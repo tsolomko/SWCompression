@@ -119,7 +119,7 @@ final class TarCommand: Command {
                         return false
                     }
                 }
-                try handle.closeCompat()
+                try handle.close()
             }
         } else if let outputPath = self.extract {
             guard try isValidOutputDirectory(outputPath, create: true)
@@ -167,7 +167,7 @@ final class TarCommand: Command {
                         return false
                     }
                 }
-                try handle.closeCompat()
+                try handle.close()
 
                 for tuple in directoryAttributes {
                     try fileManager.setAttributes(tuple.attributes, ofItemAtPath: tuple.path)
@@ -222,7 +222,7 @@ final class TarCommand: Command {
                 var writer = TarWriter(fileHandle: handle, force: self.useFormat ?? .pax)
                 try TarEntry.generateEntries(&writer, inputPath, verbose)
                 try writer.finalize()
-                try handle.closeCompat()
+                try handle.close()
             }
         }
     }
