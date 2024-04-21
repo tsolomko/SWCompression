@@ -15,12 +15,6 @@ stages:
   - job: macos
     strategy:
       matrix:
-        macosSwift52:
-          imageName: 'macOS-11'
-          DEVELOPER_DIR: '/Applications/Xcode_11.7.app'
-          IOS_SIMULATOR: 'iPhone 8'
-          WATCHOS_ACTIONS: 'clean build'
-          WATCHOS_SIMULATOR: 'Apple Watch Series 4 - 44mm'
         macosSwift53:
           imageName: 'macOS-11'
           DEVELOPER_DIR: '/Applications/Xcode_12.4.app'
@@ -113,9 +107,6 @@ stages:
   - job: linux
     strategy:
       matrix:
-        linuxSwift52:
-          imageName: 'ubuntu-20.04'
-          containerImage: 'swift:5.2.5-focal'
         linuxSwift53:
           imageName: 'ubuntu-20.04'
           containerImage: 'swift:5.3.3-focal'
