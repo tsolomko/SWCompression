@@ -57,6 +57,10 @@ def action_dbm(args):
     script = ["carthage", "bootstrap", "--no-use-binaries", "--use-xcframeworks"]
     if args.debug:
         script += ["--configuration", "Debug"]
+    if args.xros:
+        script += ["--platform", "macOS,iOS,watchOS,tvOS,visionOS"]
+    else:
+        script += ["--platform", "macOS,iOS,watchOS,tvOS"]
     _sprun(script)
 
 def action_pr(args):
@@ -115,6 +119,8 @@ parser_dbm = subparsers.add_parser("download-bbd-macos", help="download BitByteD
                             description="downloads BitByteData dependency using Carthage (macOS only)")
 parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
                         help="build BitByteData in Debug configuration")
+parser_dbm.add_argument("--xros", action="store_true", dest="xros",
+                        help="build BitByteData for visionOS as well (requires Apple Silicon)")
 parser_dbm.set_defaults(func=action_dbm)
 
 # Parser for 'prepare-release' command.
