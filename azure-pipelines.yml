@@ -174,11 +174,12 @@ stages:
           SWIFT_VERSION: '5.9.2'
           ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
           SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
-        windowsSwift510:
-          imageName: 'windows-2019'
-          SWIFT_VERSION: '5.10'
-          ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
-          SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
+        # TODO: There seems to be an unknown problem with the Swift installation step.
+        # windowsSwift510:
+        #   imageName: 'windows-2019'
+        #   SWIFT_VERSION: '5.10'
+        #   ICU_PATH: 'C:\Program Files\swift\icu-69.1\usr\bin'
+        #   SWIFT_DEV_PATH: 'C:\Program Files\swift\runtime-development\usr\bin'
     pool:
       vmImage: $(imageName)
     variables:
