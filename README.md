@@ -1,6 +1,6 @@
 # SWCompression
 
-[![Swift 5.3+](https://img.shields.io/badge/Swift-5.3+-blue.svg)](https://developer.apple.com/swift/)
+[![Swift 5.5+](https://img.shields.io/badge/Swift-5.5+-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://dev.azure.com/tsolomko/SWCompression/_apis/build/status/tsolomko.SWCompression?branchName=develop)](https://dev.azure.com/tsolomko/SWCompression/_build/latest?definitionId=3&branchName=develop)
 
