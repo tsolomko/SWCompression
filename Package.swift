@@ -28,12 +28,13 @@ let package = Package(
             dependencies: ["BitByteData"],
             path: "Sources",
             exclude: ["swcomp"],
-            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"]),
+            sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"],
+            resources: [.copy("PrivacyInfo.xcprivacy")]),
         .target(
             name: "swcomp",
             dependencies: ["SWCompression", "SwiftCLI"],
             path: "Sources",
-            exclude: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"],
+            exclude: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib", "PrivacyInfo.xcprivacy"],
             sources: ["swcomp"]),
     ],
     swiftLanguageVersions: [.v5]

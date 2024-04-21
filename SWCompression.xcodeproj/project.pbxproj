@@ -277,6 +277,7 @@
 		E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C4150626FE230A00F9D36F /* XxHash32.swift */; };
 		E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */; };
 		E6DF9ECE2704BF14003BD91E /* test_multi_frame.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6DF9ECD2704BF14003BD91E /* test_multi_frame.lz4 */; };
+		E6E49D522BD5081D00BFC756 /* PrivacyInfo.xcprivacy in CopyFiles */ = {isa = PBXBuildFile; fileRef = E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */; };
 		E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */; };
 		E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */; };
 		E6EDD6AC26F77C0E00884532 /* test_minor_version_2.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */; };
@@ -291,6 +292,19 @@
 			remoteInfo = SWCompression;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E6E49D512BD5081700BFC756 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				E6E49D522BD5081D00BFC756 /* PrivacyInfo.xcprivacy in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0602C8DE212184FA00B69EF5 /* LZMAProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LZMAProperties.swift; sourceTree = "<group>"; };
@@ -565,6 +579,7 @@
 		E6C4150626FE230A00F9D36F /* XxHash32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32.swift; sourceTree = "<group>"; };
 		E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XxHash32Tests.swift; sourceTree = "<group>"; };
 		E6DF9ECD2704BF14003BD91E /* test_multi_frame.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_multi_frame.lz4; sourceTree = "<group>"; };
+		E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_3.7z; sourceTree = "<group>"; };
 		E6EDD6A726F7767E00884532 /* test_minor_version_4.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_4.7z; sourceTree = "<group>"; };
 		E6EDD6AB26F77C0E00884532 /* test_minor_version_2.7z */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_minor_version_2.7z; sourceTree = "<group>"; };
@@ -680,6 +695,7 @@
 		06BE1ABE1DB410F100EE0F59 = {
 			isa = PBXGroup;
 			children = (
+				E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */,
 				06BE1ACA1DB410F100EE0F59 /* Sources */,
 				06F065A01FFB763300312A82 /* Tests */,
 				E631055A27086132006EACC3 /* SWCompression.xctestplan */,
@@ -1111,6 +1127,7 @@
 			buildConfigurationList = 06BE1ADC1DB410F100EE0F59 /* Build configuration list for PBXNativeTarget "SWCompression" */;
 			buildPhases = (
 				06BE1AC31DB410F100EE0F59 /* Sources */,
+				E6E49D512BD5081700BFC756 /* CopyFiles */,
 			);
 			buildRules = (
 			);

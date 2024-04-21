@@ -27,57 +27,68 @@ Pod::Spec.new do |s|
 
   s.subspec "Deflate" do |sp|
     sp.source_files = "Sources/{Deflate/*,Common/*,Common/CodingTree/*}.swift"
+    sp.resource_bundles = {"SWCompression/Deflate" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_DEFLATE" }
   end
 
   s.subspec "GZip" do |sp|
     sp.dependency "SWCompression/Deflate"
+    sp.resource_bundles = {"SWCompression/GZip" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.source_files = "Sources/{GZip/*,Common/*}.swift"
   end
 
   s.subspec "Zlib" do |sp|
     sp.dependency "SWCompression/Deflate"
+    sp.resource_bundles = {"SWCompression/Zlib" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.source_files = "Sources/{Zlib/*,Common/*}.swift"
   end
 
   s.subspec "BZip2" do |sp|
     sp.source_files = "Sources/{BZip2/*,Common/*,Common/CodingTree/*}.swift"
+    sp.resource_bundles = {"SWCompression/BZip2" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_BZ2" }
   end
 
   s.subspec "LZMA" do |sp|
     sp.source_files = "Sources/{LZMA/*,Common/*}.swift"
+    sp.resource_bundles = {"SWCompression/LZMA" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_LZMA" }
   end
 
   s.subspec "LZMA2" do |sp|
     sp.dependency "SWCompression/LZMA"
     sp.source_files = "Sources/{LZMA2/*,Common/*}.swift"
+    sp.resource_bundles = {"SWCompression/LZMA2" => ["Sources/PrivacyInfo.xcprivacy"]}
   end
 
   s.subspec "LZ4" do |sp|
     sp.source_files = "Sources/{LZ4/*,Common/*}.swift"
+    sp.resource_bundles = {"SWCompression/LZ4" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_LZ4" }
   end
 
   s.subspec "XZ" do |sp|
     sp.dependency "SWCompression/LZMA2"
     sp.source_files = "Sources/{XZ/*,Common/*}.swift"
+    sp.resource_bundles = {"SWCompression/XZ" => ["Sources/PrivacyInfo.xcprivacy"]}
   end
 
   s.subspec "ZIP" do |sp|
     sp.dependency "SWCompression/Deflate"
     sp.source_files = "Sources/{Zip/*,Common/*,Common/Container/*}.swift"
+    sp.resource_bundles = {"SWCompression/ZIP" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_ZIP" }
   end
 
   s.subspec "TAR" do |sp|
     sp.source_files = "Sources/{TAR/*,Common/*,Common/Container/*}.swift"
+    sp.resource_bundles = {"SWCompression/TAR" => ["Sources/PrivacyInfo.xcprivacy"]}
   end
 
   s.subspec "SevenZip" do |sp|
     sp.dependency "SWCompression/LZMA2"
     sp.source_files = "Sources/{7-Zip/*,Common/*,Common/Container/*}.swift"
+    sp.resource_bundles = {"SWCompression/SevenZip" => ["Sources/PrivacyInfo.xcprivacy"]}
     sp.pod_target_xcconfig = { "OTHER_SWIFT_FLAGS" => "-DSWCOMPRESSION_POD_SEVENZIP" }
   end
 
