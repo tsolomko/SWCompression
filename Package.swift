@@ -7,7 +7,9 @@ let package = Package(
         .macOS(.v10_13),
         .iOS(.v11),
         .tvOS(.v11),
-        .watchOS(.v4)
+        .watchOS(.v4),
+        // TODO: Enable after upgrading to Swift 5.9.
+        // .visionOS(.v1)
     ],
     products: [
         .library(
