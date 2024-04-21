@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.8.6
+
+- Swift 5.2 is no longer supported.
+- Enable visionOS deployment target (only for Carthage users).
+- Add PrivacyInfo file.
+- Fixed a documentation error in `TarEntryInfo.deviceMinorNumber`.
+
 ## 4.8.5
 
 - Fixed an issue where in some cases LZMA2 decompression would fail with an incorrectly thrown error.

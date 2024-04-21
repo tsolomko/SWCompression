@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.8.5</string>
+	<string>4.8.6</string>
 	<key>CFBundleVersion</key>
-	<string>90</string>
+	<string>91</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2024 Timofey Solomko</string>
 </dict>
