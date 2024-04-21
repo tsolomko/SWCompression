@@ -1165,7 +1165,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1530;
 				ORGANIZATIONNAME = "Timofey Solomko";
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
@@ -1372,7 +1372,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == iphonesimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-arm64*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/iOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == appletvsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-arm64/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/tvOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        if [[ ${SDK_NAME} == watchsimulator* ]]; then\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        else\n            cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n        fi\n    else\n            cp -a ${PROJECT_DIR}/Carthage/Build/watchOS/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    if [[ -d ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/macos-*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/Mac/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}\n";
+			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == iphonesimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-arm64*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == appletvsimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-arm64/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == watchsimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/macos-*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1554,36 +1554,19 @@
 				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/tvOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/tvOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"",
-				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"";
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
 				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
-					"\"$(SRCROOT)/Carthage/Build/Mac\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/watchOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/watchOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"",
-				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1640,36 +1623,19 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/tvOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/tvOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"",
-				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"";
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
 				);
 				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/iOS\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
 					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
 				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = (
-					"\"$(SRCROOT)/Carthage/Build/Mac\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/watchOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/watchOS\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"",
-				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

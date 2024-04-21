@@ -54,11 +54,9 @@ def action_cw(args):
 
 def action_dbm(args):
     print("=> Downloading BitByteData dependency using Carthage")
-    script = ["carthage", "bootstrap", "--no-use-binaries"]
+    script = ["carthage", "bootstrap", "--no-use-binaries", "--use-xcframeworks"]
     if args.debug:
         script += ["--configuration", "Debug"]
-    if args.xcf:
-        script += ["--use-xcframeworks"]
     _sprun(script)
 
 def action_pr(args):
@@ -117,8 +115,6 @@ parser_dbm = subparsers.add_parser("download-bbd-macos", help="download BitByteD
                             description="downloads BitByteData dependency using Carthage (macOS only)")
 parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
                         help="build BitByteData in Debug configuration")
-parser_dbm.add_argument("--xcf", action="store_true", dest="xcf",
-                        help="build BitByteData as a XCFramework")
 parser_dbm.set_defaults(func=action_dbm)
 
 # Parser for 'prepare-release' command.

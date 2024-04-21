@@ -107,21 +107,9 @@ BZip2, LZMA/LZMA2 and LZ4 support).
 
 Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.8`.
 
-Then:
-
-1. If you use Xcode 12 or later you should run `carthage update --use-xcframeworks`. After that drag and drop both
-`SWCompression.xcframework` and `BitByteData.xcframework` files from from the `Carthage/Build/` directory into the
-"Frameworks, Libraries, and Embedded Content" section of your target's "General" tab in Xcode.
-
-2. If you use Xcode 11 or earlier you should run `carthage update`. After that drag and drop both
-`SWCompression.framework` and `BitByteData.framework` files from from the `Carthage/Build/<platform>/` directory into
-the "Embedded Binaries" section of your target's "General" tab in Xcode.
-
-For Xcode 12 or later you can currently also use the
-[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
-
-Please also note that support for non-xcframework method of installing SWCompression is likely to be dropped in the
-future major update.
+Then you should run `carthage update --use-xcframeworks`. After that drag and drop both `SWCompression.xcframework` and
+`BitByteData.xcframework` files from from the `Carthage/Build/` directory into the "Frameworks, Libraries, and Embedded
+Content" section of your target's "General" tab in Xcode.
 
 ## Usage
 
