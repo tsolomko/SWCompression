@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Timofey Solomko
+// Copyright (c) 2024 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-let _SWC_VERSION = "4.8.5"
+let _SWC_VERSION = "4.8.6"
 
 let cli = CLI(name: "swcomp", version: _SWC_VERSION,
               description: """

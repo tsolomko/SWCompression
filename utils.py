@@ -19,21 +19,12 @@ def _ci_before_deploy():
     docs_json_file.close()
     _sprun(["jazzy"])
 
-def _ci_install_git_lfs_macos():
-    script = """if brew ls --versions "git-lfs" >/dev/null; then
-                    HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade "git-lfs"
-                else
-                    HOMEBREW_NO_AUTO_UPDATE=1 brew install "git-lfs"
-                fi"""
-    _sprun_shell(script)
-    _sprun(["git", "lfs", "install"])
-
 def _ci_script_macos():
     _sprun_shell("xcodebuild -version")
     _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
     destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]),
-                    (["-destination 'platform=iOS Simulator,name=iPhone 8'"], ["clean", "test"]),
+                    (["-destination 'platform=iOS Simulator,name=" + os.environ["IOS_SIMULATOR"] + "'"], ["clean", "test"]),
                     (["-destination 'platform=watchOS Simulator,name=" + os.environ["WATCHOS_SIMULATOR"] + "'"], [os.environ["WATCHOS_ACTIONS"]]),
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
 
@@ -45,8 +36,6 @@ def _ci_script_macos():
 def action_ci(args):
     if args.cmd == "before-deploy":
         _ci_before_deploy()
-    elif args.cmd == "install-git-lfs-macos":
-        _ci_install_git_lfs_macos()
     elif args.cmd == "script-macos":
         _ci_script_macos()
     else:
@@ -65,11 +54,13 @@ def action_cw(args):
 
 def action_dbm(args):
     print("=> Downloading BitByteData dependency using Carthage")
-    script = ["carthage", "bootstrap", "--no-use-binaries"]
+    script = ["carthage", "bootstrap", "--no-use-binaries", "--use-xcframeworks"]
     if args.debug:
         script += ["--configuration", "Debug"]
-    if args.xcf:
-        script += ["--use-xcframeworks"]
+    if args.xros:
+        script += ["--platform", "macOS,iOS,watchOS,tvOS,visionOS"]
+    else:
+        script += ["--platform", "macOS,iOS,watchOS,tvOS"]
     _sprun(script)
 
 def action_pr(args):
@@ -114,7 +105,7 @@ subparsers = parser.add_subparsers(title="commands", help="a command to perform"
 # Parser for 'ci' command.
 parser_ci = subparsers.add_parser("ci", help="a subset of commands used by CI",
                                     description="a subset of commands used by CI")
-parser_ci.add_argument("cmd", choices=["before-deploy", "install-git-lfs-macos", "script-macos"],
+parser_ci.add_argument("cmd", choices=["before-deploy", "script-macos"],
                         help="a command to perform on CI", metavar="CI_CMD")
 parser_ci.set_defaults(func=action_ci)
 
@@ -128,8 +119,8 @@ parser_dbm = subparsers.add_parser("download-bbd-macos", help="download BitByteD
                             description="downloads BitByteData dependency using Carthage (macOS only)")
 parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
                         help="build BitByteData in Debug configuration")
-parser_dbm.add_argument("--xcf", action="store_true", dest="xcf",
-                        help="build BitByteData as a XCFramework")
+parser_dbm.add_argument("--xros", action="store_true", dest="xros",
+                        help="build BitByteData for visionOS as well (requires Apple Silicon)")
 parser_dbm.set_defaults(func=action_dbm)
 
 # Parser for 'prepare-release' command.
@@ -137,6 +128,10 @@ parser_pr = subparsers.add_parser("prepare-release", help="prepare next release"
                                 description="prepare next release of SWCompression")
 parser_pr.add_argument("version", metavar="VERSION", help="next version number")
 parser_pr.set_defaults(func=action_pr)
+
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit(1)
 
 args = parser.parse_args()
 args.func(args)
