@@ -4,10 +4,10 @@ import PackageDescription
 let package = Package(
     name: "SWCompression",
     platforms: [
-        .macOS(.v10_13),
-        .iOS(.v11),
-        .tvOS(.v11),
-        .watchOS(.v4),
+        .macOS(.v11),
+        .iOS(.v14),
+        .tvOS(.v14),
+        .watchOS(.v7),
         // TODO: Enable after upgrading to Swift 5.9.
         // .visionOS(.v1)
     ],
