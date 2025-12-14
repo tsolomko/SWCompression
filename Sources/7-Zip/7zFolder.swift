@@ -164,7 +164,7 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 var dictionarySize = 0
-                for i in 1..<4 {
+                for i in 1..<5 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
                 let lzmaProperties = try LZMAProperties(lzmaByte: properties[0], dictionarySize)
