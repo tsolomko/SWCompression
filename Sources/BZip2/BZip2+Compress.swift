@@ -51,8 +51,8 @@ extension BZip2: CompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         for i in stride(from: data.startIndex, to: data.endIndex, by: rawBlockSize) {
-            let blockData = data[i..<min(data.endIndex, i + rawBlockSize)]
-            let blockCRC = CheckSums.bzip2crc32(blockData)
+            let block = data[i..<min(data.endIndex, i + rawBlockSize)].toByteArray()
+            let blockCRC = CheckSums.bzip2crc32(block)
 
             totalCRC = (totalCRC << 1) | (totalCRC >> 31)
             totalCRC ^= blockCRC
@@ -61,7 +61,7 @@ extension BZip2: CompressionAlgorithm {
             bitWriter.write(bits: blockMarker) // Block magic number.
             bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
 
-            process(block: blockData, bitWriter)
+            process(block, bitWriter)
         }
 
         // EOS magic number.
@@ -73,8 +73,8 @@ extension BZip2: CompressionAlgorithm {
         return bitWriter.data
     }
 
-    private static func process(block data: Data, _ bitWriter: MsbBitWriter) {
-        var out = initialRle(data)
+    private static func process(_ block: [UInt8], _ bitWriter: MsbBitWriter) {
+        var out = initialRle(block)
 
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
@@ -151,7 +151,7 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(number: 0, bitsCount: 1) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
-        var usedMap = Array(repeating: UInt8(0), count: 16)
+        var usedMap = Array(repeating: 0 as UInt8, count: 16)
         for usedByte in usedBytes {
             guard usedByte <= 255
                 else { fatalError("Incorrect used byte.") }
@@ -233,16 +233,16 @@ extension BZip2: CompressionAlgorithm {
     }
 
     /// Initial Run Length Encoding.
-    private static func initialRle(_ data: Data) -> [Int] {
+    private static func initialRle(_ block: [UInt8]) -> [Int] {
         var out = [Int]()
-        var index = data.startIndex
-        while index < data.endIndex {
+        var index = block.startIndex
+        while index < block.endIndex {
             var runLength = 1
-            while index + 1 < data.endIndex && data[index] == data[index + 1] && runLength < 255 {
+            while index + 1 < block.endIndex && block[index] == block[index + 1] && runLength < 255 {
                 runLength += 1
                 index += 1
             }
-            let byte = data[index].toInt()
+            let byte = block[index].toInt()
             for _ in 0..<min(4, runLength) {
                 out.append(byte)
             }

@@ -5,6 +5,15 @@
 
 import Foundation
 
+extension Data {
+
+    @inlinable @inline(__always)
+    func toByteArray() -> [UInt8] {
+        return self.withUnsafeBytes { $0.map { $0 } }
+    }
+    
+}
+
 extension UnsignedInteger {
 
     @inlinable @inline(__always)
