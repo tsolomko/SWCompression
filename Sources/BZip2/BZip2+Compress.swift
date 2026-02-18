@@ -45,8 +45,8 @@ extension BZip2: CompressionAlgorithm {
         // In the worst case initial RLE causes expansion by a factor of 1.25, so 1000 / 1.25 = 800.
         let rawBlockSize = blockSize.sizeInKilobytes * 800
         // BZip2 Header.
-        bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
-        bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
+        bitWriter.write(unsignedNumber: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
+        bitWriter.write(unsignedNumber: 0x68, bitsCount: 8) // Version = 'h'.
         bitWriter.write(number: blockSize.headerByte, bitsCount: 8) // Block size.
 
         var totalCRC: UInt32 = 0
@@ -148,7 +148,7 @@ extension BZip2: CompressionAlgorithm {
 
         // Now, we perform encoding itself.
         // But first, we need to finish block header.
-        bitWriter.write(number: 0, bitsCount: 1) // "Randomized".
+        bitWriter.write(bit: 0) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
         var usedMap = Array(repeating: 0 as UInt8, count: 16)
