@@ -190,19 +190,25 @@ extension BZip2: CompressionAlgorithm {
         // Delta bit lengths.
         for lengths in tablesLengths {
             // Starting length.
-            var currentLength = lengths[0]
-            bitWriter.write(number: currentLength, bitsCount: 5)
+            var prevLength = lengths[0]
+            bitWriter.write(number: prevLength, bitsCount: 5)
             for length in lengths {
-                while currentLength != length {
-                    bitWriter.write(bit: 1) // Alter length.
-                    if currentLength > length {
-                        bitWriter.write(bit: 1) // Decrement length.
-                        currentLength -= 1
-                    } else {
-                        bitWriter.write(bit: 0) // Increment length.
-                        currentLength += 1
-                    }
+                // In the worst case delta between two lengths is 19. This delta requires 19 * 2 = 38 bits to encode
+                // which fits into `UInt` (at least, on modern 64-bit systems), so we can use `write(unsignedNumber:)`.
+                if prevLength > length {
+                    // Bits: 11 -> 11_11 -> 11_11_11 -> 11_11_11_11 -> ...
+                    // Numbers: 3 -> 15 -> 63 -> 255 -> ...
+                    // https://oeis.org/A024036
+                    let diff = prevLength - length
+                    bitWriter.write(unsignedNumber: (1 << (2 * diff)) - 1, bitsCount: 2 * diff)
+                } else if prevLength < length {
+                    // Bits: 10 -> 10_10 -> 10_10_10 -> 10_10_10_10 -> ...
+                    // Numbers: 2 -> 10 -> 42 -> 170 -> ...
+                    // https://oeis.org/A020988
+                    let diff = length - prevLength
+                    bitWriter.write(unsignedNumber: ((1 << (2 * diff)) - 1) * 2 / 3 , bitsCount: 2 * diff)
                 }
+                prevLength = length
                 bitWriter.write(bit: 0)
             }
         }
