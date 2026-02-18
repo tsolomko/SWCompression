@@ -151,10 +151,16 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(bit: 0) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
+        // Encode which symbols (bytes) are used in the data. All possible 256 symbols (0...255) are split into "maps"
+        // of 16 consequent symbols. Each map is a sequence of 16 bits where a set bit indicates that a symbol is used.
+        // If a map would consist of only zero bits, then it is omitted. This is determined in the construction of `usedMap`.
         var usedMap = Array(repeating: 0 as UInt8, count: 16)
         for usedByte in usedBytes {
-            guard usedByte <= 255
-                else { fatalError("Incorrect used byte.") }
+            // `usedBytes` is an output of the BW transform which does not change symbols used. The input of the BW
+            // transform is an output of initial RLE encoding. Since a run length value is 255 or less and the input
+            // data consists of normal bytes which also have values of 255 or less, `usedByte` cannot be larger than 255
+            // by construction.
+            assert(usedByte <= 255, "Incorrect usedByte.")
             usedMap[usedByte / 16] = 1
         }
         bitWriter.write(bits: usedMap)
@@ -163,7 +169,7 @@ extension BZip2: CompressionAlgorithm {
         for i in 0..<16 {
             guard usedMap[i] == 1 else { continue }
             for j in 0..<16 {
-                if usedBytesIndex < usedBytes.count && i * 16 + j == usedBytes[usedBytesIndex] {
+                if usedBytesIndex < usedBytes.endIndex && i * 16 + j == usedBytes[usedBytesIndex] {
                     bitWriter.write(bit: 1)
                     usedBytesIndex += 1
                 } else {
@@ -215,20 +221,20 @@ extension BZip2: CompressionAlgorithm {
 
         // Contents.
         var encoded = 0
-        var selectorPointer = 0
-        var t: EncodingTree?
+        var table = tables[selectors[selectors.startIndex]]
+        var selectorIndex = selectors.startIndex &+ 1
         for symbol in out {
-            encoded -= 1
-            if encoded <= 0 {
-                encoded = 50
-                if selectorPointer == selectors.count {
-                    fatalError("Incorrect selector.")
-                } else if selectorPointer < selectors.count {
-                    t = tables[selectors[selectorPointer]]
-                    selectorPointer += 1
-                }
+            // New table is selected every 50 symbols.
+            if encoded >= 50 {
+                // Selectors were added every 50 symbols. So by construction `selectorIndex` can never exceed the
+                // amount of available selectors.
+                assert(selectorIndex < selectors.endIndex, "Incorrect selectorIndex.")
+                table = tables[selectors[selectorIndex]]
+                selectorIndex &+= 1
+                encoded = 0
             }
-            t?.code(symbol: symbol)
+            table.code(symbol: symbol)
+            encoded &+= 1
         }
     }
 
