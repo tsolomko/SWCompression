@@ -73,24 +73,13 @@ extension Deflate: CompressionAlgorithm {
     }
 
     private static func createUncompressedBlock(_ data: Data) -> Data {
-        let bitWriter = LsbBitWriter()
-
-        // Write block header.
+        assert(data.count <= 65535, "Cannot create uncompressed Deflate blocks larger than 65535 bytes.")
+        // Write block header, data's length and n-length. It is more efficient to avoid using LsbBitWriter.
         // Note: Only one block is supported for now.
-        bitWriter.write(bit: 1)
-        bitWriter.write(bits: [0, 0])
-
-        // Before writing lengths we need to discard remaining bits in current byte.
-        bitWriter.align()
-
-        // Write data's length.
-        bitWriter.write(number: data.count, bitsCount: 16)
-        // Write data's n-length.
-        bitWriter.write(number: data.count ^ (1 << 16 - 1), bitsCount: 16)
-
-        var out = bitWriter.data
+        let nLength = data.count ^ ((1 << 16) - 1)
+        var out = Data([1, UInt8(truncatingIfNeeded: data.count & 0xFF), UInt8(truncatingIfNeeded: (data.count >> 8) & 0xFF),
+                        UInt8(truncatingIfNeeded: nLength & 0xFF), UInt8(truncatingIfNeeded: (nLength >> 8) & 0xFF)])
         out.append(data)
-
         return out
     }
 
