@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -8,7 +8,6 @@
 #endif
 
 import Foundation
-import SWCompression
 import SwiftCLI
 
 final class RunBenchmarkCommand: Command {
@@ -32,7 +31,7 @@ final class RunBenchmarkCommand: Command {
     @Key("-d", "--description", description: "Adds a custom description when saving results")
     var description: String?
 
-    @Flag("-t", "--preserve-timestamp", description: "Adds a timestamp when saving a result")
+    @Flag("-t", "--preserve-timestamp", description: "Adds a timestamp when saving results")
     var preserveTimestamp: Bool
 
     @Flag("-W", "--no-warmup", description: "Disables warmup iteration")
@@ -45,26 +44,13 @@ final class RunBenchmarkCommand: Command {
         guard self.iterationCount == nil || self.iterationCount! >= 1
             else { swcompExit(.benchmarkSmallIterCount) }
 
-        var baseResults = [String: [(BenchmarkResult, UUID)]]()
-        var baseMetadatas = [UUID: String]()
+        var baseRuns = [SaveFile.Run]()
         if let comparePath = comparePath {
             let baseSaveFile = try SaveFile.load(from: comparePath)
-
-            baseMetadatas = Dictionary(uniqueKeysWithValues: zip(baseSaveFile.metadatas.keys, (1...baseSaveFile.metadatas.count).map { "(\($0))" }))
-            if baseMetadatas.count == 1 {
-                baseMetadatas[baseMetadatas.first!.key] = ""
-            }
-            for (metadataUUID, index) in baseMetadatas.sorted(by: { $0.value < $1.value }) {
-                print("BASE\(index) Metadata")
-                print("----------------")
-                baseSaveFile.metadatas[metadataUUID]!.print()
-            }
-
-            for baseRun in baseSaveFile.runs {
-                baseResults.merge(Dictionary(grouping: baseRun.results.map { ($0, baseRun.metadataUUID) }, by: { $0.0.id }),
-                                  uniquingKeysWith: { $0 + $1 })
-            }
+            baseRuns = baseSaveFile.runs
         }
+        self.printBaseMetadatas(runs: baseRuns)
+        let baseResults = SaveFile.groupResults(runs: baseRuns)
 
         let title = "\(self.selectedBenchmark.titleName) Benchmark\n"
         print(String(repeating: "=", count: title.count))
@@ -77,10 +63,14 @@ final class RunBenchmarkCommand: Command {
             let benchmark = self.selectedBenchmark.initialized(input)
             let iterationCount = self.iterationCount ?? benchmark.defaultIterationCount
 
+            let warmup: Double?
             if !self.noWarmup {
-                print("Warmup iteration...")
+                print("Warmup iteration...", terminator: " ")
                 // Zeroth (excluded) iteration.
-                benchmark.warmupIteration()
+                warmup = benchmark.warmupIteration()
+                print(benchmark.format(warmup!))
+            } else {
+                warmup = nil
             }
 
             var sum = 0.0
@@ -90,6 +80,7 @@ final class RunBenchmarkCommand: Command {
             #if !os(Linux)
                 fflush(__stdoutp)
             #endif
+            var iterations = [Double]()
             for i in 1...iterationCount {
                 if i > 1 {
                     print(", ", terminator: "")
@@ -101,18 +92,23 @@ final class RunBenchmarkCommand: Command {
                 #endif
                 sum += speed
                 squareSum += speed * speed
+                iterations.append(speed)
             }
 
             let avg = sum / Double(iterationCount)
             let std = sqrt(squareSum / Double(iterationCount) - sum * sum / Double(iterationCount * iterationCount))
             let result = BenchmarkResult(name: self.selectedBenchmark.rawValue, input: input, iterCount: iterationCount,
-                                         avg: avg, std: std)
+                                         avg: avg, std: std, warmup: warmup, iters: iterations)
 
             if let baseResults = baseResults[result.id] {
                 print("\nNEW:  average = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
-                for (other, baseUUID) in baseResults {
-                    print("BASE\(baseMetadatas[baseUUID]!): average = \(benchmark.format(other.avg)), standard deviation = \(benchmark.format(other.std))")
-                    result.printComparison(with: other)
+                for (baseIndex, baseResult) in baseResults {
+                    if let baseWarmup = baseResult.warmup {
+                        print("BASE(\(baseIndex + 1)): average = \(benchmark.format(baseResult.avg)), standard deviation = \(benchmark.format(baseResult.std)), warmup = \(benchmark.format(baseWarmup))")
+                    } else {
+                        print("BASE(\(baseIndex + 1)): average = \(benchmark.format(baseResult.avg)), standard deviation = \(benchmark.format(baseResult.std))")
+                    }
+                    result.printComparison(with: baseResult)
                 }
             } else {
                 print("\nAverage = \(benchmark.format(avg)), standard deviation = \(benchmark.format(std))")
@@ -129,31 +125,40 @@ final class RunBenchmarkCommand: Command {
             var isDir = ObjCBool(false)
             let saveFileExists = FileManager.default.fileExists(atPath: savePath, isDirectory: &isDir)
 
-            if self.append && saveFileExists  {
+            if self.append && saveFileExists {
                 if isDir.boolValue {
                     swcompExit(.benchmarkCannotAppendToDirectory)
                 }
                 saveFile = try SaveFile.load(from: savePath)
-                var uuid: UUID
-                if let foundUUID = saveFile.metadatas.first(where: { $0.value == metadata })?.key {
-                    uuid = foundUUID
+                if let foundRunIndex = saveFile.runs.firstIndex(where: { $0.metadata == metadata }) {
+                    var foundRun = saveFile.runs[foundRunIndex]
+                    foundRun.results.append(contentsOf: newResults)
+                    foundRun.results.sort(by: { $0.id < $1.id })
+                    saveFile.runs[foundRunIndex] = foundRun
                 } else {
+                    var uuid: UUID
                     repeat {
                         uuid = UUID()
-                    } while saveFile.metadatas[uuid] != nil
-                    saveFile.metadatas[uuid] = metadata
+                    } while saveFile.runs.contains(where: { $0.uuid == uuid })
+                    saveFile.runs.append(SaveFile.Run(uuid: uuid, metadata: metadata, results: newResults.sorted(by: { $0.id < $1.id })))
                 }
-                saveFile.runs.append(SaveFile.Run(metadataUUID: uuid, results: newResults))
             } else {
                 let uuid = UUID()
-                saveFile = SaveFile(metadatas: [uuid: metadata], runs: [SaveFile.Run(metadataUUID: uuid, results: newResults)])
+                saveFile = SaveFile(runs: [SaveFile.Run(uuid: uuid, metadata: metadata, results: newResults.sorted(by: { $0.id < $1.id }))])
             }
 
             let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             let data = try encoder.encode(saveFile)
             try data.write(to: URL(fileURLWithPath: savePath))
+        }
+    }
+
+    private func printBaseMetadatas(runs: [SaveFile.Run]) {
+        for (index, run) in runs.enumerated() {
+            print("BASE(\(index + 1)) Metadata")
+            print("---------------")
+            run.metadata.print()
         }
     }
 

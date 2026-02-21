@@ -1,9 +1,8 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
-import Foundation
 import BitByteData
 
 fileprivate struct CodingIndex {
@@ -19,7 +18,7 @@ final class EncodingTree {
 
     private let codingIndices: [CodingIndex]
 
-    init(codes: [Code], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
+    init(_ codes: [Code], _ bitWriter: BitWriter, reverseCodes: Bool = false) {
         self.bitWriter = bitWriter
 
         var codingIndices = Array(repeating: CodingIndex(treeCode: -1, bitSize: -1), count: codes.count)

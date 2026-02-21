@@ -1,17 +1,15 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
-
-import Foundation
 
 extension Deflate {
 
     struct Constants {
 
         // Precomputed codes for the static Huffman literal and distance trees.
-        static let staticHuffmanLiteralCodes =
-            [Code(bits: 7, code: 0, symbol: 256), Code(bits: 7, code: 64, symbol: 257),
+        static let staticHuffmanLiteralCodes: HuffmanCodes =
+            ([Code(bits: 7, code: 0, symbol: 256), Code(bits: 7, code: 64, symbol: 257),
              Code(bits: 7, code: 32, symbol: 258), Code(bits: 7, code: 96, symbol: 259),
              Code(bits: 7, code: 16, symbol: 260), Code(bits: 7, code: 80, symbol: 261),
              Code(bits: 7, code: 48, symbol: 262), Code(bits: 7, code: 112, symbol: 263),
@@ -154,10 +152,10 @@ extension Deflate {
              Code(bits: 9, code: 63, symbol: 248), Code(bits: 9, code: 319, symbol: 249),
              Code(bits: 9, code: 191, symbol: 250), Code(bits: 9, code: 447, symbol: 251),
              Code(bits: 9, code: 127, symbol: 252), Code(bits: 9, code: 383, symbol: 253),
-             Code(bits: 9, code: 255, symbol: 254), Code(bits: 9, code: 511, symbol: 255)]
+             Code(bits: 9, code: 255, symbol: 254), Code(bits: 9, code: 511, symbol: 255)], 9)
 
-        static let staticHuffmanDistanceCodes =
-            [Code(bits: 5, code: 0, symbol: 0), Code(bits: 5, code: 16, symbol: 1),
+        static let staticHuffmanDistanceCodes: HuffmanCodes =
+            ([Code(bits: 5, code: 0, symbol: 0), Code(bits: 5, code: 16, symbol: 1),
              Code(bits: 5, code: 8, symbol: 2), Code(bits: 5, code: 24, symbol: 3),
              Code(bits: 5, code: 4, symbol: 4), Code(bits: 5, code: 20, symbol: 5),
              Code(bits: 5, code: 12, symbol: 6), Code(bits: 5, code: 28, symbol: 7),
@@ -172,7 +170,7 @@ extension Deflate {
              Code(bits: 5, code: 3, symbol: 24), Code(bits: 5, code: 19, symbol: 25),
              Code(bits: 5, code: 11, symbol: 26), Code(bits: 5, code: 27, symbol: 27),
              Code(bits: 5, code: 7, symbol: 28), Code(bits: 5, code: 23, symbol: 29),
-             Code(bits: 5, code: 15, symbol: 30), Code(bits: 5, code: 31, symbol: 31)]
+             Code(bits: 5, code: 15, symbol: 30), Code(bits: 5, code: 31, symbol: 31)], 5)
 
         static let codeLengthOrders: [Int] =
             [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]

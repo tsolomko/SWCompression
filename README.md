@@ -1,6 +1,6 @@
 # SWCompression
 
-[![Swift 5.3+](https://img.shields.io/badge/Swift-5.3+-blue.svg)](https://developer.apple.com/swift/)
+[![Swift 5.9+](https://img.shields.io/badge/Swift-5.9+-blue.svg)](https://developer.apple.com/swift/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/tsolomko/SWCompression/master/LICENSE)
 [![Build Status](https://dev.azure.com/tsolomko/SWCompression/_apis/build/status/tsolomko.SWCompression?branchName=develop)](https://dev.azure.com/tsolomko/SWCompression/_build/latest?definitionId=3&branchName=develop)
 
@@ -32,11 +32,12 @@ Also, SWCompression is _written with Swift only._
 
 ## Installation
 
-SWCompression can be integrated into your project using Swift Package Manager, CocoaPods, or Carthage.
+SWCompression can be integrated into your project using Swift Package Manager.
 
-### Swift Package Manager
+__Note:__ SWCompression versions 4.8.6 and earlier were also made available via CocoaPods or Carthage.
 
-To install using SPM, add SWCompression to you package dependencies and specify it as a dependency for your target, e.g.:
+To install with Swift Package manager, add SWCompression to you package dependencies and specify it as a dependency for
+your target, e.g.:
 
 ```swift
 import PackageDescription
@@ -57,59 +58,6 @@ let package = Package(
 ```
 
 More details you can find in [Swift Package Manager's Documentation](https://github.com/apple/swift-package-manager/tree/main/Documentation).
-
-### CocoaPods
-
-Add `pod 'SWCompression', '~> 4.8'` and `use_frameworks!` lines to your Podfile.
-
-To complete installation, run `pod install`.
-
-If you need only some parts of framework, you can install only them using sub-podspecs. Available subspecs:
-
-- SWCompression/BZip2
-- SWCompression/Deflate
-- SWCompression/Gzip
-- SWCompression/LZMA
-- SWCompression/LZMA2
-- SWCompression/LZ4
-- SWCompression/SevenZip
-- SWCompression/TAR
-- SWCompression/XZ
-- SWCompression/Zlib
-- SWCompression/ZIP
-
-#### "Optional Dependencies"
-
-For both ZIP and 7-Zip there is the most commonly used compression method: Deflate and LZMA/LZMA2 correspondingly. Thus,
-SWCompression/ZIP subspec has SWCompression/Deflate subspec as a dependency and SWCompression/LZMA subspec is a
-dependency for SWCompression/SevenZip.
-
-But both of these formats also support other compression methods, and some of them are implemented in SWCompression.
-For CocoaPods configurations there are some sort of 'optional dependencies' for such compression methods.
-
-"Optional dependency" in this context means that SWCompression/ZIP or SWCompression/7-Zip will support a compression
-method only if a corresponding subspec is expicitly specified in your Podfile and installed.
-
-List of "optional dependecies":
-
-- For SWCompression/ZIP:
-    - SWCompression/BZip2
-    - SWCompression/LZMA
-- For SWCompression/SevenZip:
-    - SWCompression/BZip2
-    - SWCompression/Deflate
-    - SWCompression/LZ4
-
-__Note:__ If you use Swift Package Manager or Carthage you always have everything (ZIP and 7-Zip are built with Deflate,
-BZip2, LZMA/LZMA2 and LZ4 support).
-
-### Carthage
-
-Add to your Cartfile `github "tsolomko/SWCompression" ~> 4.8`.
-
-Then you should run `carthage update --use-xcframeworks`. After that drag and drop both `SWCompression.xcframework` and
-`BitByteData.xcframework` files from from the `Carthage/Build/` directory into the "Frameworks, Libraries, and Embedded
-Content" section of your target's "General" tab in Xcode.
 
 ## Usage
 
@@ -157,7 +105,7 @@ Every function or type of SWCompression's public API is documented. This documen
 ### Sophisticated example
 
 There is a small command-line program, "swcomp", which is included in this repository in "Sources/swcomp". It can be
-built using Swift Package Manager.
+built using Swift Package Manager (only available on macOS).
 
 __IMPORTANT:__ The "swcomp" command-line tool is NOT intended for general use.
 
@@ -170,9 +118,6 @@ them on the [Discussions](https://github.com/tsolomko/SWCompression/discussions)
 In the case of a bug, it will be especially helpful if you attach a file (archive, etc.) that caused the bug to occur.
 
 If you'd like to contribute, please [create a pull request](https://github.com/tsolomko/SWCompression/pulls) on GitHub.
-
-__Note:__ If you are considering working on SWCompression, please note that Xcode project (SWCompression.xcodeproj)
-was created manually and you shouldn't use `swift package generate-xcodeproj` command.
 
 ### Executing tests locally
 
@@ -187,14 +132,8 @@ git lfs pull
 git lfs checkout
 ```
 
-The first command will download the BitByteData dependency, which requires having Carthage installed. When using Xcode
-12 or later, you should also pass the `--xcf` option, or use the
-[xconfig workaround](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md). Please note
-that when building SWCompression's Xcode project you may see ld warnings about a directory not being found. These are
-expected and harmless. Finally, you should keep in mind that support for non-xcframework method of installing
-dependencies is likely to be dropped in the future major update.
-
-The remaining commands will download the files used in tests. These files are stored in a
+The first command will download the BitByteData dependency, which requires having Carthage installed. The remaining
+commands will download the files used in tests. These files are stored in a
 [separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS. There are two reasons for
 this complicated setup. Firstly, some of these files can be quite big, and it would be unfortunate if the users of
 SWCompression had to download them during the installation. Secondly, Swift Package Manager and contemporary versions of

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -155,7 +155,7 @@ public enum LZ4: DecompressionAlgorithm {
     }
 
     // The functions below return uncompressed data and the offset to the next byte after the processed frame (even if
-    // the end of the input data was reached). The offset is needed to make multiDecompress function work.
+    // the end of the input data was reached). The offset is required to make multiDecompress function work.
 
     private static func process(legacyFrame data: Data) throws -> (Data, Data.Index) {
         let reader = LittleEndianByteReader(data: data)
@@ -229,11 +229,11 @@ public enum LZ4: DecompressionAlgorithm {
 
         let contentSize: Int?
         if contentSizePresent {
-            // At this point valid LZ4 frame must have at least 13 bytes remaining for: content size (8 bytes), header
+            // At this point a valid LZ4 frame must have at least 13 bytes remaining for content size (8 bytes), header
             // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
             guard reader.bytesLeft >= 13
                 else { throw DataError.truncated }
-            // Since Data is indexed by the Int type, the maximum size of the uncompressed data that we can decode is
+            // Since Data is indexed by the Int type, the maximum size of uncompressed data that we can decode is
             // Int.max. However, LZ4 supports uncompressed data sizes up to UInt64.max, which is larger, so we check
             // for this possibility.
             let rawContentSize = reader.uint64()
@@ -249,7 +249,7 @@ public enum LZ4: DecompressionAlgorithm {
             // If dictionary ID is present in the frame, then we must have a dictionary to successfully decode it.
             guard dictionary != nil
                 else { throw DataError.corrupted }
-            // At this point valid LZ4 frame must have at least 9 bytes remaining for: dictionary ID (4 bytes), header
+            // At this point a valid LZ4 frame must have at least 9 bytes remaining for dictionary ID (4 bytes), header
             // checksum (1 byte), and EndMark (4 bytes), assuming zero data blocks.
             guard reader.bytesLeft >= 9
                 else { throw DataError.truncated }
@@ -264,7 +264,7 @@ public enum LZ4: DecompressionAlgorithm {
         }
 
         if let extDictId = extDictId, let dictId = dictId {
-            // If dictionary ID is present in the frame, and passed as an argument, then they must be equal.
+            // If dictionary ID is present in the frame and passed as an argument, then they must be equal.
             guard extDictId == dictId
                 else { throw DataError.corrupted }
         }
@@ -278,7 +278,7 @@ public enum LZ4: DecompressionAlgorithm {
         while true {
             guard reader.bytesLeft >= 4
                 else { throw DataError.truncated }
-            // Either the size of the block, or the EndMark.
+            // Either the size of a block, or the EndMark.
             let blockMark = reader.uint32()
             // Check for the EndMark.
             if blockMark == 0 {
@@ -287,8 +287,8 @@ public enum LZ4: DecompressionAlgorithm {
             // The highest bit indicates if the block is compressed.
             let compressed = blockMark & 0x80000000 == 0
             let blockSize = (blockMark & 0x7FFFFFFF).toInt()
-            // Since we don't do manual memory allocation we don't have to constraint the block size. Nevertheless, we
-            // follow the reference implementation here and reject blocks with sizes greater than maximum block size.
+            // Since we don't do manual memory allocation we don't have to constrain the block size. Nevertheless, we
+            // follow the reference implementation here and reject blocks with sizes greater than the maximum block size.
             guard blockSize <= maxBlockSize
                 else { throw DataError.corrupted }
 
@@ -350,7 +350,7 @@ public enum LZ4: DecompressionAlgorithm {
                     guard data.endIndex - reader.offset >= 1
                         else { throw DataError.truncated }
                     let byte = reader.byte()
-                    // There is no size limit on the literal count, so we need to check that it remains within Int range
+                    // There is no size limit on the literal count, so we have to check that it remains within Int range
                     // (similar to content size considerations).
                     let (newLiteralCount, overflow) = literalCount.addingReportingOverflow(byte.toInt())
                     guard !overflow
@@ -388,7 +388,7 @@ public enum LZ4: DecompressionAlgorithm {
                     guard data.endIndex - reader.offset >= 1
                         else { throw DataError.truncated }
                     let byte = reader.byte()
-                    // Again, there is no size limit on the match length, so we need to check that it remains within Int
+                    // Again, there is no size limit on the match length, so we have to check that it remains within Int
                     // range.
                     let (newMatchLength, overflow) = matchLength.addingReportingOverflow(byte.toInt())
                     guard !overflow
@@ -401,8 +401,7 @@ public enum LZ4: DecompressionAlgorithm {
             }
 
             // We record the start index of the last encountered match to verify it against end-of-block restrictions.
-            // Note, that this refers to the bytes that we have found a match for, and not to the bytes that we're
-            // matching to.
+            // This refers to the bytes that we have found a match for, and not to the bytes that we're matching to.
             lastMatchStartIndex = out.endIndex
             let matchStartIndex = out.endIndex - offset
             for i in 0..<matchLength {

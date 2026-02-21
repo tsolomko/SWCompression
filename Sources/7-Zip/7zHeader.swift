@@ -1,10 +1,10 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
-import Foundation
 import BitByteData
+import Foundation
 
 class SevenZipHeader {
 
@@ -36,31 +36,33 @@ class SevenZipHeader {
         }
 
         guard type == 0x00
-            else { throw SevenZipError.internalStructureError }
+        else { throw SevenZipError.internalStructureError }
     }
 
-    convenience init(_ bitReader: MsbBitReader, using streamInfo: SevenZipStreamInfo) throws {
+    convenience init(
+        _ bitReader: MsbBitReader, using streamInfo: SevenZipStreamInfo, password: String? = nil
+    ) throws {
         let folder = streamInfo.coderInfo.folders[0]
         guard let packInfo = streamInfo.packInfo
-            else { throw SevenZipError.internalStructureError }
+        else { throw SevenZipError.internalStructureError }
 
         let folderOffset = SevenZipContainer.signatureHeaderSize + packInfo.packPosition
         bitReader.offset = folderOffset
 
         let packedHeaderData = Data(bitReader.bytes(count: packInfo.packSizes[0]))
-        let headerData = try folder.unpack(data: packedHeaderData)
+        let headerData = try folder.unpack(data: packedHeaderData, password: password)
 
         guard headerData.count == folder.unpackSize()
-            else { throw SevenZipError.wrongSize }
+        else { throw SevenZipError.wrongSize }
         if let crc = folder.crc {
             guard CheckSums.crc32(headerData) == crc
-                else { throw SevenZipError.wrongCRC }
+            else { throw SevenZipError.wrongCRC }
         }
 
         let headerBitReader = MsbBitReader(data: headerData)
 
         guard headerBitReader.byte() == 0x01
-            else { throw SevenZipError.internalStructureError }
+        else { throw SevenZipError.internalStructureError }
         try self.init(headerBitReader)
     }
 

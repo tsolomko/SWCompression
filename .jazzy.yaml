@@ -4,7 +4,7 @@ clean: false
 author: Timofey Solomko
 module: SWCompression
 module_version: 4.8.6
-copyright: '© 2024 Timofey Solomko'
+copyright: '© 2026 Timofey Solomko'
 readme: README.md
 github_url: https://github.com/tsolomko/SWCompression
 github_file_prefix: https://github.com/tsolomko/SWCompression/tree/4.8.6

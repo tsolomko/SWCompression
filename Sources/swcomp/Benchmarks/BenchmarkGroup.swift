@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -14,7 +14,9 @@ final class BenchmarkGroup: CommandGroup {
 
     let children: [Routable] = [
         RunBenchmarkCommand(),
-        ShowBenchmarkCommand()
+        ShowBenchmarkCommand(),
+        RemoveRunCommand(),
+        ConvertCommand()
     ]
 
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -36,7 +36,7 @@ class TarWriterTests: XCTestCase {
             try writer.append(entry)
         }
         try writer.finalize()
-        try handle.closeCompat()
+        try handle.close()
         return try Data(contentsOf: tempFileUrl)
     }
 

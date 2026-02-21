@@ -1,10 +1,10 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
-import Foundation
 import BitByteData
+import Foundation
 
 class SevenZipFolder {
 
@@ -53,7 +53,7 @@ class SevenZipFolder {
         }
 
         guard totalOutputStreams != 0
-            else { throw SevenZipError.internalStructureError }
+        else { throw SevenZipError.internalStructureError }
 
         numBindPairs = totalOutputStreams - 1
         if numBindPairs > 0 {
@@ -63,7 +63,7 @@ class SevenZipFolder {
         }
 
         guard totalInputStreams >= numBindPairs
-            else { throw SevenZipError.internalStructureError }
+        else { throw SevenZipError.internalStructureError }
 
         numPackedStreams = totalInputStreams - numBindPairs
         if numPackedStreams == 1 {
@@ -135,11 +135,11 @@ class SevenZipFolder {
         return 0
     }
 
-    func unpack(data: Data) throws -> Data {
+    func unpack(data: Data, password: String? = nil) throws -> Data {
         var decodedData = data
         for coder in self.orderedCoders() {
             guard coder.numInStreams == 1 || coder.numOutStreams == 1
-                else { throw SevenZipError.multiStreamNotSupported }
+            else { throw SevenZipError.multiStreamNotSupported }
 
             let unpackSize = self.unpackSize(for: coder)
 
@@ -162,30 +162,33 @@ class SevenZipFolder {
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties,
                     properties.count == 1
-                    else { throw LZMA2Error.wrongDictionarySize }
+                else { throw LZMA2Error.wrongDictionarySize }
 
-                decodedData = try LZMA2.decompress(LittleEndianByteReader(data: decodedData), properties[0])
+                decodedData = try LZMA2.decompress(
+                    LittleEndianByteReader(data: decodedData), properties[0])
             case .lzma:
                 // Both properties' byte (lp, lc, pb) and dictionary size are stored in coder's properties.
                 guard let properties = coder.properties,
                     properties.count == 5
-                    else { throw LZMAError.wrongProperties }
+                else { throw LZMAError.wrongProperties }
 
                 var dictionarySize = 0
                 for i in 1..<4 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
                 let lzmaProperties = try LZMAProperties(lzmaByte: properties[0], dictionarySize)
-                decodedData = try LZMA.decompress(data: decodedData,
-                                                  properties: lzmaProperties,
-                                                  uncompressedSize: unpackSize)
+                decodedData = try LZMA.decompress(
+                    data: decodedData,
+                    properties: lzmaProperties,
+                    uncompressedSize: unpackSize)
             default:
                 if coder.id == [0x03] {
                     guard let properties = coder.properties,
                         properties.count == 1
-                        else { throw SevenZipError.internalStructureError }
+                    else { throw SevenZipError.internalStructureError }
 
-                    decodedData = DeltaFilter.decode(LittleEndianByteReader(data: decodedData), (properties[0] &+ 1).toInt())
+                    decodedData = DeltaFilter.decode(
+                        LittleEndianByteReader(data: decodedData), (properties[0] &+ 1).toInt())
                 } else if coder.id == [0x04, 0xF7, 0x11, 0x04] {
                     #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_LZ4)
                         decodedData = try LZ4.decompress(data: decodedData)
@@ -193,14 +196,29 @@ class SevenZipFolder {
                         throw SevenZipError.compressionNotSupported
                     #endif
                 } else if coder.isEncryptionMethod {
-                    throw SevenZipError.encryptionNotSupported
+                    guard let password = password, !password.isEmpty else {
+                        throw SevenZipError.encryptionNotSupported
+                    }
+                    guard let properties = coder.properties else {
+                        throw SevenZipError.internalStructureError
+                    }
+                    decodedData = try SevenZipAESDecryptor.decrypt(
+                        data: decodedData,
+                        properties: properties,
+                        password: password
+                    )
+                    // AES-CBC output may have padding; trim to expected unpack size.
+                    if decodedData.count > unpackSize {
+                        decodedData = decodedData.prefix(unpackSize)
+                    }
+                    continue  // Skip the size check below since we already trimmed.
                 } else {
                     throw SevenZipError.compressionNotSupported
                 }
             }
 
             guard decodedData.count == unpackSize
-                else { throw SevenZipError.wrongSize }
+            else { throw SevenZipError.wrongSize }
         }
         return decodedData
     }

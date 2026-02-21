@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -23,12 +23,6 @@ import BitByteData
     try handle.close()
  ```
  Note that closing the `FileHandle` remains the responsibility of the caller.
-
- - Important: Due to the API availability limitations of Foundation's `FileHandle`, on certain platforms errors in
- `FileHandle` operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
- impossible to correctly handle in Swift code). As such, it is not recommended to use `TarReader` on those platforms.
- The following platforms are _unaffected_ by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+, tvOS 13.4+, and any
- other platforms without Objective-C runtime.
  */
 public struct TarReader {
 
@@ -86,7 +80,7 @@ public struct TarReader {
             return nil
         } else if headerData == Data(count: 512) {
             // EOF marker case.
-            let offset = try getOffset()
+            let offset = try handle.offset()
             if try getData(size: 512) == Data(count: 512) {
                 return nil
             } else {
@@ -94,7 +88,7 @@ public struct TarReader {
                 // match the EOF marker signature. In practice, this indicates a malformed TAR container, since a
                 // zero-filled block is not a valid TAR header (and in fact the end result is an error being thrown in
                 // TarHeader initializer later down the line).
-                try set(offset: offset)
+                try handle.seek(toOffset: offset)
             }
         } else if headerData.count < 512 {
             throw DataError.truncated
@@ -106,7 +100,7 @@ public struct TarReader {
         // at most 512 bytes.
         // Check, just in case, since we use blockStartIndex = -1 when creating TAR containers.
         assert(header.blockStartIndex >= 0)
-        let dataStartOffset = try getOffset()
+        let dataStartOffset = try handle.offset()
 
         let entryData = try getData(size: header.size)
         guard entryData.count == header.size
@@ -125,11 +119,11 @@ public struct TarReader {
             case .longName:
                 longName = LittleEndianByteReader(data: entryData).tarCString(maxLength: header.size)
             }
-            try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
+            try handle.seek(toOffset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
             return try read()
         } else {
             let info = TarEntryInfo(header, lastGlobalExtendedHeader, lastLocalExtendedHeader, longName, longLinkName)
-            try set(offset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
+            try handle.seek(toOffset: dataStartOffset + UInt64(truncatingIfNeeded: header.size.roundTo512()))
             lastLocalExtendedHeader = nil
             longName = nil
             longLinkName = nil
@@ -144,40 +138,20 @@ public struct TarReader {
         }
     }
 
-    private func getOffset() throws -> UInt64 {
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            return try handle.offset()
-        } else {
-            return handle.offsetInFile
-        }
-    }
-
-    private func set(offset: UInt64) throws {
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            try handle.seek(toOffset: offset)
-        } else {
-            handle.seek(toFileOffset: offset)
-        }
-    }
-
+    @inline(__always)
     private func getData(size: Int) throws -> Data {
         assert(size >= 0, "TarReader.getData(size:): negative size.")
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            // The documentation for FileHandle.read(upToCount:) is a bit misleading. This method does "return the data
-            // obtained by reading length bytes starting at the current file pointer" even if the requested amount is
-            // larger than the available data. What is not clear is when the method returns nil. Apparently, there are
-            // (at least) two cases when it happens:
-            //  - the file pointer is at the EOF regardless of the argument value,
-            //  - the argument is zero.
-            // It is also unclear what happens when the argument is negative (it seems that it reads everything until
-            // the EOF), but the assertion above takes care of this. In any case, instead of returning nil we return
-            // empty data since both of these situations logically seem equivalent for our purposes. This also allows us
-            // to eliminate additional guard-check for the size parameter.
-            return try handle.read(upToCount: size) ?? Data()
-        } else {
-            // Technically, this can throw NSException, but since it is ObjC exception we cannot handle it in Swift.
-            return handle.readData(ofLength: size)
-        }
+        // The documentation for FileHandle.read(upToCount:) is a bit misleading. This method does "return the data
+        // obtained by reading length bytes starting at the current file pointer" even if the requested amount is
+        // larger than the available data. What is not clear is when the method returns nil. Apparently, there are
+        // (at least) two cases when it happens:
+        //  - the file pointer is at the EOF regardless of the argument value,
+        //  - the argument is zero.
+        // It is also unclear what happens when the argument is negative (it seems that it reads everything until
+        // the EOF), but the assertion above takes care of this. In any case, instead of returning nil we return
+        // empty data since both of these situations logically seem equivalent for our purposes. This also allows us
+        // to eliminate additional guard-check for the size parameter.
+        return try handle.read(upToCount: size) ?? Data()
     }
 
 }

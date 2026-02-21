@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -26,7 +26,8 @@ public class BZip2: DecompressionAlgorithm {
     }
 
     static func decompress(_ bitReader: MsbBitReader) throws -> Data {
-        // Valid BZip2 "archive" must contain at least 14 bytes of data.
+        // Valid BZip2 "archive" must contain at least 14 bytes of data: magic number (2 bytes), method (1 byte), block
+        // size (1 byte), block type (6 bytes), block CRC (4 bytes).
         guard bitReader.bitsLeft >= 14 * 8
             else { throw BZip2Error.wrongMagic }
 
@@ -44,15 +45,15 @@ public class BZip2: DecompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         while true {
-            // Using `Int64` because 48 bits may not fit into `Int` on some platforms.
+            // Using `UInt64` because 48 bits may not fit into `Int` on some platforms.
             let blockType = bitReader.uint64(fromBits: 48)
 
             let blockCRC32 = bitReader.uint32(fromBits: 32)
 
             if blockType == 0x314159265359 {
-                let blockData = try decode(bitReader, blockSize)
-                out.append(blockData)
-                guard CheckSums.bzip2crc32(blockData) == blockCRC32
+                let block = try decode(bitReader, blockSize)
+                out.append(Data(block))
+                guard CheckSums.bzip2crc32(block) == blockCRC32
                     else { throw BZip2Error.wrongCRC(out) }
                 totalCRC = (totalCRC << 1) | (totalCRC >> 31)
                 totalCRC ^= blockCRC32
@@ -68,7 +69,7 @@ public class BZip2: DecompressionAlgorithm {
         return out
     }
 
-    private static func decode(_ bitReader: MsbBitReader, _ blockSize: BlockSize) throws -> Data {
+    private static func decode(_ bitReader: MsbBitReader, _ blockSize: BlockSize) throws -> [UInt8] {
         let isRandomized = bitReader.bit()
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }
@@ -146,7 +147,7 @@ public class BZip2: DecompressionAlgorithm {
                     }
                 }
                 let codes = Code.huffmanCodes(from: lengths)
-                let table = DecodingTree(codes: codes.codes, maxBits: codes.maxBits, bitReader)
+                let table = DecodingTree(codes, bitReader)
                 tables.append(table)
             }
 
@@ -220,7 +221,7 @@ public class BZip2: DecompressionAlgorithm {
             }
         }
 
-        return Data(out)
+        return out
     }
 
 }

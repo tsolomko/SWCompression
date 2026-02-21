@@ -1,9 +1,8 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
-import Foundation
 import BitByteData
 
 final class DecodingTree {
@@ -13,14 +12,14 @@ final class DecodingTree {
     private let tree: [Int]
     private let leafCount: Int
 
-    init(codes: [Code], maxBits: Int, _ bitReader: BitReader) {
+    init(_ huffmanCodes: HuffmanCodes, _ bitReader: BitReader) {
         self.bitReader = bitReader
 
         // Calculate maximum amount of leaves in a tree.
-        self.leafCount = 1 << (maxBits + 1)
+        self.leafCount = 1 << (huffmanCodes.maxBits + 1)
         var tree = Array(repeating: -1, count: leafCount)
 
-        for code in codes {
+        for code in huffmanCodes.codes {
             // Put code in its place in the tree.
             var treeCode = code.code
             var index = 0

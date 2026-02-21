@@ -1,15 +1,14 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.9
 import PackageDescription
 
-let package = Package(
+var package = Package(
     name: "SWCompression",
     platforms: [
-        .macOS(.v10_13),
-        .iOS(.v11),
-        .tvOS(.v11),
-        .watchOS(.v4),
-        // TODO: Enable after upgrading to Swift 5.9.
-        // .visionOS(.v1)
+        .macOS(.v14),
+        .iOS(.v17),
+        .tvOS(.v17),
+        .watchOS(.v10),
+        .visionOS(.v1)
     ],
     products: [
         .library(
@@ -17,10 +16,7 @@ let package = Package(
             targets: ["SWCompression"]),
     ],
     dependencies: [
-        .package(name: "BitByteData", url: "https://github.com/tsolomko/BitByteData",
-                 from: "2.0.0"),
-        .package(name: "SwiftCLI", url: "https://github.com/jakeheis/SwiftCLI",
-                 from: "6.0.0"),
+        .package(url: "https://github.com/tsolomko/BitByteData", from: "2.0.0"),
     ],
     targets: [
         .target(
@@ -30,12 +26,13 @@ let package = Package(
             exclude: ["swcomp"],
             sources: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib"],
             resources: [.copy("PrivacyInfo.xcprivacy")]),
-        .target(
-            name: "swcomp",
-            dependencies: ["SWCompression", "SwiftCLI"],
-            path: "Sources",
-            exclude: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib", "PrivacyInfo.xcprivacy"],
-            sources: ["swcomp"]),
     ],
     swiftLanguageVersions: [.v5]
 )
+
+#if os(macOS)
+package.dependencies.append(.package(url: "https://github.com/jakeheis/SwiftCLI", from: "6.0.0"))
+package.targets.append(.executableTarget(name: "swcomp", dependencies: ["SWCompression", "SwiftCLI"], path: "Sources",
+            exclude: ["Common", "7-Zip", "BZip2", "Deflate", "GZip", "LZ4", "LZMA", "LZMA2", "TAR", "XZ", "ZIP", "Zlib", "PrivacyInfo.xcprivacy"],
+            sources: ["swcomp"]))
+#endif

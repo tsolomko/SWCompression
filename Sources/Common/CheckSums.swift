@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -27,9 +27,9 @@ enum CheckSums {
         return ~crc
     }
 
-    static func bzip2crc32(_ data: Data) -> UInt32 {
+    static func bzip2crc32(_ block: [UInt8]) -> UInt32 {
         var crc: UInt32 = 0xFFFFFFFF
-        for byte in data {
+        for byte in block {
             let index = UInt32(truncatingIfNeeded: byte)
             crc = (crc << 8) ^ CheckSums.bzip2CRC32table[((crc >> 24) ^ index).toInt()]
         }

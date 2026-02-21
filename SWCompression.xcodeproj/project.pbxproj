@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -96,7 +96,7 @@
 		06BAC5941F8CFF28002443F4 /* ZipEntryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BAC5931F8CFF28002443F4 /* ZipEntryInfo.swift */; };
 		06BB8F301E0C2C720079FB9E /* LZMA2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */; };
 		06CC3FDD1F8AAE8B00BD576D /* MsbBitReader+7z.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FDC1F8AAE8B00BD576D /* MsbBitReader+7z.swift */; };
-		06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */; };
+		06CC3FE21F8AAF3100BD576D /* LittleEndianByteReader+XZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC3FE11F8AAF3100BD576D /* LittleEndianByteReader+XZ.swift */; };
 		06CDFC9E1F111D2600292758 /* Deflate+Compress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFC9D1F111D2600292758 /* Deflate+Compress.swift */; };
 		06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA21F111D6C00292758 /* BZip2Error.swift */; };
 		06CDFCA81F111D9700292758 /* DeflateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CDFCA71F111D9700292758 /* DeflateError.swift */; };
@@ -229,7 +229,6 @@
 		E64F71BC26AAFD6A008BB308 /* Data+Tar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */; };
 		E6522FB42789AF9600026B56 /* TarReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FB32789AF9600026B56 /* TarReaderTests.swift */; };
 		E6522FB62789AFA600026B56 /* TarWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FB52789AFA600026B56 /* TarWriterTests.swift */; };
-		E6522FBD2789C4A300026B56 /* FileHandle+CloseCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */; };
 		E652D8F3263D670900FC229B /* test_nonstandard_runlength.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */; };
 		E652D8F5263D678000FC229B /* test_nonstandard_runlength.answer in Resources */ = {isa = PBXBuildFile; fileRef = E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */; };
 		E652FECA27007E79006BC312 /* test3.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEC127007E78006BC312 /* test3.lz4 */; };
@@ -276,6 +275,7 @@
 		E6C057D627498F5A007C83DF /* TarWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C057D527498F5A007C83DF /* TarWriter.swift */; };
 		E6C4150726FE230A00F9D36F /* XxHash32.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C4150626FE230A00F9D36F /* XxHash32.swift */; };
 		E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */; };
+		E6DCC9D82F30DA080042AE2E /* BitByteData in Frameworks */ = {isa = PBXBuildFile; productRef = E6DCC9D72F30DA080042AE2E /* BitByteData */; };
 		E6DF9ECE2704BF14003BD91E /* test_multi_frame.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E6DF9ECD2704BF14003BD91E /* test_multi_frame.lz4 */; };
 		E6E49D522BD5081D00BFC756 /* PrivacyInfo.xcprivacy in CopyFiles */ = {isa = PBXBuildFile; fileRef = E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */; };
 		E6EDD6A826F7767F00884532 /* test_minor_version_3.7z in Resources */ = {isa = PBXBuildFile; fileRef = E6EDD6A626F7767E00884532 /* test_minor_version_3.7z */; };
@@ -396,7 +396,7 @@
 		06BB8F2F1E0C2C720079FB9E /* LZMA2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LZMA2.swift; sourceTree = "<group>"; };
 		06BE1AC81DB410F100EE0F59 /* SWCompression.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SWCompression.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CC3FDC1F8AAE8B00BD576D /* MsbBitReader+7z.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MsbBitReader+7z.swift"; sourceTree = "<group>"; };
-		06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteReader+XZ.swift"; sourceTree = "<group>"; };
+		06CC3FE11F8AAF3100BD576D /* LittleEndianByteReader+XZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LittleEndianByteReader+XZ.swift"; sourceTree = "<group>"; };
 		06CDFC9D1F111D2600292758 /* Deflate+Compress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Deflate+Compress.swift"; sourceTree = "<group>"; };
 		06CDFCA21F111D6C00292758 /* BZip2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BZip2Error.swift; sourceTree = "<group>"; };
 		06CDFCA71F111D9700292758 /* DeflateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeflateError.swift; sourceTree = "<group>"; };
@@ -531,7 +531,6 @@
 		E64F71BB26AAFD6A008BB308 /* Data+Tar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Tar.swift"; sourceTree = "<group>"; };
 		E6522FB32789AF9600026B56 /* TarReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarReaderTests.swift; sourceTree = "<group>"; };
 		E6522FB52789AFA600026B56 /* TarWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarWriterTests.swift; sourceTree = "<group>"; };
-		E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHandle+CloseCompat.swift"; sourceTree = "<group>"; };
 		E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.bz2; sourceTree = "<group>"; };
 		E652D8F4263D678000FC229B /* test_nonstandard_runlength.answer */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_nonstandard_runlength.answer; sourceTree = "<group>"; };
 		E652FEC127007E78006BC312 /* test3.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.lz4; sourceTree = "<group>"; };
@@ -591,6 +590,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				06F0659A1FFB761600312A82 /* SWCompression.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6DCC9D52F30DA020042AE2E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6DCC9D82F30DA080042AE2E /* BitByteData in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,7 +683,7 @@
 				061C06201F0E89D900832F0C /* XZError.swift */,
 				065146221FA8E20C007F83F4 /* XZBlock.swift */,
 				0651461D1FA8E004007F83F4 /* XZStreamHeader.swift */,
-				06CC3FE11F8AAF3100BD576D /* ByteReader+XZ.swift */,
+				06CC3FE11F8AAF3100BD576D /* LittleEndianByteReader+XZ.swift */,
 				06516B75213938B000C9823B /* Sha256.swift */,
 			);
 			path = XZ;
@@ -695,9 +702,9 @@
 		06BE1ABE1DB410F100EE0F59 = {
 			isa = PBXGroup;
 			children = (
-				E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */,
 				06BE1ACA1DB410F100EE0F59 /* Sources */,
 				06F065A01FFB763300312A82 /* Tests */,
+				E6E49D502BD507D700BFC756 /* PrivacyInfo.xcprivacy */,
 				E631055A27086132006EACC3 /* SWCompression.xctestplan */,
 				06BE1AC91DB410F100EE0F59 /* Products */,
 			);
@@ -844,7 +851,6 @@
 				E6522FB52789AFA600026B56 /* TarWriterTests.swift */,
 				06F065A61FFB763300312A82 /* TarTests.swift */,
 				E6522FB32789AF9600026B56 /* TarReaderTests.swift */,
-				E6522FBC2789C4A300026B56 /* FileHandle+CloseCompat.swift */,
 				06F065A91FFB763300312A82 /* XzTests.swift */,
 				06F065A41FFB763300312A82 /* ZipTests.swift */,
 				06D42DA62067B71000C1A98B /* TestZipExtraField.swift */,
@@ -1128,10 +1134,12 @@
 			buildPhases = (
 				06BE1AC31DB410F100EE0F59 /* Sources */,
 				E6E49D512BD5081700BFC756 /* CopyFiles */,
+				E6DCC9D52F30DA020042AE2E /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E6DCC9DA2F30DB4E0042AE2E /* PBXTargetDependency */,
 			);
 			name = SWCompression;
 			productName = SWCompression;
@@ -1145,7 +1153,6 @@
 				06F065911FFB761600312A82 /* Sources */,
 				06F065921FFB761600312A82 /* Frameworks */,
 				06F065931FFB761600312A82 /* Resources */,
-				062BE32F1FFBADB300343CAD /* Copy BitByteData.framework into test bundle */,
 			);
 			buildRules = (
 			);
@@ -1165,7 +1172,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1530;
+				LastUpgradeCheck = 2620;
 				ORGANIZATIONNAME = "Timofey Solomko";
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
@@ -1179,7 +1186,7 @@
 				};
 			};
 			buildConfigurationList = 06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */;
-			compatibilityVersion = "Xcode 11.4";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1187,6 +1194,9 @@
 				Base,
 			);
 			mainGroup = 06BE1ABE1DB410F100EE0F59;
+			packageReferences = (
+				E6DCC9D12F30D7610042AE2E /* XCRemoteSwiftPackageReference "BitByteData" */,
+			);
 			productRefGroup = 06BE1AC91DB410F100EE0F59 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1358,25 +1368,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		062BE32F1FFBADB300343CAD /* Copy BitByteData.framework into test bundle */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy BitByteData.framework into test bundle";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "if [[ ${SDK_NAME} == iphone* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == iphonesimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/ios-arm64*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == appletv* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == appletvsimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/tvos-arm64/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == watch* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\n    if [[ ${SDK_NAME} == watchsimulator* ]]; then\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-*-simulator/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    else\n        cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Frameworks/\n    fi\nelif [[ ${SDK_NAME} == macos* ]]; then\n    if [[ ! -d ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/ ]]; then\n        mkdir -p ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\n    fi\n    cp -a ${PROJECT_DIR}/Carthage/Build/BitByteData.xcframework/macos-*/BitByteData.framework ${BUILT_PRODUCTS_DIR}/TestSWCompression.xctest/Contents/Frameworks/\nfi\n\nxattr -rc ${BUILT_PRODUCTS_DIR}\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		06BE1AC31DB410F100EE0F59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1455,7 +1446,7 @@
 				06CDFCA31F111D6C00292758 /* BZip2Error.swift in Sources */,
 				06D3802E21E36190008B50C6 /* Code.swift in Sources */,
 				06CFF6B22078C5A5003B8375 /* TarParser.swift in Sources */,
-				06CC3FE21F8AAF3100BD576D /* ByteReader+XZ.swift in Sources */,
+				06CC3FE21F8AAF3100BD576D /* LittleEndianByteReader+XZ.swift in Sources */,
 				065D0ADC1F2B9D9100CE2DA8 /* 7zEntryInfo.swift in Sources */,
 				06F276DF1F2BAB4A00E67335 /* 7zEntry.swift in Sources */,
 				0651461E1FA8E004007F83F4 /* XZStreamHeader.swift in Sources */,
@@ -1506,7 +1497,6 @@
 				E6D86D2F26FE35C50032CFFA /* XxHash32Tests.swift in Sources */,
 				06F0661B1FFB763300312A82 /* XzTests.swift in Sources */,
 				06F0661E1FFB763300312A82 /* BZip2CompressionTests.swift in Sources */,
-				E6522FBD2789C4A300026B56 /* FileHandle+CloseCompat.swift in Sources */,
 				06F066131FFB763300312A82 /* Constants.swift in Sources */,
 				06F0661C1FFB763300312A82 /* SevenZipTests.swift in Sources */,
 				06F066161FFB763300312A82 /* ZipTests.swift in Sources */,
@@ -1520,6 +1510,10 @@
 			isa = PBXTargetDependency;
 			target = 06BE1AC71DB410F100EE0F59 /* SWCompression */;
 			targetProxy = 06F0659B1FFB761600312A82 /* PBXContainerItemProxy */;
+		};
+		E6DCC9DA2F30DB4E0042AE2E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = E6DCC9D92F30DB4E0042AE2E /* BitByteData */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1554,19 +1548,7 @@
 				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1575,22 +1557,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_LDFLAGS = (
-					"-framework",
-					BitByteData,
-				);
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos xrsimulator xros";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 17.6;
 				VERSIONING_SYSTEM = "apple-generic";
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Debug;
 		};
@@ -1623,19 +1601,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EAGER_LINKING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/tvos-arm64_x86_64-simulator\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_armv7\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_i386_x86_64-simulator\"",
-					"\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/ios-arm64_x86_64-simulator\"",
-				);
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/macos-arm64_x86_64\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_32_armv7k\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Carthage/Build/BitByteData.xcframework/watchos-arm64_i386_x86_64-simulator\"";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -1643,21 +1609,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				OTHER_CODE_SIGN_FLAGS = "--deep";
-				OTHER_LDFLAGS = (
-					"-framework",
-					BitByteData,
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "macosx watchsimulator iphonesimulator appletvsimulator watchos appletvos iphoneos xrsimulator xros";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 17.6;
 				VERSIONING_SYSTEM = "apple-generic";
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Release;
 		};
@@ -1672,19 +1634,8 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/Frameworks",
-					"@executable_path/Frameworks",
-					"@loader_path/../Frameworks",
-					"@executable_path/../Frameworks",
-				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++14";
-				OTHER_LDFLAGS = (
-					"-framework",
-					BitByteData,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1702,19 +1653,8 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = SWCompression.xcodeproj/SWCompression.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/Frameworks",
-					"@executable_path/Frameworks",
-					"@loader_path/../Frameworks",
-					"@executable_path/../Frameworks",
-				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++14";
-				OTHER_LDFLAGS = (
-					"-framework",
-					BitByteData,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.SWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1726,13 +1666,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = SWCompression.xcodeproj/TestSWCompression.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/Frameworks",
-					"@executable_path/Frameworks",
-					"@loader_path/../Frameworks",
-					"@executable_path/../Frameworks",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1743,13 +1676,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = SWCompression.xcodeproj/TestSWCompression.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/Frameworks",
-					"@executable_path/Frameworks",
-					"@loader_path/../Frameworks",
-					"@executable_path/../Frameworks",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.tsolomko.TestSWCompression;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1786,6 +1712,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E6DCC9D12F30D7610042AE2E /* XCRemoteSwiftPackageReference "BitByteData" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tsolomko/BitByteData";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E6DCC9D72F30DA080042AE2E /* BitByteData */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6DCC9D12F30D7610042AE2E /* XCRemoteSwiftPackageReference "BitByteData" */;
+			productName = BitByteData;
+		};
+		E6DCC9D92F30DB4E0042AE2E /* BitByteData */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6DCC9D12F30D7610042AE2E /* XCRemoteSwiftPackageReference "BitByteData" */;
+			productName = BitByteData;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 06BE1ABF1DB410F100EE0F59 /* Project object */;
 }

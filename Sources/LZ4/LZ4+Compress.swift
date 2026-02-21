@@ -1,10 +1,9 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
-import BitByteData
 
 extension LZ4: CompressionAlgorithm {
 

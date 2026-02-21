@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -41,17 +41,18 @@ extension BZip2: CompressionAlgorithm {
     public static func compress(data: Data, blockSize: BlockSize) -> Data {
         let bitWriter = MsbBitWriter()
         // We intentionally use smaller block size for compression to account for potential data size expansion
-        //  after intial RLE, which seems to be not being expected by original BZip2 implementation.
+        // after intial RLE, which seems to be not being expected by original BZip2 implementation.
+        // In the worst case initial RLE causes expansion by a factor of 1.25, so 1000 / 1.25 = 800.
         let rawBlockSize = blockSize.sizeInKilobytes * 800
         // BZip2 Header.
-        bitWriter.write(number: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
-        bitWriter.write(number: 0x68, bitsCount: 8) // Version = 'h'.
+        bitWriter.write(unsignedNumber: 0x425a, bitsCount: 16) // Magic number = 'BZ'.
+        bitWriter.write(unsignedNumber: 0x68, bitsCount: 8) // Version = 'h'.
         bitWriter.write(number: blockSize.headerByte, bitsCount: 8) // Block size.
 
         var totalCRC: UInt32 = 0
         for i in stride(from: data.startIndex, to: data.endIndex, by: rawBlockSize) {
-            let blockData = data[i..<min(data.endIndex, i + rawBlockSize)]
-            let blockCRC = CheckSums.bzip2crc32(blockData)
+            let block = data[i..<min(data.endIndex, i + rawBlockSize)].toByteArray()
+            let blockCRC = CheckSums.bzip2crc32(block)
 
             totalCRC = (totalCRC << 1) | (totalCRC >> 31)
             totalCRC ^= blockCRC
@@ -60,7 +61,7 @@ extension BZip2: CompressionAlgorithm {
             bitWriter.write(bits: blockMarker) // Block magic number.
             bitWriter.write(number: blockCRC.toInt(), bitsCount: 32) // Block crc32.
 
-            process(block: blockData, bitWriter)
+            process(block, bitWriter)
         }
 
         // EOS magic number.
@@ -72,8 +73,8 @@ extension BZip2: CompressionAlgorithm {
         return bitWriter.data
     }
 
-    private static func process(block data: Data, _ bitWriter: MsbBitWriter) {
-        var out = initialRle(data)
+    private static func process(_ block: [UInt8], _ bitWriter: MsbBitWriter) {
+        var out = initialRle(block)
 
         var pointer = 0
         (out, pointer) = BurrowsWheeler.transform(bytes: out)
@@ -121,9 +122,9 @@ extension BZip2: CompressionAlgorithm {
                     // Otherwise, let's create a new table and check if it gives us better results.
                     // First, we calculate code lengths and codes for our current stats.
                     let lengths = BZip2.lengths(from: stats)
-                    let codes = Code.huffmanCodes(from: lengths)
+                    let codes = Code.huffmanCodes(from: lengths).codes
                     // Then, using these codes, we create a new Huffman tree.
-                    let table = EncodingTree(codes: codes.codes, bitWriter)
+                    let table = EncodingTree(codes, bitWriter)
                     if table.bitSize(for: stats) < minimumSize {
                         tables.append(table)
                         tablesLengths.append(lengths.sorted { $0.symbol < $1.symbol }.map { $0.codeLength })
@@ -147,13 +148,19 @@ extension BZip2: CompressionAlgorithm {
 
         // Now, we perform encoding itself.
         // But first, we need to finish block header.
-        bitWriter.write(number: 0, bitsCount: 1) // "Randomized".
+        bitWriter.write(bit: 0) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
-        var usedMap = Array(repeating: UInt8(0), count: 16)
+        // Encode which symbols (bytes) are used in the data. All possible 256 symbols (0...255) are split into "maps"
+        // of 16 consequent symbols. Each map is a sequence of 16 bits where a set bit indicates that a symbol is used.
+        // If a map would consist of only zero bits, then it is omitted. This is determined in the construction of `usedMap`.
+        var usedMap = Array(repeating: 0 as UInt8, count: 16)
         for usedByte in usedBytes {
-            guard usedByte <= 255
-                else { fatalError("Incorrect used byte.") }
+            // `usedBytes` is an output of the BW transform which does not change symbols used. The input of the BW
+            // transform is an output of initial RLE encoding. Since a run length value is 255 or less and the input
+            // data consists of normal bytes which also have values of 255 or less, `usedByte` cannot be larger than 255
+            // by construction.
+            assert(usedByte <= 255, "Incorrect usedByte.")
             usedMap[usedByte / 16] = 1
         }
         bitWriter.write(bits: usedMap)
@@ -162,7 +169,7 @@ extension BZip2: CompressionAlgorithm {
         for i in 0..<16 {
             guard usedMap[i] == 1 else { continue }
             for j in 0..<16 {
-                if usedBytesIndex < usedBytes.count && i * 16 + j == usedBytes[usedBytesIndex] {
+                if usedBytesIndex < usedBytes.endIndex && i * 16 + j == usedBytes[usedBytesIndex] {
                     bitWriter.write(bit: 1)
                     usedBytesIndex += 1
                 } else {
@@ -174,10 +181,14 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(number: tables.count, bitsCount: 3)
         bitWriter.write(number: selectors.count, bitsCount: 15)
 
-        let mtfSelectors = mtf(selectors, characters: Array(0..<selectors.count))
+        // Selectors are indices into `tables` list, so by construction they can only take values between 0 and
+        // `tables.count - 1`. This correspondingly limits the list of characters for the MTF transform.
+        let mtfSelectors = mtf(selectors, maxValue: tables.count - 1)
         for selector in mtfSelectors {
-            guard selector <= 5
-                else { fatalError("Incorrect selector.") }
+            // The output of MTF transform are the indices into the supplied characters list. Since the length of the
+            // characters list is given by `tables.count`, by construction `selector` should be between 0 and
+            // `tables.count - 1`.
+            assert(selector < tables.count)
             bitWriter.write(bits: Array(repeating: 1, count: selector))
             bitWriter.write(bit: 0)
         }
@@ -185,53 +196,59 @@ extension BZip2: CompressionAlgorithm {
         // Delta bit lengths.
         for lengths in tablesLengths {
             // Starting length.
-            var currentLength = lengths[0]
-            bitWriter.write(number: currentLength, bitsCount: 5)
+            var lastLength = lengths[0]
+            bitWriter.write(number: lastLength, bitsCount: 5)
             for length in lengths {
-                while currentLength != length {
-                    bitWriter.write(bit: 1) // Alter length.
-                    if currentLength > length {
-                        bitWriter.write(bit: 1) // Decrement length.
-                        currentLength -= 1
-                    } else {
-                        bitWriter.write(bit: 0) // Increment length.
-                        currentLength += 1
-                    }
+                // In the worst case delta between two lengths is 19. This delta requires 19 * 2 = 38 bits to encode
+                // which fits into `UInt` (at least, on modern 64-bit systems), so we can use `write(unsignedNumber:)`.
+                if lastLength > length {
+                    // Bits: 11 -> 11_11 -> 11_11_11 -> 11_11_11_11 -> ...
+                    // Numbers: 3 -> 15 -> 63 -> 255 -> ...
+                    // https://oeis.org/A024036
+                    let diff = lastLength - length
+                    bitWriter.write(unsignedNumber: (1 << (2 * diff)) - 1, bitsCount: 2 * diff)
+                } else if lastLength < length {
+                    // Bits: 10 -> 10_10 -> 10_10_10 -> 10_10_10_10 -> ...
+                    // Numbers: 2 -> 10 -> 42 -> 170 -> ...
+                    // https://oeis.org/A020988
+                    let diff = length - lastLength
+                    bitWriter.write(unsignedNumber: ((1 << (2 * diff)) - 1) * 2 / 3 , bitsCount: 2 * diff)
                 }
+                lastLength = length
                 bitWriter.write(bit: 0)
             }
         }
 
         // Contents.
         var encoded = 0
-        var selectorPointer = 0
-        var t: EncodingTree?
+        var table = tables[selectors[selectors.startIndex]]
+        var selectorIndex = selectors.startIndex &+ 1
         for symbol in out {
-            encoded -= 1
-            if encoded <= 0 {
-                encoded = 50
-                if selectorPointer == selectors.count {
-                    fatalError("Incorrect selector.")
-                } else if selectorPointer < selectors.count {
-                    t = tables[selectors[selectorPointer]]
-                    selectorPointer += 1
-                }
+            // New table is selected every 50 symbols.
+            if encoded >= 50 {
+                // Selectors were added every 50 symbols. So by construction `selectorIndex` can never exceed the
+                // amount of available selectors.
+                assert(selectorIndex < selectors.endIndex, "Incorrect selectorIndex.")
+                table = tables[selectors[selectorIndex]]
+                selectorIndex &+= 1
+                encoded = 0
             }
-            t?.code(symbol: symbol)
+            table.code(symbol: symbol)
+            encoded &+= 1
         }
     }
 
     /// Initial Run Length Encoding.
-    private static func initialRle(_ data: Data) -> [Int] {
+    private static func initialRle(_ block: [UInt8]) -> [Int] {
         var out = [Int]()
-        var index = data.startIndex
-        while index < data.endIndex {
+        var index = block.startIndex
+        while index < block.endIndex {
             var runLength = 1
-            while index + 1 < data.endIndex && data[index] == data[index + 1] && runLength < 255 {
+            while index + 1 < block.endIndex && block[index] == block[index + 1] && runLength < 255 {
                 runLength += 1
                 index += 1
             }
-            let byte = data[index].toInt()
+            let byte = block[index].toInt()
             for _ in 0..<min(4, runLength) {
                 out.append(byte)
             }
@@ -243,10 +260,10 @@ extension BZip2: CompressionAlgorithm {
         return out
     }
 
-    private static func mtf(_ array: [Int], characters: [Int]) -> [Int] {
+    /// Assumes that the characters are given by a list of integers from 0 up to and including `maxValue`.
+    private static func mtf(_ array: [Int], maxValue: Int) -> [Int] {
         var out = [Int]()
-        /// Mutable copy of `characters`.
-        var dictionary = characters
+        var dictionary = Array(0...maxValue)
         for i in 0..<array.count {
             let index = dictionary.firstIndex(of: array[i])!
             out.append(index)

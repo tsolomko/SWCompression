@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -12,7 +12,6 @@ struct LZMARangeDecoder {
 
     private var range = 0xFFFFFFFF as UInt32
     private var code = 0 as UInt32
-    private(set) var isCorrupted = false
 
     var isFinishedOK: Bool {
         return self.code == 0
@@ -27,7 +26,7 @@ struct LZMARangeDecoder {
 
         let byte = self.byteReader.byte()
         self.code = self.byteReader.uint32().byteSwapped
-        guard byte == 0 && self.code != self.range
+        guard byte == 0
             else { throw LZMAError.rangeDecoderInitError }
     }
 
@@ -52,10 +51,6 @@ struct LZMARangeDecoder {
             self.code = self.code &- self.range
             let t = 0 &- (self.code >> 31)
             self.code = self.code &+ (self.range & t)
-
-            if self.code == self.range {
-                self.isCorrupted = true
-            }
 
             self.normalize()
 
