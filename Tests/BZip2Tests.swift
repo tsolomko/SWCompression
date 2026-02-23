@@ -96,4 +96,16 @@ class BZip2Tests: XCTestCase {
         }
     }
 
+    func testBZip2Truncation() throws {
+        for i in 1...9 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            // It would be better to increase amount of different truncations tested, but we hit runtime limits in CI.
+            for _ in 0..<5 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? BZip2.decompress(data: testData[testData.startIndex..<truncationIndex])
+            }
+        }
+    }
+
 }
