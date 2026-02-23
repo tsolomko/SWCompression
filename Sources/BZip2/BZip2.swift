@@ -156,48 +156,47 @@ public class BZip2: DecompressionAlgorithm {
 
         let tables = try computeTables()
 
-        var selectorPointer = 0
         var decoded = 0
+        var table = tables[selectors[selectors.startIndex]]
+        var selectorIndex = selectors.startIndex &+ 1
         var runLength = 0
-        var repeatPower = 0
-        var buffer: [UInt8] = []
-        var currentTable: DecodingTree?
+        var repeatPower = 1
+        var buffer = [UInt8]()
 
         while true {
-            decoded -= 1
-            if decoded <= 0 {
-                decoded = 50
-                if selectorPointer == selectors.count {
-                    throw BZip2Error.wrongSelector
-                } else if selectorPointer < selectors.count {
-                    currentTable = tables[selectors[selectorPointer]]
-                    selectorPointer += 1
-                }
+            if decoded >= 50 {
+                guard selectorIndex < selectorsCount
+                    else { throw BZip2Error.wrongSelector }
+                table = tables[selectors[selectorIndex]]
+                selectorIndex &+= 1
+                decoded = 0
             }
 
-            guard let symbol = currentTable?.findNextSymbol(), symbol != -1
+            let symbol = table.findNextSymbol()
+            guard symbol != -1
                 else { throw BZip2Error.symbolNotFound }
+            decoded &+= 1
 
             if symbol == 0 || symbol == 1 { // RUNA and RUNB symbols.
-                if runLength == 0 {
-                    repeatPower = 1
-                }
-                runLength += repeatPower << symbol
+                runLength &+= repeatPower << symbol
                 repeatPower <<= 1
                 continue
-            } else if runLength > 0 {
+            }
+            if runLength > 0 {
+                // There might have been a repeat run right before EOS symbol.
                 for _ in 0..<runLength {
                     buffer.append(usedSymbols[0])
                 }
                 runLength = 0
+                repeatPower = 1
             }
             if symbol == usedSymbolsCount - 1 { // End of stream symbol.
                 break
-            } else { // Move to front inverse.
-                let element = usedSymbols.remove(at: symbol - 1)
-                usedSymbols.insert(element, at: 0)
-                buffer.append(element)
             }
+            // Move to front inverse.
+            let element = usedSymbols.remove(at: symbol - 1)
+            usedSymbols.insert(element, at: 0)
+            buffer.append(element)
         }
 
         let nt = BurrowsWheeler.reverse(bytes: buffer, pointer)
