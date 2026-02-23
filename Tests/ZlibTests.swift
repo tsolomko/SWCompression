@@ -74,4 +74,14 @@ class ZlibTests: XCTestCase {
         }
     }
 
+    func testZlibTruncation() throws {
+        for testName in ["test", "random_file", "test_empty"] {
+            let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
+            for _ in 0..<100 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? ZlibArchive.unarchive(archive: testData[testData.startIndex..<truncationIndex])
+            }
+        }
+    }
+
 }
