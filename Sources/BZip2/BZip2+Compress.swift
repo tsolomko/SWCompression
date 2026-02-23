@@ -151,8 +151,8 @@ extension BZip2: CompressionAlgorithm {
         bitWriter.write(bit: 0) // "Randomized".
         bitWriter.write(number: pointer, bitsCount: 24) // Original pointer (from BWT).
 
-        // Encode which symbols (bytes) are used in the data. All possible 256 symbols (0...255) are split into "maps"
-        // of 16 consequent symbols. Each map is a sequence of 16 bits where a set bit indicates that a symbol is used.
+        // Encode which symbols (bytes) are used in the data. All possible 256 symbols (0...255) are split into 16 "maps"
+        // of 16 sequential symbols. Each map is a sequence of 16 bits where a non-zero bits indicate that used symbols.
         // If a map would consist of only zero bits, then it is omitted. This is determined in the construction of `usedMap`.
         var usedMap = Array(repeating: 0 as UInt8, count: 16)
         for usedByte in usedBytes {

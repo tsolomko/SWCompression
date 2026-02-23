@@ -26,9 +26,9 @@ public class BZip2: DecompressionAlgorithm {
     }
 
     static func decompress(_ bitReader: MsbBitReader) throws -> Data {
-        // Valid BZip2 "archive" must contain at least 14 bytes of data: magic number (2 bytes), method (1 byte), block
-        // size (1 byte), block type (6 bytes), block CRC (4 bytes).
-        guard bitReader.bitsLeft >= 14 * 8
+        // Valid BZip2 "archive" must contain at least 14 bytes of data: magic number (2 bytes), method (1 byte), and
+        // block size (1 byte).
+        guard bitReader.bitsLeft >= 32
             else { throw BZip2Error.wrongMagic }
 
         /// An array for storing output data
@@ -45,6 +45,9 @@ public class BZip2: DecompressionAlgorithm {
 
         var totalCRC: UInt32 = 0
         while true {
+            // Each BZip2 block must contain block type (6 bytes) and block CRC32 (4 bytes).
+            guard bitReader.bitsLeft >= 80
+                else { throw BZip2Error.wrongMagic }
             // Using `UInt64` because 48 bits may not fit into `Int` on some platforms.
             let blockType = bitReader.uint64(fromBits: 48)
 
@@ -70,21 +73,31 @@ public class BZip2: DecompressionAlgorithm {
     }
 
     private static func decode(_ bitReader: MsbBitReader, _ blockSize: BlockSize) throws -> [UInt8] {
+        // Truncation checks: there is no such thing as "empty BZip2 blocks". Empty data after compression produces
+        // only a "CRC32 block". As such when processing a normal BZip2 block we can assume that various BZip2
+        // structures (such as table selectors or code lengths) are present, and there are at least some symbols encoded.
+
+        // Randomized bit, pointer (24 bits), and bitmap of used symbol blocks (16 bits) require 41 bits.
+        guard bitReader.bitsLeft >= 41
+            else { throw BZip2Error.wrongMagic }
+
         let isRandomized = bitReader.bit()
         guard isRandomized == 0
             else { throw BZip2Error.randomizedBlock }
 
         let pointer = bitReader.int(fromBits: 24)
 
-        // Decoding which symbols are used in Huffman tables.
-        // The "list" of all possible 256 symbols is split into 16 blocks.
-        // If no symbols from a block are in use, then the block is not present.
-        // First, we decode which blocks are present.
-        let usedBlocksBitMap = UInt16(bitReader.int(fromBits: 16))
+        // Decoding which symbols are used in Huffman tables. All possible 256 symbols (0...255) are split into 16 "maps"
+        // of 16 sequential symbols. Each map is a sequence of 16 bits where a non-zero bits indicate that used symbols.
+        // A map is omitteed if none of its symbols are in use. First, we decode which maps are present.
+        let usedBlocksBitMap = bitReader.uint16(fromBits: 16)
+        // For each non-zero bit in the bitmap there should be 16 bits of the block. After that there should be 3 bits
+        // for the number of Huffman tables and 15 bits for the selectors count.
+        guard bitReader.bitsLeft >= 16 * usedBlocksBitMap.nonzeroBitCount + 3 + 15
+            else { throw BZip2Error.wrongMagic }
+
         var blockMask = 1 << 15 as UInt16
         var usedSymbols = [UInt8]()
-        // Two additional symbols are RUNA and RUNB.
-        var usedSymbolsCount = 2
         while blockMask > 0 {
             if usedBlocksBitMap & blockMask > 0 {
                 // Each block, if present, is a set of 16 bits which, if set, represent that the corresponding symbols
@@ -93,7 +106,6 @@ public class BZip2: DecompressionAlgorithm {
                 var symbolMask = 1 << 15 as UInt16
                 while symbolMask > 0 {
                     if usedSymbolsBitMask & symbolMask > 0 {
-                        usedSymbolsCount += 1
                         usedSymbols.append(UInt8(blockMask.leadingZeroBitCount * 16 + symbolMask.leadingZeroBitCount))
                     }
                     symbolMask >>= 1
@@ -101,60 +113,74 @@ public class BZip2: DecompressionAlgorithm {
             }
             blockMask >>= 1
         }
+        // Two additional symbols are RUNA and RUNB.
+        let usedSymbolsCount = 2 + usedSymbols.count
 
-        let huffmanGroups = bitReader.int(fromBits: 3)
-        guard huffmanGroups >= 2 && huffmanGroups <= 6
+        let huffmanTablesCount = bitReader.int(fromBits: 3)
+        guard huffmanTablesCount >= 2 && huffmanTablesCount <= 6
             else { throw BZip2Error.wrongHuffmanGroups }
 
-        func computeSelectors() throws -> [Int] {
-            let selectorsUsed = bitReader.int(fromBits: 15)
+        let selectorsCount = bitReader.int(fromBits: 15)
+        var mtf = Array(0..<huffmanTablesCount)
 
-            var mtf = Array(0..<huffmanGroups)
-            var selectorsList = [Int]()
-
-            for _ in 0..<selectorsUsed {
-                var c = 0
-                while bitReader.bit() > 0 {
-                    c += 1
-                    guard c < huffmanGroups
-                        else { throw BZip2Error.wrongSelector }
+        // It is impossible to calculate in advance how many bits encode table selectors. At minimum, if each selector
+        // is encoded by a single zero bit (which means only the zeroth Huffman table is utilized), `selectorsCount`
+        // bits are used. At maximum, when all symbols are encoded with the last Huffman table, each selector is given
+        // by `huffmanTablesCount - 1` non-zero bits and one zero bit. This gives `huffmanTablesCount * selectorsCount`
+        // bits in total.
+        // Due to this unpredictability we are forced to check if there are still bits left before every read operation,
+        // similarly to how bit reading is done in `DecodingTree.findNextSymbol()`.
+        var selectors = [Int]()
+        // Accessing `bitsLeft` property of `bitReader` incurs a lot of overhead, so we create a local copy.
+        var bitsLeft = bitReader.bitsLeft
+        for _ in 0..<selectorsCount {
+            var c = 0
+            while bitsLeft > 0 {
+                let bit = bitReader.bit()
+                bitsLeft -= 1
+                if bit == 0 {
+                    break
                 }
-                if c >= 0 {
-                    let el = mtf.remove(at: c)
-                    mtf.insert(el, at: 0)
-                }
-                selectorsList.append(mtf[0])
+                c += 1
             }
-
-            return selectorsList
+            guard c < huffmanTablesCount
+                else { throw BZip2Error.wrongSelector }
+            let el = mtf.remove(at: c)
+            mtf.insert(el, at: 0)
+            selectors.append(el)
         }
 
-        let selectors = try computeSelectors()
-
-        func computeTables() throws -> [DecodingTree] {
-            var tables = [DecodingTree]()
-            for _ in 0..<huffmanGroups {
-                var length = bitReader.int(fromBits: 5)
-                var lengths = [CodeLength]()
-                for i in 0..<usedSymbolsCount {
-                    guard length >= 0 && length <= 20
+        // Similar to decoding selectors, code lengths are also encoded in unpredictable manner. As such, we check for
+        // input truncation before reading every bit.
+        var tables = [DecodingTree]()
+        for _ in 0..<huffmanTablesCount {
+            guard bitsLeft >= 5
+                else { throw BZip2Error.wrongHuffmanCodeLength }
+            var length = bitReader.int(fromBits: 5)
+            bitsLeft -= 5
+            var codeLengths = [CodeLength]()
+            for i in 0..<usedSymbolsCount {
+                guard length >= 0 && length <= 20
+                    else { throw BZip2Error.wrongHuffmanCodeLength }
+                while bitsLeft > 0 {
+                    let bit = bitReader.bit()
+                    bitsLeft -= 1
+                    if bit == 0 {
+                        break
+                    }
+                    guard bitsLeft > 0
                         else { throw BZip2Error.wrongHuffmanCodeLength }
-                    while bitReader.bit() > 0 {
-                        length -= (bitReader.bit().toInt() * 2 - 1)
-                    }
-                    if length > 0 {
-                        lengths.append(CodeLength(symbol: i, codeLength: length))
-                    }
+                    length -= (bitReader.bit().toInt() * 2 - 1)
+                    bitsLeft -= 1
                 }
-                let codes = Code.huffmanCodes(from: lengths)
-                let table = DecodingTree(codes, bitReader)
-                tables.append(table)
+                if length > 0 {
+                    codeLengths.append(CodeLength(symbol: i, codeLength: length))
+                }
             }
-
-            return tables
+            let codes = Code.huffmanCodes(from: codeLengths)
+            let table = DecodingTree(codes, bitReader)
+            tables.append(table)
         }
-
-        let tables = try computeTables()
 
         var decoded = 0
         var table = tables[selectors[selectors.startIndex]]
