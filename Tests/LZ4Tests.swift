@@ -202,4 +202,15 @@ class LZ4Tests: XCTestCase {
         }
     }
 
+    func testLZ4Truncation() throws {
+        for i in 1...9 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
+            for _ in 0..<100 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? LZ4.decompress(data: testData[testData.startIndex..<truncationIndex])
+            }
+        }
+    }
+
 }
