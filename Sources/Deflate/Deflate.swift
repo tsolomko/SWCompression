@@ -96,6 +96,10 @@ public class Deflate: DecompressionAlgorithm {
                     guard bitReader.bitsLeft >= 3 * codeLengthsCount
                         else { throw DeflateError.symbolNotFound }
 
+                    // Code lengths of the literal/length and distance Huffman trees are encoded with another Huffman
+                    // tree using a special alphabet. The code lengths for this latter tree are presented in a specific
+                    // order which is stored in `Constants.codeLengthOrders`: `codeLengthOrders[i]` is the code lengths
+                    // alphabet symbol at the i-th place in the sequence.
                     var orderedCodeLengths = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsCount {
                         orderedCodeLengths[Constants.codeLengthOrders[i]] = bitReader.int(fromBits: 3)
@@ -105,50 +109,44 @@ public class Deflate: DecompressionAlgorithm {
                     let dynamicCodeTree = DecodingTree(dynamicCodes, bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
-                    var codeLengths: [Int] = []
-                    var n = 0
-                    while n < (literals + distances) {
+                    var codeLengths = Array(repeating: 0, count: literals + distances)
+                    var n = codeLengths.startIndex
+                    while n < codeLengths.endIndex {
                         // Finding next Huffman tree's symbol in data.
                         let symbol = dynamicCodeTree.findNextSymbol()
                         guard symbol != -1 else { throw DeflateError.symbolNotFound }
 
-                        let count: Int
-                        let what: Int
                         if symbol >= 0 && symbol <= 15 {
                             // It is a raw code length.
-                            count = 1
-                            what = symbol
+                            codeLengths[n] = symbol
+                            n += 1
                         } else if symbol == 16 {
                             // Copy previous code length 3 to 6 times.
                             // Next two bits show how many times we need to copy.
                             guard bitReader.bitsLeft >= 2
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 2) + 3
-                            what = codeLengths.last!
+                            let copyCount = bitReader.int(fromBits: 2) + 3
+                            for i in 0..<copyCount {
+                                codeLengths[n + i] = codeLengths[n - 1]
+                            }
+                            n += copyCount
                         } else if symbol == 17 {
-                            // Repeat code length 0 from 3 to 10 times.
-                            // Next three bits show how many times we need to copy.
+                            // Repeat code length 0 from 3 to 10 times. Next 3 bits show how many times we need to copy.
+                            // Since `codeLengths` array was already preinitialized with zeros, we just have to skip
+                            // ahead.
                             guard bitReader.bitsLeft >= 3
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 3) + 3
-                            what = 0
+                            n += bitReader.int(fromBits: 3) + 3
                         } else if symbol == 18 {
-                            // Repeat code length 0 from 11 to 138 times.
-                            // Next seven bits show how many times we need to do this.
+                            // Repeat code length 0 from 11 to 138 times. Next 7 bits show how many times we need to
+                            // copy. Since `codeLengths` array was already preinitialized with zeros, we just have to
+                            // skip ahead.
                             guard bitReader.bitsLeft >= 7
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 7) + 11
-                            what = 0
+                            n += bitReader.int(fromBits: 7) + 11
                         } else {
                             throw DeflateError.wrongSymbol
                         }
-                        for _ in 0..<count {
-                            codeLengths.append(what)
-                        }
-                        n += count
                     }
                     // We have read codeLengths for both trees at once.
                     // Now we need to split them and make corresponding trees.

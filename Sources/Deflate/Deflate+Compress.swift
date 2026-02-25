@@ -30,8 +30,7 @@ extension Deflate: CompressionAlgorithm {
         // Static Huffman size is more complicated...
         let staticHuffmanBlockSize = staticHuffmanBitSize(bldCodes.stats)
 
-        // Since `length` of uncompressed block is 16-bit integer,
-        // there is a limitation on size of uncompressed block.
+        // Since `length` of uncompressed block is 16-bit integer, there is a limitation on size of uncompressed block.
         // Falling back to static Huffman encoding in case of big uncompressed block is a band-aid solution.
         if uncompBlockSize <= staticHuffmanBlockSize && uncompBlockSize <= 65535 {
             // If according to our calculations static huffman will not make output smaller than input,
