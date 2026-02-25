@@ -276,6 +276,18 @@ class GzipTests: XCTestCase {
         }
     }
 
+    func testGzipTruncation_Full() throws {
+        for i in 1...9 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
+            // It would be better to increase amount of different truncations tested, but we hit runtime limits in CI.
+            for _ in 0..<5 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? GzipArchive.unarchive(archive: testData[testData.startIndex..<truncationIndex])
+            }
+        }
+    }
+
     func testDeflateTruncation() throws {
         // In this test we check that there is no crash when dealing with the truncation in the middle of the Deflate
         // compressed data. The idea is to take three different types of Deflate blocks (uncompressed, static Huffman,
