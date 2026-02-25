@@ -262,6 +262,10 @@
 		E652FF002700A028006BC312 /* test_B6.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEF42700A028006BC312 /* test_B6.lz4 */; };
 		E652FF012700A028006BC312 /* test_B5.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEF52700A028006BC312 /* test_B5.lz4 */; };
 		E652FF022700A028006BC312 /* test_B4.lz4 in Resources */ = {isa = PBXBuildFile; fileRef = E652FEF62700A028006BC312 /* test_B4.lz4 */; };
+		E66D884E2F4F529100707F23 /* DeflateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D884D2F4F529100707F23 /* DeflateTests.swift */; };
+		E66D88612F4F53AB00707F23 /* test6.deflate in Resources */ = {isa = PBXBuildFile; fileRef = E66D885D2F4F53AB00707F23 /* test6.deflate */; };
+		E66D88622F4F53AB00707F23 /* test8.deflate in Resources */ = {isa = PBXBuildFile; fileRef = E66D885E2F4F53AB00707F23 /* test8.deflate */; };
+		E66D88632F4F53AB00707F23 /* test9.deflate in Resources */ = {isa = PBXBuildFile; fileRef = E66D885F2F4F53AB00707F23 /* test9.deflate */; };
 		E66F36242538726E00076A6E /* test_empty.lzma in Resources */ = {isa = PBXBuildFile; fileRef = E66F36232538726E00076A6E /* test_empty.lzma */; };
 		E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */ = {isa = PBXBuildFile; fileRef = E66F362B2538E2B700076A6E /* test_empty.zlib */; };
 		E6791E1826FD001A003852A9 /* DataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6791E1726FD001A003852A9 /* DataError.swift */; };
@@ -564,6 +568,10 @@
 		E652FEF42700A028006BC312 /* test_B6.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_B6.lz4; sourceTree = "<group>"; };
 		E652FEF52700A028006BC312 /* test_B5.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_B5.lz4; sourceTree = "<group>"; };
 		E652FEF62700A028006BC312 /* test_B4.lz4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_B4.lz4; sourceTree = "<group>"; };
+		E66D884D2F4F529100707F23 /* DeflateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeflateTests.swift; sourceTree = "<group>"; };
+		E66D885D2F4F53AB00707F23 /* test6.deflate */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test6.deflate; sourceTree = "<group>"; };
+		E66D885E2F4F53AB00707F23 /* test8.deflate */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test8.deflate; sourceTree = "<group>"; };
+		E66D885F2F4F53AB00707F23 /* test9.deflate */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test9.deflate; sourceTree = "<group>"; };
 		E66F36232538726E00076A6E /* test_empty.lzma */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.lzma; sourceTree = "<group>"; };
 		E66F362B2538E2B700076A6E /* test_empty.zlib */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_empty.zlib; sourceTree = "<group>"; };
 		E6791E1726FD001A003852A9 /* DataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataError.swift; sourceTree = "<group>"; };
@@ -842,6 +850,7 @@
 				06F065AC1FFB763300312A82 /* BZip2CompressionTests.swift */,
 				06F065A51FFB763300312A82 /* BZip2Tests.swift */,
 				06F065A21FFB763300312A82 /* DeflateCompressionTests.swift */,
+				E66D884D2F4F529100707F23 /* DeflateTests.swift */,
 				06F065A71FFB763300312A82 /* GzipTests.swift */,
 				06F065AB1FFB763300312A82 /* LzmaTests.swift */,
 				E6B18E84270884E300F9AB99 /* LZ4CompressionTests.swift */,
@@ -867,6 +876,7 @@
 				06F065F61FFB763300312A82 /* 7z */,
 				06F065AE1FFB763300312A82 /* Answers */,
 				06F066081FFB763300312A82 /* BZip2 */,
+				E66D88602F4F53AB00707F23 /* Deflate */,
 				06F065B81FFB763300312A82 /* GZip */,
 				06F065F11FFB763300312A82 /* LZMA */,
 				E6791E1F26FD04D0003852A9 /* LZ4 */,
@@ -1067,6 +1077,16 @@
 				E652D8F2263D670900FC229B /* test_nonstandard_runlength.bz2 */,
 			);
 			path = BZip2;
+			sourceTree = "<group>";
+		};
+		E66D88602F4F53AB00707F23 /* Deflate */ = {
+			isa = PBXGroup;
+			children = (
+				E66D885D2F4F53AB00707F23 /* test6.deflate */,
+				E66D885E2F4F53AB00707F23 /* test8.deflate */,
+				E66D885F2F4F53AB00707F23 /* test9.deflate */,
+			);
+			path = Deflate;
 			sourceTree = "<group>";
 		};
 		E6791E1926FD0070003852A9 /* LZ4 */ = {
@@ -1355,6 +1375,9 @@
 				06F066581FFB763400312A82 /* full_test.tar in Resources */,
 				E6EDD6A926F7767F00884532 /* test_minor_version_4.7z in Resources */,
 				E652FEFB2700A028006BC312 /* test_B1234_BD.lz4 in Resources */,
+				E66D88612F4F53AB00707F23 /* test6.deflate in Resources */,
+				E66D88622F4F53AB00707F23 /* test8.deflate in Resources */,
+				E66D88632F4F53AB00707F23 /* test9.deflate in Resources */,
 				06F0662B1FFB763400312A82 /* test3.gz in Resources */,
 				E652FEF72700A028006BC312 /* test_B7.lz4 in Resources */,
 				06F0664C1FFB763400312A82 /* test_pax.tar in Resources */,
@@ -1482,6 +1505,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6522FB62789AFA600026B56 /* TarWriterTests.swift in Sources */,
+				E66D884E2F4F529100707F23 /* DeflateTests.swift in Sources */,
 				06F066151FFB763300312A82 /* ZlibTests.swift in Sources */,
 				06F066141FFB763300312A82 /* DeflateCompressionTests.swift in Sources */,
 				E6791E3326FD05EC003852A9 /* LZ4Tests.swift in Sources */,
