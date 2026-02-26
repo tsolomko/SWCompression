@@ -120,9 +120,10 @@ public class Deflate: DecompressionAlgorithm {
                             // It is a raw code length.
                             codeLengths[n] = symbol
                             n += 1
-                        } else if symbol == 16 {
-                            // Copy previous code length 3 to 6 times.
-                            // Next two bits show how many times we need to copy.
+                        } else if symbol == 16 && n > codeLengths.startIndex {
+                            // Copy previous code length 3 to 6 times. Next two bits show how many times we need to copy.
+                            // This symbol cannot be the first symbol encoding code lengths, since there is nothing to
+                            // copy at this point.
                             guard bitReader.bitsLeft >= 2
                                 else { throw DeflateError.symbolNotFound }
                             let copyCount = bitReader.int(fromBits: 2) + 3
