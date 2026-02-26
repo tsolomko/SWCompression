@@ -31,4 +31,19 @@ class DeflateTests: XCTestCase {
         }
     }
 
+    func testSymbol16First() throws {
+        // Symbol 16 cannot be the first symbol encoding code lengths in the dynamic Huffman block. Previously, there
+        // was a crash in such situation. This test checks that error is thrown appropriately.
+
+        // The input data was constructed manually:
+        // - 101: last block bit and dynamical Huffman block type,
+        // - 00000: minimal amount of literal codes,
+        // - 00000: minimal amount of distances codes,
+        // - 0000: minimal amount of code length codes (4),
+        // - 011 011 010 001: four code lenghts for code length codes (1, 2, 3, 3),
+        // - 0: encoded code length symbol 16 (which means to copy previous code length).
+        let testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b0000_1101])
+        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+    }
+
 }
