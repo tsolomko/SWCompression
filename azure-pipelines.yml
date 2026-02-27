@@ -37,7 +37,7 @@ stages:
           WATCHOS_SIMULATOR: 'Apple Watch Series 10 (42mm)'
         macosSwift62:
           imageName: 'macOS-15'
-          DEVELOPER_DIR: '/Applications/Xcode_26.2.app'
+          DEVELOPER_DIR: '/Applications/Xcode_26.3.app'
           IOS_SIMULATOR: 'iPhone 16'
           WATCHOS_SIMULATOR: 'Apple Watch Series 10 (42mm)'
     pool:
