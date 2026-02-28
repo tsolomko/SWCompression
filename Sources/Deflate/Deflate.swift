@@ -127,6 +127,8 @@ public class Deflate: DecompressionAlgorithm {
                             guard bitReader.bitsLeft >= 2
                                 else { throw DeflateError.symbolNotFound }
                             let copyCount = bitReader.int(fromBits: 2) + 3
+                            guard n + copyCount <= codeLengths.endIndex
+                                else { throw DeflateError.wrongSymbol }
                             for i in 0..<copyCount {
                                 codeLengths[n + i] = codeLengths[n - 1]
                             }
@@ -149,12 +151,14 @@ public class Deflate: DecompressionAlgorithm {
                             throw DeflateError.wrongSymbol
                         }
                     }
-                    // We have read codeLengths for both trees at once.
-                    // Now we need to split them and make corresponding trees.
-                    let literalCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths[0..<literals])))
+                    // Self-consistency check. Failure here can happen if at some point a zero code length was repeated
+                    // too many times indicating a corrupted input.
+                    guard n == codeLengths.endIndex
+                        else { throw DeflateError.wrongSymbol }
+                    // We have read `codeLengths` for both trees at once, so we split them and make corresponding trees.
+                    let literalCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths.prefix(upTo: literals))))
                     mainLiterals = DecodingTree(literalCodes, bitReader)
-                    let distanceCodes = Code.huffmanCodes(from: Deflate.lengths(from:
-                        Array(codeLengths[literals..<codeLengths.count])))
+                    let distanceCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths.suffix(from: literals))))
                     mainDistances = DecodingTree(distanceCodes, bitReader)
                 }
 
