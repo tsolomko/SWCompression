@@ -15,8 +15,8 @@ final class DecodingTree {
     init(_ huffmanCodes: HuffmanCodes, _ bitReader: BitReader) {
         self.bitReader = bitReader
 
-        // Calculate maximum amount of leaves in a tree.
-        self.leafCount = 1 << (huffmanCodes.maxBits + 1)
+        // Maximum amount of leaves in a binary tree with the height equal to `huffmanCodes.maxBits`.
+        self.leafCount = (1 << (huffmanCodes.maxBits + 1)) - 1
         var tree = Array(repeating: -1, count: leafCount)
 
         for code in huffmanCodes.codes {
