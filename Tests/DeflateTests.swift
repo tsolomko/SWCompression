@@ -46,4 +46,38 @@ class DeflateTests: XCTestCase {
         XCTAssertThrowsError(try Deflate.decompress(data: testData))
     }
 
+    func testCodeLengthsOverCopy() throws {
+        // Previously, when decoding code lengths in a dynamic Huffman block if a copy code length count was
+        // sufficiently large, it could lead to an inconsistent state or a crash (due to out-of-range array subscript).
+        // In the new version these situations are checked.
+
+        // Repeat a zero code length too many times. The input data was constructed manually:
+        // - 101: last block bit and dynamical Huffman block type,
+        // - 00000: minimal amount of literal codes,
+        // - 00000: minimal amount of distances codes,
+        // - 0000: minimal amount of code length codes (4),
+        // - 011 011 010 001: four code lenghts for code length codes (1, 2, 3, 3),
+        // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
+        // - 1111111: maximum repeat amount,
+        // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
+        // - 1111111: maximum repeat amount.
+        var testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b1110_1101, 0b1111_1111, 0b1111_1111, 0b0000_0001])
+        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+
+        // Copy a previous code length too many times. The input data was constructed manually:
+        // - 101: last block bit and dynamical Huffman block type,
+        // - 00000: minimal amount of literal codes,
+        // - 00000: minimal amount of distances codes,
+        // - 0000: minimal amount of code length codes (4),
+        // - 011 011 010 001: four code lenghts for code length codes (1, 2, 3, 3),
+        // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
+        // - 1111111: maximum repeat amount,
+        // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
+        // - 1101100 repeat amount.
+        // - 0: encoded code length symbol 16 (which means to copy a previous code length),
+        // - 01: copy amount.
+        testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b1110_1101, 0b1111_1111, 0b1011_0011, 0b0000_0101])
+        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+    }
+
 }
