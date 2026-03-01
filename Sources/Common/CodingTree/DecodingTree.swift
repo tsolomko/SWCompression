@@ -5,7 +5,7 @@
 
 import BitByteData
 
-final class DecodingTree {
+struct DecodingTree {
 
     private let bitReader: BitReader
 

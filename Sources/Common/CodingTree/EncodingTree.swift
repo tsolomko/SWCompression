@@ -12,7 +12,7 @@ fileprivate struct CodingIndex {
 
 }
 
-final class EncodingTree {
+struct EncodingTree {
 
     private let bitWriter: BitWriter
 
