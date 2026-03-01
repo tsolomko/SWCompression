@@ -173,9 +173,7 @@ public class BZip2: DecompressionAlgorithm {
                     length -= (bitReader.bit().toInt() * 2 - 1)
                     bitsLeft -= 1
                 }
-                if length > 0 {
-                    codeLengths.append(CodeLength(symbol: i, codeLength: length))
-                }
+                codeLengths.append(CodeLength(symbol: i, codeLength: length))
             }
             let codes = Code.huffmanCodes(from: codeLengths)
             let table = DecodingTree(codes, bitReader)
