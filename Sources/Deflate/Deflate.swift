@@ -248,4 +248,8 @@ public class Deflate: DecompressionAlgorithm {
         return Data(out)
     }
 
+    private static func lengths(from orderedCodeLengths: [Int]) -> [CodeLength] {
+        return orderedCodeLengths.enumerated().map({ CodeLength(symbol: $0, codeLength: $1) })
+    }
+
 }

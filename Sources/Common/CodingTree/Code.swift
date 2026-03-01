@@ -12,7 +12,6 @@ struct Code {
     let code: Int
     let symbol: Int
 
-    /// `lengths` don't have to be sorted, but there must not be any 0 code lengths.
     static func huffmanCodes(from lengths: [CodeLength]) -> HuffmanCodes {
         // Sort `lengths` array to calculate canonical Huffman code.
         let sortedLengths = lengths.sorted()
@@ -24,8 +23,7 @@ struct Code {
 
         var loopBits = -1
         var symbol = -1
-        for length in sortedLengths {
-            precondition(length.codeLength > 0, "Code length must not be 0 during HuffmanTree construction.")
+        for length in sortedLengths where length.codeLength > 0 {
             symbol += 1
             // We sometimes need to make symbol to have length.bits bit length.
             let bits = length.codeLength
