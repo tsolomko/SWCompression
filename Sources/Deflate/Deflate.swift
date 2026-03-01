@@ -88,6 +88,11 @@ public class Deflate: DecompressionAlgorithm {
 
                     /// Number of literals codes.
                     let literals = bitReader.int(fromBits: 5) + 257
+                    // According to Deflate specification maximum amount of literal/length codes is 286. However, it
+                    // is possible to encode a number larger than this with 5 bits. Specification seems to be silent
+                    // about this scenario, so we treat it as a corrupted input.
+                    guard literals <= 286
+                        else { throw DeflateError.wrongSymbol }
                     /// Number of distances codes.
                     let distances = bitReader.int(fromBits: 5) + 1
                     /// Number of code lengths codes.
