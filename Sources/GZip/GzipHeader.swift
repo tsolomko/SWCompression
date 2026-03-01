@@ -118,12 +118,11 @@ public struct GzipHeader {
                 headerBytes.append(byte)
             }
 
+            // There must be least four bytes of extra fields for SI1, SI2, and 2 bytes of the length parameter
+            // filled with zeros (minimal variant).
+            guard reader.bytesLeft >= xlen && xlen >= 4
+                else { throw GzipError.wrongMagic }
             while xlen > 0 {
-                // There must be least four bytes of extra fields for SI1, SI2, and 2 bytes of the length parameter
-                // filled with zeros (minimal variant).
-                guard reader.bytesLeft >= xlen && xlen >= 4
-                    else { throw GzipError.wrongMagic }
-
                 let si1 = reader.byte()
                 headerBytes.append(si1)
 
