@@ -4,6 +4,7 @@
 // See LICENSE for license information
 
 import XCTest
+import BitByteData
 import SWCompression
 
 class DeflateTests: XCTestCase {
@@ -73,11 +74,123 @@ class DeflateTests: XCTestCase {
         // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
         // - 1111111: maximum repeat amount,
         // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
-        // - 1101100 repeat amount.
+        // - 1101100: repeat amount,
         // - 0: encoded code length symbol 16 (which means to copy a previous code length),
         // - 01: copy amount.
         testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b1110_1101, 0b1111_1111, 0b1011_0011, 0b0000_0101])
         XCTAssertThrowsError(try Deflate.decompress(data: testData))
+    }
+
+    func testCodeLengthsAllZero() throws {
+        // Previously, if all code lengths for a particular Huffman tree in a dynamic Huffman block were zero, the
+        // Huffman code construction algorithm would crash. This behavior was reported as issue #57. After fixing the
+        // crash all zero code lengths results in an "empty" Huffman tree. If such a tree is used to read a symbol, no
+        // symbol will be found, and an error will be thrown appropriately.
+
+        // Code lengths for the code lengths tree are all zero which indicates corrputed input. The input data was
+        // constructed manually:
+        // - 101: last block bit and dynamical Huffman block type,
+        // - 00000: minimal amount of literal codes,
+        // - 00000: minimal amount of distances codes,
+        // - 0000: minimal amount of code length codes (4),
+        // - 000 000 000 000: four zero code lenghts for code length codes.
+        let testData = Data([0b0000_0101, 0b0000_0000, 0b0000_0000, 0b0_0000])
+        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+
+        // The following inputs are based on test6 compressed data, but otherwise were constructed manually with the
+        // help of `LsbBitWriter` from BitByteData.
+
+        // All code lengths are zero for the literals/lengths tree, and two non-zero distance tree code lengths.
+        var writer = LsbBitWriter()
+        // - 101: last block bit and dynamical Huffman block type,
+        writer.write(bits: [1, 0, 1])
+        // - 11101: maximal amount of literal codes (29 + 257 = 286),
+        writer.write(unsignedNumber: 29, bitsCount: 5)
+        // - 00001: number of distances codes (1 + 1 = 2),
+        writer.write(unsignedNumber: 1, bitsCount: 5)
+        // - 1110: number of code length codes (4 + 14 = 18),
+        writer.write(unsignedNumber: 14, bitsCount: 4)
+        // - 000 011 010 000 000 000 000 000 000 000 000 000 000 010 000 011 000 010: code lenghts for code length codes,
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 3, bitsCount: 3)
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        for _ in 0..<10 {
+            writer.write(unsignedNumber: 0, bitsCount: 3)
+        }
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 3, bitsCount: 3)
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        // - 01: encoded code length symbol 18 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 1, bitsCount: 2)
+        // - 1111111: maximum repeat amount,
+        writer.write(unsignedNumber: 127, bitsCount: 7)
+        // - 01: encoded code length symbol 18 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 1, bitsCount: 2)
+        // - 1111111: maximum repeat amount,
+        writer.write(unsignedNumber: 127, bitsCount: 7)
+        // - 111: encoded code length symbol 17 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 7, bitsCount: 3)
+        // - 111: maximum repeat amount,
+        writer.write(unsignedNumber: 7, bitsCount: 3)
+        // - 00: encoded code length symbol 1 (which means code length is equal to 1),
+        writer.write(unsignedNumber: 0, bitsCount: 2)
+        // - 00: encoded code length symbol 1 (which means code length is equal to 1).
+        writer.write(unsignedNumber: 0, bitsCount: 2)
+        writer.align()
+
+        // Assuming that there are no literals in the block we would still need both a length symbol from the
+        // literals/length tree and a distance symbol from the distance tree to perform a match copy. Thus, this input
+        // is corrupted.
+        XCTAssertThrowsError(try Deflate.decompress(data: writer.data))
+
+        // All code lengths are zero for the distance tree, and two non-zero code lengths for the literals/length tree.
+        writer = LsbBitWriter()
+        // - 101: last block bit and dynamical Huffman block type,
+        writer.write(bits: [1, 0, 1])
+        // - 11101: maximal amount of literal codes (29 + 257 = 286),
+        writer.write(unsignedNumber: 29, bitsCount: 5)
+        // - 00001: number of distances codes (1 + 1 = 2),
+        writer.write(unsignedNumber: 1, bitsCount: 5)
+        // - 1110: number of code length codes (4 + 14 = 18),
+        writer.write(unsignedNumber: 14, bitsCount: 4)
+        // - 000 011 010 000 000 000 000 000 000 000 000 000 000 010 000 011 000 010: code lenghts for code length codes,
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 3, bitsCount: 3)
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        for _ in 0..<10 {
+            writer.write(unsignedNumber: 0, bitsCount: 3)
+        }
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 3, bitsCount: 3)
+        writer.write(unsignedNumber: 0, bitsCount: 3)
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        // - 011: encoded code length symbol 2 (which means code length is equal to 2),
+        writer.write(unsignedNumber: 3, bitsCount: 3)
+        // - 01: encoded code length symbol 18 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 1, bitsCount: 2)
+        // - 1111111: maximum repeat amount,
+        writer.write(unsignedNumber: 127, bitsCount: 7)
+        // - 01: encoded code length symbol 18 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 1, bitsCount: 2)
+        // - 1101010: repeat amount,
+        writer.write(unsignedNumber: 106, bitsCount: 7)
+        // - 011: encoded code length symbol 3 (which means code length is equal to 3),
+        writer.write(unsignedNumber: 2, bitsCount: 2)
+        // - 01: encoded code length symbol 18 (which means to repeat 0 code length),
+        writer.write(unsignedNumber: 1, bitsCount: 2)
+        // - 0010100: repeat amount,
+        writer.write(unsignedNumber: 20, bitsCount: 7)
+        // - 00: literal symbol 0,
+        writer.write(unsignedNumber: 0, bitsCount: 2)
+        // - 010: EOS symbol 256,
+        writer.write(unsignedNumber: 2, bitsCount: 3)
+        writer.align()
+
+        // The distance tree can be empty if a block contains only literals. In this case we encoded a single byte of 0.
+        XCTAssertEqual(try Deflate.decompress(data: writer.data), Data([0]))
     }
 
 }
