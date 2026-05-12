@@ -25,6 +25,18 @@ public class BZip2: DecompressionAlgorithm {
         return try decompress(bitReader)
     }
 
+    /**
+     Decompresses one or more concatenated BZip2 archives found in `data`.
+
+     - Parameter data: Data that may contain one or more concatenated BZip2 archives.
+
+     - Throws: `BZip2Error` if an unexpected byte (bit) sequence was encountered or a checksum mismatch is detected for
+     any archive. It may indicate that the input is damaged or it might not be compressed with BZip2 at all. If
+     `BZip2Error.wrongCRC` is thrown, its associated value contains only the bytes decompressed for the archive that
+     failed the checksum.
+
+     - Returns: An array of decompressed data, one element per archive, in the same order as they appear in the input.
+     */
     public static func multiDecompress(data: Data) throws -> [Data] {
         let reader = MsbBitReader(data: data)
         var result = [Data]()
