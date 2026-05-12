@@ -124,7 +124,6 @@ If you'd like to contribute, please [create a pull request](https://github.com/t
 If you want to run tests on your computer, you need to do a couple of additional steps after cloning the repository:
 
 ```bash
-./utils.py download-bbd-macos
 git submodule update --init --recursive
 cd "Tests/Test Files"
 cp gitattributes-copy .gitattributes
@@ -132,9 +131,8 @@ git lfs pull
 git lfs checkout
 ```
 
-The first command will download the BitByteData dependency, which requires having Carthage installed. The remaining
-commands will download the files used in tests. These files are stored in a
-[separate repository](https://github.com/tsolomko/SWCompression-Test-Files), using Git LFS. There are two reasons for
+These commands will download the files used in tests which are stored in a
+[separate repository](https://github.com/tsolomko/SWCompression-Test-Files) using Git LFS. There are two reasons for
 this complicated setup. Firstly, some of these files can be quite big, and it would be unfortunate if the users of
 SWCompression had to download them during the installation. Secondly, Swift Package Manager and contemporary versions of
 Xcode don't always work well with git-lfs-enabled repositories. To prevent any potential problems test files were moved
