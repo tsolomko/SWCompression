@@ -25,6 +25,16 @@ public class BZip2: DecompressionAlgorithm {
         return try decompress(bitReader)
     }
 
+    public static func multiDecompress(data: Data) throws -> [Data] {
+        let reader = MsbBitReader(data: data)
+        var result = [Data]()
+        while !reader.isFinished {
+            result.append(try decompress(reader))
+            reader.align()
+        }
+        return result
+    }
+
     static func decompress(_ bitReader: MsbBitReader) throws -> Data {
         // Valid BZip2 "archive" must contain at least 14 bytes of data: magic number (2 bytes), method (1 byte), and
         // block size (1 byte).
