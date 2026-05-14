@@ -18,7 +18,7 @@ public struct LZMAProperties {
     public var pb: Int = 2
 
     /**
-     Size of the dictionary. Default value is 1 << 24.
+     Size of the dictionary. Default value is `1 << 24`.
 
      - Note: Dictionary size cannot be less than 4096. In case of attempt to set it to the value less than 4096 it will
      be automatically set to 4096 instead.
