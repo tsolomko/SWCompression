@@ -1743,7 +1743,7 @@
 			repositoryURL = "https://github.com/tsolomko/BitByteData";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.4;
+				minimumVersion = 2.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
