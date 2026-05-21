@@ -152,9 +152,7 @@ stages:
   - job: ghPages
     displayName: 'Publish API docs to GH Pages'
     pool:
-      vmImage: 'macOS-14'
-    variables:
-      DEVELOPER_DIR: '/Applications/Xcode_15.2.app'
+      vmImage: 'macOS-26'
     steps:
     - script: |
         set -e -o xtrace
