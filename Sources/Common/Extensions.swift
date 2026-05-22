@@ -1,9 +1,18 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
 
 import Foundation
+
+extension Data {
+
+    @inlinable @inline(__always)
+    func toByteArray() -> [UInt8] {
+        return self.withUnsafeBytes { $0.map { $0 } }
+    }
+    
+}
 
 extension UnsignedInteger {
 
@@ -32,10 +41,11 @@ extension Int {
 
     /// Returns an integer with reversed order of bits.
     func reversed(bits count: Int) -> Int {
-        var a = 1 << 0
-        var b = 1 << (count - 1)
+        // Arithmetic operations amount: 3 + 8 * ceil(count / 2)
+        var a = 1
+        var b = 1 << (count &- 1)
         var z = 0
-        for i in Swift.stride(from: count - 1, to: -1, by: -2) {
+        for i in Swift.stride(from: count &- 1, to: -1, by: -2) {
             z |= (self >> i) & a
             z |= (self << i) & b
             a <<= 1

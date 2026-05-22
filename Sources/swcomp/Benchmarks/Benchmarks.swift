@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -270,8 +270,6 @@ struct CompRatioDeflate: Benchmark {
         }
     }
 
-    func warmupIteration() { }
-
     func measure() -> Double {
         let outputData = Deflate.compress(data: self.data)
         guard outputData.count > 0
@@ -324,8 +322,6 @@ struct CompRatioBz2: Benchmark {
             swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
-
-    func warmupIteration() { }
 
     func measure() -> Double {
         let outputData = BZip2.compress(data: self.data)
@@ -380,8 +376,6 @@ struct CompRatioLz4: Benchmark {
         }
     }
 
-    func warmupIteration() { }
-
     func measure() -> Double {
         let outputData = LZ4.compress(data: self.data)
         guard outputData.count > 0
@@ -435,8 +429,6 @@ struct CompRatioLz4Bd: Benchmark {
             swcompExit(.benchmarkCannotSetup(Self.self, input, error))
         }
     }
-
-    func warmupIteration() { }
 
     func measure() -> Double {
         let outputData = LZ4.compress(data: self.data, independentBlocks: false, blockChecksums: false,
@@ -594,7 +586,7 @@ struct ReaderTar: Benchmark {
                 }
             }
             let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
-            try handle.closeCompat()
+            try handle.close()
             return self.size / timeElapsed
         } catch let error {
             swcompExit(.benchmarkCannotMeasure(Self.self, error))
@@ -629,7 +621,7 @@ struct WriterTar: Benchmark {
             }
             try writer.finalize()
             let timeElapsed = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1_000_000_000
-            try handle.closeCompat()
+            try handle.close()
             try FileManager.default.removeItem(at: url)
             return self.size / timeElapsed
         } catch let error {

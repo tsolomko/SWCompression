@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -80,11 +80,13 @@ public struct ZlibHeader {
             else { throw ZlibError.wrongCompressionLevel }
         self.compressionLevel = compressionLevel
 
-        guard (UInt(cmf) * 256 + UInt(flags)) % 31 == 0
+        guard (UInt(cmf) << 8 + UInt(flags)) % 31 == 0
             else { throw ZlibError.wrongFcheck }
 
         // If preset dictionary is present 4 bytes will be skipped.
         if fdict == 1 {
+            guard reader.bytesLeft >= 4
+                else { throw ZlibError.wrongFcheck }
             reader.offset += 4
         }
     }

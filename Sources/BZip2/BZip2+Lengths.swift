@@ -1,9 +1,7 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
-
-import Foundation
 
 // BZip2 specific function for generation of HuffmanLength array from stats.
 extension BZip2 {

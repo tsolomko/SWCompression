@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -147,17 +147,9 @@ class SevenZipFolder {
             case .copy:
                 continue
             case .deflate:
-                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_DEFLATE)
-                    decodedData = try Deflate.decompress(data: decodedData)
-                #else
-                    throw SevenZipError.compressionNotSupported
-                #endif
+                decodedData = try Deflate.decompress(data: decodedData)
             case .bzip2:
-                #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_BZ2)
-                    decodedData = try BZip2.decompress(data: decodedData)
-                #else
-                    throw SevenZipError.compressionNotSupported
-                #endif
+                decodedData = try BZip2.decompress(data: decodedData)
             case .lzma2:
                 // Dictionary size is stored in coder's properties.
                 guard let properties = coder.properties,
@@ -172,7 +164,7 @@ class SevenZipFolder {
                     else { throw LZMAError.wrongProperties }
 
                 var dictionarySize = 0
-                for i in 1..<4 {
+                for i in 1..<5 {
                     dictionarySize |= properties[i].toInt() << (8 * (i - 1))
                 }
                 let lzmaProperties = try LZMAProperties(lzmaByte: properties[0], dictionarySize)
@@ -187,11 +179,7 @@ class SevenZipFolder {
 
                     decodedData = DeltaFilter.decode(LittleEndianByteReader(data: decodedData), (properties[0] &+ 1).toInt())
                 } else if coder.id == [0x04, 0xF7, 0x11, 0x04] {
-                    #if (!SWCOMPRESSION_POD_SEVENZIP) || (SWCOMPRESSION_POD_SEVENZIP && SWCOMPRESSION_POD_LZ4)
-                        decodedData = try LZ4.decompress(data: decodedData)
-                    #else
-                        throw SevenZipError.compressionNotSupported
-                    #endif
+                    decodedData = try LZ4.decompress(data: decodedData)
                 } else if coder.isEncryptionMethod {
                     throw SevenZipError.encryptionNotSupported
                 } else {

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -9,7 +9,7 @@ protocol Benchmark {
 
     init(_ input: String)
 
-    func warmupIteration()
+    func warmupIteration() -> Double
 
     func measure() -> Double
 
@@ -23,8 +23,8 @@ extension Benchmark {
         return 10
     }
 
-    func warmupIteration() {
-        _ = measure()
+    func warmupIteration() -> Double {
+        return measure()
     }
 
     func format(_ value: Double) -> String {

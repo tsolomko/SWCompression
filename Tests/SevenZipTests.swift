@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -341,6 +341,17 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[1].info.crc, 0x1273FBD3)
 
         XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
+    }
+
+    func test7z_LzmaBigDict() throws {
+        // Verifying the issue fixed by PR #61.
+        // Previously, there was a crash, if LZMA dictionary size was encoded using all 4 bytes.
+        let testData = try Constants.data(forTest: "test_lzma_big_dict", withType: SevenZipTests.testType)
+        let entries = try SevenZipContainer.open(container: testData)
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries[0].info.name, "data")
+        XCTAssertEqual(entries[0].info.type, .regular)
+        XCTAssertEqual(entries[0].info.size, 16 * 1024 * 1024)
     }
 
     func testEmptyFile() throws {

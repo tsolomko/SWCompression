@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -199,6 +199,17 @@ class LZ4Tests: XCTestCase {
             XCTAssertEqual(decompressedData.first, answerData)
         } else {
             XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
+    func testLZ4Truncation() throws {
+        for i in 1...9 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
+            for _ in 0..<100 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? LZ4.decompress(data: testData[testData.startIndex..<truncationIndex])
+            }
         }
     }
 

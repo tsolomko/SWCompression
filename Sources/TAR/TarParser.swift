@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -6,8 +6,8 @@
 import Foundation
 import BitByteData
 
-// While it is tempting to make Provider conform to `IteratorProtocol` and `Sequence` protocols, it is in fact
-// impossible to do so, since `TarHeader.init(...)` is throwing and `IteratorProtocol.next()` cannot be throwing.
+// While it is tempting to make the parser conform to `IteratorProtocol` and `Sequence` protocols, it is in fact
+// impossible to do so, since `TarHeader.init(_)` is throwing and `IteratorProtocol.next()` cannot be throwing.
 struct TarParser {
 
     enum ParsingResult {

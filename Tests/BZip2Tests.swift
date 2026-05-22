@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -93,6 +93,56 @@ class BZip2Tests: XCTestCase {
             XCTAssertEqual(decompressedData, answerData)
         } else {
             XCTFail("Unexpected error: \(String(describing: thrownError))")
+        }
+    }
+
+    func testBZip2Truncation() throws {
+        for i in 1...9 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            // It would be better to increase amount of different truncations tested, but we hit runtime limits in CI.
+            for _ in 0..<5 {
+                let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
+                _ = try? BZip2.decompress(data: testData[testData.startIndex..<truncationIndex])
+            }
+        }
+    }
+
+    func testBZip2MultiDecompress() throws {
+        var input = Data()
+        for i in 1...5 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            input.append(testData)
+        }
+        let output = try BZip2.multiDecompress(data: input)
+        for i in 1...5 {
+            let testName = "test\(i)"
+            let answerData = try Constants.data(forAnswer: testName)
+            XCTAssertEqual(output[i - 1], answerData)
+        }
+    }
+
+    func testBZip2MultiDecompressSingleArchive() throws {
+        for i in 1...5 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            let answerData = try Constants.data(forAnswer: testName)
+            let output = try BZip2.multiDecompress(data: testData)
+            XCTAssertEqual(output.first!, answerData)
+        }
+    }
+
+    func testBZip2MultiDecompressTruncated() throws {
+        var input = Data()
+        for i in 1...5 {
+            let testName = "test\(i)"
+            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            input.append(testData)
+        }
+        for _ in 0..<5 {
+            let truncationIndex = Int.random(in: (input.startIndex + 1)..<input.endIndex)
+            _ = try? BZip2.multiDecompress(data: input[input.startIndex..<truncationIndex])
         }
     }
 

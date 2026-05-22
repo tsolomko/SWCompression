@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -29,8 +29,16 @@ public enum BZip2Error: Error {
     /// Symbol wasn't found in Huffman tree.
     case symbolNotFound
     /**
-     Computed checksum of uncompressed data doesn't match the value stored in archive.
-     Associated value of the error contains already decompressed data.
+     Computed checksum of the uncompressed data does not match the value stored in the archive.
+     Associated value contains the data that were successfully decompressed up to the point where the mismatch was
+     detected.
+
+     - When using `BZip2.decompress(data:)`: The associated value comes from a single BZip2 archive. If the mismatch
+     happens at the final checksum verification, this is usually the entire decompressed output.
+
+     - When using `BZip2.multiDecompress(data:)`: The input may contain several concatenated BZip2 archives. The error
+     is thrown for the current archive that fails the checksum. The associated value contains only the data decompressed
+     for that archive. Results from earlier archives are not included and are not returned once this error is thrown.
      */
     case wrongCRC(Data)
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -16,7 +16,7 @@ class TarReaderTests: XCTestCase {
         let testHandle = try Constants.handle(forTest: "test7", withType: "answer")
         var reader = TarReader(fileHandle: testHandle)
         XCTAssertThrowsError(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func test() throws {
@@ -44,7 +44,7 @@ class TarReaderTests: XCTestCase {
             }
         }
         XCTAssertEqual(entriesCount, 1)
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
 
@@ -77,7 +77,7 @@ class TarReaderTests: XCTestCase {
             }
         }
         XCTAssertEqual(entriesCount, 5)
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testFormats() throws {
@@ -104,7 +104,7 @@ class TarReaderTests: XCTestCase {
             }
             XCTAssertEqual(entriesCount, 1)
             XCTAssertNil(try reader.read())
-            try testHandle.closeCompat()
+            try testHandle.close()
         }
     }
 
@@ -126,7 +126,7 @@ class TarReaderTests: XCTestCase {
             }
             XCTAssertEqual(entriesCount, 6)
             XCTAssertNil(try reader.read())
-            try testHandle.closeCompat()
+            try testHandle.close()
         }
     }
 
@@ -160,7 +160,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.data, "Hello, Windows!".data(using: .utf8))
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testEmptyFile() throws {
@@ -181,7 +181,7 @@ class TarReaderTests: XCTestCase {
 
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testEmptyDirectory() throws {
@@ -201,7 +201,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertNil(entry!.data)
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testOnlyDirectoryHeader() throws {
@@ -223,21 +223,21 @@ class TarReaderTests: XCTestCase {
             XCTAssertNil(entry!.data)
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testEmptyContainer() throws {
         let testHandle = try Constants.handle(forTest: "test_empty_cont", withType: TarReaderTests.testType)
         var reader = TarReader(fileHandle: testHandle)
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testBigContainer() throws {
         let testHandle = try Constants.handle(forTest: "SWCompressionSourceCode", withType: TarReaderTests.testType)
         var reader = TarReader(fileHandle: testHandle)
         while try reader.read() != nil { }
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testUnicodeUstar() throws {
@@ -258,7 +258,7 @@ class TarReaderTests: XCTestCase {
 
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testUnicodePax() throws {
@@ -279,7 +279,7 @@ class TarReaderTests: XCTestCase {
 
         }
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     func testGnuIncrementalFormat() throws {
@@ -304,7 +304,7 @@ class TarReaderTests: XCTestCase {
         }
         XCTAssertEqual(entriesCount, 3)
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
     // This test is impossible to implement using TarReader since the test file doesn't contain actual entry data.
@@ -328,7 +328,7 @@ class TarReaderTests: XCTestCase {
         }
         // Test that reading after reaching EOF returns nil.
         XCTAssertNil(try reader.read())
-        try testHandle.closeCompat()
+        try testHandle.close()
     }
 
 }

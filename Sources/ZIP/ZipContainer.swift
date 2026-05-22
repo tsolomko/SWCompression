@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -75,24 +75,16 @@ public class ZipContainer: Container {
             bitReader.align()
             byteReader.offset = bitReader.offset
         case .bzip2:
-            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_BZ2)
-                // BZip2 algorithm uses different bit numbering scheme.
-                let bitReader = MsbBitReader(byteReader)
-                fileData = try BZip2.decompress(bitReader)
-                // Sometimes bitReader is misaligned after BZip2 decompression, so we need to align before getting end
-                // index back.
-                bitReader.align()
-                byteReader.offset = bitReader.offset
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
+            // BZip2 algorithm uses different bit numbering scheme.
+            let bitReader = MsbBitReader(byteReader)
+            fileData = try BZip2.decompress(bitReader)
+            // Sometimes bitReader is misaligned after BZip2 decompression, so we need to align before getting end
+            // index back.
+            bitReader.align()
+            byteReader.offset = bitReader.offset
         case .lzma:
-            #if (!SWCOMPRESSION_POD_ZIP) || (SWCOMPRESSION_POD_ZIP && SWCOMPRESSION_POD_LZMA)
-                byteReader.offset += 4 // Skipping LZMA SDK version and size of properties.
-                fileData = try LZMA.decompress(byteReader, LZMAProperties(byteReader), uncompSize.toInt())
-            #else
-                throw ZipError.compressionNotSupported
-            #endif
+            byteReader.offset += 4 // Skipping LZMA SDK version and size of properties.
+            fileData = try LZMA.decompress(byteReader, LZMAProperties(byteReader), uncompSize.toInt())
         default:
             throw ZipError.compressionNotSupported
         }

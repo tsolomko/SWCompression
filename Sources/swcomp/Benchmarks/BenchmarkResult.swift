@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -12,6 +12,8 @@ struct BenchmarkResult: Codable {
     var iterCount: Int
     var avg: Double
     var std: Double
+    var warmup: Double?
+    var iters: [Double]?
 
     var id: String {
         return [self.name, self.input, String(self.iterCount)].joined(separator: "<#>")

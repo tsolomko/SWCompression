@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -77,8 +77,8 @@ public class Deflate: DecompressionAlgorithm {
                 if blockType == 1 { // Static Huffman
                     // In this case codes for literals and distances are fixed.
                     // Initialize trees from bootstraps.
-                    mainLiterals = DecodingTree(codes: Constants.staticHuffmanLiteralCodes, maxBits: 9, bitReader)
-                    mainDistances = DecodingTree(codes: Constants.staticHuffmanDistanceCodes, maxBits: 5, bitReader)
+                    mainLiterals = DecodingTree(Constants.staticHuffmanLiteralCodes, bitReader)
+                    mainDistances = DecodingTree(Constants.staticHuffmanDistanceCodes, bitReader)
                 } else { // Dynamic Huffman
                     // In this case there are Huffman codes for two alphabets in data right after block header.
                     // Each code defined by a sequence of code lengths (which are compressed themselves with Huffman).
@@ -88,6 +88,11 @@ public class Deflate: DecompressionAlgorithm {
 
                     /// Number of literals codes.
                     let literals = bitReader.int(fromBits: 5) + 257
+                    // According to Deflate specification maximum amount of literal/length codes is 286. However, it
+                    // is possible to encode a number larger than this with 5 bits. Specification seems to be silent
+                    // about this scenario, so we treat it as a corrupted input.
+                    guard literals <= 286
+                        else { throw DeflateError.wrongSymbol }
                     /// Number of distances codes.
                     let distances = bitReader.int(fromBits: 5) + 1
                     /// Number of code lengths codes.
@@ -96,68 +101,70 @@ public class Deflate: DecompressionAlgorithm {
                     guard bitReader.bitsLeft >= 3 * codeLengthsCount
                         else { throw DeflateError.symbolNotFound }
 
+                    // Code lengths of the literal/length and distance Huffman trees are encoded with another Huffman
+                    // tree using a special alphabet. The code lengths for this latter tree are presented in a specific
+                    // order which is stored in `Constants.codeLengthOrders`: `codeLengthOrders[i]` is the code lengths
+                    // alphabet symbol at the i-th place in the sequence.
                     var orderedCodeLengths = Array(repeating: 0, count: 19)
                     for i in 0..<codeLengthsCount {
                         orderedCodeLengths[Constants.codeLengthOrders[i]] = bitReader.int(fromBits: 3)
                     }
                     let dynamicCodes = Code.huffmanCodes(from: Deflate.lengths(from: orderedCodeLengths))
                     /// Huffman tree for code lengths. Each code in the main alphabets is coded with this tree.
-                    let dynamicCodeTree = DecodingTree(codes: dynamicCodes.codes, maxBits: dynamicCodes.maxBits,
-                                                       bitReader)
+                    let dynamicCodeTree = DecodingTree(dynamicCodes, bitReader)
 
                     // Now we need to read codes (code lengths) for two main alphabets (trees).
-                    var codeLengths: [Int] = []
-                    var n = 0
-                    while n < (literals + distances) {
+                    var codeLengths = Array(repeating: 0, count: literals + distances)
+                    var n = codeLengths.startIndex
+                    while n < codeLengths.endIndex {
                         // Finding next Huffman tree's symbol in data.
                         let symbol = dynamicCodeTree.findNextSymbol()
                         guard symbol != -1 else { throw DeflateError.symbolNotFound }
 
-                        let count: Int
-                        let what: Int
                         if symbol >= 0 && symbol <= 15 {
                             // It is a raw code length.
-                            count = 1
-                            what = symbol
-                        } else if symbol == 16 {
-                            // Copy previous code length 3 to 6 times.
-                            // Next two bits show how many times we need to copy.
+                            codeLengths[n] = symbol
+                            n += 1
+                        } else if symbol == 16 && n > codeLengths.startIndex {
+                            // Copy previous code length 3 to 6 times. Next two bits show how many times we need to copy.
+                            // This symbol cannot be the first symbol encoding code lengths, since there is nothing to
+                            // copy at this point.
                             guard bitReader.bitsLeft >= 2
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 2) + 3
-                            what = codeLengths.last!
+                            let copyCount = bitReader.int(fromBits: 2) + 3
+                            guard n + copyCount <= codeLengths.endIndex
+                                else { throw DeflateError.wrongSymbol }
+                            for i in 0..<copyCount {
+                                codeLengths[n + i] = codeLengths[n - 1]
+                            }
+                            n += copyCount
                         } else if symbol == 17 {
-                            // Repeat code length 0 from 3 to 10 times.
-                            // Next three bits show how many times we need to copy.
+                            // Repeat code length 0 from 3 to 10 times. Next 3 bits show how many times we need to copy.
+                            // Since `codeLengths` array was already preinitialized with zeros, we just have to skip
+                            // ahead.
                             guard bitReader.bitsLeft >= 3
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 3) + 3
-                            what = 0
+                            n += bitReader.int(fromBits: 3) + 3
                         } else if symbol == 18 {
-                            // Repeat code length 0 from 11 to 138 times.
-                            // Next seven bits show how many times we need to do this.
+                            // Repeat code length 0 from 11 to 138 times. Next 7 bits show how many times we need to
+                            // copy. Since `codeLengths` array was already preinitialized with zeros, we just have to
+                            // skip ahead.
                             guard bitReader.bitsLeft >= 7
                                 else { throw DeflateError.symbolNotFound }
-
-                            count = bitReader.int(fromBits: 7) + 11
-                            what = 0
+                            n += bitReader.int(fromBits: 7) + 11
                         } else {
                             throw DeflateError.wrongSymbol
                         }
-                        for _ in 0..<count {
-                            codeLengths.append(what)
-                        }
-                        n += count
                     }
-                    // We have read codeLengths for both trees at once.
-                    // Now we need to split them and make corresponding trees.
-                    let literalCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths[0..<literals])))
-                    mainLiterals = DecodingTree(codes: literalCodes.codes, maxBits: literalCodes.maxBits, bitReader)
-                    let distanceCodes = Code.huffmanCodes(from: Deflate.lengths(from:
-                        Array(codeLengths[literals..<codeLengths.count])))
-                    mainDistances = DecodingTree(codes: distanceCodes.codes, maxBits: distanceCodes.maxBits, bitReader)
+                    // Self-consistency check. Failure here can happen if at some point a zero code length was repeated
+                    // too many times indicating a corrupted input.
+                    guard n == codeLengths.endIndex
+                        else { throw DeflateError.wrongSymbol }
+                    // We have read `codeLengths` for both trees at once, so we split them and make corresponding trees.
+                    let literalCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths.prefix(upTo: literals))))
+                    mainLiterals = DecodingTree(literalCodes, bitReader)
+                    let distanceCodes = Code.huffmanCodes(from: Deflate.lengths(from: Array(codeLengths.suffix(from: literals))))
+                    mainDistances = DecodingTree(distanceCodes, bitReader)
                 }
 
                 // Main loop of data decompression.
@@ -239,6 +246,10 @@ public class Deflate: DecompressionAlgorithm {
         }
 
         return Data(out)
+    }
+
+    private static func lengths(from orderedCodeLengths: [Int]) -> [CodeLength] {
+        return orderedCodeLengths.enumerated().map({ CodeLength(symbol: $0, codeLength: $1) })
     }
 
 }

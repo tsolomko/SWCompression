@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -23,10 +23,6 @@ public class ZlibArchive: Archive {
      - Returns: Unarchived data.
      */
     public static func unarchive(archive data: Data) throws -> Data {
-        // Valid Zlib archive must contain at least 8 bytes of data.
-        guard data.count >= 8
-            else { throw ZlibError.wrongCompressionMethod }
-
         /// Object with input data which supports convenient work with bit shifts.
         let bitReader = LsbBitReader(data: data)
 
@@ -34,6 +30,9 @@ public class ZlibArchive: Archive {
 
         let out = try Deflate.decompress(bitReader)
         bitReader.align()
+
+        guard bitReader.bytesLeft >= 4
+            else { throw ZlibError.wrongAdler32(out) }
 
         let adler32 = bitReader.uint32().byteSwapped
         guard CheckSums.adler32(out) == adler32

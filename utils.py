@@ -23,9 +23,9 @@ def _ci_script_macos():
     _sprun_shell("xcodebuild -version")
     _sprun(["swift", "--version"])
     xcodebuild_command_parts = ["xcodebuild", "-quiet", "-project", "SWCompression.xcodeproj", "-scheme", "SWCompression"]
-    destinations_actions = [(["-destination 'platform=OS X'"], ["clean", "test"]),
+    destinations_actions = [(["-destination 'platform=macOS'"], ["clean", "test"]),
                     (["-destination 'platform=iOS Simulator,name=" + os.environ["IOS_SIMULATOR"] + "'"], ["clean", "test"]),
-                    (["-destination 'platform=watchOS Simulator,name=" + os.environ["WATCHOS_SIMULATOR"] + "'"], [os.environ["WATCHOS_ACTIONS"]]),
+                    (["-destination 'platform=watchOS Simulator,name=" + os.environ["WATCHOS_SIMULATOR"] + "'"], ["clean", "test"]),
                     (["-destination 'platform=tvOS Simulator,name=Apple TV'"], ["clean", "test"])]
 
     for destination, actions in destinations_actions:
@@ -43,39 +43,15 @@ def action_ci(args):
 
 def action_cw(args):
     _sprun(["rm", "-rf", "build/"])
-    _sprun(["rm", "-rf", "Carthage/"])
     _sprun(["rm", "-rf", "docs/"])
-    _sprun(["rm", "-rf", "Pods/"])
     _sprun(["rm", "-rf", ".build/"])
-    _sprun(["rm", "-f", "Cartfile.resolved"])
     _sprun(["rm", "-f", "docs.json"])
     _sprun(["rm", "-f", "Package.resolved"])
     _sprun(["rm", "-f", "SWCompression.framework.zip"])
 
-def action_dbm(args):
-    print("=> Downloading BitByteData dependency using Carthage")
-    script = ["carthage", "bootstrap", "--no-use-binaries", "--use-xcframeworks"]
-    if args.debug:
-        script += ["--configuration", "Debug"]
-    if args.xros:
-        script += ["--platform", "macOS,iOS,watchOS,tvOS,visionOS"]
-    else:
-        script += ["--platform", "macOS,iOS,watchOS,tvOS"]
-    _sprun(script)
-
 def action_pr(args):
     _sprun(["agvtool", "next-version", "-all"])
     _sprun(["agvtool", "new-marketing-version", args.version])
-
-    f = open("SWCompression.podspec", "r", encoding="utf-8")
-    lines = f.readlines()
-    f.close()
-    f = open("SWCompression.podspec", "w", encoding="utf-8")
-    for line in lines:
-        if line.startswith("  s.version      = "):
-            line = "  s.version      = \"" + args.version + "\"\n"
-        f.write(line)
-    f.close()
 
     f = open(".jazzy.yaml", "r", encoding="utf-8")
     lines = f.readlines()
@@ -113,15 +89,6 @@ parser_ci.set_defaults(func=action_ci)
 parser_cw = subparsers.add_parser("cleanup-workspace", help="cleanup workspace",
                             description="cleans workspace from files produced by various build systems")
 parser_cw.set_defaults(func=action_cw)
-
-# Parser for 'download-bbd-macos' command.
-parser_dbm = subparsers.add_parser("download-bbd-macos", help="download BitByteData",
-                            description="downloads BitByteData dependency using Carthage (macOS only)")
-parser_dbm.add_argument("--debug", "-d", action="store_true", dest="debug",
-                        help="build BitByteData in Debug configuration")
-parser_dbm.add_argument("--xros", action="store_true", dest="xros",
-                        help="build BitByteData for visionOS as well (requires Apple Silicon)")
-parser_dbm.set_defaults(func=action_dbm)
 
 # Parser for 'prepare-release' command.
 parser_pr = subparsers.add_parser("prepare-release", help="prepare next release",

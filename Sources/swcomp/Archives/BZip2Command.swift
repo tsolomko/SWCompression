@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -23,12 +23,15 @@ final class BZip2Command: Command {
     @Flag("-d", "--decompress", description: "Decompress a BZip2 archive")
     var decompress: Bool
 
+    @Flag("-m", "--multi-decompress", description: "Decompress multiple BZip2 archives concatenated together")
+    var multiDecompress: Bool
+
     @Key("-b", "--block-size", description: "Set the block size for compression to a multiple of 100k bytes; possible " +
                                             "values are from '1' (default) to '9'")
     var blockSize: BZip2.BlockSize?
 
     var optionGroups: [OptionGroup] {
-        return [.exactlyOne($compress, $decompress)]
+        return [.exactlyOne($compress, $decompress, $multiDecompress)]
     }
 
     @Param var input: String
@@ -50,6 +53,28 @@ final class BZip2Command: Command {
             let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
             let decompressedData = try BZip2.decompress(data: fileData)
             try decompressedData.write(to: outputURL)
+        } else if multiDecompress {
+            let inputURL = URL(fileURLWithPath: self.input)
+
+            let outputURL: URL
+            if let outputPath = output {
+                outputURL = URL(fileURLWithPath: outputPath)
+            } else if inputURL.pathExtension == "bz2" {
+                outputURL = inputURL.deletingPathExtension()
+            } else {
+                swcompExit(.noOutputPath)
+            }
+
+            let fileData = try Data(contentsOf: inputURL, options: .mappedIfSafe)
+            let output = try BZip2.multiDecompress(data: fileData)
+
+            try "".write(to: outputURL, atomically: true, encoding: .utf8)
+            let handle = try FileHandle(forWritingTo: outputURL)
+            for data  in output {
+                try handle.write(contentsOf: data)
+                try handle.synchronize()
+            }
+            try handle.close()
         } else if compress {
             let inputURL = URL(fileURLWithPath: self.input)
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Timofey Solomko
+// Copyright (c) 2026 Timofey Solomko
 // Licensed under MIT License
 //
 // See LICENSE for license information
@@ -26,12 +26,6 @@ import Foundation
  ```
  Note that `TarWriter.finalize()` must be called after finishing appending entries to the container. In addition,
  closing the `FileHandle` remains the responsibility of the caller.
-
- - Important: Due to the API availability limitations of Foundation's `FileHandle`, on certain platforms errors in
- `FileHandle` operations may result in unrecoverable runtime failures due to unhandled Objective-C exceptions (which are
- impossible to correctly handle in Swift code). As such, it is not recommended to use `TarWriter` on those platforms.
- The following platforms are _unaffected_ by this issue: macOS 10.15.4+, iOS 13.4+, watchOS 6.2+, tvOS 13.4+, and any
- other platforms without Objective-C runtime.
  */
 public struct TarWriter {
 
@@ -132,13 +126,8 @@ public struct TarWriter {
     }
 
     private func write(_ data: Data) throws {
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            try handle.write(contentsOf: data)
-            try handle.synchronize()
-        } else {
-            handle.write(data)
-            handle.synchronizeFile()
-        }
+        try handle.write(contentsOf: data)
+        try handle.synchronize()
     }
 
 }
