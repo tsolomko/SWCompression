@@ -13,6 +13,7 @@ stages:
   displayName: 'Build & Test'
   jobs:
   - job: macos
+    timeoutInMinutes: 90
     strategy:
       matrix:
         macosSwift59:
