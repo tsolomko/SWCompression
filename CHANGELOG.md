@@ -1,5 +1,35 @@
 # Changelog
 
+## 4.9.0
+
+- Swift versions from 5.3 up to and including 5.8 are no longer supported.
+- Cocoapods and Carthage installation methods are no longer supported.
+- Enabled visionOS platform for SPM.
+- Increased minimum deployment versions for Darwin platforms: macOS from 10.13 to 14.0, iOS from 11.0 to 17.0, tvOS from
+11.0 to 17.0, and watchOS from 4.0 to 10.0.
+- Increased the lowest required version of BitByteData dependency to 2.1.
+- Added `BZip2.multiDecompress` function.
+- Improved performance of BZip2 compression and decompression.
+- Slighlty improved performance of LZMA/LZMA2 decompression.
+- Improved performance of Deflate compression and decompression.
+- Fixed potential crashes when processing truncated BZip2 archives.
+- Fixed potential crashes when processing truncated Zlib archives.
+- Fixed potential crashes when processing truncated or corrupted data compressed with Deflate.
+- Fixed incorrect parsing of LZMA dictionary sizes larger than 2<sup>24</sup>-1 in 7-Zip containers (PR #61 by @analytical-engines and @nekonya).
+- swcomp changes:
+    - SPM target is now enabled only on macOS.
+    - Added `-m`, `--multi-decompress` option to `bz2` command.
+    - Benchmark metadatas are now printed in a standard order.
+    - Benchmarking warmup iteration results are now printed and saved into a file.
+    - Benchmarking raw data is now saved into a file.
+    - Improved benchmarking output for multi-way comparsions.
+    - Added `--print-uuid` option to `benchmark show` command.
+    - Added `--metadata-only` option to `benchmark show` command.
+    - Added `--self-compare` option to `benchmark show` command.
+    - Added `benchmark remove-run` command.
+    - Updated benchmark results file format.
+    - Added `benchmark convert` command.
+
 ## 4.8.7
 
 - Pinned BitByteData version to 2.0.4.
@@ -7,8 +37,8 @@
 ## 4.8.6
 
 - Swift 5.2 is no longer supported.
-- Enable visionOS deployment target (only for Carthage users).
-- Add PrivacyInfo file.
+- Enabled visionOS deployment target (only for Carthage users).
+- Added PrivacyInfo file.
 - Fixed a documentation error in `TarEntryInfo.deviceMinorNumber`.
 
 ## 4.8.5

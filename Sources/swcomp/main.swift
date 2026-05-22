@@ -7,7 +7,7 @@ import Foundation
 import SWCompression
 import SwiftCLI
 
-let _SWC_VERSION = "4.8.7"
+let _SWC_VERSION = "4.9.0"
 
 let cli = CLI(name: "swcomp", version: _SWC_VERSION,
               description: """

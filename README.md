@@ -46,7 +46,7 @@ let package = Package(
     name: "PackageName",
     dependencies: [
         .package(name: "SWCompression", url: "https://github.com/tsolomko/SWCompression.git",
-                 from: "4.8.0")
+                 from: "4.9.0")
     ],
     targets: [
         .target(
