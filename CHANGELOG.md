@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.8.7
+
+- Pinned BitByteData version to 2.0.4.
+
 ## 4.8.6
 
 - Swift 5.2 is no longer supported.
