@@ -32,7 +32,7 @@
 
 ## 4.8.7
 
-- Pinned BitByteData version to 2.0.4.
+- Pinned BitByteData version to 2.0.4 (PR #64 by @wkonury-an).
 
 ## 4.8.6
 
