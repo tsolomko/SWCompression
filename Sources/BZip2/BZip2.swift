@@ -110,11 +110,11 @@ public class BZip2: DecompressionAlgorithm {
         let pointer = bitReader.int(fromBits: 24)
 
         // Decoding which symbols are used in Huffman tables. All possible 256 symbols (0...255) are split into 16 "maps"
-        // of 16 sequential symbols. Each map is a sequence of 16 bits where a non-zero bits indicate that used symbols.
-        // A map is omitteed if none of its symbols are in use. First, we decode which maps are present.
+        // of 16 sequential symbols. Each map is a sequence of 16 bits where non-zero bits indicate used symbols. A map
+        // is omitted if none of its symbols are in use. First, we decode which maps are present.
         let usedBlocksBitMap = bitReader.uint16(fromBits: 16)
-        // For each non-zero bit in the bitmap there should be 16 bits of the block. After that there should be 3 bits
-        // for the number of Huffman tables and 15 bits for the selectors count.
+        // For each non-zero bit in the bitmap there should be 16 bits of used symbols. After that there should be 3
+        // bits for the number of Huffman tables and 15 bits for selectors count.
         guard bitReader.bitsLeft >= 16 * usedBlocksBitMap.nonzeroBitCount + 3 + 15
             else { throw BZip2Error.wrongMagic }
 
