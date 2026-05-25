@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1192,7 +1192,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2650;
 				ORGANIZATIONNAME = "Timofey Solomko";
 				TargetAttributes = {
 					06BE1AC71DB410F100EE0F59 = {
@@ -1206,7 +1206,6 @@
 				};
 			};
 			buildConfigurationList = 06BE1AC21DB410F100EE0F59 /* Build configuration list for PBXProject "SWCompression" */;
-			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1217,6 +1216,7 @@
 			packageReferences = (
 				E6DCC9D12F30D7610042AE2E /* XCRemoteSwiftPackageReference "BitByteData" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 06BE1AC91DB410F100EE0F59 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

@@ -16,16 +16,6 @@ stages:
     timeoutInMinutes: 90
     strategy:
       matrix:
-        macosSwift59:
-          imageName: 'macOS-14'
-          DEVELOPER_DIR: '/Applications/Xcode_15.2.app'
-          IOS_SIMULATOR: 'iPhone 15'
-          WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
-        macosSwift510:
-          imageName: 'macOS-14'
-          DEVELOPER_DIR: '/Applications/Xcode_15.4.app'
-          IOS_SIMULATOR: 'iPhone 15'
-          WATCHOS_SIMULATOR: 'Apple Watch Series 6 (44mm)'
         macosSwift60:
           imageName: 'macOS-15'
           DEVELOPER_DIR: '/Applications/Xcode_16.2.app'
@@ -86,12 +76,6 @@ stages:
   - job: linux
     strategy:
       matrix:
-        linuxSwift59:
-          imageName: 'ubuntu-22.04'
-          containerImage: 'swift:5.9.2-jammy'
-        linuxSwift510:
-          imageName: 'ubuntu-24.04'
-          containerImage: 'swift:5.10.1-noble'
         linuxSwift60:
           imageName: 'ubuntu-24.04'
           containerImage: 'swift:6.0.3-noble'
@@ -117,12 +101,6 @@ stages:
   - job: windows
     strategy:
       matrix:
-        windowsSwift59:
-          imageName: 'windows-2022'
-          containerImage: 'swift:5.9.2-windowsservercore-ltsc2022'
-        # windowsSwift510:
-        #   imageName: 'windows-2022'
-        #   containerImage: 'swift:5.10.1-windowsservercore-ltsc2022'
         windowsSwift60:
           imageName: 'windows-2022'
           containerImage: 'swift:6.0.3-windowsservercore-ltsc2022'
