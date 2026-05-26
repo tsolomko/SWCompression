@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents the type of a container entry.
-public enum ContainerEntryType {
+public enum ContainerEntryType: Sendable {
     /// Block special file.
     case blockSpecial
     /// Character special file.

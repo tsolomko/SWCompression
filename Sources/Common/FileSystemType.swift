@@ -7,7 +7,7 @@
  Represents the type of the file system on which an archive or container was created. File system determines the meaning
  of file attributes.
  */
-public enum FileSystemType {
+public enum FileSystemType: Sendable {
     /// FAT filesystem.
     case fat
     /// Filesystem of older Macintosh systems.

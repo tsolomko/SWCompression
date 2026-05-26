@@ -4,7 +4,7 @@
 // See LICENSE for license information
 
 /// Represents a (de)compression method.
-public enum CompressionMethod {
+public enum CompressionMethod: Sendable {
     /// BZip2.
     case bzip2
     /// Copy (no compression).
