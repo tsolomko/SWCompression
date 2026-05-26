@@ -6,7 +6,7 @@
 import Foundation
 
 /// A type that represents an entry from the container with its data and information.
-public protocol ContainerEntry {
+public protocol ContainerEntry: Sendable {
 
     /// A type that provides information about an entry.
     associatedtype Info: ContainerEntryInfo

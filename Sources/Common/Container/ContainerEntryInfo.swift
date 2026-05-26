@@ -6,7 +6,7 @@
 import Foundation
 
 /// A type that provides access to information about an entry from the container.
-public protocol ContainerEntryInfo {
+public protocol ContainerEntryInfo: Sendable {
 
     /// Entry's name.
     var name: String { get }
