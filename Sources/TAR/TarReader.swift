@@ -156,7 +156,7 @@ public struct TarReader {
 
 }
 
-#if os(Linux) || os(Windows)
+#if os(Linux) || os(Windows) || os(Android) || os(WASI)
 @discardableResult
 fileprivate func autoreleasepool<T>(_ block: () throws -> T) rethrows -> T {
     return try block()
