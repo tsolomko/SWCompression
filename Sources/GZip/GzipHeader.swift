@@ -7,7 +7,7 @@ import Foundation
 import BitByteData
 
 /// Represents the header of a GZip archive.
-public struct GzipHeader {
+public struct GzipHeader: Sendable {
 
     struct Flags: OptionSet {
         let rawValue: UInt8

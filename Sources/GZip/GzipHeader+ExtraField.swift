@@ -6,7 +6,7 @@
 extension GzipHeader {
 
     /// Represents an extra field in the header of a GZip archive.
-    public struct ExtraField {
+    public struct ExtraField: Sendable {
 
         /// First byte of the extra field (subfield) ID.
         public let si1: UInt8

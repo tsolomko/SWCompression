@@ -10,7 +10,7 @@ import BitByteData
 public class GzipArchive: Archive {
 
     /// Represents the member of a multi-member GZip archive.
-    public struct Member {
+    public struct Member: Sendable {
 
         /// GZip header of a member.
         public let header: GzipHeader
