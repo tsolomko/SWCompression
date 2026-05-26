@@ -22,7 +22,9 @@ public class ZipContainer: Container {
      - Warning: Modifying this dictionary while either `info(container:)` or `open(container:)` function is being
      executed may cause undefined behavior.
      */
-    public static var customExtraFields = [UInt16: ZipExtraField.Type]()
+    nonisolated(unsafe) public static var customExtraFields = [UInt16: ZipExtraField.Type]()
+    // TODO: nonisolated(unsafe): external synchronization is enforced by documentation, which is not very good, but it
+    // TODO: has to suffice for now.
 
     /**
      Processes ZIP container and returns an array of `ZipEntry` with information and data for all entries.
