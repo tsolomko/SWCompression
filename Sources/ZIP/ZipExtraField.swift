@@ -6,7 +6,7 @@
 import BitByteData
 
 /// A type that represents an extra field from a ZIP container.
-public protocol ZipExtraField {
+public protocol ZipExtraField: Sendable {
 
     /**
      ID of extra field. Must be equal to the key of extra field in `ZipContainer.customExtraFields` dictionary and
@@ -50,7 +50,7 @@ extension ZipExtraField {
 }
 
 /// Location of ZIP extra field inside a container.
-public enum ZipExtraFieldLocation {
+public enum ZipExtraFieldLocation: Sendable {
     /// ZIP extra field is located in container's Central Directory.
     case centralDirectory
     /// ZIP extra field is located in one of container's Local Headers.
