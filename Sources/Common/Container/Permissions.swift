@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents file access permissions in UNIX format.
-public struct Permissions: OptionSet {
+public struct Permissions: OptionSet, Sendable {
 
     /// Raw bit flags value (in decimal).
     public let rawValue: UInt32

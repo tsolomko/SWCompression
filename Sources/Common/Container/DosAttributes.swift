@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents file attributes in DOS format.
-public struct DosAttributes: OptionSet {
+public struct DosAttributes: OptionSet, Sendable {
 
     /// Raw bit flags value.
     public let rawValue: UInt32
