@@ -7,10 +7,10 @@ import Foundation
 import BitByteData
 
 /// Represents the header of a Zlib archive.
-public struct ZlibHeader {
+public struct ZlibHeader: Sendable {
 
     /// Levels of compression which can be used to create Zlib archive.
-    public enum CompressionLevel: Int {
+    public enum CompressionLevel: Int, Sendable {
         /// Fastest algorithm.
         case fastestAlgorithm = 0
         /// Fast algorithm.
