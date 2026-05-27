@@ -9,8 +9,39 @@ trigger:
     - '*-test*'
 
 stages:
+- stage: cache
+  displayName: 'Cache Test Files'
+  jobs:
+  - job: cache
+    pool:
+      vmImage: 'macOS-26'
+    variables:
+      GIT_LFS_SKIP_SMUDGE: 1
+    steps:
+    - script: |
+        set -e -o xtrace
+        git submodule update --init --recursive
+        cp "Tests/Test Files/gitattributes-copy" "Tests/Test Files/.gitattributes"
+      displayName: 'Update submodules'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        echo "##vso[task.setvariable variable=lfsRev;]$(git rev-parse --verify HEAD)"
+      displayName: 'Generate assets-id'
+    - task: Cache@2
+      inputs:
+        key: '"swc_test_files_v4_" | "$(lfsRev)"'
+        path: '.git/modules/Tests/Test Files/lfs'
+      displayName: 'Cache lfs of test files'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        git lfs fetch
+        git lfs checkout
+      displayName: 'Download test files'
 - stage: test
   displayName: 'Build & Test'
+  dependsOn: cache
   jobs:
   - job: macos
     timeoutInMinutes: 90
@@ -59,9 +90,8 @@ stages:
     - script: |
         set -e -o xtrace
         cd "Tests/Test Files"
-        git lfs pull
         git lfs checkout
-      displayName: 'Download or update test files'
+      displayName: 'Checkout test files'
     - script: |
         set -e -o xtrace
         xcrun simctl list > /dev/null
