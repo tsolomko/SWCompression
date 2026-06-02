@@ -118,6 +118,20 @@ stages:
     steps:
     - script: |
         set -e -o xtrace
+        git submodule update --init --recursive
+      displayName: 'Update submodules'
+    - script: |
+        set -e -o xtrace
+        cd "Tests/Test Files"
+        echo "##vso[task.setvariable variable=lfsRev;]$(git rev-parse --verify HEAD)"
+      displayName: 'Generate assets-id'
+    - task: Cache@2
+      inputs:
+        key: '"swc_test_files_v5_" | "$(lfsRev)"'
+        path: 'Tests/Test Files'
+      displayName: 'Cache test files'
+    - script: |
+        set -e -o xtrace
         swift --version
         swift test
       displayName: 'SPM Test'
