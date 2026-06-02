@@ -253,8 +253,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.info.ownerGroupName, "staff")
             XCTAssertEqual(entry!.info.permissions, Permissions(rawValue: 420))
             XCTAssertNil(entry!.info.comment)
-            let answerData = try Constants.data(forAnswer: "текстовый файл")
-            XCTAssertEqual(entry!.data, answerData)
+            XCTAssertEqual(entry!.data, Constants.текстовыйФайлData)
 
         }
         XCTAssertNil(try reader.read())
@@ -274,8 +273,7 @@ class TarReaderTests: XCTestCase {
             XCTAssertEqual(entry!.info.ownerGroupName, "staff")
             XCTAssertEqual(entry!.info.permissions, Permissions(rawValue: 420))
             XCTAssertNil(entry!.info.comment)
-            let answerData = try Constants.data(forAnswer: "текстовый файл")
-            XCTAssertEqual(entry!.data, answerData)
+            XCTAssertEqual(entry!.data, Constants.текстовыйФайлData)
 
         }
         XCTAssertNil(try reader.read())

@@ -280,10 +280,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
         XCTAssertNil(entries[0].info.comment)
-
-        let answerData = try Constants.data(forAnswer: "текстовый файл")
-
-        XCTAssertEqual(entries[0].data, answerData)
+        XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
     }
 
     func testUnicodePax() throws {
@@ -302,10 +299,7 @@ class TarTests: XCTestCase {
         XCTAssertEqual(entries[0].info.ownerGroupName, "staff")
         XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
         XCTAssertNil(entries[0].info.comment)
-
-        let answerData = try Constants.data(forAnswer: "текстовый файл")
-
-        XCTAssertEqual(entries[0].data, answerData)
+        XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
     }
 
     func testGnuIncrementalFormat() throws {

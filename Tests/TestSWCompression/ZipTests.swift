@@ -127,9 +127,7 @@ class ZipTests: XCTestCase {
         XCTAssertNotNil(entries[0].info.modificationTime)
         XCTAssertNotNil(entries[0].info.accessTime)
         XCTAssertNil(entries[0].info.creationTime)
-
-        let answerData = try Constants.data(forAnswer: "текстовый файл")
-        XCTAssertEqual(entries[0].data, answerData)
+        XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
     }
 
     func testZipLZMA() throws {
@@ -342,9 +340,7 @@ class ZipTests: XCTestCase {
             XCTAssertNotNil(entries[0].info.modificationTime)
             XCTAssertNotNil(entries[0].info.accessTime)
             XCTAssertNil(entries[0].info.creationTime)
-
-            let answerData = try Constants.data(forAnswer: "текстовый файл")
-            XCTAssertEqual(entries[0].data, answerData)
+            XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
         } else {
             XCTFail("Unexpected error: \(String(describing: thrownError))")
         }

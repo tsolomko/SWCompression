@@ -299,9 +299,7 @@ class SevenZipTests: XCTestCase {
         XCTAssertEqual(entries[0].info.isEmpty, false)
         XCTAssertEqual(entries[0].info.isAnti, false)
         XCTAssertEqual(entries[0].info.crc, 0xA139BCEE)
-
-        let answerData = try Constants.data(forAnswer: "текстовый файл")
-        XCTAssertEqual(entries[0].data, answerData)
+        XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
     }
 
     func testWinContainer() throws {
