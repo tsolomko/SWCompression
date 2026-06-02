@@ -119,9 +119,13 @@ stages:
     - script: |
         set -e -o xtrace
         swift --version
-        swift build
-        swift build -c release # Check Release build just in case.
-      displayName: 'Build SPM Debug & Release'
+        swift test
+      displayName: 'SPM Test'
+    - script: |
+        set -e -o xtrace
+        swift --version
+        swift build -c release
+      displayName: 'SPM Build Release'
   - job: windows
     strategy:
       matrix:
