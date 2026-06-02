@@ -42,7 +42,6 @@
 		063DF1131DE1F07800F38082 /* DecodingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063DF1081DE1F07800F38082 /* DecodingTree.swift */; };
 		0642998B206017590044BA0C /* ZipExtraField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642998A206017590044BA0C /* ZipExtraField.swift */; };
 		064512871F82CE63006490BA /* 7zCoder+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064512861F82CE63006490BA /* 7zCoder+Equatable.swift */; };
-		064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */ = {isa = PBXBuildFile; fileRef = 064D01A820FD071300CAE058 /* текстовый файл.answer */; };
 		064D01AC20FD077D00CAE058 /* test_unicode_ustar.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */; };
 		064D01AD20FD077D00CAE058 /* test_unicode_pax.tar in Resources */ = {isa = PBXBuildFile; fileRef = 064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */; };
 		064DF453245618A300D285F3 /* bad_cd_ext_ts.zip in Resources */ = {isa = PBXBuildFile; fileRef = 064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */; };
@@ -349,7 +348,6 @@
 		0642998A206017590044BA0C /* ZipExtraField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipExtraField.swift; sourceTree = "<group>"; };
 		064492581DC606D400F10981 /* ZlibArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZlibArchive.swift; sourceTree = "<group>"; };
 		064512861F82CE63006490BA /* 7zCoder+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "7zCoder+Equatable.swift"; sourceTree = "<group>"; };
-		064D01A820FD071300CAE058 /* текстовый файл.answer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "текстовый файл.answer"; sourceTree = "<group>"; };
 		064D01AA20FD077D00CAE058 /* test_unicode_ustar.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_ustar.tar; sourceTree = "<group>"; };
 		064D01AB20FD077D00CAE058 /* test_unicode_pax.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = test_unicode_pax.tar; sourceTree = "<group>"; };
 		064DF452245618A300D285F3 /* bad_cd_ext_ts.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = bad_cd_ext_ts.zip; sourceTree = "<group>"; };
@@ -871,7 +869,6 @@
 		06F065AE1FFB763300312A82 /* Answers */ = {
 			isa = PBXGroup;
 			children = (
-				064D01A820FD071300CAE058 /* текстовый файл.answer */,
 				06F065B01FFB763300312A82 /* test1.answer */,
 				06F065B41FFB763300312A82 /* test2.answer */,
 				06F065AF1FFB763300312A82 /* test3.answer */,
@@ -1060,16 +1057,6 @@
 			path = BZip2;
 			sourceTree = "<group>";
 		};
-		E66D88602F4F53AB00707F23 /* Deflate */ = {
-			isa = PBXGroup;
-			children = (
-				E66D885D2F4F53AB00707F23 /* test6.deflate */,
-				E66D885E2F4F53AB00707F23 /* test8.deflate */,
-				E66D885F2F4F53AB00707F23 /* test9.deflate */,
-			);
-			path = Deflate;
-			sourceTree = "<group>";
-		};
 		E66C6DEC274C0CAC004EFFCD /* TestSWCompression */ = {
 			isa = PBXGroup;
 			children = (
@@ -1095,6 +1082,16 @@
 				E6D86D2E26FE35C50032CFFA /* XxHash32Tests.swift */,
 			);
 			path = TestSWCompression;
+			sourceTree = "<group>";
+		};
+		E66D88602F4F53AB00707F23 /* Deflate */ = {
+			isa = PBXGroup;
+			children = (
+				E66D885D2F4F53AB00707F23 /* test6.deflate */,
+				E66D885E2F4F53AB00707F23 /* test8.deflate */,
+				E66D885F2F4F53AB00707F23 /* test9.deflate */,
+			);
+			path = Deflate;
 			sourceTree = "<group>";
 		};
 		E6791E1926FD0070003852A9 /* LZ4 */ = {
@@ -1338,7 +1335,6 @@
 				E69FAC922729ACD900D3C406 /* test_dos_latin_us.zip in Resources */,
 				E66F36242538726E00076A6E /* test_empty.lzma in Resources */,
 				06F066751FFB763400312A82 /* test1.bz2 in Resources */,
-				064D01A920FD071300CAE058 /* текстовый файл.answer in Resources */,
 				06F0662D1FFB763400312A82 /* test6.gz in Resources */,
 				E66F362C2538E2B700076A6E /* test_empty.zlib in Resources */,
 				06F0664D1FFB763400312A82 /* test_ustar.tar in Resources */,
