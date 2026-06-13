@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.9.1
+
+- Fixed an issue where `GzipError.cannotEncodeISOLatin1` is incorrectly thrown on non-Darwin platforms with Swift 6.0.
+- Fixed an issue where `ZipError.wrongTextField` is incorrectly thrown on non-Darwin platforms with Swift 6.0 and 6.1.
+
 ## 4.9.0
 
 - Swift versions from 5.3 up to and including 5.8 are no longer supported.
