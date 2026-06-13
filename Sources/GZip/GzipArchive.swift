@@ -130,28 +130,28 @@ public class GzipArchive: Archive {
         var flags: UInt8 = 0
 
         var commentData = Data()
-        if var comment = comment {
+        if let comment = comment {
             flags |= 1 << 4
-            if comment.last != "\u{00}" {
-                comment.append("\u{00}")
-            }
             if let data = comment.data(using: .isoLatin1) {
                 commentData = data
             } else {
                 throw GzipError.cannotEncodeISOLatin1
             }
+            if commentData.last != 0 {
+                commentData.append(0)
+            }
         }
 
         var fileNameData = Data()
-        if var fileName = fileName {
+        if let fileName = fileName {
             flags |= 1 << 3
-            if fileName.last != "\u{00}" {
-                fileName.append("\u{00}")
-            }
             if let data = fileName.data(using: .isoLatin1) {
                 fileNameData = data
             } else {
                 throw GzipError.cannotEncodeISOLatin1
+            }
+            if fileNameData.last != 0 {
+                fileNameData.append(0)
             }
         }
 
