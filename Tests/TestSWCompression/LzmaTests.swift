@@ -3,10 +3,11 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class LzmaTests: XCTestCase {
+struct LzmaTests {
 
     private static let testType: String = "lzma"
 
@@ -15,45 +16,45 @@ class LzmaTests: XCTestCase {
         let decompressedData = try LZMA.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: "test8")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testLzma8() throws {
+    @Test func lzma8() throws {
         try self.perform(test: "test8")
     }
 
-    func testLzma9() throws {
+    @Test func lzma9() throws {
         try self.perform(test: "test9")
     }
 
-    func testLzma10() throws {
+    @Test func lzma10() throws {
         try self.perform(test: "test10")
     }
 
-    func testLzma11() throws {
+    @Test func lzma11() throws {
         try self.perform(test: "test11")
     }
 
-    func testLzmaEmpty() throws {
+    @Test func lzmaEmpty() throws {
         let testData = try Constants.data(forTest: "test_empty", withType: LzmaTests.testType)
-        XCTAssertEqual(try LZMA.decompress(data: testData), Data())
+        #expect(try LZMA.decompress(data: testData) == Data())
     }
 
-    func testBadFile_short() {
+    @Test func truncatedInput() {
         // Not enough data for LZMA properties.
-        XCTAssertThrowsError(try LZMA.decompress(data: Data([0, 1, 2, 3])))
+        #expect(throws: (any Error).self) { try LZMA.decompress(data: Data([0, 1, 2, 3])) }
         // Not enough data to initialize range decoder.
-        XCTAssertThrowsError(try LZMA.decompress(data: Data([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])))
+        #expect(throws: (any Error).self) { try LZMA.decompress(data: Data([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test7")
-        XCTAssertThrowsError(try LZMA.decompress(data: testData))
+        #expect(throws: (any Error).self) { try LZMA.decompress(data: testData) }
     }
 
-    func testEmptyData() throws {
-        XCTAssertThrowsError(try LZMA.decompress(data: Data()))
-        XCTAssertThrowsError(try LZMA2.decompress(data: Data()))
+    @Test func emptyInput() {
+        #expect(throws: (any Error).self) { try LZMA.decompress(data: Data()) }
+        #expect(throws: (any Error).self) { try LZMA2.decompress(data: Data()) }
     }
 
 }
