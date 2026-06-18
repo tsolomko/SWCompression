@@ -9,7 +9,6 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "targetForVariableExpansion" : {
       "containerPath" : "container:SWCompression.xcodeproj",
       "identifier" : "06BE1AC71DB410F100EE0F59",
