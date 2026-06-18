@@ -3,16 +3,17 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class BZip2CompressionTests: XCTestCase {
+struct BZip2CompressionTests {
 
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
         let compressedData = BZip2.compress(data: answerData)
         let redecompressedData = try BZip2.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print(String(format: "BZip2.\(testName).compressionRatio = %.3f", compressionRatio))
@@ -25,10 +26,10 @@ class BZip2CompressionTests: XCTestCase {
         let compressedData = BZip2.compress(data: answerData)
 
         let redecompressedData = try BZip2.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
     }
 
-    func testBZip2CompressStrings() throws {
+    @Test func compressStrings() throws {
         try stringTest("ban")
         try stringTest("banana")
         try stringTest("abaaba")
@@ -40,7 +41,7 @@ class BZip2CompressionTests: XCTestCase {
         try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
     }
 
-    func testBZip2CompressBytes() throws {
+    @Test func compressBytes() throws {
         var bytes = ""
         for i: UInt8 in 0...255 {
             bytes += String(format: "%c", i)
@@ -48,50 +49,51 @@ class BZip2CompressionTests: XCTestCase {
         try stringTest(bytes)
     }
 
-    func testWithAnswer1BZip2Compress() throws {
+    @Test func answer1() throws {
         try answerTest("test1")
     }
 
-    func testWithAnswer2BZip2Compress() throws {
+    @Test func answer2() throws {
         try answerTest("test2")
     }
 
-    func testWithAnswer3BZip2Compress() throws {
+    @Test func answer3() throws {
         try answerTest("test3")
     }
 
-    func testWithAnswer4BZip2Compress() throws {
+    @Test func answer4() throws {
         try answerTest("test4")
     }
 
-    func testWithAnswer5BZip2Compress() throws {
+    @Test func answer5() throws {
         try answerTest("test5")
     }
 
-    func testWithAnswer6BZip2Compress() throws {
+    @Test func answer6() throws {
         try answerTest("test6")
     }
 
-//    func testWithAnswer7BZip2Compress() throws {
+//    @Test func answer7() throws {
 //        try answerTest("test7")
 //    }
 
-    func testWithAnswer8BZip2Compress() throws {
+    @Test func answer8() throws {
         try answerTest("test8")
     }
 
-    func testWithAnswer9BZip2Compress() throws {
+    @Test func answer9() throws {
         try answerTest("test9")
     }
 
-    func testBurrowsWheelerRoundtrip() throws {
+    @Test(.bug("https://github.com/tsolomko/SWCompression/issues/38", id: 38))
+    func bwRoundtrip() throws {
         // This test is inspired by the reported issue #38 that uncovered a mistake with a pointer variable in BWT.
         // "1"s can be anything (except zero), but it must be the same byte value in all places.
         // Two consecutive zeros in the middle seem to be crucial for some reason.
         let testData = Data([0, 1, 0, 1, 0, 0, 1, 0, 1])
         let compressedData = BZip2.compress(data: testData)
         let redecompressedData = try BZip2.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, testData)
+        #expect(redecompressedData == testData)
     }
 
 }
