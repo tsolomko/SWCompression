@@ -3,10 +3,11 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class BZip2Tests: XCTestCase {
+struct BZip2Tests {
 
     private static let testType: String = "bz2"
 
@@ -15,88 +16,100 @@ class BZip2Tests: XCTestCase {
         let decompressedData = try BZip2.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func test1BZip2() throws {
+    @Test func test1() throws {
         try self.perform(test: "test1")
     }
 
-    func test2BZip2() throws {
+    @Test func test2() throws {
         try self.perform(test: "test2")
     }
 
-    func test3BZip2() throws {
+    @Test func test3() throws {
         try self.perform(test: "test3")
     }
 
-    func test4BZip2() throws {
+    @Test func test4() throws {
         try self.perform(test: "test4")
     }
 
-    func test5BZip2() throws {
+    @Test func test5() throws {
         try self.perform(test: "test5")
     }
 
-    func test6BZip2() throws {
+    @Test func test6() throws {
         try self.perform(test: "test6")
     }
 
-    func test7BZip2() throws {
+    @Test func test7() throws {
         try self.perform(test: "test7")
     }
 
-    func test8BZip2() throws {
+    @Test func test8() throws {
         try self.perform(test: "test8")
     }
 
-    func test9BZip2() throws {
+    @Test func test9() throws {
         try self.perform(test: "test9")
     }
 
-    func testNonStandardRunLength() throws {
+    @Test(.bug("https://github.com/tsolomko/SWCompression/issues/21", id: 21))
+    func nonStandardRunLength() throws {
         try self.perform(test: "test_nonstandard_runlength")
     }
 
-    func testBadFile_short() {
-        XCTAssertThrowsError(try BZip2.decompress(data: Data([0])))
+    @Test func shortInput() {
+        #expect(throws: (any Error).self) { try BZip2.decompress(data: Data([0])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test6")
-        XCTAssertThrowsError(try BZip2.decompress(data: testData))
+        #expect(throws: (any Error).self) { try BZip2.decompress(data: testData) }
     }
 
-    func testBadFile_truncated() throws {
+    @Test func truncatedInput() throws {
         // This tests that encountering data truncated in the middle of a Huffman symbol correctly throws an error
         // (and doesn't crash).
         let testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)[0...40]
-        XCTAssertThrowsError(try BZip2.decompress(data: testData))
+        #expect(throws: (any Error).self) { try BZip2.decompress(data: testData) }
     }
 
-    func testEmptyData() throws {
-        XCTAssertThrowsError(try BZip2.decompress(data: Data()))
+    @Test func emptyInput() {
+        #expect(throws: (any Error).self) { try BZip2.decompress(data: Data()) }
     }
 
-    func testChecksumMismatch() throws {
+    @Test func checksumMismatch() throws {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
         var testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)
         // The checksum is the last 4 bytes.
         testData[testData.endIndex - 2] &+= 1
-        var thrownError: Error? = nil
-        XCTAssertThrowsError(try BZip2.decompress(data: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is BZip2Error, "Unexpected error type: \(type(of: thrownError))")
-        if case let .some(.wrongCRC(decompressedData)) = thrownError as? BZip2Error {
-            let answerData = try Constants.data(forAnswer: "test1")
-            XCTAssertEqual(decompressedData, answerData)
-        } else {
-            XCTFail("Unexpected error: \(String(describing: thrownError))")
-        }
+        #if compiler(>=6.1)
+            let error = #expect(throws: BZip2Error.self) { try BZip2.decompress(data: testData) }
+            if case let .some(.wrongCRC(decompressedData)) = error {
+                let answerData = try Constants.data(forAnswer: "test1")
+                #expect(decompressedData == answerData)
+            } else {
+                Issue.record("Unexpected error: \(error)")
+            }
+        #else
+            #expect { try BZip2.decompress(data: testData) } throws: { error in
+                if case let .some(.wrongCRC(decompressedData)) = error as? BZip2Error {
+                    let answerData = try Constants.data(forAnswer: "test1")
+                    return decompressedData == answerData
+                }
+                return false
+            }
+        #endif
     }
 
-    func testBZip2Truncation() throws {
+    @Test func randomInputTruncations() throws {
+        // Verify that there is no crash when input is randomly truncated. It can throw error or produce an output
+        // depending on luck (in an extremely rare case the truncated input could somehow still be valid). Thus, there
+        // is no #expect in this test.
         for i in 1...9 {
             let testName = "test\(i)"
             let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
@@ -108,7 +121,7 @@ class BZip2Tests: XCTestCase {
         }
     }
 
-    func testBZip2MultiDecompress() throws {
+    @Test func multiDecompress() throws {
         var input = Data()
         for i in 1...5 {
             let testName = "test\(i)"
@@ -119,21 +132,24 @@ class BZip2Tests: XCTestCase {
         for i in 1...5 {
             let testName = "test\(i)"
             let answerData = try Constants.data(forAnswer: testName)
-            XCTAssertEqual(output[i - 1], answerData)
+            #expect(output[i - 1] == answerData)
         }
     }
 
-    func testBZip2MultiDecompressSingleArchive() throws {
+    @Test func multiDecompressSingleArchive() throws {
         for i in 1...5 {
             let testName = "test\(i)"
             let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
             let answerData = try Constants.data(forAnswer: testName)
             let output = try BZip2.multiDecompress(data: testData)
-            XCTAssertEqual(output.first!, answerData)
+            #expect(output.first! == answerData)
         }
     }
 
-    func testBZip2MultiDecompressTruncated() throws {
+    @Test func multiDecompressRandomTruncations() throws {
+        // Verify that there is no crash when input is randomly truncated. It can throw error or produce an output
+        // depending on luck (in an extremely rare case the truncated input could somehow still be valid). Thus, there
+        // is no #expect in this test.
         var input = Data()
         for i in 1...5 {
             let testName = "test\(i)"
