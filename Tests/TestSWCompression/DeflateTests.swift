@@ -3,15 +3,16 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import BitByteData
 import SWCompression
 
-class DeflateTests: XCTestCase {
+struct DeflateTests {
 
     private static let testType: String = "deflate"
 
-    func testTruncation() throws {
+    @Test func randomInputTruncations() throws {
         // In this test we check that there is no crash when dealing with the truncation in the middle of the Deflate
         // compressed data. The idea is to take three different types of Deflate blocks (uncompressed, static Huffman,
         // and dynamic Huffman), truncate the input data manually at a random point inside it, and then test if an
@@ -26,13 +27,14 @@ class DeflateTests: XCTestCase {
             let testData = try Constants.data(forTest: testName, withType: DeflateTests.testType)
             for _ in 0..<10 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
-                XCTAssertThrowsError(try Deflate.decompress(data: testData[..<truncationIndex]),
-                                     "No error thrown, \(testName), truncationIndex=\(truncationIndex)")
+                #expect(throws: (any Error).self, "No error thrown, \(testName), truncationIndex=\(truncationIndex)") {
+                    try Deflate.decompress(data: testData[..<truncationIndex])
+                }
             }
         }
     }
 
-    func testSymbol16First() throws {
+    @Test func symbol16First() {
         // Symbol 16 cannot be the first symbol encoding code lengths in the dynamic Huffman block. Previously, there
         // was a crash in such situation. This test checks that error is thrown appropriately.
 
@@ -44,10 +46,10 @@ class DeflateTests: XCTestCase {
         // - 011 011 010 001: four code lenghts for code length codes (1, 2, 3, 3),
         // - 0: encoded code length symbol 16 (which means to copy previous code length).
         let testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b0000_1101])
-        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+        #expect(throws: (any Error).self) { try Deflate.decompress(data: testData) }
     }
 
-    func testCodeLengthsOverCopy() throws {
+    @Test func codeLengthsOverCopy() {
         // Previously, when decoding code lengths in a dynamic Huffman block if a copy code length count was
         // sufficiently large, it could lead to an inconsistent state or a crash (due to out-of-range array subscript).
         // In the new version these situations are checked.
@@ -63,7 +65,7 @@ class DeflateTests: XCTestCase {
         // - 111: encoded code length symbol 18 (which means to repeat 0 code length),
         // - 1111111: maximum repeat amount.
         var testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b1110_1101, 0b1111_1111, 0b1111_1111, 0b0000_0001])
-        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+        #expect(throws: (any Error).self) { try Deflate.decompress(data: testData) }
 
         // Copy a previous code length too many times. The input data was constructed manually:
         // - 101: last block bit and dynamical Huffman block type,
@@ -78,10 +80,11 @@ class DeflateTests: XCTestCase {
         // - 0: encoded code length symbol 16 (which means to copy a previous code length),
         // - 01: copy amount.
         testData = Data([0b0000_0101, 0b0000_0000, 0b1010_0010, 0b1110_1101, 0b1111_1111, 0b1011_0011, 0b0000_0101])
-        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+        #expect(throws: (any Error).self) { try Deflate.decompress(data: testData) }
     }
 
-    func testCodeLengthsAllZero() throws {
+    @Test(.bug("https://github.com/tsolomko/SWCompression/issues/57", id: 57))
+    func codeLengthsAllZero() throws {
         // Previously, if all code lengths for a particular Huffman tree in a dynamic Huffman block were zero, the
         // Huffman code construction algorithm would crash. This behavior was reported as issue #57. After fixing the
         // crash all zero code lengths results in an "empty" Huffman tree. If such a tree is used to read a symbol, no
@@ -95,7 +98,7 @@ class DeflateTests: XCTestCase {
         // - 0000: minimal amount of code length codes (4),
         // - 000 000 000 000: four zero code lenghts for code length codes.
         let testData = Data([0b0000_0101, 0b0000_0000, 0b0000_0000, 0b0_0000])
-        XCTAssertThrowsError(try Deflate.decompress(data: testData))
+        #expect(throws: (any Error).self) { try Deflate.decompress(data: testData) }
 
         // The following inputs are based on test6 compressed data, but otherwise were constructed manually with the
         // help of `LsbBitWriter` from BitByteData.
@@ -143,7 +146,7 @@ class DeflateTests: XCTestCase {
         // Assuming that there are no literals in the block we would still need both a length symbol from the
         // literals/length tree and a distance symbol from the distance tree to perform a match copy. Thus, this input
         // is corrupted.
-        XCTAssertThrowsError(try Deflate.decompress(data: writer.data))
+        #expect(throws: (any Error).self) { try Deflate.decompress(data: writer.data) }
 
         // All code lengths are zero for the distance tree, and two non-zero code lengths for the literals/length tree.
         writer = LsbBitWriter()
@@ -190,7 +193,7 @@ class DeflateTests: XCTestCase {
         writer.align()
 
         // The distance tree can be empty if a block contains only literals. In this case we encoded a single byte of 0.
-        XCTAssertEqual(try Deflate.decompress(data: writer.data), Data([0]))
+        #expect(try Deflate.decompress(data: writer.data) == Data([0]))
     }
 
 }
