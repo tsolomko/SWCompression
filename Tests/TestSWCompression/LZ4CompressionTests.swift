@@ -3,16 +3,17 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class LZ4CompressionTests: XCTestCase {
+struct LZ4CompressionTests {
 
     func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
         let compressedData = LZ4.compress(data: answerData)
         let redecompressedData = try LZ4.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         if answerData.count > 0 { // Compression ratio is always bad for empty file.
             let compressionRatio = Double(answerData.count) / Double(compressedData.count)
             print(String(format: "LZ4.\(testName).compressionRatio = %.3f", compressionRatio))
@@ -23,10 +24,10 @@ class LZ4CompressionTests: XCTestCase {
         let answerData = Data(string.utf8)
         let compressedData = LZ4.compress(data: answerData)
         let redecompressedData = try LZ4.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
     }
 
-    func testLZ4CompressStrings() throws {
+    @Test func compressStrings() throws {
         try stringTest("ban")
         try stringTest("banana")
         try stringTest("abaaba")
@@ -38,7 +39,7 @@ class LZ4CompressionTests: XCTestCase {
         try stringTest("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890")
     }
 
-    func testLZ4CompressBytes() throws {
+    @Test func compressBytes() throws {
         var bytes = ""
         for i: UInt8 in 0...255 {
             bytes += String(format: "%c", i)
@@ -46,43 +47,43 @@ class LZ4CompressionTests: XCTestCase {
         try stringTest(bytes)
     }
 
-    func testWithAnswer1LZ4Compress() throws {
+    @Test func answer1() throws {
         try answerTest("test1")
     }
 
-    func testWithAnswer2LZ4Compress() throws {
+    @Test func answer2() throws {
         try answerTest("test2")
     }
 
-    func testWithAnswer3LZ4Compress() throws {
+    @Test func answer3() throws {
         try answerTest("test3")
     }
 
-    func testWithAnswer4LZ4Compress() throws {
+    @Test func answer4() throws {
         try answerTest("test4")
     }
 
-    func testWithAnswer5LZ4Compress() throws {
+    @Test func answer5() throws {
         try answerTest("test5")
     }
 
-    func testWithAnswer6LZ4Compress() throws {
+    @Test func answer6() throws {
         try answerTest("test6")
     }
 
-    func testWithAnswer7LZ4Compress() throws {
+    @Test func answer7() throws {
         try answerTest("test7")
     }
 
-    func testWithAnswer8LZ4Compress() throws {
+    @Test func answer8() throws {
         try answerTest("test8")
     }
 
-    func testWithAnswer9LZ4Compress() throws {
+    @Test func answer9() throws {
         try answerTest("test9")
     }
 
-    func testWithRandomOptions() throws {
+    @Test func randomOptions() throws {
         for i in 1...9 {
             let independentBlocks = Bool.random()
             let blockChecksums = Bool.random()
@@ -96,20 +97,22 @@ class LZ4CompressionTests: XCTestCase {
                                               contentSize: contentSize, blockSize: blockSize)
             do {
                 let redecompressedData = try LZ4.decompress(data: compressedData)
-                XCTAssertEqual(redecompressedData, answerData, "Test #\(i) failed (result mismatch) with the following " +
-                               "options: independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
-                               "content checksum = \(contentChecksum), content size = \(contentSize), " +
-                               "block size = \(blockSize) bytes")
+                // There are some weird type-checking issues with converting concatenated strings into Comment type, so
+                // we have to do it explicitly.
+                #expect(redecompressedData == answerData, Comment(rawValue: "Test #\(i) failed (result mismatch) with the following " +
+                                               "options: independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
+                                               "content checksum = \(contentChecksum), content size = \(contentSize), " +
+                                               "block size = \(blockSize) bytes"))
             } catch let error {
-                XCTFail("Test #\(i) failed (DataError.\(error) caught) with the following options: " +
-                        "independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
-                        "content checksum = \(contentChecksum), content size = \(contentSize), " +
-                        "block size = \(blockSize) bytes")
+                Issue.record(Comment(rawValue: "Test #\(i) failed (DataError.\(error) caught) with the following options: " +
+                                        "independent blocks = \(independentBlocks), block checksums = \(blockChecksums), " +
+                                        "content checksum = \(contentChecksum), content size = \(contentSize), " +
+                                        "block size = \(blockSize) bytes"))
             }
         }
     }
 
-    func testDictionary() throws {
+    @Test func dictionary() throws {
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
         let dictData = try Constants.data(forTest: "lz4_dict", withType: "")
 
@@ -117,7 +120,7 @@ class LZ4CompressionTests: XCTestCase {
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
                                               blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
         var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         var compressionRatio = Double(answerData.count) / Double(compressedData.count)
         print(String(format: "LZ4.dict.compressionRatio = %.3f", compressionRatio))
 
@@ -125,7 +128,7 @@ class LZ4CompressionTests: XCTestCase {
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
                                               blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
         redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         compressionRatio = Double(answerData.count) / Double(compressedData.count)
         print(String(format: "LZ4.dict_BD.compressionRatio = %.3f", compressionRatio))
 
@@ -133,12 +136,12 @@ class LZ4CompressionTests: XCTestCase {
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
                                               blockSize: 256 * 1024, dictionary: dictData, dictionaryID: 20000)
         redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData, dictionaryID: 20000)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         // If the wrong dictionary ID is specified the decompression should fail.
-        XCTAssertThrowsError(try LZ4.decompress(data: compressedData, dictionary: dictData, dictionaryID: 12345))
+        #expect(throws: (any Error).self) { try LZ4.decompress(data: compressedData, dictionary: dictData, dictionaryID: 12345) }
     }
 
-    func testSmallDictionary() throws {
+    @Test func smallDictionary() throws {
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
         let dictData = try Constants.data(forTest: "lz4_small_dict", withType: "")
 
@@ -146,7 +149,7 @@ class LZ4CompressionTests: XCTestCase {
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
                                               blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
         var redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         var compressionRatio = Double(answerData.count) / Double(compressedData.count)
         print(String(format: "LZ4.small_dict.compressionRatio = %.3f", compressionRatio))
 
@@ -154,12 +157,12 @@ class LZ4CompressionTests: XCTestCase {
                                               contentChecksum: Bool.random(), contentSize: Bool.random(),
                                               blockSize: 256 * 1024, dictionary: dictData, dictionaryID: nil)
         redecompressedData = try LZ4.decompress(data: compressedData, dictionary: dictData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
         compressionRatio = Double(answerData.count) / Double(compressedData.count)
         print(String(format: "LZ4.small_dict_BD.compressionRatio = %.3f", compressionRatio))
     }
 
-    func testTrickySequence() throws {
+    @Test func trickySequence() throws {
         // This test helped us find an issue with implementation (match index was wrongly used as cyclical index).
         // The last 10 bytes (0x01 - 0x00) are only here to allow creation of a sequence with a match.
         let answerData = Data([0x61, 0x6C, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x43, 0x20, 0x2D, 0x2D, 0x01, 0x02, 0x03, 0x04,
@@ -167,7 +170,7 @@ class LZ4CompressionTests: XCTestCase {
         let compressedData = LZ4.compress(data: answerData, independentBlocks: false, blockChecksums: true,
                                               contentChecksum: true, contentSize: true)
         let redecompressedData = try LZ4.decompress(data: compressedData)
-        XCTAssertEqual(redecompressedData, answerData)
+        #expect(redecompressedData == answerData)
     }
 
 }
