@@ -3,10 +3,11 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class LZ4Tests: XCTestCase {
+struct LZ4Tests {
 
     private static let testType: String = "lz4"
 
@@ -18,7 +19,7 @@ class LZ4Tests: XCTestCase {
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
     private static func perform(legacyTest testName: String) throws {
@@ -26,104 +27,94 @@ class LZ4Tests: XCTestCase {
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func test1LZ4() throws {
+    @Test func test1() throws {
         try self.perform(test: "test1")
         try LZ4Tests.perform(legacyTest: "test1")
     }
 
-    func test2LZ4() throws {
+    @Test func test2() throws {
         try self.perform(test: "test2")
         try LZ4Tests.perform(legacyTest: "test2")
     }
 
-    func test3LZ4() throws {
+    @Test func test3() throws {
         try self.perform(test: "test3")
         try LZ4Tests.perform(legacyTest: "test3")
     }
 
-    func test4LZ4() throws {
+    @Test func test4() throws {
         try self.perform(test: "test4")
         try LZ4Tests.perform(legacyTest: "test4")
     }
 
-    func test5LZ4() throws {
+    @Test func test5() throws {
         try self.perform(test: "test5")
         try LZ4Tests.perform(legacyTest: "test5")
     }
 
-    func test6LZ4() throws {
+    @Test func test6() throws {
         try self.perform(test: "test6")
         try LZ4Tests.perform(legacyTest: "test6")
     }
 
-    func test7LZ4() throws {
+    @Test func test7() throws {
         try self.perform(test: "test7")
         try LZ4Tests.perform(legacyTest: "test7")
     }
 
-    func test8LZ4() throws {
+    @Test func test8() throws {
         try self.perform(test: "test8")
         try LZ4Tests.perform(legacyTest: "test8")
     }
 
-    func test9LZ4() throws {
+    @Test func test9() throws {
         try self.perform(test: "test9")
         try LZ4Tests.perform(legacyTest: "test9")
     }
 
-    func testDependentBlocks() throws {
+    @Test func dependentBlocks() throws {
         // This test contains dependent blocks (with the size of 64 kB), as well as has additional features enabled,
         // such as content size and block checksums.
         let testData = try Constants.data(forTest: "SWCompressionSourceCode.tar", withType: LZ4Tests.testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
+    }
+    
+    @Test func emptyInput() {
+        #expect(throws: DataError.truncated) { try LZ4.decompress(data: Data()) }
     }
 
-    func testBadFile_short() {
-        LZ4Tests.checkTruncationError(Data([0]))
+    @Test func shortInput() {
+        #expect(throws: DataError.truncated) { try LZ4.decompress(data: Data([0])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test6")
-        var thrownError: Error?
-        XCTAssertThrowsError(try LZ4.decompress(data: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
-        XCTAssertEqual(thrownError as? DataError, .corrupted)
+        #expect(throws: DataError.corrupted) { try LZ4.decompress(data: testData) }
     }
 
-    func testEmptyData() {
-        LZ4Tests.checkTruncationError(Data())
-    }
-
-    private static func checkTruncationError(_ data: Data) {
-        var thrownError: Error?
-        XCTAssertThrowsError(try LZ4.decompress(data: data)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
-        XCTAssertEqual(thrownError as? DataError, .truncated)
-    }
-
-    func testSkippableFrame() throws {
+    @Test func skippableFrame() throws {
         let testData = try Constants.data(forTest: "test_skippable_frame", withType: LZ4Tests.testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testLegacyFrameMultipleBlocks() throws {
+    @Test func legacyFrameMultipleBlocks() throws {
         let testData = try Constants.data(forTest: "zeros", withType: LZ4Tests.testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = Data(count: 18874368)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testBlockSizes() throws {
+    @Test func blockSizes() throws {
         // These tests don't include any checksums (becaused they are too time consuming). Only content sizes are used
         // for verification. We still test both dependent and independent blocks.
         let answerData = Data(count: 5242880)
@@ -132,12 +123,12 @@ class LZ4Tests: XCTestCase {
             for dep in ["", "_BD"] {
                 let testData = try Constants.data(forTest: "test_B" + blockSize + dep, withType: LZ4Tests.testType)
                 let decompressedData = try LZ4.decompress(data: testData)
-                XCTAssertEqual(decompressedData, answerData)
+                #expect(decompressedData == answerData)
             }
         }
     }
 
-    func testDictionary() throws {
+    @Test func dictionary() throws {
         // Unfortunately, LZ4 reference implementation doesn't save dictID inside a frame, even though it is present
         // in the dictionary file. So we test dictID comparison by using the manually constructed file (the last test).
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
@@ -145,32 +136,32 @@ class LZ4Tests: XCTestCase {
 
         var testData = try Constants.data(forTest: "test_dict_B5", withType: LZ4Tests.testType)
         var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
 
         testData = try Constants.data(forTest: "test_dict_B5_BD", withType: LZ4Tests.testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
 
         testData = try Constants.data(forTest: "test_dict_B5_dictID", withType: LZ4Tests.testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData, dictionaryID: 20000)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testSmallDictionary() throws {
+    @Test func smallDictionary() throws {
         // Here we test decompression with a small dictionary, i.e. smaller than standard "lookback window" of 64 KB.
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
         let dictData = try Constants.data(forTest: "lz4_small_dict", withType: "")
 
         var testData = try Constants.data(forTest: "test_small_dict_B5", withType: LZ4Tests.testType)
         var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
 
         testData = try Constants.data(forTest: "test_small_dict_B5_BD", withType: LZ4Tests.testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testMultiFrameDecompress() throws {
+    @Test func multiFrameDecompress() throws {
         // The test file contains three frames:
         // - Legacy frame format, compressed test1.answer,
         // - Skippable frame with 1233 bytes of random data,
@@ -178,31 +169,41 @@ class LZ4Tests: XCTestCase {
         let testData = try Constants.data(forTest: "test_multi_frame", withType: LZ4Tests.testType)
         let result = try LZ4.multiDecompress(data: testData)
 
-        XCTAssertEqual(result.count, 2)
-        XCTAssertEqual(result[0], try Constants.data(forAnswer: "test1"))
-        XCTAssertEqual(result[1], try Constants.data(forAnswer: "test4"))
+        try #require(result.count == 2)
+        var answerData = try Constants.data(forAnswer: "test1")
+        #expect(result[0] == answerData)
+        answerData = try Constants.data(forAnswer: "test4")
+        #expect(result[1] == answerData)
     }
 
-    func testChecksumMismatch() throws {
+    @Test func checksumMismatch() throws {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
         var testData = try Constants.data(forTest: "test1", withType: LZ4Tests.testType)
         // The content checksum is the last 4 bytes.
         testData[testData.endIndex - 2] &+= 1
-        var thrownError: Error? = nil
-        XCTAssertThrowsError(try LZ4.decompress(data: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is DataError, "Unexpected error type: \(type(of: thrownError))")
-        if case let .some(.checksumMismatch(decompressedData)) = thrownError as? DataError {
-            XCTAssertEqual(decompressedData.count, 1)
-            let answerData = try Constants.data(forAnswer: "test1")
-            XCTAssertEqual(decompressedData.first, answerData)
-        } else {
-            XCTFail("Unexpected error: \(String(describing: thrownError))")
-        }
+        #if compiler(>=6.1)
+            let error = #expect(throws: DataError.self) { try LZ4.decompress(data: testData) }
+            if case let .some(.checksumMismatch(decompressedData)) = error {
+                try #require(decompressedData.count == 1)
+                let answerData = try Constants.data(forAnswer: "test1")
+                #expect(decompressedData.first == answerData)
+            } else {
+                Issue.record("Unexpected error: \(error)")
+            }
+        #else
+            #expect { try LZ4.decompress(data: testData) } throws: { error in
+                if case let .some(.checksumMismatch(decompressedData)) = error as? DataError {
+                    let answerData = try Constants.data(forAnswer: "test1")
+                    return decompressedData.count == 1 && decompressedData.first == answerData
+                }
+                return false
+            }
+        #endif
     }
 
-    func testLZ4Truncation() throws {
+    @Test func randomInputTruncations() throws {
         for i in 1...9 {
             let testName = "test\(i)"
             let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
