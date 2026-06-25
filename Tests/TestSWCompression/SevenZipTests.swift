@@ -3,489 +3,485 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class SevenZipTests: XCTestCase {
+struct SevenZipTests {
 
     private static let testType: String = "7z"
 
-    func testBadFile_short() {
-        XCTAssertThrowsError(try SevenZipContainer.open(container: Data([0, 1, 2])))
+    @Test func shortInput() {
+        #expect(throws: (any Error).self) { try SevenZipContainer.open(container: Data([0, 1, 2])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test6")
-        XCTAssertThrowsError(try SevenZipContainer.open(container: testData))
+        #expect(throws: (any Error).self) { try SevenZipContainer.open(container: testData) }
     }
 
-    func testEmptyData() throws {
-        XCTAssertThrowsError(try SevenZipContainer.info(container: Data()))
-        XCTAssertThrowsError(try SevenZipContainer.open(container: Data()))
+    @Test func emptyInput() {
+        #expect(throws: (any Error).self) { try SevenZipContainer.info(container: Data()) }
+        #expect(throws: (any Error).self) { try SevenZipContainer.open(container: Data()) }
     }
 
-    func test1() throws {
+    @Test func test1() throws {
         let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test1")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test1.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xB4E89E84)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xB4E89E84)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func test2() throws {
+    @Test func test2() throws {
         let testData = try Constants.data(forTest: "test2", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 2)
+        try #require(entries.count == 2)
 
         let answer1Data = try Constants.data(forAnswer: "test1")
 
-        XCTAssertEqual(entries[0].info.name, "test1.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answer1Data.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        #expect(entries[0].info.name == "test1.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answer1Data.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xB4E89E84)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xB4E89E84)
 
-        XCTAssertEqual(entries[0].data, answer1Data)
+        #expect(entries[0].data == answer1Data)
 
         let answer4Data = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries[1].info.name, "test4.answer")
-        XCTAssertEqual(entries[1].info.type, .regular)
-        XCTAssertEqual(entries[1].info.size, answer4Data.count)
-        XCTAssertEqual(entries[1].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[1].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        #expect(entries[1].info.name == "test4.answer")
+        #expect(entries[1].info.type == .regular)
+        #expect(entries[1].info.size == answer4Data.count)
+        #expect(entries[1].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[1].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[1].info.modificationTime)
-        XCTAssertNil(entries[1].info.accessTime)
-        XCTAssertNil(entries[1].info.creationTime)
-        XCTAssertEqual(entries[1].info.hasStream, true)
-        XCTAssertEqual(entries[1].info.isEmpty, false)
-        XCTAssertEqual(entries[1].info.isAnti, false)
-        XCTAssertEqual(entries[1].info.crc, 0xAEF524A3)
+        #expect(entries[1].info.modificationTime != nil)
+        #expect(entries[1].info.accessTime == nil)
+        #expect(entries[1].info.creationTime == nil)
+        #expect(entries[1].info.hasStream)
+        #expect(!entries[1].info.isEmpty)
+        #expect(!entries[1].info.isAnti)
+        #expect(entries[1].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[1].data, answer4Data)
+        #expect(entries[1].data == answer4Data)
     }
 
-    func test3() throws {
+    @Test func test3() throws {
         let testData = try Constants.data(forTest: "test3", withType: SevenZipTests.testType)
-
-        _ = try SevenZipContainer.info(container: testData)
-        _ = try SevenZipContainer.open(container: testData)
+        #expect(throws: Never.self) { try SevenZipContainer.info(container: testData) }
+        #expect(throws: Never.self) { try SevenZipContainer.open(container: testData) }
     }
 
-    func testAntiFile() throws {
+    @Test func antiFile() throws {
         let testData = try Constants.data(forTest: "test_anti_file", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 6)
+        try #require(entries.count == 6)
 
         for entry in entries {
             if entry.info.name == "test_create/test4.answer" {
-                XCTAssertEqual(entry.info.isAnti, true)
+                #expect(entry.info.isAnti)
             } else {
-                XCTAssertEqual(entry.info.isAnti, false)
+                #expect(!entry.info.isAnti)
             }
         }
     }
 
-    func testMultiBlocks() throws {
+    @Test func multiBlocks() throws {
         // Container was created with "solid" options set to "off" (-ms=off).
         let testData = try Constants.data(forTest: "test_multi_blocks", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 6)
+        #expect(entries.count == 6)
     }
 
-    func testAllTimestamps() throws {
+    @Test func allTimestamps() throws {
         // Container was created with "-mtc=on" and "-mta=on" options.
         let testData = try Constants.data(forTest: "test_all_timestamps", withType: SevenZipTests.testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 6)
+        #expect(entries.count == 6)
 
         for entry in entries {
-            XCTAssertNotNil(entry.info.creationTime)
-            XCTAssertNotNil(entry.info.accessTime)
+            #expect(entry.info.creationTime != nil)
+            #expect(entry.info.accessTime != nil)
             // Just in case...
-            XCTAssertNotNil(entry.info.modificationTime)
+            #expect(entry.info.modificationTime != nil)
         }
     }
 
-    func testComplicatedCodingScheme() throws {
+    @Test func complicatedCodingScheme() throws {
         // Container was created with these options: "-mf=BCJ -m0=Copy -m1=Deflate -m2=Delta -m3=LZMA -m4=LZMA2"
         let testData = try Constants.data(forTest: "test_complicated_coding_scheme", withType: SevenZipTests.testType)
-        // In these test case the most important thing is that information about entries must be read correctly.
+        // In this test case the most important thing is that information about entries must be read correctly.
         _ = try SevenZipContainer.info(container: testData)
 
-        // It is expected for `open(container:) function to throw `SevenZipError.compressionNotSupported`,
-        //  because of the coders used.
-        XCTAssertThrowsError(try SevenZipContainer.open(container: testData)) { error in
-            XCTAssertEqual(error as? SevenZipError, SevenZipError.compressionNotSupported)
-        }
+        // It is expected for `open(container:) function to throw `SevenZipError.compressionNotSupported`, because of
+        // the coders used.
+        #expect(throws: SevenZipError.compressionNotSupported) { try SevenZipContainer.open(container: testData) }
     }
 
-    func testEncryptedHeader() throws {
+    @Test func encryptedHeader() throws {
         // Container was created with "-mhe=on".
         let testData = try Constants.data(forTest: "test_encrypted_header", withType: SevenZipTests.testType)
 
-        XCTAssertThrowsError(try SevenZipContainer.info(container: testData)) { error in
-            XCTAssertEqual(error as? SevenZipError, SevenZipError.encryptionNotSupported)
-        }
+        #expect(throws: SevenZipError.encryptionNotSupported) { try SevenZipContainer.info(container: testData) }
 
         // There is no point in testing `open(container:)` function, because we are unable to get even files' info.
     }
 
-    func testSingleThread() throws {
+    @Test func singleThread() throws {
         // Container was created with disabled multithreading options.
         // We check this just in case.
         let testData = try Constants.data(forTest: "test_single_thread", withType: SevenZipTests.testType)
 
-        XCTAssertEqual(try SevenZipContainer.info(container: testData).count, 6)
-        XCTAssertEqual(try SevenZipContainer.open(container: testData).count, 6)
+        #expect(try SevenZipContainer.info(container: testData).count == 6)
+        #expect(try SevenZipContainer.open(container: testData).count == 6)
     }
 
-    func testBigContainer() throws {
+    @Test func bigContainer() throws {
         let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: SevenZipTests.testType)
-
-        _ = try SevenZipContainer.info(container: testData)
-        _ = try SevenZipContainer.open(container: testData)
+        #expect(throws: Never.self) { try SevenZipContainer.info(container: testData) }
+        #expect(throws: Never.self) { try SevenZipContainer.open(container: testData) }
     }
 
-    func test7zBZip2() throws {
+    @Test func bzip2() throws {
         // File in container compressed with BZip2.
         let testData = try Constants.data(forTest: "test_7z_bzip2", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test4.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func test7zDeflate() throws {
+    @Test func deflate() throws {
         // File in container compressed with Deflate.
         let testData = try Constants.data(forTest: "test_7z_deflate", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test4.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func test7zLZ4() throws {
+    @Test func lz4() throws {
         // File in container compressed with LZ4.
         let testData = try Constants.data(forTest: "test_7z_lz4", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test4.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func test7zCopy() throws {
+    @Test func copy() throws {
         // File in container is explicitly uncompressed.
         let testData = try Constants.data(forTest: "test_7z_copy", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test4.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func testUnicode() throws {
+    @Test func unicode() throws {
         let testData = try Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "текстовый файл.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "текстовый файл.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xA139BCEE)
-        XCTAssertEqual(entries[0].data, Constants.текстовыйФайлData)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xA139BCEE)
+        #expect(entries[0].data == Constants.текстовыйФайлData)
     }
 
-    func testWinContainer() throws {
+    @Test func winContainer() throws {
         let testData = try Constants.data(forTest: "test_win", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 2)
+        try #require(entries.count == 2)
 
-        XCTAssertEqual(entries[0].info.name, "dir")
-        XCTAssertEqual(entries[0].info.type, .directory)
-        XCTAssertEqual(entries[0].info.size, nil)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 0))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x10))
+        #expect(entries[0].info.name == "dir")
+        #expect(entries[0].info.type == .directory)
+        #expect(entries[0].info.size == nil)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 0))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x10))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, false)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertNil(entries[0].info.crc)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(!entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == nil)
 
-        XCTAssertEqual(entries[0].data, nil)
+        #expect(entries[0].data == nil)
 
-        XCTAssertEqual(entries[1].info.name, "text_win.txt")
-        XCTAssertEqual(entries[1].info.type, .regular)
-        XCTAssertEqual(entries[1].info.size, 15)
-        XCTAssertEqual(entries[1].info.permissions, Permissions(rawValue: 0))
-        XCTAssertEqual(entries[1].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        #expect(entries[1].info.name == "text_win.txt")
+        #expect(entries[1].info.type == .regular)
+        #expect(entries[1].info.size == 15)
+        #expect(entries[1].info.permissions == Permissions(rawValue: 0))
+        #expect(entries[1].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[1].info.modificationTime)
-        XCTAssertNil(entries[1].info.accessTime)
-        XCTAssertNil(entries[1].info.creationTime)
-        XCTAssertEqual(entries[1].info.hasStream, true)
-        XCTAssertEqual(entries[1].info.isEmpty, false)
-        XCTAssertEqual(entries[1].info.isAnti, false)
-        XCTAssertEqual(entries[1].info.crc, 0x1273FBD3)
+        #expect(entries[1].info.modificationTime != nil)
+        #expect(entries[1].info.accessTime == nil)
+        #expect(entries[1].info.creationTime == nil)
+        #expect(entries[1].info.hasStream)
+        #expect(!entries[1].info.isEmpty)
+        #expect(!entries[1].info.isAnti)
+        #expect(entries[1].info.crc == 0x1273FBD3)
 
-        XCTAssertEqual(entries[1].data, "Hello, Windows!".data(using: .utf8))
+        #expect(entries[1].data == "Hello, Windows!".data(using: .utf8))
     }
 
-    func test7z_LzmaBigDict() throws {
+    @Test(.bug("https://github.com/tsolomko/SWCompression/pull/61", id: 61))
+    func lzmaBigDict() throws {
         // Verifying the issue fixed by PR #61.
         // Previously, there was a crash, if LZMA dictionary size was encoded using all 4 bytes.
         let testData = try Constants.data(forTest: "test_lzma_big_dict", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "data")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, 16 * 1024 * 1024)
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "data")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == 16 * 1024 * 1024)
     }
 
-    func testEmptyFile() throws {
+    @Test func emptyFile() throws {
         let testData = try Constants.data(forTest: "test_empty_file", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "empty_file")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, 0)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "empty_file")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == 0)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, false)
-        XCTAssertEqual(entries[0].info.isEmpty, true)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertNil(entries[0].info.crc)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(!entries[0].info.hasStream)
+        #expect(entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == nil)
 
-        XCTAssertEqual(entries[0].data, Data())
+        #expect(entries[0].data == Data())
     }
 
-    func testEmptyDirectory() throws {
+    @Test func emptyDirectory() throws {
         let testData = try Constants.data(forTest: "test_empty_dir", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "empty_dir")
-        XCTAssertEqual(entries[0].info.type, .directory)
-        XCTAssertEqual(entries[0].info.size, nil)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 493))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x10))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "empty_dir")
+        #expect(entries[0].info.type == .directory)
+        #expect(entries[0].info.size == nil)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 493))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x10))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, false)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertNil(entries[0].info.crc)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(!entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == nil)
 
-        XCTAssertEqual(entries[0].data, nil)
+        #expect(entries[0].data == nil)
     }
 
-    func testEmptyContainer() throws {
+    @Test func emptyContainer() throws {
         let testData = try Constants.data(forTest: "test_empty_cont", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.isEmpty, true)
+        #expect(entries.isEmpty)
     }
 
-    func testDeltaFilter() throws {
+    @Test func deltaFilter() throws {
         let testData = try Constants.data(forTest: "test_delta_filter", withType: SevenZipTests.testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test4.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test4.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 0xAEF524A3)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 0xAEF524A3)
 
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].data == answerData)
     }
 
-    func testFormatMinorVersions() throws {
+    @Test func formatMinorVersions() throws {
         let answerData = try Constants.data(forAnswer: "test2")
 
         var testData = try Constants.data(forTest: "test_minor_version_2", withType: SevenZipTests.testType)
         var entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test2.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 0))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test2.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 0))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNil(entries[0].info.accessTime)
-        XCTAssertNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 4168830779)
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime == nil)
+        #expect(entries[0].info.creationTime == nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 4168830779)
+        #expect(entries[0].data == answerData)
 
         testData = try Constants.data(forTest: "test_minor_version_3", withType: SevenZipTests.testType)
         entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test2.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test2.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNotNil(entries[0].info.accessTime)
-        XCTAssertNotNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 4168830779)
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime != nil)
+        #expect(entries[0].info.creationTime != nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 4168830779)
+        #expect(entries[0].data == answerData)
 
         testData = try Constants.data(forTest: "test_minor_version_4", withType: SevenZipTests.testType)
         entries = try SevenZipContainer.open(container: testData)
 
-        XCTAssertEqual(entries.count, 1)
-        XCTAssertEqual(entries[0].info.name, "test2.answer")
-        XCTAssertEqual(entries[0].info.type, .regular)
-        XCTAssertEqual(entries[0].info.size, answerData.count)
-        XCTAssertEqual(entries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(entries[0].info.dosAttributes, DosAttributes(rawValue: 0x20))
+        try #require(entries.count == 1)
+        #expect(entries[0].info.name == "test2.answer")
+        #expect(entries[0].info.type == .regular)
+        #expect(entries[0].info.size == answerData.count)
+        #expect(entries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(entries[0].info.dosAttributes == DosAttributes(rawValue: 0x20))
         // Checking times' values is a bit difficult since they are extremely precise.
-        XCTAssertNotNil(entries[0].info.modificationTime)
-        XCTAssertNotNil(entries[0].info.accessTime)
-        XCTAssertNotNil(entries[0].info.creationTime)
-        XCTAssertEqual(entries[0].info.hasStream, true)
-        XCTAssertEqual(entries[0].info.isEmpty, false)
-        XCTAssertEqual(entries[0].info.isAnti, false)
-        XCTAssertEqual(entries[0].info.crc, 4168830779)
-        XCTAssertEqual(entries[0].data, answerData)
+        #expect(entries[0].info.modificationTime != nil)
+        #expect(entries[0].info.accessTime != nil)
+        #expect(entries[0].info.creationTime != nil)
+        #expect(entries[0].info.hasStream)
+        #expect(!entries[0].info.isEmpty)
+        #expect(!entries[0].info.isAnti)
+        #expect(entries[0].info.crc == 4168830779)
+        #expect(entries[0].data == answerData)
     }
 
 }
