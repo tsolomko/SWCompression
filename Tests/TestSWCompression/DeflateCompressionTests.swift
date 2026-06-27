@@ -9,7 +9,7 @@ import SWCompression
 
 struct DeflateCompressionTests {
 
-    func answerTest(_ testName: String) throws {
+    private func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
         let compressedData = Deflate.compress(data: answerData)
         let redecompressedData = try Deflate.decompress(data: compressedData)
@@ -20,7 +20,7 @@ struct DeflateCompressionTests {
         }
     }
 
-    func stringTest(_ string: String) throws {
+    private func stringTest(_ string: String) throws {
         let answerData = Data(string.utf8)
         let compressedData = Deflate.compress(data: answerData)
         let redecompressedData = try Deflate.decompress(data: compressedData)
@@ -40,39 +40,39 @@ struct DeflateCompressionTests {
     }
 
     @Test func answer1() throws {
-        try self.answerTest("test1")
+        try answerTest("test1")
     }
 
     @Test func answer2() throws {
-        try self.answerTest("test2")
+        try answerTest("test2")
     }
 
     @Test func answer3() throws {
-        try self.answerTest("test3")
+        try answerTest("test3")
     }
 
     @Test func answer4() throws {
-        try self.answerTest("test4")
+        try answerTest("test4")
     }
 
     @Test func answer5() throws {
-        try self.answerTest("test5")
+        try answerTest("test5")
     }
 
     @Test func answer6() throws {
-        try self.answerTest("test6")
+        try answerTest("test6")
     }
 
     @Test func answer7() throws {
-        try self.answerTest("test7")
+        try answerTest("test7")
     }
 
     @Test func answer8() throws {
-        try self.answerTest("test8")
+        try answerTest("test8")
     }
 
     @Test func answer9() throws {
-        try self.answerTest("test9")
+        try answerTest("test9")
     }
 
     @Test func trickySequence() throws {

@@ -7,6 +7,7 @@ import Foundation
 import Testing
 import SWCompression
 
+// Has to be a class for `deinit()` to work.
 final class TarWriterTests {
 
     private let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())

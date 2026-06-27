@@ -9,7 +9,7 @@ import SWCompression
 
 struct ZipTests {
 
-    private static let testType: String = "zip"
+    private let testType: String = "zip"
 
     @Test func shortInput() {
         #expect(throws: (any Error).self) { try ZipContainer.open(container: Data([0, 1, 2, 3, 4, 5, 6, 7])) }
@@ -26,12 +26,12 @@ struct ZipTests {
     }
 
     @Test func bigContainer() throws {
-        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: testType)
         #expect(throws: Never.self) { try ZipContainer.open(container: testData) }
     }
 
     @Test func customExtraField() throws {
-        let testData = try Constants.data(forTest: "test_custom_extra_field", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_custom_extra_field", withType: testType)
 
         // First, we check that without enabling support for our custom extra field, ZipContainer doesn't recognize it.
         var entries = try ZipContainer.open(container: testData)
@@ -66,7 +66,7 @@ struct ZipTests {
     }
 
     @Test func zip64() throws {
-        let testData = try Constants.data(forTest: "test_zip64", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_zip64", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 6)
@@ -84,7 +84,7 @@ struct ZipTests {
     }
 
     @Test func dataDescriptor() throws {
-        let testData = try Constants.data(forTest: "test_data_descriptor", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_data_descriptor", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 6)
@@ -109,7 +109,7 @@ struct ZipTests {
     }
 
     @Test func unicode() throws {
-        let testData = try Constants.data(forTest: "test_unicode", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_unicode", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -131,7 +131,7 @@ struct ZipTests {
     }
 
     @Test func zipLZMA() throws {
-        let testData = try Constants.data(forTest: "test_zip_lzma", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_zip_lzma", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -155,7 +155,7 @@ struct ZipTests {
     }
 
     @Test func zipBZip2() throws {
-        let testData = try Constants.data(forTest: "test_zip_bzip2", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_zip_bzip2", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -179,7 +179,7 @@ struct ZipTests {
     }
 
     @Test func winContainer() throws {
-        let testData = try Constants.data(forTest: "test_win", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_win", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 2)
@@ -222,7 +222,7 @@ struct ZipTests {
     }
 
     @Test func emptyFile() throws {
-        let testData = try Constants.data(forTest: "test_empty_file", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_file", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -246,7 +246,7 @@ struct ZipTests {
     }
 
     @Test func emptyDirectory() throws {
-        let testData = try Constants.data(forTest: "test_empty_dir", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -270,7 +270,7 @@ struct ZipTests {
     }
 
     @Test func emptyContainer() throws {
-        let testData = try Constants.data(forTest: "test_empty_cont", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         #expect(entries.isEmpty)
@@ -279,7 +279,7 @@ struct ZipTests {
     @Test func badCdExtTs() throws {
         // Tests ability to not crash when opening ZIP files with non well-formed Extended Timestamp extra field.
         // Such fields are sometimes present in Central Directory of ZIP files created by Finder in some versions of macOS.
-        let testData = try Constants.data(forTest: "bad_cd_ext_ts", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "bad_cd_ext_ts", withType: testType)
         let entries = try ZipContainer.open(container: testData)
         try #require(entries.count == 2)
         let answerData = try Constants.data(forAnswer: "test4")
@@ -292,7 +292,7 @@ struct ZipTests {
         // We introduced several CP437-specific characters from the 0x80-0xFF range into "test1.answer" to test this.
         // Note, that we didn't used normal characters from the 0x00-0x7F range that don't match the characters from
         // UTF-8 with the same codes, since they are interpreted as control characters by Foundation.
-        let testData = try Constants.data(forTest: "test_dos_latin_us", withType: ZipTests.testType)
+        let testData = try Constants.data(forTest: "test_dos_latin_us", withType: testType)
         let entries = try ZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -319,7 +319,7 @@ struct ZipTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test_unicode", withType: ZipTests.testType)
+        var testData = try Constants.data(forTest: "test_unicode", withType: testType)
         // Here we modify the stored value of crc32.
         testData[16] &+= 1
         #if compiler(>=6.1)

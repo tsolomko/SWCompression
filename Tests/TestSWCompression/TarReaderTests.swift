@@ -9,7 +9,7 @@ import SWCompression
 
 struct TarReaderTests {
 
-    private static let testType: String = "tar"
+    private let testType: String = "tar"
 
     @Test func invalidInput() throws {
         // This is potentially a misleading test, since there is no way to guarantee that a file is not a TAR container.
@@ -21,7 +21,7 @@ struct TarReaderTests {
     }
 
     @Test func test() throws {
-        let testHandle = try Constants.handle(forTest: "test", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         var isFinished = false
         var entriesCount = 0
@@ -50,7 +50,7 @@ struct TarReaderTests {
 
 
     @Test func pax() throws {
-        let testHandle = try Constants.handle(forTest: "full_test", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "full_test", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         var isFinished = false
         var entriesCount = 0
@@ -86,7 +86,7 @@ struct TarReaderTests {
         let answerData = try Constants.data(forAnswer: "test1")
 
         for testName in formatTestNames {
-            let testHandle = try Constants.handle(forTest: testName, withType: TarReaderTests.testType)
+            let testHandle = try Constants.handle(forTest: testName, withType: testType)
             var reader = TarReader(fileHandle: testHandle)
             var isFinished = false
             var entriesCount = 0
@@ -112,7 +112,7 @@ struct TarReaderTests {
     @Test func longNames() throws {
         let formatTestNames = ["long_test_gnu", "long_test_oldgnu", "long_test_pax"]
         for testName in formatTestNames {
-            let testHandle = try Constants.handle(forTest: testName, withType: TarReaderTests.testType)
+            let testHandle = try Constants.handle(forTest: testName, withType: testType)
             var reader = TarReader(fileHandle: testHandle)
             var isFinished = false
             var entriesCount = 0
@@ -132,7 +132,7 @@ struct TarReaderTests {
     }
 
     @Test func winContainer() throws {
-        let testHandle = try Constants.handle(forTest: "test_win", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_win", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -165,7 +165,7 @@ struct TarReaderTests {
     }
 
     @Test func emptyFile() throws {
-        let testHandle = try Constants.handle(forTest: "test_empty_file", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_empty_file", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -186,7 +186,7 @@ struct TarReaderTests {
     }
 
     @Test func emptyDirectory() throws {
-        let testHandle = try Constants.handle(forTest: "test_empty_dir", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_empty_dir", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -208,7 +208,7 @@ struct TarReaderTests {
     @Test func onlyDirectoryHeader() throws {
         // This tests the correct handling of the situation when there is nothing in the container but one basic header,
         // even no EOF marker (two blocks of zeros).
-        let testHandle = try Constants.handle(forTest: "test_only_dir_header", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_only_dir_header", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -228,21 +228,21 @@ struct TarReaderTests {
     }
 
     @Test func emptyContainer() throws {
-        let testHandle = try Constants.handle(forTest: "test_empty_cont", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_empty_cont", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         #expect(try reader.read() == nil)
         try testHandle.close()
     }
 
     @Test func bigContainer() throws {
-        let testHandle = try Constants.handle(forTest: "SWCompressionSourceCode", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "SWCompressionSourceCode", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         while try reader.read() != nil { }
         try testHandle.close()
     }
 
     @Test func unicodeUstar() throws {
-        let testHandle = try Constants.handle(forTest: "test_unicode_ustar", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_unicode_ustar", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -262,7 +262,7 @@ struct TarReaderTests {
     }
 
     @Test func unicodePax() throws {
-        let testHandle = try Constants.handle(forTest: "test_unicode_pax", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_unicode_pax", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)
@@ -282,7 +282,7 @@ struct TarReaderTests {
     }
 
     @Test func gnuIncrementalFormat() throws {
-        let testHandle = try Constants.handle(forTest: "test_gnu_inc_format", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_gnu_inc_format", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         var isFinished = false
         var entriesCount = 0
@@ -310,7 +310,7 @@ struct TarReaderTests {
     // @Test func bigNumField() throws { }
 
     @Test func negativeMtime() throws {
-        let testHandle = try Constants.handle(forTest: "test_negative_mtime", withType: TarReaderTests.testType)
+        let testHandle = try Constants.handle(forTest: "test_negative_mtime", withType: testType)
         var reader = TarReader(fileHandle: testHandle)
         try reader.process { (entry: TarEntry?) in
             try #require(entry != nil)

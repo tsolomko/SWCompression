@@ -5,7 +5,8 @@
 
 import Foundation
 
-class Constants {
+// Has to be a class for `Bundle(for:)` to work.
+final class Constants {
 
     /* Contents of test files:
      - test1: text file with "Hello, World!\n".

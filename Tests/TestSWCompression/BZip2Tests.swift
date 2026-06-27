@@ -9,10 +9,10 @@ import SWCompression
 
 struct BZip2Tests {
 
-    private static let testType: String = "bz2"
+    private let testType: String = "bz2"
 
-    func perform(test testName: String) throws {
-        let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+    private func perform(test testName: String) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let decompressedData = try BZip2.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
@@ -20,44 +20,44 @@ struct BZip2Tests {
     }
 
     @Test func test1() throws {
-        try self.perform(test: "test1")
+        try perform(test: "test1")
     }
 
     @Test func test2() throws {
-        try self.perform(test: "test2")
+        try perform(test: "test2")
     }
 
     @Test func test3() throws {
-        try self.perform(test: "test3")
+        try perform(test: "test3")
     }
 
     @Test func test4() throws {
-        try self.perform(test: "test4")
+        try perform(test: "test4")
     }
 
     @Test func test5() throws {
-        try self.perform(test: "test5")
+        try perform(test: "test5")
     }
 
     @Test func test6() throws {
-        try self.perform(test: "test6")
+        try perform(test: "test6")
     }
 
     @Test func test7() throws {
-        try self.perform(test: "test7")
+        try perform(test: "test7")
     }
 
     @Test func test8() throws {
-        try self.perform(test: "test8")
+        try perform(test: "test8")
     }
 
     @Test func test9() throws {
-        try self.perform(test: "test9")
+        try perform(test: "test9")
     }
 
     @Test(.bug("https://github.com/tsolomko/SWCompression/issues/21", id: 21))
     func nonStandardRunLength() throws {
-        try self.perform(test: "test_nonstandard_runlength")
+        try perform(test: "test_nonstandard_runlength")
     }
 
     @Test func shortInput() {
@@ -72,7 +72,7 @@ struct BZip2Tests {
     @Test func truncatedInput() throws {
         // This tests that encountering data truncated in the middle of a Huffman symbol correctly throws an error
         // (and doesn't crash).
-        let testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)[0...40]
+        let testData = try Constants.data(forTest: "test1", withType: testType)[0...40]
         #expect(throws: (any Error).self) { try BZip2.decompress(data: testData) }
     }
 
@@ -84,7 +84,7 @@ struct BZip2Tests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test1", withType: BZip2Tests.testType)
+        var testData = try Constants.data(forTest: "test1", withType: testType)
         // The checksum is the last 4 bytes.
         testData[testData.endIndex - 2] &+= 1
         #if compiler(>=6.1)
@@ -112,7 +112,7 @@ struct BZip2Tests {
         // is no #expect in this test.
         for i in 1...9 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             // It would be better to increase amount of different truncations tested, but we hit runtime limits in CI.
             for _ in 0..<5 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
@@ -125,7 +125,7 @@ struct BZip2Tests {
         var input = Data()
         for i in 1...5 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             input.append(testData)
         }
         let output = try BZip2.multiDecompress(data: input)
@@ -139,7 +139,7 @@ struct BZip2Tests {
     @Test func multiDecompressSingleArchive() throws {
         for i in 1...5 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             let answerData = try Constants.data(forAnswer: testName)
             let output = try BZip2.multiDecompress(data: testData)
             #expect(output.first! == answerData)
@@ -153,7 +153,7 @@ struct BZip2Tests {
         var input = Data()
         for i in 1...5 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: BZip2Tests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             input.append(testData)
         }
         for _ in 0..<5 {

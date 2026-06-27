@@ -9,7 +9,7 @@ import SWCompression
 
 struct BZip2CompressionTests {
 
-    func answerTest(_ testName: String) throws {
+    private func answerTest(_ testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
         let compressedData = BZip2.compress(data: answerData)
         let redecompressedData = try BZip2.decompress(data: compressedData)
@@ -20,7 +20,7 @@ struct BZip2CompressionTests {
         }
     }
 
-    func stringTest(_ string: String) throws {
+    private func stringTest(_ string: String) throws {
         let answerData = Data(string.utf8)
 
         let compressedData = BZip2.compress(data: answerData)

@@ -10,7 +10,7 @@ import SWCompression
 
 struct DeflateTests {
 
-    private static let testType: String = "deflate"
+    private let testType: String = "deflate"
 
     @Test func randomInputTruncations() throws {
         // In this test we check that there is no crash when dealing with the truncation in the middle of the Deflate
@@ -24,7 +24,7 @@ struct DeflateTests {
         // test9 contains uncompressed Deflate block.
 
         for testName in ["test6", "test8", "test9"] {
-            let testData = try Constants.data(forTest: testName, withType: DeflateTests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             for _ in 0..<10 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
                 #expect(throws: (any Error).self, "No error thrown, \(testName), truncationIndex=\(truncationIndex)") {

@@ -9,7 +9,7 @@ import SWCompression
 
 struct TarTests {
 
-    private static let testType: String = "tar"
+    private let testType: String = "tar"
 
     @Test func shortInput() {
         #expect(throws: (any Error).self) { try TarContainer.open(container: Data([0, 1, 2])) }
@@ -23,7 +23,7 @@ struct TarTests {
     }
 
     @Test func test() throws {
-        let testData = try Constants.data(forTest: "test", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -43,7 +43,7 @@ struct TarTests {
     }
 
     @Test func pax() throws {
-        let testData = try Constants.data(forTest: "full_test", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "full_test", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .pax)
 
@@ -72,7 +72,7 @@ struct TarTests {
 
     @Test func paxRecordNewline() throws {
         // In this test we check the handling of a PAX header record with a newline character inside a record value.
-        let testData = try Constants.data(forTest: "test_pax_record_newline", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_pax_record_newline", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .pax)
 
@@ -108,7 +108,7 @@ struct TarTests {
         let answerData = try Constants.data(forAnswer: "test1")
 
         for testName in formatTestNames {
-            let testData = try Constants.data(forTest: testName, withType: TarTests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
 
             if testName == "test_gnu" {
                 #expect(try TarContainer.formatOf(container: testData) == .gnu)
@@ -136,7 +136,7 @@ struct TarTests {
         let formatTestNames = ["long_test_gnu", "long_test_oldgnu", "long_test_pax"]
 
         for testName in formatTestNames {
-            let testData = try Constants.data(forTest: testName, withType: TarTests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
 
             if testName == "long_test_gnu" {
                 #expect(try TarContainer.formatOf(container: testData) == .gnu)
@@ -153,7 +153,7 @@ struct TarTests {
     }
 
     @Test func winContainer() throws {
-        let testData = try Constants.data(forTest: "test_win", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_win", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -185,7 +185,7 @@ struct TarTests {
     }
 
     @Test func emptyFile() throws {
-        let testData = try Constants.data(forTest: "test_empty_file", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_file", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -205,7 +205,7 @@ struct TarTests {
     }
 
     @Test func emptyDirectory() throws {
-        let testData = try Constants.data(forTest: "test_empty_dir", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -227,7 +227,7 @@ struct TarTests {
     @Test func onlyDirectoryHeader() throws {
         // This tests the correct handling of the situation when there is nothing in the container but one basic header,
         // even no EOF marker (two blocks of zeros).
-        let testData = try Constants.data(forTest: "test_only_dir_header", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_only_dir_header", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -247,7 +247,7 @@ struct TarTests {
     }
 
     @Test func emptyContainer() throws {
-        let testData = try Constants.data(forTest: "test_empty_cont", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .prePosix)
 
@@ -257,7 +257,7 @@ struct TarTests {
     }
 
     @Test func bigContainer() throws {
-        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -266,7 +266,7 @@ struct TarTests {
     }
 
     @Test func unicodeUstar() throws {
-        let testData = try Constants.data(forTest: "test_unicode_ustar", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_unicode_ustar", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .ustar)
 
@@ -285,7 +285,7 @@ struct TarTests {
     }
 
     @Test func unicodePax() throws {
-        let testData = try Constants.data(forTest: "test_unicode_pax", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_unicode_pax", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .pax)
 
@@ -304,7 +304,7 @@ struct TarTests {
     }
 
     @Test func gnuIncrementalFormat() throws {
-        let testData = try Constants.data(forTest: "test_gnu_inc_format", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_gnu_inc_format", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .gnu)
 
@@ -324,7 +324,7 @@ struct TarTests {
 
     @Test func bigNumField() throws {
         // This file is truncated because of its size (8.6 GB): it doesn't contain any actual file data.
-        let testData = try Constants.data(forTest: "test_big_num_field", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_big_num_field", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .gnu)
 
@@ -343,7 +343,7 @@ struct TarTests {
     }
 
     @Test func negativeMtime() throws {
-        let testData = try Constants.data(forTest: "test_negative_mtime", withType: TarTests.testType)
+        let testData = try Constants.data(forTest: "test_negative_mtime", withType: testType)
 
         #expect(try TarContainer.formatOf(container: testData) == .gnu)
 

@@ -9,7 +9,7 @@ import SWCompression
 
 struct SevenZipTests {
 
-    private static let testType: String = "7z"
+    private let testType: String = "7z"
 
     @Test func shortInput() {
         #expect(throws: (any Error).self) { try SevenZipContainer.open(container: Data([0, 1, 2])) }
@@ -26,7 +26,7 @@ struct SevenZipTests {
     }
 
     @Test func test1() throws {
-        let testData = try Constants.data(forTest: "test1", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test1", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test1")
@@ -50,7 +50,7 @@ struct SevenZipTests {
     }
 
     @Test func test2() throws {
-        let testData = try Constants.data(forTest: "test2", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test2", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 2)
@@ -93,13 +93,13 @@ struct SevenZipTests {
     }
 
     @Test func test3() throws {
-        let testData = try Constants.data(forTest: "test3", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test3", withType: testType)
         #expect(throws: Never.self) { try SevenZipContainer.info(container: testData) }
         #expect(throws: Never.self) { try SevenZipContainer.open(container: testData) }
     }
 
     @Test func antiFile() throws {
-        let testData = try Constants.data(forTest: "test_anti_file", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_anti_file", withType: testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -117,7 +117,7 @@ struct SevenZipTests {
 
     @Test func multiBlocks() throws {
         // Container was created with "solid" options set to "off" (-ms=off).
-        let testData = try Constants.data(forTest: "test_multi_blocks", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_multi_blocks", withType: testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -127,7 +127,7 @@ struct SevenZipTests {
 
     @Test func allTimestamps() throws {
         // Container was created with "-mtc=on" and "-mta=on" options.
-        let testData = try Constants.data(forTest: "test_all_timestamps", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_all_timestamps", withType: testType)
 
         _ = try SevenZipContainer.info(container: testData)
         let entries = try SevenZipContainer.open(container: testData)
@@ -144,7 +144,7 @@ struct SevenZipTests {
 
     @Test func complicatedCodingScheme() throws {
         // Container was created with these options: "-mf=BCJ -m0=Copy -m1=Deflate -m2=Delta -m3=LZMA -m4=LZMA2"
-        let testData = try Constants.data(forTest: "test_complicated_coding_scheme", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_complicated_coding_scheme", withType: testType)
         // In this test case the most important thing is that information about entries must be read correctly.
         _ = try SevenZipContainer.info(container: testData)
 
@@ -155,7 +155,7 @@ struct SevenZipTests {
 
     @Test func encryptedHeader() throws {
         // Container was created with "-mhe=on".
-        let testData = try Constants.data(forTest: "test_encrypted_header", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_encrypted_header", withType: testType)
 
         #expect(throws: SevenZipError.encryptionNotSupported) { try SevenZipContainer.info(container: testData) }
 
@@ -165,21 +165,21 @@ struct SevenZipTests {
     @Test func singleThread() throws {
         // Container was created with disabled multithreading options.
         // We check this just in case.
-        let testData = try Constants.data(forTest: "test_single_thread", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_single_thread", withType: testType)
 
         #expect(try SevenZipContainer.info(container: testData).count == 6)
         #expect(try SevenZipContainer.open(container: testData).count == 6)
     }
 
     @Test func bigContainer() throws {
-        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode", withType: testType)
         #expect(throws: Never.self) { try SevenZipContainer.info(container: testData) }
         #expect(throws: Never.self) { try SevenZipContainer.open(container: testData) }
     }
 
     @Test func bzip2() throws {
         // File in container compressed with BZip2.
-        let testData = try Constants.data(forTest: "test_7z_bzip2", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_7z_bzip2", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -204,7 +204,7 @@ struct SevenZipTests {
 
     @Test func deflate() throws {
         // File in container compressed with Deflate.
-        let testData = try Constants.data(forTest: "test_7z_deflate", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_7z_deflate", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -229,7 +229,7 @@ struct SevenZipTests {
 
     @Test func lz4() throws {
         // File in container compressed with LZ4.
-        let testData = try Constants.data(forTest: "test_7z_lz4", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_7z_lz4", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -254,7 +254,7 @@ struct SevenZipTests {
 
     @Test func copy() throws {
         // File in container is explicitly uncompressed.
-        let testData = try Constants.data(forTest: "test_7z_copy", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_7z_copy", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -278,7 +278,7 @@ struct SevenZipTests {
     }
 
     @Test func unicode() throws {
-        let testData = try Constants.data(forTest: "test_unicode", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_unicode", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -298,7 +298,7 @@ struct SevenZipTests {
     }
 
     @Test func winContainer() throws {
-        let testData = try Constants.data(forTest: "test_win", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_win", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 2)
@@ -340,7 +340,7 @@ struct SevenZipTests {
     func lzmaBigDict() throws {
         // Verifying the issue fixed by PR #61.
         // Previously, there was a crash, if LZMA dictionary size was encoded using all 4 bytes.
-        let testData = try Constants.data(forTest: "test_lzma_big_dict", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_lzma_big_dict", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
         try #require(entries.count == 1)
         #expect(entries[0].info.name == "data")
@@ -349,7 +349,7 @@ struct SevenZipTests {
     }
 
     @Test func emptyFile() throws {
-        let testData = try Constants.data(forTest: "test_empty_file", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_file", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -371,7 +371,7 @@ struct SevenZipTests {
     }
 
     @Test func emptyDirectory() throws {
-        let testData = try Constants.data(forTest: "test_empty_dir", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_dir", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -393,14 +393,14 @@ struct SevenZipTests {
     }
 
     @Test func emptyContainer() throws {
-        let testData = try Constants.data(forTest: "test_empty_cont", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_empty_cont", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         #expect(entries.isEmpty)
     }
 
     @Test func deltaFilter() throws {
-        let testData = try Constants.data(forTest: "test_delta_filter", withType: SevenZipTests.testType)
+        let testData = try Constants.data(forTest: "test_delta_filter", withType: testType)
         let entries = try SevenZipContainer.open(container: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -426,7 +426,7 @@ struct SevenZipTests {
     @Test func formatMinorVersions() throws {
         let answerData = try Constants.data(forAnswer: "test2")
 
-        var testData = try Constants.data(forTest: "test_minor_version_2", withType: SevenZipTests.testType)
+        var testData = try Constants.data(forTest: "test_minor_version_2", withType: testType)
         var entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -445,7 +445,7 @@ struct SevenZipTests {
         #expect(entries[0].info.crc == 4168830779)
         #expect(entries[0].data == answerData)
 
-        testData = try Constants.data(forTest: "test_minor_version_3", withType: SevenZipTests.testType)
+        testData = try Constants.data(forTest: "test_minor_version_3", withType: testType)
         entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)
@@ -464,7 +464,7 @@ struct SevenZipTests {
         #expect(entries[0].info.crc == 4168830779)
         #expect(entries[0].data == answerData)
 
-        testData = try Constants.data(forTest: "test_minor_version_4", withType: SevenZipTests.testType)
+        testData = try Constants.data(forTest: "test_minor_version_4", withType: testType)
         entries = try SevenZipContainer.open(container: testData)
 
         try #require(entries.count == 1)

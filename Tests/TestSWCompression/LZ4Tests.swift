@@ -9,21 +9,21 @@ import SWCompression
 
 struct LZ4Tests {
 
-    private static let testType: String = "lz4"
+    private let testType: String = "lz4"
 
     // These tests test frames with independent blocks (since they all have only one block). The frames also have
     // additional features enabled, such as content size and block checksums. They also test legacy frame format.
 
-    func perform(test testName: String) throws {
-        let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
+    private func perform(test testName: String) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
         #expect(decompressedData == answerData)
     }
 
-    private static func perform(legacyTest testName: String) throws {
-        let testData = try Constants.data(forTest: testName + "_legacy", withType: LZ4Tests.testType)
+    private func perform(legacyTest testName: String) throws {
+        let testData = try Constants.data(forTest: testName + "_legacy", withType: testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
@@ -31,54 +31,54 @@ struct LZ4Tests {
     }
 
     @Test func test1() throws {
-        try self.perform(test: "test1")
-        try LZ4Tests.perform(legacyTest: "test1")
+        try perform(test: "test1")
+        try perform(legacyTest: "test1")
     }
 
     @Test func test2() throws {
-        try self.perform(test: "test2")
-        try LZ4Tests.perform(legacyTest: "test2")
+        try perform(test: "test2")
+        try perform(legacyTest: "test2")
     }
 
     @Test func test3() throws {
-        try self.perform(test: "test3")
-        try LZ4Tests.perform(legacyTest: "test3")
+        try perform(test: "test3")
+        try perform(legacyTest: "test3")
     }
 
     @Test func test4() throws {
-        try self.perform(test: "test4")
-        try LZ4Tests.perform(legacyTest: "test4")
+        try perform(test: "test4")
+        try perform(legacyTest: "test4")
     }
 
     @Test func test5() throws {
-        try self.perform(test: "test5")
-        try LZ4Tests.perform(legacyTest: "test5")
+        try perform(test: "test5")
+        try perform(legacyTest: "test5")
     }
 
     @Test func test6() throws {
-        try self.perform(test: "test6")
-        try LZ4Tests.perform(legacyTest: "test6")
+        try perform(test: "test6")
+        try perform(legacyTest: "test6")
     }
 
     @Test func test7() throws {
-        try self.perform(test: "test7")
-        try LZ4Tests.perform(legacyTest: "test7")
+        try perform(test: "test7")
+        try perform(legacyTest: "test7")
     }
 
     @Test func test8() throws {
-        try self.perform(test: "test8")
-        try LZ4Tests.perform(legacyTest: "test8")
+        try perform(test: "test8")
+        try perform(legacyTest: "test8")
     }
 
     @Test func test9() throws {
-        try self.perform(test: "test9")
-        try LZ4Tests.perform(legacyTest: "test9")
+        try perform(test: "test9")
+        try perform(legacyTest: "test9")
     }
 
     @Test func dependentBlocks() throws {
         // This test contains dependent blocks (with the size of 64 kB), as well as has additional features enabled,
         // such as content size and block checksums.
-        let testData = try Constants.data(forTest: "SWCompressionSourceCode.tar", withType: LZ4Tests.testType)
+        let testData = try Constants.data(forTest: "SWCompressionSourceCode.tar", withType: testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
@@ -99,7 +99,7 @@ struct LZ4Tests {
     }
 
     @Test func skippableFrame() throws {
-        let testData = try Constants.data(forTest: "test_skippable_frame", withType: LZ4Tests.testType)
+        let testData = try Constants.data(forTest: "test_skippable_frame", withType: testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -107,7 +107,7 @@ struct LZ4Tests {
     }
 
     @Test func legacyFrameMultipleBlocks() throws {
-        let testData = try Constants.data(forTest: "zeros", withType: LZ4Tests.testType)
+        let testData = try Constants.data(forTest: "zeros", withType: testType)
         let decompressedData = try LZ4.decompress(data: testData)
 
         let answerData = Data(count: 18874368)
@@ -121,7 +121,7 @@ struct LZ4Tests {
 
         for blockSize in ["4", "5", "6", "7", "1234"] {
             for dep in ["", "_BD"] {
-                let testData = try Constants.data(forTest: "test_B" + blockSize + dep, withType: LZ4Tests.testType)
+                let testData = try Constants.data(forTest: "test_B" + blockSize + dep, withType: testType)
                 let decompressedData = try LZ4.decompress(data: testData)
                 #expect(decompressedData == answerData)
             }
@@ -134,15 +134,15 @@ struct LZ4Tests {
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
         let dictData = try Constants.data(forTest: "lz4_dict", withType: "")
 
-        var testData = try Constants.data(forTest: "test_dict_B5", withType: LZ4Tests.testType)
+        var testData = try Constants.data(forTest: "test_dict_B5", withType: testType)
         var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
         #expect(decompressedData == answerData)
 
-        testData = try Constants.data(forTest: "test_dict_B5_BD", withType: LZ4Tests.testType)
+        testData = try Constants.data(forTest: "test_dict_B5_BD", withType: testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
         #expect(decompressedData == answerData)
 
-        testData = try Constants.data(forTest: "test_dict_B5_dictID", withType: LZ4Tests.testType)
+        testData = try Constants.data(forTest: "test_dict_B5_dictID", withType: testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData, dictionaryID: 20000)
         #expect(decompressedData == answerData)
     }
@@ -152,11 +152,11 @@ struct LZ4Tests {
         let answerData = try Constants.data(forTest: "SWCompressionSourceCode", withType: "tar")
         let dictData = try Constants.data(forTest: "lz4_small_dict", withType: "")
 
-        var testData = try Constants.data(forTest: "test_small_dict_B5", withType: LZ4Tests.testType)
+        var testData = try Constants.data(forTest: "test_small_dict_B5", withType: testType)
         var decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
         #expect(decompressedData == answerData)
 
-        testData = try Constants.data(forTest: "test_small_dict_B5_BD", withType: LZ4Tests.testType)
+        testData = try Constants.data(forTest: "test_small_dict_B5_BD", withType: testType)
         decompressedData = try LZ4.decompress(data: testData, dictionary: dictData)
         #expect(decompressedData == answerData)
     }
@@ -166,7 +166,7 @@ struct LZ4Tests {
         // - Legacy frame format, compressed test1.answer,
         // - Skippable frame with 1233 bytes of random data,
         // - Normal frame with compressed test4.answer.
-        let testData = try Constants.data(forTest: "test_multi_frame", withType: LZ4Tests.testType)
+        let testData = try Constants.data(forTest: "test_multi_frame", withType: testType)
         let result = try LZ4.multiDecompress(data: testData)
 
         try #require(result.count == 2)
@@ -180,7 +180,7 @@ struct LZ4Tests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test1", withType: LZ4Tests.testType)
+        var testData = try Constants.data(forTest: "test1", withType: testType)
         // The content checksum is the last 4 bytes.
         testData[testData.endIndex - 2] &+= 1
         #if compiler(>=6.1)
@@ -206,7 +206,7 @@ struct LZ4Tests {
     @Test func randomInputTruncations() throws {
         for i in 1...9 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: LZ4Tests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             for _ in 0..<100 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
                 _ = try? LZ4.decompress(data: testData[testData.startIndex..<truncationIndex])

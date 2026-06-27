@@ -9,10 +9,10 @@ import SWCompression
 
 struct LzmaTests {
 
-    private static let testType: String = "lzma"
+    private let testType: String = "lzma"
 
-    func perform(test testName: String) throws {
-        let testData = try Constants.data(forTest: testName, withType: LzmaTests.testType)
+    private func perform(test testName: String) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let decompressedData = try LZMA.decompress(data: testData)
 
         let answerData = try Constants.data(forAnswer: "test8")
@@ -20,23 +20,23 @@ struct LzmaTests {
     }
 
     @Test func lzma8() throws {
-        try self.perform(test: "test8")
+        try perform(test: "test8")
     }
 
     @Test func lzma9() throws {
-        try self.perform(test: "test9")
+        try perform(test: "test9")
     }
 
     @Test func lzma10() throws {
-        try self.perform(test: "test10")
+        try perform(test: "test10")
     }
 
     @Test func lzma11() throws {
-        try self.perform(test: "test11")
+        try perform(test: "test11")
     }
 
     @Test func lzmaEmpty() throws {
-        let testData = try Constants.data(forTest: "test_empty", withType: LzmaTests.testType)
+        let testData = try Constants.data(forTest: "test_empty", withType: testType)
         #expect(try LZMA.decompress(data: testData) == Data())
     }
 

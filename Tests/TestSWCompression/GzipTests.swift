@@ -9,10 +9,10 @@ import SWCompression
 
 struct GzipTests {
 
-    private static let testType: String = "gz"
+    private let testType: String = "gz"
 
-    func header(test testName: String, mtime: Int) throws {
-        let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
+    private func header(test testName: String, mtime: Int) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let testGzipHeader = try GzipHeader(archive: testData)
 
         #expect(testGzipHeader.compressionMethod == .deflate)
@@ -23,15 +23,15 @@ struct GzipTests {
         #expect(testGzipHeader.extraFields.isEmpty)
     }
 
-    func unarchive(test testName: String) throws {
-        let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
+    private func unarchive(test testName: String) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let decompressedData = try GzipArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
         #expect(decompressedData == answerData)
     }
 
-    func archive(test testName: String) throws {
+    private func archive(test testName: String) throws {
         let answerData = try Constants.data(forAnswer: testName)
 
         // Options for archiving.
@@ -75,27 +75,27 @@ struct GzipTests {
     }
 
     @Test func test1() throws {
-        try self.header(test: "test1", mtime: 1482698300)
-        try self.unarchive(test: "test1")
+        try header(test: "test1", mtime: 1482698300)
+        try unarchive(test: "test1")
     }
 
     @Test func test2() throws {
-        try self.header(test: "test2", mtime: 1482698300)
-        try self.unarchive(test: "test2")
+        try header(test: "test2", mtime: 1482698300)
+        try unarchive(test: "test2")
     }
 
     @Test func test3() throws {
-        try self.header(test: "test3", mtime: 1482698301)
-        try self.unarchive(test: "test3")
+        try header(test: "test3", mtime: 1482698301)
+        try unarchive(test: "test3")
     }
 
     @Test func test4() throws {
-        try self.header(test: "test4", mtime: 1482698301)
-        try self.unarchive(test: "test4")
+        try header(test: "test4", mtime: 1482698301)
+        try unarchive(test: "test4")
     }
 
     @Test func test4ExtraField() throws {
-        let testData = try Constants.data(forTest: "test4_extra_field", withType: GzipTests.testType)
+        let testData = try Constants.data(forTest: "test4_extra_field", withType: testType)
         let testGzipHeader = try GzipHeader(archive: testData)
 
         #expect(testGzipHeader.compressionMethod == .deflate)
@@ -113,36 +113,36 @@ struct GzipTests {
     }
 
     @Test func test5() throws {
-        try self.header(test: "test5", mtime: 1482698242)
-        try self.unarchive(test: "test5")
+        try header(test: "test5", mtime: 1482698242)
+        try unarchive(test: "test5")
     }
 
     @Test func test6() throws {
-        try self.header(test: "test6", mtime: 1511554495)
-        try self.unarchive(test: "test6")
+        try header(test: "test6", mtime: 1511554495)
+        try unarchive(test: "test6")
     }
 
     @Test func test7() throws {
-        try self.header(test: "test7", mtime: 1511554611)
-        try self.unarchive(test: "test7")
+        try header(test: "test7", mtime: 1511554611)
+        try unarchive(test: "test7")
     }
 
     @Test func test8() throws {
-        try self.header(test: "test8", mtime: 1483040005)
-        try self.unarchive(test: "test8")
+        try header(test: "test8", mtime: 1483040005)
+        try unarchive(test: "test8")
     }
 
     @Test func test9() throws {
-        try self.header(test: "test9", mtime: 1483040005)
-        try self.unarchive(test: "test9")
+        try header(test: "test9", mtime: 1483040005)
+        try unarchive(test: "test9")
     }
 
     @Test func archive4() throws {
-        try self.archive(test: "test4")
+        try archive(test: "test4")
     }
 
     @Test func multiUnarchive() throws {
-        let testData = try Constants.data(forTest: "test_multi", withType: GzipTests.testType)
+        let testData = try Constants.data(forTest: "test_multi", withType: testType)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         try #require(members.count == 4)
@@ -158,7 +158,7 @@ struct GzipTests {
     }
 
     @Test func multiUnarchiveRedundant() throws {
-        let testData = try Constants.data(forTest: "test1", withType: GzipTests.testType)
+        let testData = try Constants.data(forTest: "test1", withType: testType)
         let members = try GzipArchive.multiUnarchive(archive: testData)
 
         try #require(members.count == 1)
@@ -191,7 +191,7 @@ struct GzipTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test1", withType: GzipTests.testType)
+        var testData = try Constants.data(forTest: "test1", withType: testType)
         // Here we modify the stored value of crc32.
         testData[41] &+= 1
         #if compiler(>=6.1)
@@ -218,7 +218,7 @@ struct GzipTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test_multi", withType: GzipTests.testType)
+        var testData = try Constants.data(forTest: "test_multi", withType: testType)
         // Here we modify the stored value of crc32.
         testData[2289] &+= 1
         #if compiler(>=6.1)
@@ -249,7 +249,7 @@ struct GzipTests {
         // - that the archive consisting only of the minimal header is successfully processed,
         // - that the mtime field with the value 0 correctly results in a `GzipHeader.modificationTime == nil`,
         // - that the `GzipArchive.multiUnarchive(archive:)` works on a single member archive.
-        let testData = try Constants.data(forTest: "minimal", withType: GzipTests.testType)
+        let testData = try Constants.data(forTest: "minimal", withType: testType)
         let members = try GzipArchive.multiUnarchive(archive: testData)
         try #require(members.count == 1)
         if let member = members.first {
@@ -267,7 +267,7 @@ struct GzipTests {
         // In this test we check the handling of truncation inside the optional elements (name, comment, "extra field",
         // crc) of a GZip header, as well as in the "checksum" information of the archive (last 8 bytes). The sample
         // file used is "test4_extra_field" since it contains a header which utilizes all format features.
-        let testData = try Constants.data(forTest: "test4_extra_field", withType: GzipTests.testType)
+        let testData = try Constants.data(forTest: "test4_extra_field", withType: testType)
 
         // We test all possible truncation points since there are very few of them.
         // The header takes first 79 bytes.
@@ -288,7 +288,7 @@ struct GzipTests {
     @Test func randomInputTruncations() throws {
         for i in 1...9 {
             let testName = "test\(i)"
-            let testData = try Constants.data(forTest: testName, withType: GzipTests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             // It would be better to increase amount of different truncations tested, but we hit runtime limits in CI.
             for _ in 0..<5 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)

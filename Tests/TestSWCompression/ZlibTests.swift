@@ -9,12 +9,12 @@ import SWCompression
 
 struct ZlibTests {
 
-    private static let testType: String = "zlib"
+    private let testType: String = "zlib"
 
     @Test func test() throws {
         let testName = "test"
 
-        let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let testZlibHeader = try ZlibHeader(archive: testData)
 
         #expect(testZlibHeader.compressionMethod == .deflate)
@@ -23,7 +23,7 @@ struct ZlibTests {
     }
 
     @Test func full() throws {
-        let testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
+        let testData = try Constants.data(forTest: "random_file", withType: testType)
         let decompressedData = try ZlibArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test9")
@@ -39,7 +39,7 @@ struct ZlibTests {
     }
 
     @Test func empty() throws {
-        let testData = try Constants.data(forTest: "test_empty", withType: ZlibTests.testType)
+        let testData = try Constants.data(forTest: "test_empty", withType: testType)
         #expect((try ZlibArchive.unarchive(archive: testData)) == Data())
     }
 
@@ -61,7 +61,7 @@ struct ZlibTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
+        var testData = try Constants.data(forTest: "random_file", withType: testType)
         // Here we modify the stored value of adler32.
         testData[10249] &+= 1
         #if compiler(>=6.1)
@@ -85,7 +85,7 @@ struct ZlibTests {
 
     @Test func randomInputTruncations() throws {
         for testName in ["test", "random_file", "test_empty"] {
-            let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
+            let testData = try Constants.data(forTest: testName, withType: testType)
             for _ in 0..<100 {
                 let truncationIndex = Int.random(in: (testData.startIndex + 1)..<testData.endIndex)
                 _ = try? ZlibArchive.unarchive(archive: testData[testData.startIndex..<truncationIndex])

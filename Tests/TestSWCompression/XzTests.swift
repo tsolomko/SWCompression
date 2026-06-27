@@ -9,10 +9,10 @@ import SWCompression
 
 struct XZTests {
 
-    private static let testType: String = "xz"
+    private let testType: String = "xz"
 
-    func perform(test testName: String) throws {
-        let testData = try Constants.data(forTest: testName, withType: XZTests.testType)
+    private func perform(test testName: String) throws {
+        let testData = try Constants.data(forTest: testName, withType: testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
@@ -20,45 +20,45 @@ struct XZTests {
     }
 
     @Test func xz1() throws {
-        try self.perform(test: "test1")
+        try perform(test: "test1")
     }
 
     @Test func xz2() throws {
-        try self.perform(test: "test2")
+        try perform(test: "test2")
     }
 
     @Test func xz3() throws {
-        try self.perform(test: "test3")
+        try perform(test: "test3")
     }
 
     @Test func xz4() throws {
         // This test contains padding!
-        try self.perform(test: "test4")
+        try perform(test: "test4")
     }
 
     @Test func xz5() throws {
-        try self.perform(test: "test5")
+        try perform(test: "test5")
     }
 
     @Test func xz6() throws {
-        try self.perform(test: "test6")
+        try perform(test: "test6")
     }
 
     @Test func xz7() throws {
-        try self.perform(test: "test7")
+        try perform(test: "test7")
     }
 
     @Test func xz8() throws {
-        try self.perform(test: "test8")
+        try perform(test: "test8")
     }
 
     @Test func xz9() throws {
-        try self.perform(test: "test9")
+        try perform(test: "test9")
     }
 
     @Test func multiStreamNoPadding() throws {
         // Doesn't contain any padding.
-        let testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
+        let testData = try Constants.data(forTest: "test_multi", withType: testType)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
         try #require(splitDecompressedData.count == 4)
 
@@ -78,7 +78,7 @@ struct XZTests {
         // After second - 4 bytes of padding.
         // Third - 8 bytes.
         // At the end - 4 bytes.
-        let testData = try Constants.data(forTest: "test_multi_pad", withType: XZTests.testType)
+        let testData = try Constants.data(forTest: "test_multi_pad", withType: testType)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
         try #require(splitDecompressedData.count == 4)
 
@@ -95,7 +95,7 @@ struct XZTests {
     }
 
     @Test func deltaFilter() throws {
-        let testData = try Constants.data(forTest: "test_delta_filter", withType: XZTests.testType)
+        let testData = try Constants.data(forTest: "test_delta_filter", withType: testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -103,7 +103,7 @@ struct XZTests {
     }
 
     @Test func sha256Check() throws {
-        let testData = try Constants.data(forTest: "test_sha256", withType: XZTests.testType)
+        let testData = try Constants.data(forTest: "test_sha256", withType: testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
@@ -124,7 +124,7 @@ struct XZTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test1", withType: XZTests.testType)
+        var testData = try Constants.data(forTest: "test1", withType: testType)
         // Here we modify the stored value of crc64.
         testData[46] &+= 1
         #if compiler(>=6.1)
@@ -151,7 +151,7 @@ struct XZTests {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
-        var testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
+        var testData = try Constants.data(forTest: "test_multi", withType: testType)
         // Here we modify the stored value of crc64.
         testData[2346] &+= 1
         #if compiler(>=6.1)
