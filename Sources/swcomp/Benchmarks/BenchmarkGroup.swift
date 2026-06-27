@@ -15,8 +15,7 @@ final class BenchmarkGroup: CommandGroup {
     let children: [Routable] = [
         RunBenchmarkCommand(),
         ShowBenchmarkCommand(),
-        RemoveRunCommand(),
-        ConvertCommand()
+        RemoveRunCommand()
     ]
 
 }
