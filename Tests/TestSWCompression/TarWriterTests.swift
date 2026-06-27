@@ -3,15 +3,16 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class TarWriterTests: XCTestCase {
+final class TarWriterTests {
 
-    private static let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())
+    private let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent("TestSWCompression-" + UUID().uuidString, isDirectory: true)
 
-    class override func setUp() {
+    init() {
         do {
             try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true, attributes: nil)
         } catch let error {
@@ -19,7 +20,7 @@ class TarWriterTests: XCTestCase {
         }
     }
 
-    class override func tearDown() {
+    deinit {
         do {
             try FileManager.default.removeItem(at: tempDir)
         } catch let error {
@@ -27,7 +28,7 @@ class TarWriterTests: XCTestCase {
         }
     }
 
-    private static func generateContainerData(_ entries: [TarEntry], format: TarContainer.Format = .pax) throws -> Data {
+    private func generateContainerData(_ entries: [TarEntry], format: TarContainer.Format = .pax) throws -> Data {
         let tempFileUrl = tempDir.appendingPathComponent(UUID().uuidString, isDirectory: false)
         try "".write(to: tempFileUrl, atomically: true, encoding: .utf8)
         let handle = try FileHandle(forWritingTo: tempFileUrl)
@@ -40,7 +41,7 @@ class TarWriterTests: XCTestCase {
         return try Data(contentsOf: tempFileUrl)
     }
 
-    func test1() throws {
+    @Test func test1() throws {
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.ownerUserName = "timofeysolomko"
         info.ownerGroupName = "staff"
@@ -57,27 +58,27 @@ class TarWriterTests: XCTestCase {
         let data = Data("Hello, World!\n".utf8)
         let entry = TarEntry(info: info, data: data)
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newEntries = try TarContainer.open(container: containerData)
 
-        XCTAssertEqual(newEntries.count, 1)
-        XCTAssertEqual(newEntries[0].info.name, "file.txt")
-        XCTAssertEqual(newEntries[0].info.type, .regular)
-        XCTAssertEqual(newEntries[0].info.size, 14)
-        XCTAssertEqual(newEntries[0].info.ownerUserName, "timofeysolomko")
-        XCTAssertEqual(newEntries[0].info.ownerGroupName, "staff")
-        XCTAssertEqual(newEntries[0].info.ownerID, 501)
-        XCTAssertEqual(newEntries[0].info.groupID, 20)
-        XCTAssertEqual(newEntries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(newEntries[0].info.modificationTime, date)
-        XCTAssertEqual(newEntries[0].info.creationTime, date)
-        XCTAssertEqual(newEntries[0].info.accessTime, date)
-        XCTAssertEqual(newEntries[0].info.comment, "comment")
-        XCTAssertEqual(newEntries[0].data, data)
+        try #require(newEntries.count == 1)
+        #expect(newEntries[0].info.name == "file.txt")
+        #expect(newEntries[0].info.type == .regular)
+        #expect(newEntries[0].info.size == 14)
+        #expect(newEntries[0].info.ownerUserName == "timofeysolomko")
+        #expect(newEntries[0].info.ownerGroupName == "staff")
+        #expect(newEntries[0].info.ownerID == 501)
+        #expect(newEntries[0].info.groupID == 20)
+        #expect(newEntries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(newEntries[0].info.modificationTime == date)
+        #expect(newEntries[0].info.creationTime == date)
+        #expect(newEntries[0].info.accessTime == date)
+        #expect(newEntries[0].info.comment == "comment")
+        #expect(newEntries[0].data == data)
     }
 
-    func test2() throws {
+    @Test func test2() throws {
         let dict = [
             "SWCompression/Tests/TAR": "value",
             "key": "valuevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevaluevalue22"
@@ -101,73 +102,73 @@ class TarWriterTests: XCTestCase {
         info.unknownExtendedHeaderRecords = dict
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, "symbolic-link")
-        XCTAssertEqual(newInfo.type, .symbolicLink)
-        XCTAssertEqual(newInfo.permissions?.rawValue, 484)
-        XCTAssertEqual(newInfo.ownerID, 250)
-        XCTAssertEqual(newInfo.groupID, 250)
-        XCTAssertEqual(newInfo.size, 0)
-        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 0)
-        XCTAssertEqual(newInfo.linkName, "file")
-        XCTAssertEqual(newInfo.ownerUserName, "testUserName")
-        XCTAssertEqual(newInfo.ownerGroupName, "testGroupName")
-        XCTAssertEqual(newInfo.deviceMajorNumber, 1)
-        XCTAssertEqual(newInfo.deviceMinorNumber, 2)
-        XCTAssertEqual(newInfo.accessTime?.timeIntervalSince1970, 1)
-        XCTAssertEqual(newInfo.creationTime?.timeIntervalSince1970, 2)
-        XCTAssertEqual(newInfo.charset, "UTF-8")
-        XCTAssertEqual(newInfo.comment, "some comment...")
-        XCTAssertEqual(newInfo.unknownExtendedHeaderRecords, dict)
+        #expect(newInfo.name == "symbolic-link")
+        #expect(newInfo.type == .symbolicLink)
+        #expect(newInfo.permissions?.rawValue == 484)
+        #expect(newInfo.ownerID == 250)
+        #expect(newInfo.groupID == 250)
+        #expect(newInfo.size == 0)
+        #expect(newInfo.modificationTime?.timeIntervalSince1970 == 0)
+        #expect(newInfo.linkName == "file")
+        #expect(newInfo.ownerUserName == "testUserName")
+        #expect(newInfo.ownerGroupName == "testGroupName")
+        #expect(newInfo.deviceMajorNumber == 1)
+        #expect(newInfo.deviceMinorNumber == 2)
+        #expect(newInfo.accessTime?.timeIntervalSince1970 == 1)
+        #expect(newInfo.creationTime?.timeIntervalSince1970 == 2)
+        #expect(newInfo.charset == "UTF-8")
+        #expect(newInfo.comment == "some comment...")
+        #expect(newInfo.unknownExtendedHeaderRecords == dict)
     }
 
-    func testLongName() throws {
+    @Test func longName() throws {
         var info = TarEntryInfo(name: "", type: .regular)
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 15))
         info.name.append("readme.txt")
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
         // This name should fit into ustar format using "prefix" field
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testVeryLongName() throws {
+    @Test func veryLongName() throws {
         var info = TarEntryInfo(name: "", type: .regular)
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 25))
         info.name.append("readme.txt")
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testLongDirectoryName() throws {
+    @Test func longDirectoryName() throws {
         // Tests what happens to the filename's trailing slash when "prefix" field is used.
         var info = TarEntryInfo(name: "", type: .regular)
         info.name = "path/to/"
         info.name.append(String(repeating: "readme/", count: 15))
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testUnicode() throws {
+    @Test func unicode() throws {
         let date = Date(timeIntervalSince1970: 1300000)
         var info = TarEntryInfo(name: "ссылка", type: .symbolicLink)
         info.accessTime = date
@@ -184,26 +185,26 @@ class TarWriterTests: XCTestCase {
         info.linkName = "путь/к/файлу"
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, "ссылка")
-        XCTAssertEqual(newInfo.type, .symbolicLink)
-        XCTAssertEqual(newInfo.permissions?.rawValue, 420)
-        XCTAssertEqual(newInfo.ownerID, 501)
-        XCTAssertEqual(newInfo.groupID, 20)
-        XCTAssertEqual(newInfo.size, 0)
-        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 1300000)
-        XCTAssertEqual(newInfo.linkName, "путь/к/файлу")
-        XCTAssertEqual(newInfo.ownerUserName, "timofeysolomko")
-        XCTAssertEqual(newInfo.ownerGroupName, "staff")
-        XCTAssertEqual(newInfo.accessTime?.timeIntervalSince1970, 1300000)
-        XCTAssertEqual(newInfo.creationTime?.timeIntervalSince1970, 1300000)
-        XCTAssertEqual(newInfo.comment, "комментарий")
+        #expect(newInfo.name == "ссылка")
+        #expect(newInfo.type == .symbolicLink)
+        #expect(newInfo.permissions?.rawValue == 420)
+        #expect(newInfo.ownerID == 501)
+        #expect(newInfo.groupID == 20)
+        #expect(newInfo.size == 0)
+        #expect(newInfo.modificationTime?.timeIntervalSince1970 == 1300000)
+        #expect(newInfo.linkName == "путь/к/файлу")
+        #expect(newInfo.ownerUserName == "timofeysolomko")
+        #expect(newInfo.ownerGroupName == "staff")
+        #expect(newInfo.accessTime?.timeIntervalSince1970 == 1300000)
+        #expect(newInfo.creationTime?.timeIntervalSince1970 == 1300000)
+        #expect(newInfo.comment == "комментарий")
     }
 
-    func testUstar() throws {
+    @Test func ustar() throws {
         // This set of settings should result in the container which uses only ustar TAR format features.
         let date = Date(timeIntervalSince1970: 1300000)
         var info = TarEntryInfo(name: "file.txt", type: .regular)
@@ -213,92 +214,92 @@ class TarWriterTests: XCTestCase {
         info.modificationTime = date
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry], format: .ustar)
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .ustar)
+        let containerData = try generateContainerData([entry], format: .ustar)
+        #expect(try TarContainer.formatOf(container: containerData) == .ustar)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, "file.txt")
-        XCTAssertEqual(newInfo.type, .regular)
-        XCTAssertEqual(newInfo.permissions?.rawValue, 420)
-        XCTAssertEqual(newInfo.ownerID, 501)
-        XCTAssertEqual(newInfo.groupID, 20)
-        XCTAssertEqual(newInfo.size, 0)
-        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, 1300000)
-        XCTAssertEqual(newInfo.linkName, "")
-        XCTAssertEqual(newInfo.ownerUserName, "")
-        XCTAssertEqual(newInfo.ownerGroupName, "")
-        XCTAssertNil(newInfo.accessTime)
-        XCTAssertNil(newInfo.creationTime)
-        XCTAssertNil(newInfo.comment)
+        #expect(newInfo.name == "file.txt")
+        #expect(newInfo.type == .regular)
+        #expect(newInfo.permissions?.rawValue == 420)
+        #expect(newInfo.ownerID == 501)
+        #expect(newInfo.groupID == 20)
+        #expect(newInfo.size == 0)
+        #expect(newInfo.modificationTime?.timeIntervalSince1970 == 1300000)
+        #expect(newInfo.linkName == "")
+        #expect(newInfo.ownerUserName == "")
+        #expect(newInfo.ownerGroupName == "")
+        #expect(newInfo.accessTime == nil)
+        #expect(newInfo.creationTime == nil)
+        #expect(newInfo.comment == nil)
     }
 
-    func testNegativeMtime() throws {
+    @Test func negativeMtime() throws {
         let date = Date(timeIntervalSince1970: -1300000)
         var info = TarEntryInfo(name: "file.txt", type: .regular)
         info.modificationTime = date
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry])
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+        let containerData = try generateContainerData([entry])
+        #expect(try TarContainer.formatOf(container: containerData) == .pax)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, "file.txt")
-        XCTAssertEqual(newInfo.type, .regular)
-        XCTAssertEqual(newInfo.size, 0)
-        XCTAssertEqual(newInfo.modificationTime?.timeIntervalSince1970, -1300000)
-        XCTAssertEqual(newInfo.linkName, "")
-        XCTAssertEqual(newInfo.ownerUserName, "")
-        XCTAssertEqual(newInfo.ownerGroupName, "")
-        XCTAssertNil(newInfo.permissions)
-        XCTAssertNil(newInfo.ownerID)
-        XCTAssertNil(newInfo.groupID)
-        XCTAssertNil(newInfo.accessTime)
-        XCTAssertNil(newInfo.creationTime)
-        XCTAssertNil(newInfo.comment)
+        #expect(newInfo.name == "file.txt")
+        #expect(newInfo.type == .regular)
+        #expect(newInfo.size == 0)
+        #expect(newInfo.modificationTime?.timeIntervalSince1970 == -1300000)
+        #expect(newInfo.linkName == "")
+        #expect(newInfo.ownerUserName == "")
+        #expect(newInfo.ownerGroupName == "")
+        #expect(newInfo.permissions == nil)
+        #expect(newInfo.ownerID == nil)
+        #expect(newInfo.groupID == nil)
+        #expect(newInfo.accessTime == nil)
+        #expect(newInfo.creationTime == nil)
+        #expect(newInfo.comment == nil)
     }
 
-    func testBigUid() throws {
+    @Test func bigUid() throws {
         // Int.max tests that base-256 encoding of integer fields works in the edge case.
         for uid in [(1 << 32) - 1, Int.max] {
             var info = TarEntryInfo(name: "file.txt", type: .regular)
             info.ownerID = uid
             let entry = TarEntry(info: info, data: Data())
 
-            let containerData = try TarWriterTests.generateContainerData([entry])
-            XCTAssertEqual(try TarContainer.formatOf(container: containerData), .pax)
+            let containerData = try generateContainerData([entry])
+            #expect(try TarContainer.formatOf(container: containerData) == .pax)
             let newInfo = try TarContainer.open(container: containerData)[0].info
 
-            XCTAssertEqual(newInfo.name, "file.txt")
-            XCTAssertEqual(newInfo.type, .regular)
-            XCTAssertEqual(newInfo.size, 0)
-            XCTAssertEqual(newInfo.ownerID, uid)
-            XCTAssertEqual(newInfo.linkName, "")
-            XCTAssertEqual(newInfo.ownerUserName, "")
-            XCTAssertEqual(newInfo.ownerGroupName, "")
-            XCTAssertNil(newInfo.permissions)
-            XCTAssertNil(newInfo.groupID)
-            XCTAssertNil(newInfo.accessTime)
-            XCTAssertNil(newInfo.creationTime)
-            XCTAssertNil(newInfo.modificationTime)
-            XCTAssertNil(newInfo.comment)
+            #expect(newInfo.name == "file.txt")
+            #expect(newInfo.type == .regular)
+            #expect(newInfo.size == 0)
+            #expect(newInfo.ownerID == uid)
+            #expect(newInfo.linkName == "")
+            #expect(newInfo.ownerUserName == "")
+            #expect(newInfo.ownerGroupName == "")
+            #expect(newInfo.permissions == nil)
+            #expect(newInfo.groupID == nil)
+            #expect(newInfo.accessTime == nil)
+            #expect(newInfo.creationTime == nil)
+            #expect(newInfo.modificationTime == nil)
+            #expect(newInfo.comment == nil)
         }
     }
 
-    func testGnuLongName() throws {
+    @Test func gnuLongName() throws {
         var info = TarEntryInfo(name: "", type: .regular)
         info.name = "path/to/"
         info.name.append(String(repeating: "name/", count: 25))
         info.name.append("name.txt")
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let containerData = try generateContainerData([entry], format: .gnu)
+        #expect(try TarContainer.formatOf(container: containerData) == .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testGnuLongLinkName() throws {
+    @Test func gnuLongLinkName() throws {
         var info = TarEntryInfo(name: "", type: .symbolicLink)
         info.name = "link"
         info.linkName = "path/to/"
@@ -306,14 +307,14 @@ class TarWriterTests: XCTestCase {
         info.linkName.append("name.txt")
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let containerData = try generateContainerData([entry], format: .gnu)
+        #expect(try TarContainer.formatOf(container: containerData) == .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testGnuBothLongNames() throws {
+    @Test func gnuBothLongNames() throws {
         var info = TarEntryInfo(name: "", type: .symbolicLink)
         info.name = "path/to/"
         info.name.append(String(repeating: "name/", count: 25))
@@ -323,14 +324,14 @@ class TarWriterTests: XCTestCase {
         info.linkName.append("link.txt")
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let containerData = try generateContainerData([entry], format: .gnu)
+        #expect(try TarContainer.formatOf(container: containerData) == .gnu)
         let newInfo = try TarContainer.open(container: containerData)[0].info
 
-        XCTAssertEqual(newInfo.name, info.name)
+        #expect(newInfo.name == info.name)
     }
 
-    func testGnuTimes() throws {
+    @Test func gnuTimes() throws {
         var info = TarEntryInfo(name: "dir", type: .directory)
         info.ownerUserName = "tsolomko"
         info.ownerGroupName = "staff"
@@ -345,23 +346,23 @@ class TarWriterTests: XCTestCase {
         info.accessTime = date
         let entry = TarEntry(info: info, data: Data())
 
-        let containerData = try TarWriterTests.generateContainerData([entry], format: .gnu)
-        XCTAssertEqual(try TarContainer.formatOf(container: containerData), .gnu)
+        let containerData = try generateContainerData([entry], format: .gnu)
+        #expect(try TarContainer.formatOf(container: containerData) == .gnu)
         let newEntries = try TarContainer.open(container: containerData)
 
-        XCTAssertEqual(newEntries.count, 1)
-        XCTAssertEqual(newEntries[0].info.name, "dir")
-        XCTAssertEqual(newEntries[0].info.type, .directory)
-        XCTAssertEqual(newEntries[0].info.size, 0)
-        XCTAssertEqual(newEntries[0].info.ownerUserName, "tsolomko")
-        XCTAssertEqual(newEntries[0].info.ownerGroupName, "staff")
-        XCTAssertEqual(newEntries[0].info.ownerID, 501)
-        XCTAssertEqual(newEntries[0].info.groupID, 20)
-        XCTAssertEqual(newEntries[0].info.permissions, Permissions(rawValue: 420))
-        XCTAssertEqual(newEntries[0].info.modificationTime, date)
-        XCTAssertEqual(newEntries[0].info.creationTime, date)
-        XCTAssertEqual(newEntries[0].info.accessTime, date)
-        XCTAssertNil(newEntries[0].info.comment)
+        try #require(newEntries.count == 1)
+        #expect(newEntries[0].info.name == "dir")
+        #expect(newEntries[0].info.type == .directory)
+        #expect(newEntries[0].info.size == 0)
+        #expect(newEntries[0].info.ownerUserName == "tsolomko")
+        #expect(newEntries[0].info.ownerGroupName == "staff")
+        #expect(newEntries[0].info.ownerID == 501)
+        #expect(newEntries[0].info.groupID == 20)
+        #expect(newEntries[0].info.permissions == Permissions(rawValue: 420))
+        #expect(newEntries[0].info.modificationTime == date)
+        #expect(newEntries[0].info.creationTime == date)
+        #expect(newEntries[0].info.accessTime == date)
+        #expect(newEntries[0].info.comment == nil)
     }
 
 }
