@@ -18,20 +18,6 @@ struct SaveFile: Codable {
     var formatVersion = 2
     var runs: [Run]
 
-    init(_ oldSaveFile: OldSaveFile) {
-        var d = [UUID: [BenchmarkResult]]()
-        for run in oldSaveFile.runs {
-            d[run.metadataUUID] = (d[run.metadataUUID] ?? [BenchmarkResult]()) + run.results
-        }
-
-        self.runs = [Run]()
-        for (uuid, results) in d {
-            guard let metadata = oldSaveFile.metadatas[uuid]
-                else { swcompExit(.benchmarkOldFormatNoUUIDMetadata(uuid)) }
-            self.runs.append(Run(uuid: uuid, metadata: metadata, results: results.sorted(by: { $0.id < $1.id })))
-        }
-    }
-
     init(runs: [SaveFile.Run]) {
         self.runs = runs
     }
@@ -47,11 +33,6 @@ struct SaveFile: Codable {
                 else { swcompExit(.benchmarkUnsupportedFormatVersion(intFormatVersion)) }
             let decoder = JSONDecoder()
             return try decoder.decode(SaveFile.self, from: data)
-        } else if generalDict["metadatas"] != nil && generalDict["runs"] != nil {
-            let decoder = JSONDecoder()
-            let oldSaveFile = try decoder.decode(OldSaveFile.self, from: data)
-            print("WARNING: Old save file format detected. Its support will be removed in the future. Use \'benchmark convert' to upgrade.")
-            return SaveFile(oldSaveFile)
         } else {
             swcompExit(.benchmarkUnrecognizedSaveFile)
         }
