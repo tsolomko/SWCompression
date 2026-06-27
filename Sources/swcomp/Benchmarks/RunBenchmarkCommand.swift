@@ -3,10 +3,6 @@
 //
 // See LICENSE for license information
 
-#if os(Linux)
-    import CoreFoundation
-#endif
-
 import Foundation
 import SwiftCLI
 
@@ -77,9 +73,6 @@ final class RunBenchmarkCommand: Command {
             var squareSum = 0.0
 
             print("Iterations: ", terminator: "")
-            #if !os(Linux)
-                fflush(__stdoutp)
-            #endif
             var iterations = [Double]()
             for i in 1...iterationCount {
                 if i > 1 {
@@ -87,9 +80,6 @@ final class RunBenchmarkCommand: Command {
                 }
                 let speed = benchmark.measure()
                 print(benchmark.format(speed), terminator: "")
-                #if !os(Linux)
-                    fflush(__stdoutp)
-                #endif
                 sum += speed
                 squareSum += speed * speed
                 iterations.append(speed)

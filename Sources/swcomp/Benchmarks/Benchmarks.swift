@@ -3,10 +3,6 @@
 //
 // See LICENSE for license information
 
-#if os(Linux)
-    import CoreFoundation
-#endif
-
 import Foundation
 import SWCompression
 import SwiftCLI

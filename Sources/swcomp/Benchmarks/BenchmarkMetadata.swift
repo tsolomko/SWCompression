@@ -32,35 +32,19 @@ struct BenchmarkMetadata: Codable, Equatable {
 
     private static func getExecURL(for command: String) throws -> URL {
         let args = ["-c", "which \(command)"]
-        #if os(Windows)
-            swcompExit(.benchmarkCannotGetSubcommandPathWindows)
-        #else
-            let output = try BenchmarkMetadata.run(command: URL(fileURLWithPath: "/bin/sh"), arguments: args)
-        #endif
+        let output = try BenchmarkMetadata.run(command: URL(fileURLWithPath: "/bin/sh"), arguments: args)
         return URL(fileURLWithPath: String(output.dropLast()))
     }
 
     private static func getOsInfo() throws -> String {
-        #if os(Linux)
-            return try BenchmarkMetadata.run(command: BenchmarkMetadata.getExecURL(for: "uname"), arguments: ["-a"])
-        #else
-            #if os(Windows)
-                return "Unknown Windows OS"
-            #else
-                return try BenchmarkMetadata.run(command: BenchmarkMetadata.getExecURL(for: "sw_vers"))
-            #endif
-        #endif
+        return try BenchmarkMetadata.run(command: BenchmarkMetadata.getExecURL(for: "sw_vers"))
     }
 
     init(_ description: String?, _ preserveTimestamp: Bool) throws {
         self.timestamp = preserveTimestamp ? Date.timeIntervalSinceReferenceDate : nil
         self.osInfo = try BenchmarkMetadata.getOsInfo()
-        #if os(Windows)
-            self.swiftVersion = "Unknown Swift version on Windows"
-        #else
-            self.swiftVersion = try BenchmarkMetadata.run(command: BenchmarkMetadata.getExecURL(for: "swift"),
-                                                          arguments: ["-version"])
-        #endif
+        self.swiftVersion = try BenchmarkMetadata.run(command: BenchmarkMetadata.getExecURL(for: "swift"),
+                                                        arguments: ["-version"])
         self.swcVersion = _SWC_VERSION
         self.description = description
     }

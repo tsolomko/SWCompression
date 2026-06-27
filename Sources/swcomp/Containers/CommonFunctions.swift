@@ -68,16 +68,6 @@ func writeDirectory<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: 
 
     var attributes = [FileAttributeKey: Any]()
 
-    #if !os(Linux) // On linux only permissions attribute is supported.
-        if let mtime = entry.info.modificationTime {
-            attributes[FileAttributeKey.modificationDate] = mtime
-        }
-
-        if let ctime = entry.info.creationTime {
-            attributes[FileAttributeKey.creationDate] = ctime
-        }
-    #endif
-
     if let permissions = entry.info.permissions?.rawValue, permissions > 0 {
         attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
     }
@@ -131,16 +121,6 @@ func writeFile<T: ContainerEntry>(_ entry: T, _ outputURL: URL, _ verbose: Bool)
     }
 
     var attributes = [FileAttributeKey: Any]()
-
-    #if !os(Linux) // On linux only permissions attribute is supported.
-        if let mtime = entry.info.modificationTime {
-            attributes[FileAttributeKey.modificationDate] = mtime
-        }
-
-        if let ctime = entry.info.creationTime {
-            attributes[FileAttributeKey.creationDate] = ctime
-        }
-    #endif
 
     if let permissions = entry.info.permissions?.rawValue, permissions > 0 {
         attributes[FileAttributeKey.posixPermissions] = NSNumber(value: permissions)
