@@ -17,14 +17,12 @@ enum SwcompError {
     case benchmarkCannotMeasure(Benchmark.Type, Error)
     case benchmarkCannotMeasureBadOutSize(Benchmark.Type)
     case benchmarkReaderTarNoInputSize(String)
-    case benchmarkCannotGetSubcommandPathWindows
     case benchmarkCannotAppendToDirectory
     case benchmarkBadUUID
     case benchmarkNoUUID
     case benchmarkUnrecognizedSaveFile
     case benchmarkUnrecognizedFormatVersion
     case benchmarkUnsupportedFormatVersion(Int)
-    case benchmarkOldFormatNoUUIDMetadata(UUID)
     case containerSymLinkDestPath(String)
     case containerHardLinkDestPath(String)
     case containerNoEntryData(String)
@@ -56,22 +54,18 @@ enum SwcompError {
             return 214
         case .benchmarkReaderTarNoInputSize:
             return 205
-        case .benchmarkCannotGetSubcommandPathWindows:
-            return 206
         case .benchmarkCannotAppendToDirectory:
-            return 207
+            return 206
         case .benchmarkBadUUID:
-            return 208
+            return 207
         case .benchmarkNoUUID:
-            return 218
+            return 217
         case .benchmarkUnrecognizedSaveFile:
-            return 209
+            return 208
         case .benchmarkUnrecognizedFormatVersion:
-            return 219
+            return 218
         case .benchmarkUnsupportedFormatVersion:
-            return 229
-        case .benchmarkOldFormatNoUUIDMetadata:
-            return 239
+            return 228
         case .containerSymLinkDestPath:
             return 301
         case .containerHardLinkDestPath:
@@ -113,8 +107,6 @@ enum SwcompError {
             return "Unable to measure benchmark \(benchmark): outputData.count is not greater than zero."
         case .benchmarkReaderTarNoInputSize(let input):
             return "ReaderTAR.benchmarkSetUp(): file size is not available for input=\(input)."
-        case .benchmarkCannotGetSubcommandPathWindows:
-            return "Cannot get subcommand path on Windows. (This error should never be shown!)"
         case .benchmarkCannotAppendToDirectory:
             return "Cannot append results to the save path since it is a directory."
         case .benchmarkBadUUID:
@@ -127,8 +119,6 @@ enum SwcompError {
             return "The save file format version is not recognized."
         case .benchmarkUnsupportedFormatVersion(let formatVersion):
             return "The save file format version \(formatVersion) is not supported."
-        case .benchmarkOldFormatNoUUIDMetadata(let uuid):
-            return "No metadata found in an old format save file for UUID = \(uuid)."
         case .containerSymLinkDestPath(let entryName):
             return "Unable to get destination path for symbolic link \(entryName)."
         case .containerHardLinkDestPath(let entryName):
