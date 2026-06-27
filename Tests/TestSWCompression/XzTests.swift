@@ -3,10 +3,11 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class XZTests: XCTestCase {
+struct XZTests {
 
     private static let testType: String = "xz"
 
@@ -15,147 +16,164 @@ class XZTests: XCTestCase {
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: testName)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testXz1() throws {
+    @Test func xz1() throws {
         try self.perform(test: "test1")
     }
 
-    func testXz2() throws {
+    @Test func xz2() throws {
         try self.perform(test: "test2")
     }
 
-    func testXz3() throws {
+    @Test func xz3() throws {
         try self.perform(test: "test3")
     }
 
-    func testXz4() throws {
+    @Test func xz4() throws {
         // This test contains padding!
         try self.perform(test: "test4")
     }
 
-    func testXz5() throws {
+    @Test func xz5() throws {
         try self.perform(test: "test5")
     }
 
-    func testXz6() throws {
+    @Test func xz6() throws {
         try self.perform(test: "test6")
     }
 
-    func testXz7() throws {
+    @Test func xz7() throws {
         try self.perform(test: "test7")
     }
 
-    func testXz8() throws {
+    @Test func xz8() throws {
         try self.perform(test: "test8")
     }
 
-    func testXz9() throws {
+    @Test func xz9() throws {
         try self.perform(test: "test9")
     }
 
-    func testMultiStreamNoPadding() throws {
+    @Test func multiStreamNoPadding() throws {
         // Doesn't contain any padding.
         let testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
-        XCTAssertEqual(splitDecompressedData.count, 4)
+        try #require(splitDecompressedData.count == 4)
 
         var answerData = Data()
         for i in 1...4 {
             let currentAnswerData = try Constants.data(forAnswer: "test\(i)")
             answerData.append(currentAnswerData)
-            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
+            #expect(splitDecompressedData[i - 1] == currentAnswerData)
         }
 
         let decompressedData = try XZArchive.unarchive(archive: testData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testMultiStreamComplexPadding() throws {
+    @Test func multiStreamComplexPadding() throws {
         // After first stream - no padding.
         // After second - 4 bytes of padding.
         // Third - 8 bytes.
         // At the end - 4 bytes.
         let testData = try Constants.data(forTest: "test_multi_pad", withType: XZTests.testType)
         let splitDecompressedData = try XZArchive.splitUnarchive(archive: testData)
-        XCTAssertEqual(splitDecompressedData.count, 4)
+        try #require(splitDecompressedData.count == 4)
 
         var answerData = Data()
         for i in 1...4 {
             let currentAnswerData = try Constants.data(forAnswer: "test\(i)")
 
             answerData.append(currentAnswerData)
-            XCTAssertEqual(splitDecompressedData[i - 1], currentAnswerData)
+            #expect(splitDecompressedData[i - 1] == currentAnswerData)
         }
 
         let decompressedData = try XZArchive.unarchive(archive: testData)
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testDeltaFilter() throws {
+    @Test func deltaFilter() throws {
         let testData = try Constants.data(forTest: "test_delta_filter", withType: XZTests.testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testSha256Check() throws {
+    @Test func sha256Check() throws {
         let testData = try Constants.data(forTest: "test_sha256", withType: XZTests.testType)
         let decompressedData = try XZArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test4")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testBadFile_short() {
-        XCTAssertThrowsError(try XZArchive.unarchive(archive: Data([0, 1, 2])))
-        XCTAssertThrowsError(try XZArchive.splitUnarchive(archive: Data([0, 1, 2])))
+    @Test func shortInput() {
+        #expect(throws: (any Error).self) { try XZArchive.unarchive(archive: Data([0, 1, 2])) }
+        #expect(throws: (any Error).self) { try XZArchive.splitUnarchive(archive: Data([0, 1, 2])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test6")
-        XCTAssertThrowsError(try XZArchive.unarchive(archive: testData))
+        #expect(throws: (any Error).self) { try XZArchive.unarchive(archive: testData) }
     }
 
-    func testChecksumMismatch() throws {
+    @Test func checksumMismatch() throws {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
         var testData = try Constants.data(forTest: "test1", withType: XZTests.testType)
         // Here we modify the stored value of crc64.
         testData[46] &+= 1
-        var thrownError: Error? = nil
-        XCTAssertThrowsError(try XZArchive.unarchive(archive: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is XZError, "Unexpected error type: \(type(of: thrownError))")
-        if case let .some(.wrongCheck(decompressedData)) = thrownError as? XZError {
-            XCTAssertEqual(decompressedData.count, 1)
-            let answerData = try Constants.data(forAnswer: "test1")
-            XCTAssertEqual(decompressedData.first, answerData)
-        } else {
-            XCTFail("Unexpected error: \(String(describing: thrownError))")
-        }
+        #if compiler(>=6.1)
+            let error = #expect(throws: XZError.self) { try XZArchive.unarchive(archive: testData) }
+            if case let .some(.wrongCheck(decompressedData)) = error {
+                try #require(decompressedData.count == 1)
+                let answerData = try Constants.data(forAnswer: "test1")
+                #expect(decompressedData.first == answerData)
+            } else {
+                Issue.record("Unexpected error: \(error)")
+            }
+        #else
+            #expect { try XZArchive.unarchive(archive: testData) } throws: { error in
+                if case let .some(.wrongCheck(decompressedData)) = error as? XZError {
+                    let answerData = try Constants.data(forAnswer: "test1")
+                    return decompressedData.count == 1 && decompressedData.first == answerData
+                }
+                return false
+            }
+        #endif
     }
 
-    func testMultiStreamChecksumMismatch() throws {
+    @Test func multiStreamChecksumMismatch() throws {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
         var testData = try Constants.data(forTest: "test_multi", withType: XZTests.testType)
         // Here we modify the stored value of crc64.
         testData[2346] &+= 1
-        var thrownError: Error? = nil
-        XCTAssertThrowsError(try XZArchive.splitUnarchive(archive: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is XZError, "Unexpected error type: \(type(of: thrownError))")
-        if case let .some(.wrongCheck(decompressedData)) = thrownError as? XZError {
-            XCTAssertEqual(decompressedData.count, 2)
-            var answerData = [try Constants.data(forAnswer: "test1")]
-            answerData.append(try Constants.data(forAnswer: "test2"))
-            XCTAssertEqual(decompressedData, answerData)
-        } else {
-            XCTFail("Unexpected error: \(String(describing: thrownError))")
-        }
+        #if compiler(>=6.1)
+            let error = #expect(throws: XZError.self) { try XZArchive.splitUnarchive(archive: testData) }
+            if case let .some(.wrongCheck(decompressedData)) = error {
+                try #require(decompressedData.count == 2)
+                var answerData = [try Constants.data(forAnswer: "test1")]
+                answerData.append(try Constants.data(forAnswer: "test2"))
+                #expect(decompressedData == answerData)
+            } else {
+                Issue.record("Unexpected error: \(error)")
+            }
+        #else
+            #expect { try XZArchive.splitUnarchive(archive: testData) } throws: { error in
+                if case let .some(.wrongCheck(decompressedData)) = error as? XZError {
+                    var answerData = [try Constants.data(forAnswer: "test1")]
+                    answerData.append(try Constants.data(forAnswer: "test2"))
+                    return decompressedData.count == 2 && decompressedData == answerData
+                }
+                return false
+            }
+        #endif
     }
 
 }
