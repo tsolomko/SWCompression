@@ -3,78 +3,87 @@
 //
 // See LICENSE for license information
 
-import XCTest
+import Foundation
+import Testing
 import SWCompression
 
-class ZlibTests: XCTestCase {
+struct ZlibTests {
 
     private static let testType: String = "zlib"
 
-    func testZlib() throws {
+    @Test func test() throws {
         let testName = "test"
 
         let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
         let testZlibHeader = try ZlibHeader(archive: testData)
 
-        XCTAssertEqual(testZlibHeader.compressionMethod, .deflate)
-        XCTAssertEqual(testZlibHeader.compressionLevel, .defaultAlgorithm)
-        XCTAssertEqual(testZlibHeader.windowSize, 32768)
+        #expect(testZlibHeader.compressionMethod == .deflate)
+        #expect(testZlibHeader.compressionLevel == .defaultAlgorithm)
+        #expect(testZlibHeader.windowSize == 32768)
     }
 
-    func testZlibFull() throws {
+    @Test func full() throws {
         let testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
         let decompressedData = try ZlibArchive.unarchive(archive: testData)
 
         let answerData = try Constants.data(forAnswer: "test9")
-        XCTAssertEqual(decompressedData, answerData)
+        #expect(decompressedData == answerData)
     }
 
-    func testCreateZlib() throws {
+    @Test func create() throws {
         let testData = try Constants.data(forAnswer: "test9")
         let archiveData = ZlibArchive.archive(data: testData)
         let reextractedData = try ZlibArchive.unarchive(archive: archiveData)
 
-        XCTAssertEqual(testData, reextractedData)
+        #expect(testData == reextractedData)
     }
 
-    func testZlibEmpty() throws {
+    @Test func empty() throws {
         let testData = try Constants.data(forTest: "test_empty", withType: ZlibTests.testType)
-        XCTAssertEqual(try ZlibArchive.unarchive(archive: testData), Data())
+        #expect((try ZlibArchive.unarchive(archive: testData)) == Data())
     }
 
-    func testBadFile_short() {
-        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: Data([0x78])))
-        XCTAssertThrowsError(try ZlibHeader(archive: Data([0x78])))
+    @Test func shortInput() {
+        #expect(throws: (any Error).self) { try ZlibArchive.unarchive(archive: Data([0x78])) }
+        #expect(throws: (any Error).self) { try ZlibHeader(archive: Data([0x78])) }
     }
 
-    func testBadFile_invalid() throws {
+    @Test func invalidInput() throws {
         let testData = try Constants.data(forAnswer: "test6")
-        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: testData))
+        #expect(throws: (any Error).self) { try ZlibArchive.unarchive(archive: testData) }
     }
 
-    func testEmptyData() throws {
-        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: Data()))
+    @Test func emptyInput() throws {
+        #expect(throws: (any Error).self) { try ZlibArchive.unarchive(archive: Data()) }
     }
 
-    func testChecksumMismatch() throws {
+    @Test func checksumMismatch() throws {
         // Here we test that an error for checksum mismatch is thrown correctly and its associated value contains
         // expected data. We do this by programmatically adjusting the input: we change one of the bytes for the checkum,
         // which makes it incorrect.
         var testData = try Constants.data(forTest: "random_file", withType: ZlibTests.testType)
         // Here we modify the stored value of adler32.
         testData[10249] &+= 1
-        var thrownError: Error? = nil
-        XCTAssertThrowsError(try ZlibArchive.unarchive(archive: testData)) { thrownError = $0 }
-        XCTAssertTrue(thrownError is ZlibError, "Unexpected error type: \(type(of: thrownError))")
-        if case let .some(.wrongAdler32(decompressedData)) = thrownError as? ZlibError {
-            let answerData = try Constants.data(forAnswer: "test9")
-            XCTAssertEqual(decompressedData, answerData)
-        } else {
-            XCTFail("Unexpected error: \(String(describing: thrownError))")
-        }
+        #if compiler(>=6.1)
+            let error = #expect(throws: ZlibError.self) { try ZlibArchive.unarchive(archive: testData) }
+            if case let .some(.wrongAdler32(decompressedData)) = error {
+                let answerData = try Constants.data(forAnswer: "test9")
+                #expect(decompressedData == answerData)
+            } else {
+                Issue.record("Unexpected error: \(error)")
+            }
+        #else
+            #expect { try ZlibArchive.unarchive(archive: testData) } throws: { error in
+                if case let .some(.wrongAdler32(decompressedData)) = error as? ZlibError {
+                    let answerData = try Constants.data(forAnswer: "test9")
+                    return decompressedData == answerData
+                }
+                return false
+            }
+        #endif
     }
 
-    func testZlibTruncation() throws {
+    @Test func randomInputTruncations() throws {
         for testName in ["test", "random_file", "test_empty"] {
             let testData = try Constants.data(forTest: testName, withType: ZlibTests.testType)
             for _ in 0..<100 {
